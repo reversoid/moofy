@@ -1,5 +1,5 @@
 import { Input, Text, Button } from '@nextui-org/react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
@@ -7,8 +7,7 @@ import Form from '@/features/auth/components/Form';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
 import { authService } from '@/features/auth/services/auth.service';
-import { AxiosError } from 'axios';
-import { ApiError } from 'next/dist/server/api-utils';
+import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 
 interface FormData {
   emailOrUsername: string;
@@ -16,23 +15,27 @@ interface FormData {
 }
 
 function Index() {
-  const { register, getValues } = useForm<FormData>();
+  useDefaultScrollbarGutter();
 
-  const handleSubmit = async () => {
-    const data = getValues();
+  const { register, handleSubmit } = useForm<FormData>();
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const { emailOrUsername: email, password } = data;
 
     try {
       await authService.login({
-        email: data.emailOrUsername,
-        password: data.password,
+        email,
+        password,
       });
-    } catch { /* empty */ }
+    } catch {
+      /* empty */
+    }
   };
 
   return (
     <AuthContainer xs>
       <Heading h1>Вход</Heading>
-      <Form>
+      <Form id="login-form" onSubmit={handleSubmit(onSubmit)}>
         <Input
           label="Email или имя пользователя"
           placeholder="example@site.org"
@@ -49,7 +52,12 @@ function Index() {
         />
       </Form>
       <SubmitContainer>
-        <Button css={{ width: 'max-content' }} size="lg" onPress={handleSubmit}>
+        <Button
+          type="submit"
+          form="login-form"
+          css={{ width: 'max-content' }}
+          size="lg"
+        >
           Войти
         </Button>
         <Text as="p">
