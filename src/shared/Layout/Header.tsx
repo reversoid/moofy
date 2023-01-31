@@ -25,7 +25,7 @@ function Header() {
     <HeaderStyled>
       <HeaderContainer xl>
         <CenteredImage
-          src="./img/Logo.svg"
+          src="/img/Logo.svg"
           height="85%"
           objectFit="contain"
           width="fit-content"
