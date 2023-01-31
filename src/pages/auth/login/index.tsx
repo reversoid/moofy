@@ -1,12 +1,10 @@
 import { Input, Text, Button } from '@nextui-org/react';
 import Link from 'next/link';
 import React from 'react';
-import {
-  AuthContainer,
-  Form,
-  Heading,
-  SubmitContainer,
-} from '../CommonAuthComponents';
+import AuthContainer from '@/features/auth/components/AuthContainer';
+import Form from '@/features/auth/components/Form';
+import Heading from '@/features/auth/components/Heading';
+import SubmitContainer from '@/features/auth/components/SubmitContainer';
 
 function Index() {
   return (
