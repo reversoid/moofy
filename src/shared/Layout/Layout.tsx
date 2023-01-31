@@ -4,9 +4,9 @@ import Header, { HEADER_HEIGHT } from './Header';
 
 const Wrapper = styled(Container, {
   pt: HEADER_HEIGHT,
-  '@xs': {
-    paddingLeft: '0.5rem',
-    paddingRight: '0.5rem',
+  '@xsMax': {
+    paddingLeft: '0.5rem !important',
+    paddingRight: '0.5rem !important',
   },
 });
 
