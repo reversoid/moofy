@@ -32,7 +32,7 @@ function Index() {
       <Form id="register-form" onSubmit={handleSubmit(onSubmit)}>
         <Input
           label="Имя пользователя"
-          placeholder="reversoid123"
+          placeholder="username123"
           fullWidth
           size="xl"
           {...register('username')}
