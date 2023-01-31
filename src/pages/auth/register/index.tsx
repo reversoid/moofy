@@ -31,18 +31,18 @@ function Index() {
       <Heading h1>Регистрация</Heading>
       <Form id="register-form" onSubmit={handleSubmit(onSubmit)}>
         <Input
-          label="Email"
-          placeholder="example@site.org"
-          fullWidth
-          size="xl"
-          {...register('email')}
-        />
-        <Input
           label="Имя пользователя"
           placeholder="reversoid123"
           fullWidth
           size="xl"
           {...register('username')}
+        />
+        <Input
+          label="Email"
+          placeholder="example@site.org"
+          fullWidth
+          size="xl"
+          {...register('email')}
         />
         <Input.Password
           label="Пароль"
