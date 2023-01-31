@@ -26,6 +26,7 @@
     "react/jsx-props-no-spreading": "off",
     "react/function-component-definition": "off",
     "arrow-body-style": "off",
-    "import/extensions": "off"
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }
