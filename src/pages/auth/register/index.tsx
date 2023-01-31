@@ -1,5 +1,6 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Input, Text, Button } from '@nextui-org/react';
+import { useEvent, useStore } from 'effector-react';
 import Link from 'next/link';
 import React from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
@@ -7,7 +8,7 @@ import Form from '@/features/auth/components/Form';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
-import { authService } from '@/features/auth/services/auth.service';
+import { registerFx, register as registerEvent } from '@/models/auth';
 
 interface FormData {
   email: string;
@@ -19,13 +20,9 @@ function Index() {
   useDefaultScrollbarGutter();
   const { register, handleSubmit } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    try {
-      await authService.register(data);
-    } catch {
-      /* empty */
-    }
-  };
+  const onSubmit = useEvent(registerEvent);
+  const loading = useStore(registerFx.pending);
+
   return (
     <AuthContainer xs>
       <Heading h1>Регистрация</Heading>
@@ -54,6 +51,7 @@ function Index() {
       </Form>
       <SubmitContainer>
         <Button
+          type="submit"
           form="register-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
@@ -65,6 +63,7 @@ function Index() {
           <Link href="/auth/login">Войти</Link>
         </Text>
       </SubmitContainer>
+      <Text>{String(loading)}</Text>
     </AuthContainer>
   );
 }

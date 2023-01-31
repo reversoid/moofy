@@ -1,13 +1,14 @@
 import { Input, Text, Button } from '@nextui-org/react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React from 'react';
+import { useEvent, useStore } from 'effector-react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Form from '@/features/auth/components/Form';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
-import { authService } from '@/features/auth/services/auth.service';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
+import { login, loginFx } from '@/models/auth';
 
 interface FormData {
   emailOrUsername: string;
@@ -19,23 +20,17 @@ function Index() {
 
   const { register, handleSubmit } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const { emailOrUsername: email, password } = data;
-
-    try {
-      await authService.login({
-        email,
-        password,
-      });
-    } catch {
-      /* empty */
-    }
-  };
+  const onSubmit = useEvent(login);
+  const loading = useStore(loginFx.pending);
 
   return (
     <AuthContainer xs>
       <Heading h1>Вход</Heading>
-      <Form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+      <Form
+        id="login-form"
+        onSubmit={handleSubmit(({ emailOrUsername, password }) =>
+          onSubmit({ email: emailOrUsername, password }))}
+      >
         <Input
           label="Email или имя пользователя"
           placeholder="example@site.org"
@@ -65,6 +60,7 @@ function Index() {
           <Link href="/auth/register">Зарегистрироваться</Link>
         </Text>
       </SubmitContainer>
+      <Text>{String(loading)}</Text>
     </AuthContainer>
   );
 }
