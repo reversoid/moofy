@@ -1,0 +1,4 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [["stiches", { "ssr": true }]]
+}

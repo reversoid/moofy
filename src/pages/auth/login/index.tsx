@@ -5,8 +5,16 @@ import AuthContainer from '@/features/auth/components/AuthContainer';
 import Form from '@/features/auth/components/Form';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
+import { authService } from '@/features/auth/services/auth.service';
 
 function Index() {
+  const handleLoginClick = async () => {
+    await authService.login({
+      email: 'gosh2a@mail.ru',
+      password: '123',
+    });
+    console.log('success');
+  };
   return (
     <AuthContainer xs>
       <Heading h1>Вход</Heading>
@@ -25,7 +33,7 @@ function Index() {
         />
       </Form>
       <SubmitContainer>
-        <Button css={{ width: 'max-content' }} size="lg">
+        <Button css={{ width: 'max-content' }} size="lg" onClick={handleLoginClick}>
           Войти
         </Button>
         <Text as="p">

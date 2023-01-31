@@ -1,5 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import ApiService, { ApiError } from '@/shared/api/ApiService';
+import { storageService } from '@/shared/services/storage.service';
 
 export interface RegisterDTO {
   username: string;
@@ -17,14 +18,24 @@ export interface AuthResponse {
 }
 
 class AuthService extends ApiService {
-  public register(dto: RegisterDTO) {
+  public async register(dto: RegisterDTO): Promise<void> {
     const url = `${this.apiUrl}/auth/register`;
-    return axios.post<ApiError, AuthResponse, RegisterDTO>(url, dto);
+    return axios
+      .post<ApiError, AxiosResponse<AuthResponse>, RegisterDTO>(url, dto)
+      .then((r) => r.data)
+      .then(({ access_token }) => this.setAccessToken(access_token));
   }
 
-  public login(dto: LoginDTO) {
+  public async login(dto: LoginDTO): Promise<void> {
     const url = `${this.apiUrl}/auth/login`;
-    return axios.post<ApiError, AuthResponse, LoginDTO>(url, dto);
+    return axios
+      .post<ApiError, AxiosResponse<AuthResponse>, LoginDTO>(url, dto)
+      .then((r) => r.data)
+      .then(({ access_token }) => this.setAccessToken(access_token));
+  }
+
+  private setAccessToken(token: string): void {
+    storageService.setData('access_token', token);
   }
 }
 
