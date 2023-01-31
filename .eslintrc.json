@@ -23,6 +23,9 @@
   "rules": {
     "object-curly-newline": "off",
     "react/jsx-one-expression-per-line": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": "off",
+    "arrow-body-style": "off",
+    "import/extensions": "off"
   }
 }

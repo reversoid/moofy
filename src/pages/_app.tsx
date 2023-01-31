@@ -2,6 +2,8 @@ import React from 'react';
 import type { AppProps } from 'next/app';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import Layout from '@/shared/Layout/Layout';
+import '@/styles/global.scss';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -24,7 +26,9 @@ export default function App({ Component, pageProps }: AppProps) {
       }}
     >
       <NextUIProvider>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </NextUIProvider>
     </NextThemesProvider>
   );
