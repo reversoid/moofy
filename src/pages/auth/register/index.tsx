@@ -53,7 +53,11 @@ function Index() {
         />
       </Form>
       <SubmitContainer>
-        <Button form="register-form" css={{ width: 'max-content' }} size="lg">
+        <Button
+          form="register-form"
+          css={{ '@xsMin': { width: 'max-content !important' } }}
+          size="lg"
+        >
           Зарегистрироваться
         </Button>
         <Text as="p">

@@ -55,7 +55,7 @@ function Index() {
         <Button
           type="submit"
           form="login-form"
-          css={{ width: 'max-content' }}
+          css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
         >
           Войти
