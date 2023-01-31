@@ -1,4 +1,4 @@
-import { Input, Text, Button } from '@nextui-org/react';
+import { Input, Text, Button, Loading } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React from 'react';
@@ -53,14 +53,17 @@ function Index() {
           css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
         >
-          Войти
+          {loading ? (
+            <Loading size="lg" type="points" color="white" />
+          ) : (
+            'Войти'
+          )}
         </Button>
         <Text as="p">
           Еще нет аккаунта?{'  '}
           <Link href="/auth/register">Зарегистрироваться</Link>
         </Text>
       </SubmitContainer>
-      <Text>{String(loading)}</Text>
     </AuthContainer>
   );
 }
