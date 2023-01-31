@@ -22,6 +22,8 @@
     "@types/react-dom": "18.0.10",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "effector": "^22.5.0",
+    "effector-react": "^22.4.0",
     "eslint": "^8.0.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-next": "13.1.6",
