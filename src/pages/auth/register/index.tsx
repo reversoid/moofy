@@ -14,7 +14,7 @@ import {
 } from '@/features/auth/components/StyledInputs';
 import {
   EMAIL_VALIDATORS,
-  FormData,
+  RegisterFormData,
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
@@ -26,7 +26,7 @@ function Index() {
     register,
     handleSubmit,
     formState: { errors, isValid: isFormValid },
-  } = useForm<FormData>({ mode: 'onChange' });
+  } = useForm<RegisterFormData>({ mode: 'onChange' });
 
   const loading = useStore(registerFx.pending);
   const onSubmit = useEvent(registerEvent);

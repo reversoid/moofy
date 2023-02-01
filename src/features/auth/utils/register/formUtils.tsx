@@ -1,13 +1,13 @@
 import { RegisterOptions } from 'react-hook-form';
 import { SAFE_STRING, EMAIL_PATTERN } from '@/features/auth/utils/patterns';
 
-export interface FormData {
+export interface RegisterFormData {
   email: string;
   username: string;
   password: string;
 }
 
-export const USERNAME_VALIDATORS: RegisterOptions<FormData, 'username'> = {
+export const USERNAME_VALIDATORS: RegisterOptions<RegisterFormData, 'username'> = {
   required: {
     value: true,
     message: 'Данное поле не должно быть пустым',
@@ -18,7 +18,7 @@ export const USERNAME_VALIDATORS: RegisterOptions<FormData, 'username'> = {
   },
 };
 
-export const EMAIL_VALIDATORS: RegisterOptions<FormData, 'email'> = {
+export const EMAIL_VALIDATORS: RegisterOptions<RegisterFormData, 'email'> = {
   required: {
     value: true,
     message: 'Данное поле не должно быть пустым',
@@ -30,7 +30,7 @@ export const EMAIL_VALIDATORS: RegisterOptions<FormData, 'email'> = {
   },
 };
 
-export const PASSWORD_VALIDATORS: RegisterOptions<FormData, 'password'> = {
+export const PASSWORD_VALIDATORS: RegisterOptions<RegisterFormData, 'password'> = {
   required: {
     value: true,
     message: 'Данное поле не должно быть пустым',

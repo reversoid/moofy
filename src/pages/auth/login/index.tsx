@@ -8,16 +8,25 @@ import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import { $loginStatus, clearLoginError, login } from '@/models/auth';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
-
-interface FormData {
-  emailOrUsername: string;
-  password: string;
-}
+import {
+  StyledInput,
+  StyledPassword,
+} from '@/features/auth/components/StyledInputs';
+import {
+  LoginFormData,
+  PASSWORD_VALIDATORS,
+  USERNAME_OR_EMAIL_VALIDATORS,
+} from '@/features/auth/utils/login/formUtils';
+import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 
 const Index = React.memo(() => {
   useDefaultScrollbarGutter();
 
-  const { register, handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid: isFormValid },
+  } = useForm<LoginFormData>({ mode: 'onChange' });
 
   const onSubmit = useEvent(login);
   const removeError = useEvent(clearLoginError);
@@ -34,19 +43,31 @@ const Index = React.memo(() => {
           onSubmit({ email: emailOrUsername, password }),
         )}
       >
-        <Input
+        <StyledInput
           label="Email или имя пользователя"
           placeholder="example@site.org"
           fullWidth
           size="xl"
-          {...register('emailOrUsername')}
+          {...register('emailOrUsername', USERNAME_OR_EMAIL_VALIDATORS)}
+          status={errors.emailOrUsername && 'error'}
+          contentRight={
+            errors.emailOrUsername?.message && (
+              <InfoIconWithTooltip message={errors.emailOrUsername?.message} />
+            )
+          }
         />
-        <Input.Password
+        <StyledPassword
           label="Пароль"
           placeholder="Пароль"
           fullWidth
           size="xl"
-          {...register('password')}
+          {...register('password', PASSWORD_VALIDATORS)}
+          status={errors.password && 'error'}
+          contentRight={
+            errors.password?.message && (
+              <InfoIconWithTooltip message={errors.password?.message} />
+            )
+          }
         />
       </Form>
       <SubmitContainer>
@@ -55,6 +76,7 @@ const Index = React.memo(() => {
           form="login-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
+          disabled={!isFormValid}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />
@@ -67,7 +89,6 @@ const Index = React.memo(() => {
           <Link href="/auth/register">Зарегистрироваться</Link>
         </Text>
       </SubmitContainer>
-      {String(error)}
     </AuthContainer>
   );
 });
