@@ -1,22 +1,20 @@
 import { useForm } from 'react-hook-form';
-import { Input, Text, Button, Loading, Tooltip } from '@nextui-org/react';
+import {
+  Text,
+  Button,
+  Loading,
+} from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import Link from 'next/link';
 import React from 'react';
-import Image from 'next/image';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import { registerFx, register as registerEvent } from '@/models/auth';
 import Form from '@/features/auth/components/Form';
-import { EMAIL_PATTERN, SAFE_STRING } from '@/features/auth/utils/patterns';
-
-interface FormData {
-  email: string;
-  username: string;
-  password: string;
-}
+import { StyledInput, StyledPassword } from '@/features/auth/components/StyledInput';
+import { EMAIL_VALIDATORS, FormData, InfoIconWithTooltip, PASSWORD_VALIDATORS, USERNAME_VALIDATORS } from './_utils';
 
 function Index() {
   useDefaultScrollbarGutter();
@@ -33,39 +31,20 @@ function Index() {
     <AuthContainer xs>
       <Heading h1>Регистрация</Heading>
       <Form id="register-form" onSubmit={handleSubmit(onSubmit)}>
-        <Input
+        <StyledInput
           label="Имя пользователя"
           placeholder="username123"
           fullWidth
           size="xl"
           status={errors.username && 'error'}
-          css={{ '& input': { paddingLeft: '0.3rem' } }}
           contentRight={
             errors.username?.message && (
-              <Tooltip
-                color="invert"
-                content={errors.username?.message}
-                placement="leftStart"
-              >
-                <Button
-                  light
-                  css={{ p: 0, m: 0, width: 20, height: 20, minWidth: 0 }}
-                >
-                  <Image src="/img/info.svg" alt="Info icon" width={20} height={20} />
-                </Button>
-              </Tooltip>
+              <InfoIconWithTooltip message={errors.username?.message} />
             )
           }
-          {...register('username', {
-            required: true,
-            pattern: {
-              value: SAFE_STRING,
-              message:
-                'Разрешено использовать латинские буквы, цифры, "_" и "-"',
-            },
-          })}
+          {...register('username', USERNAME_VALIDATORS)}
         />
-        <Input
+        <StyledInput
           autoComplete="true"
           type="email"
           label="Email"
@@ -73,64 +52,23 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.email && 'error'}
-          css={{ '& input': { paddingLeft: '0.3rem' } }}
-          {...register('email', {
-            required: true,
-            pattern: {
-              value: EMAIL_PATTERN,
-              message: 'Неверный формат email',
-            },
-          })}
+          {...register('email', EMAIL_VALIDATORS)}
           contentRight={
             errors.email?.message && (
-              <Tooltip
-                color="invert"
-                content={errors.email?.message}
-                placement="leftStart"
-              >
-                <Button
-                  light
-                  css={{ p: 0, m: 0, width: 20, height: 20, minWidth: 0 }}
-                >
-                  <Image src="/img/info.svg" alt="Info icon" width={20} height={20} />
-                </Button>
-              </Tooltip>
+              <InfoIconWithTooltip message={errors.email?.message} />
             )
           }
         />
-        <Input.Password
+        <StyledPassword
           label="Пароль"
           placeholder="Пароль"
           fullWidth
           size="xl"
           status={errors.password && 'error'}
-          css={{ '& input': { paddingLeft: '0.3rem' } }}
-          {...register('password', {
-            required: true,
-            pattern: {
-              value: SAFE_STRING,
-              message:
-                'Разрешено использовать латинские буквы, цифры, "_" и "-"',
-            },
-            minLength: {
-              value: 8,
-              message: 'Минимальная длина пароля: 8 символов',
-            },
-          })}
+          {...register('password', PASSWORD_VALIDATORS)}
           contentRight={
             errors.password?.message && (
-              <Tooltip
-                color="invert"
-                content={errors.password.message}
-                placement="leftStart"
-              >
-                <Button
-                  light
-                  css={{ p: 0, m: 0, width: 20, height: 20, minWidth: 0 }}
-                >
-                  <Image src="/img/info.svg" alt="Info icon" width={20} height={20} />
-                </Button>
-              </Tooltip>
+              <InfoIconWithTooltip message={errors.password?.message} />
             )
           }
         />
