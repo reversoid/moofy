@@ -17,7 +17,7 @@ import {
   FormData,
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
-} from './formUtils';
+} from '@/features/auth/utils/register/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 
 function Index() {
