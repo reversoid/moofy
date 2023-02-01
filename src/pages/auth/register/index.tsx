@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form';
-import { Input, Text, Button, Loading } from '@nextui-org/react';
+import { Input, Text, Button, Loading, Tooltip } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import Link from 'next/link';
 import React from 'react';
+import Image from 'next/image';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
@@ -23,7 +24,7 @@ function Index() {
     register,
     handleSubmit,
     formState: { errors, isValid: isFormValid },
-  } = useForm<FormData>({ mode: 'onChange', reValidateMode: 'onBlur' });
+  } = useForm<FormData>({ mode: 'onChange' });
 
   const loading = useStore(registerFx.pending);
   const onSubmit = useEvent(registerEvent);
@@ -38,7 +39,31 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.username && 'error'}
-          {...register('username', { required: true, pattern: SAFE_STRING })}
+          css={{ '& input': { paddingLeft: '0.3rem' } }}
+          contentRight={
+            errors.username?.message && (
+              <Tooltip
+                color="invert"
+                content={errors.username?.message}
+                placement="leftStart"
+              >
+                <Button
+                  light
+                  css={{ p: 0, m: 0, width: 20, height: 20, minWidth: 0 }}
+                >
+                  <Image src="/img/info.svg" alt="Info icon" width={20} height={20} />
+                </Button>
+              </Tooltip>
+            )
+          }
+          {...register('username', {
+            required: true,
+            pattern: {
+              value: SAFE_STRING,
+              message:
+                'Разрешено использовать латинские буквы, цифры, "_" и "-"',
+            },
+          })}
         />
         <Input
           autoComplete="true"
@@ -48,7 +73,30 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.email && 'error'}
-          {...register('email', { required: true, pattern: EMAIL_PATTERN })}
+          css={{ '& input': { paddingLeft: '0.3rem' } }}
+          {...register('email', {
+            required: true,
+            pattern: {
+              value: EMAIL_PATTERN,
+              message: 'Неверный формат email',
+            },
+          })}
+          contentRight={
+            errors.email?.message && (
+              <Tooltip
+                color="invert"
+                content={errors.email?.message}
+                placement="leftStart"
+              >
+                <Button
+                  light
+                  css={{ p: 0, m: 0, width: 20, height: 20, minWidth: 0 }}
+                >
+                  <Image src="/img/info.svg" alt="Info icon" width={20} height={20} />
+                </Button>
+              </Tooltip>
+            )
+          }
         />
         <Input.Password
           label="Пароль"
@@ -56,11 +104,35 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.password && 'error'}
+          css={{ '& input': { paddingLeft: '0.3rem' } }}
           {...register('password', {
             required: true,
-            pattern: SAFE_STRING,
-            minLength: 8,
+            pattern: {
+              value: SAFE_STRING,
+              message:
+                'Разрешено использовать латинские буквы, цифры, "_" и "-"',
+            },
+            minLength: {
+              value: 8,
+              message: 'Минимальная длина пароля: 8 символов',
+            },
           })}
+          contentRight={
+            errors.password?.message && (
+              <Tooltip
+                color="invert"
+                content={errors.password.message}
+                placement="leftStart"
+              >
+                <Button
+                  light
+                  css={{ p: 0, m: 0, width: 20, height: 20, minWidth: 0 }}
+                >
+                  <Image src="/img/info.svg" alt="Info icon" width={20} height={20} />
+                </Button>
+              </Tooltip>
+            )
+          }
         />
       </Form>
       <SubmitContainer>
