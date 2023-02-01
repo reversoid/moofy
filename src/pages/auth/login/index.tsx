@@ -3,12 +3,11 @@ import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { useEvent, useStore } from 'effector-react';
-import Heading from '@/features/auth/components/Heading';
-import SubmitContainer from '@/features/auth/components/SubmitContainer';
+import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import { $loginStatus, clearLoginError, login } from '@/models/auth';
 import AuthContainer from '@/features/auth/components/AuthContainer';
-import Form from '@/features/auth/components/Form';
+import { Form, SubmitContainer } from '@/features/auth/components/Form';
 
 interface FormData {
   emailOrUsername: string;

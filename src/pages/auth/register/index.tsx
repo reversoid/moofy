@@ -1,20 +1,24 @@
 import { useForm } from 'react-hook-form';
-import {
-  Text,
-  Button,
-  Loading,
-} from '@nextui-org/react';
+import { Text, Button, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import Link from 'next/link';
 import React from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
-import Heading from '@/features/auth/components/Heading';
-import SubmitContainer from '@/features/auth/components/SubmitContainer';
+import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import { registerFx, register as registerEvent } from '@/models/auth';
-import Form from '@/features/auth/components/Form';
-import { StyledInput, StyledPassword } from '@/features/auth/components/StyledInput';
-import { EMAIL_VALIDATORS, FormData, InfoIconWithTooltip, PASSWORD_VALIDATORS, USERNAME_VALIDATORS } from './_utils';
+import { Form, SubmitContainer } from '@/features/auth/components/Form';
+import {
+  StyledInput,
+  StyledPassword,
+} from '@/features/auth/components/StyledInputs';
+import {
+  EMAIL_VALIDATORS,
+  FormData,
+  PASSWORD_VALIDATORS,
+  USERNAME_VALIDATORS,
+} from './formUtils';
+import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 
 function Index() {
   useDefaultScrollbarGutter();
