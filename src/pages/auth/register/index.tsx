@@ -4,11 +4,12 @@ import { useEvent, useStore } from 'effector-react';
 import Link from 'next/link';
 import React from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
-import Form from '@/features/auth/components/Form';
 import Heading from '@/features/auth/components/Heading';
 import SubmitContainer from '@/features/auth/components/SubmitContainer';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import { registerFx, register as registerEvent } from '@/models/auth';
+import Form from '@/features/auth/components/Form';
+import { EMAIL_PATTERN, SAFE_STRING } from '@/features/auth/utils/patterns';
 
 interface FormData {
   email: string;
@@ -18,10 +19,14 @@ interface FormData {
 
 function Index() {
   useDefaultScrollbarGutter();
-  const { register, handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid: isFormValid },
+  } = useForm<FormData>({ mode: 'onChange', reValidateMode: 'onBlur' });
 
-  const onSubmit = useEvent(registerEvent);
   const loading = useStore(registerFx.pending);
+  const onSubmit = useEvent(registerEvent);
 
   return (
     <AuthContainer xs>
@@ -32,21 +37,30 @@ function Index() {
           placeholder="username123"
           fullWidth
           size="xl"
-          {...register('username')}
+          status={errors.username && 'error'}
+          {...register('username', { required: true, pattern: SAFE_STRING })}
         />
         <Input
+          autoComplete="true"
+          type="email"
           label="Email"
           placeholder="example@site.org"
           fullWidth
           size="xl"
-          {...register('email')}
+          status={errors.email && 'error'}
+          {...register('email', { required: true, pattern: EMAIL_PATTERN })}
         />
         <Input.Password
           label="Пароль"
           placeholder="Пароль"
           fullWidth
           size="xl"
-          {...register('password')}
+          status={errors.password && 'error'}
+          {...register('password', {
+            required: true,
+            pattern: SAFE_STRING,
+            minLength: 8,
+          })}
         />
       </Form>
       <SubmitContainer>
@@ -55,6 +69,7 @@ function Index() {
           form="register-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
+          disabled={!isFormValid}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />

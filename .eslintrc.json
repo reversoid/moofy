@@ -32,6 +32,8 @@
     "import/prefer-default-export": "off",
     "consistent-return": "off",
     "@typescript-eslint/indent": "off",
-    "implicit-arrow-linebreak": "off"
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off",
+    "react-hooks/exhaustive-deps": "off"
   }
 }

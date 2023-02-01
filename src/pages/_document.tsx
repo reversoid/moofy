@@ -21,7 +21,6 @@ class MyDocument extends Document {
     return (
       <Html lang="ru">
         <Head>
-          {CssBaseline.flush()}{' '}
           <style
             id="stitches"
             dangerouslySetInnerHTML={{ __html: getCssText() }}
