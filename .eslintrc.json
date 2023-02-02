@@ -34,6 +34,7 @@
     "@typescript-eslint/indent": "off",
     "implicit-arrow-linebreak": "off",
     "function-paren-newline": "off",
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "operator-linebreak": "off"
   }
 }
