@@ -36,7 +36,7 @@ function Index() {
     setError,
     clearErrors,
     trigger,
-    formState: { errors },
+    formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
   const loading = useStore(registerFx.pending);
@@ -51,6 +51,12 @@ function Index() {
 
   const onChangeEmail = useEvent(checkEmail);
   const onChangeEmailDebounced = debounce(onChangeEmail, INPUT_DEBOUNCE_TIME);
+
+  let submitButtonDisabled =
+    !isFormValid ||
+    loadingEmailCheck ||
+    loadingUsernameCheck ||
+    Boolean(Object.keys(errors).length);
 
   const onSubmit = useEvent(registerEvent);
 
@@ -102,6 +108,7 @@ function Index() {
           {...register('username', {
             ...USERNAME_VALIDATORS,
             onChange(e) {
+              submitButtonDisabled = true;
               onChangeUsernameDebounced({ username: e.target.value });
             },
           })}
@@ -117,6 +124,7 @@ function Index() {
           {...register('email', {
             ...EMAIL_VALIDATORS,
             onChange(e) {
+              submitButtonDisabled = true;
               onChangeEmailDebounced({ email: e.target.value });
             },
           })}
@@ -150,7 +158,7 @@ function Index() {
           form="register-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
-          disabled={Boolean(Object.keys(errors).length)}
+          disabled={submitButtonDisabled}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />
