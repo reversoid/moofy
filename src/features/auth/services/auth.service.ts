@@ -29,6 +29,18 @@ class AuthService extends ApiService {
     );
   }
 
+  public async checkUsernameExistence(username: string): Promise<boolean> {
+    return this.get<{ userExists: boolean }>('/user/existence', {
+      searchParams: { username },
+    }).then(({ userExists }) => userExists);
+  }
+
+  public async checkEmailExistence(email: string): Promise<boolean> {
+    return this.get<{ userExists: boolean }>('/user/existence', {
+      searchParams: { email },
+    }).then(({ userExists }) => userExists);
+  }
+
   private saveAccessToken(token: string): void {
     storageService.setData('access_token', token);
   }
