@@ -3,7 +3,10 @@ interface PendingItem<T> {
   reject: (reason?: any) => void;
 }
 
-export const debouncePromise = <T>(fn: (...args: any) => Promise<T>, ms = 0): () => Promise<T> => {
+export const debouncePromise = <T>(
+  fn: (...args: any) => Promise<T>,
+  ms = 0,
+): ((...args: Parameters<typeof fn>) => Promise<T>) => {
   let timeoutId: ReturnType<typeof setTimeout>;
 
   const pending: PendingItem<T>[] = [];
