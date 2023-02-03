@@ -62,6 +62,7 @@ export default class ApiService {
           statusCodes: [408, 413, 429, 500, 502, 503, 504],
           backoffLimit: 200,
         },
+        credentials: 'include',
         method,
         ...options,
       }).json<Response>();

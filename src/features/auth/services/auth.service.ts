@@ -51,6 +51,12 @@ class AuthService extends ApiService {
     }).then(({ userExists }) => userExists);
   }
 
+  public async checkout(): Promise<void> {
+    return this.get<AuthResponse>('/auth/checkout').then(({ access_token }) =>
+      this.saveAccessToken(access_token),
+    );
+  }
+
   private saveAccessToken(token: string): void {
     storageService.setData('access_token', token);
   }

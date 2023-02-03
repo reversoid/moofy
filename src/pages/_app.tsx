@@ -4,6 +4,7 @@ import { NextUIProvider, createTheme } from '@nextui-org/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import Layout from '@/shared/Layout/Layout';
 import '@/styles/global.scss';
+import { AuthProvider } from '@/contexts/Auth';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -26,9 +27,11 @@ export default function App({ Component, pageProps }: AppProps) {
       }}
     >
       <NextUIProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthProvider>
       </NextUIProvider>
     </NextThemesProvider>
   );

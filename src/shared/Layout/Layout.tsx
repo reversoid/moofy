@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 
@@ -10,7 +10,7 @@ const Wrapper = styled(Container, {
   },
 });
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Header />
