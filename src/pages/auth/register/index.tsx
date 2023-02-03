@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Text, Button, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import Link from 'next/link';
-import React from 'react';
+import React, { useMemo, memo } from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
@@ -24,22 +24,36 @@ import {
   checkUsername,
   checkUsernameFx,
 } from '@/models/auth/register/checkUsername';
+import { log } from 'console';
 
 function Index() {
   useDefaultScrollbarGutter();
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
   const loading = useStore(registerFx.pending);
-  const onSubmit = useEvent(registerEvent);
-
   const loadingUsernameCheck = useStore(checkUsernameFx.pending);
 
+  const onSubmit = useEvent(registerEvent);
   const onChangeUsername = useEvent(checkUsername);
   const onChangeUsernameDebounced = debounce(onChangeUsername, 225);
+
+  useMemo(
+    () =>
+      checkUsernameFx.doneData.watch((userExists) => {
+        if (userExists) {
+          setError('username', { message: 'Имя пользователя уже занято' });
+        } else {
+          clearErrors('username');
+        }
+      }),
+    [],
+  );
 
   return (
     <AuthContainer xs>
@@ -119,4 +133,4 @@ function Index() {
   );
 }
 
-export default Index;
+export default memo(Index);
