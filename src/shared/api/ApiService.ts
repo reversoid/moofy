@@ -1,4 +1,5 @@
 import ky, { Options } from 'ky';
+import { setAppError } from '@/models/app';
 
 export interface ApiError {
   code: number;
@@ -70,8 +71,10 @@ export default class ApiService {
       if (error.name === 'HTTPError') {
         const errorJson = await error.response.json();
 
+        setAppError(errorJson.message ?? 'NETWORK_ERROR');
         throw new Error('Http Error', { cause: errorJson });
       }
+      setAppError('UNKNOWN_ERROR');
       throw new Error('Unknown Http Error');
     }
   }
