@@ -18,7 +18,7 @@ export interface AuthResponse {
 }
 
 const LONG_RETRY_STRATEGY: RetryOptions = {
-  limit: 100,
+  limit: 5,
   methods: ['get'],
   statusCodes: [408, 413, 429, 500, 502, 503, 504],
   backoffLimit: 2000,
