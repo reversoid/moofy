@@ -6,7 +6,7 @@ import React from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
-import { registerFx, register as registerEvent } from '@/models/auth';
+import { registerFx, register as registerEvent } from '@/models/auth/register';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {
   StyledInput,
@@ -41,11 +41,14 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.username && 'error'}
-          contentRight={
-            errors.username?.message && (
-              <InfoIconWithTooltip message={errors.username?.message} />
-            )
-          }
+          contentRight={(
+            <>
+              <Loading size="sm" />
+              {errors.username?.message && (
+                <InfoIconWithTooltip message={errors.username?.message} />
+              )}
+            </>
+          )}
           {...register('username', USERNAME_VALIDATORS)}
         />
         <StyledInput

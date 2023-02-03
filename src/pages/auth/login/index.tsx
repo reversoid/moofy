@@ -5,7 +5,6 @@ import React, { useEffect } from 'react';
 import { useEvent, useStore } from 'effector-react';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
-import { $loginStatus, clearLoginError, login } from '@/models/auth';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {
@@ -18,6 +17,7 @@ import {
   USERNAME_OR_EMAIL_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
+import { login, clearLoginError, $loginStatus } from '@/models/auth/login';
 
 const Index = React.memo(() => {
   useDefaultScrollbarGutter();
