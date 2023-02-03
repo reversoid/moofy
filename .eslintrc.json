@@ -37,6 +37,7 @@
     "react-hooks/exhaustive-deps": "off",
     "operator-linebreak": "off",
     "no-promise-executor-return": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "react/jsx-wrap-multilines": "off"
   }
 }

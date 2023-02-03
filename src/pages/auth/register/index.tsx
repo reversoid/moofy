@@ -1,3 +1,4 @@
+import debounce from 'lodash.debounce';
 import { useForm } from 'react-hook-form';
 import { Text, Button, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
@@ -19,6 +20,10 @@ import {
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
+import {
+  checkUsername,
+  checkUsernameFx,
+} from '@/models/auth/register/checkUsername';
 
 function Index() {
   useDefaultScrollbarGutter();
@@ -31,6 +36,11 @@ function Index() {
   const loading = useStore(registerFx.pending);
   const onSubmit = useEvent(registerEvent);
 
+  const loadingUsernameCheck = useStore(checkUsernameFx.pending);
+
+  const onChangeUsername = useEvent(checkUsername);
+  const onChangeUsernameDebounced = debounce(onChangeUsername, 225);
+
   return (
     <AuthContainer xs>
       <Heading h1>Регистрация</Heading>
@@ -41,15 +51,21 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.username && 'error'}
-          contentRight={(
-            <>
+          contentRight={
+            loadingUsernameCheck ? (
               <Loading size="sm" />
-              {errors.username?.message && (
+            ) : (
+              errors.username?.message && (
                 <InfoIconWithTooltip message={errors.username?.message} />
-              )}
-            </>
-          )}
-          {...register('username', { ...USERNAME_VALIDATORS, onChange(e) {} })}
+              )
+            )
+          }
+          {...register('username', {
+            ...USERNAME_VALIDATORS,
+            onChange(e) {
+              onChangeUsernameDebounced({ username: e.target.value });
+            },
+          })}
         />
         <StyledInput
           autoComplete="true"
