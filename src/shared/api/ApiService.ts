@@ -56,14 +56,14 @@ export default class ApiService {
   ): Promise<Response> {
     try {
       return await ky(url, {
-        ...options,
-        method,
         retry: {
           limit: 4,
           methods: ['post', 'get', 'patch', 'delete'],
           statusCodes: [408, 413, 429, 500, 502, 503, 504],
           backoffLimit: 200,
         },
+        method,
+        ...options,
       }).json<Response>();
     } catch (error: any) {
       if (error.name === 'HTTPError') {
