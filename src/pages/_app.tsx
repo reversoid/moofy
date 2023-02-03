@@ -2,6 +2,7 @@ import React from 'react';
 import type { AppProps } from 'next/app';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { withEffector } from 'nextjs-effector';
 import Layout from '@/shared/Layout/Layout';
 import '@/styles/global.scss';
 import { AuthProvider } from '@/contexts/Auth';
@@ -16,7 +17,7 @@ const darkTheme = createTheme({
   theme: {},
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <NextThemesProvider
       defaultTheme="dark"
@@ -35,4 +36,6 @@ export default function App({ Component, pageProps }: AppProps) {
       </NextUIProvider>
     </NextThemesProvider>
   );
-}
+};
+
+export default withEffector(App);

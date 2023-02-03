@@ -20,12 +20,7 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="ru">
-        <Head>
-          <style
-            id="stitches"
-            dangerouslySetInnerHTML={{ __html: getCssText() }}
-          />
-        </Head>
+        <Head>{CssBaseline.flush()}</Head>
         <body>
           <Main />
           <NextScript />
