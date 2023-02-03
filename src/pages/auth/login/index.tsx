@@ -1,7 +1,7 @@
 import { Text, Button, Loading } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useEvent, useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import Heading from '@/features/auth/components/Title';
@@ -21,7 +21,7 @@ import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip'
 import { login, clearLoginError, $loginStatus } from '@/models/auth/login';
 import { useAuth } from '@/contexts/Auth';
 
-const Index = React.memo(() => {
+const Index = () => {
   useDefaultScrollbarGutter();
 
   const {
@@ -44,11 +44,11 @@ const Index = React.memo(() => {
     router.push('/');
   }
 
-  if (isLoggedIn === undefined || isLoading) {
+  if (isLoading) {
     return null;
   }
 
-  if (!isLoggedIn)
+  if (!isLoggedIn) {
     return (
       <AuthContainer xs>
         <Heading h1>Вход</Heading>
@@ -108,6 +108,9 @@ const Index = React.memo(() => {
         </SubmitContainer>
       </AuthContainer>
     );
-});
+  }
 
-export default Index;
+  return null;
+};
+
+export default memo(Index);
