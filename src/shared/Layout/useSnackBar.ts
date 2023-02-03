@@ -8,7 +8,7 @@ export const useSnackbar = () => {
   const [isSnackBarOpen, setIsSnackBarOpen] = useState(Boolean(error));
 
   useEffect(() => {
-    setIsSnackBarOpen(true);
+    setIsSnackBarOpen(Boolean(error));
   }, [error]);
 
   const handleSnackbarClose = useCallback(() => {

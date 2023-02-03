@@ -21,7 +21,7 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Wrapper xl>{children}</Wrapper>
       <ErrorSnackBar
         open={isSnackBarOpen}
-        message={errorMessage ?? 'Неизвестная ошибка'}
+        message={errorMessage!}
         closeSnackBar={handleSnackbarClose}
       />
     </>

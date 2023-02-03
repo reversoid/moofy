@@ -74,7 +74,7 @@ export default class ApiService {
         setAppError(errorJson.message ?? 'NETWORK_ERROR');
         throw new Error('Http Error', { cause: errorJson });
       }
-      setAppError('UNKNOWN_ERROR');
+      setAppError('NETWORK_ERROR');
       throw new Error('Unknown Http Error');
     }
   }
