@@ -49,7 +49,7 @@ function Index() {
               )}
             </>
           )}
-          {...register('username', USERNAME_VALIDATORS)}
+          {...register('username', { ...USERNAME_VALIDATORS, onChange(e) {} })}
         />
         <StyledInput
           autoComplete="true"
