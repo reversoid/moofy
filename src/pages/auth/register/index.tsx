@@ -8,7 +8,11 @@ import { useRouter } from 'next/router';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
-import { registerFx, register as registerEvent } from '@/models/auth/register';
+import {
+  register as registerEvent,
+  $registerStatus,
+  registerFx,
+} from '@/models/auth/register';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {
   StyledInput,
@@ -41,7 +45,6 @@ function Index() {
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
-  const loading = useStore(registerFx.pending);
   const loadingUsernameCheck = useStore(checkUsernameFx.pending);
   const loadingEmailCheck = useStore(checkEmailFx.pending);
 
@@ -91,6 +94,16 @@ function Index() {
   const router = useRouter();
 
   const { isLoggedIn, isLoading } = useAuth();
+
+  const { loading, error } = useStore($registerStatus);
+
+  useMemo(
+    () =>
+      registerFx.doneData.watch(() => {
+        router.push('/');
+      }),
+    [],
+  );
 
   if (isLoggedIn) {
     router.push('/');

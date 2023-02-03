@@ -1,7 +1,7 @@
 import { Text, Button, Loading } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useEvent, useStore } from 'effector-react';
 import { useRouter } from 'next/router';
 import Heading from '@/features/auth/components/Title';
@@ -18,11 +18,18 @@ import {
   USERNAME_OR_EMAIL_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
-import { login, clearLoginError, $loginStatus } from '@/models/auth/login';
+import { login, $loginStatus, loginFx } from '@/models/auth/login';
 import { useAuth } from '@/contexts/Auth';
 
 const Index = () => {
   useDefaultScrollbarGutter();
+  const router = useRouter();
+
+  const { isLoggedIn, isLoading } = useAuth();
+
+  if (isLoggedIn) {
+    router.push('/');
+  }
 
   const {
     register,
@@ -31,18 +38,15 @@ const Index = () => {
   } = useForm<LoginFormData>({ mode: 'onChange' });
 
   const onSubmit = useEvent(login);
-  const removeError = useEvent(clearLoginError);
-  const { error, loading, success } = useStore($loginStatus);
+  const { error, loading } = useStore($loginStatus);
 
-  useEffect(() => removeError(), []);
-
-  const router = useRouter();
-
-  const { isLoggedIn, isLoading } = useAuth();
-
-  if (isLoggedIn) {
-    router.push('/');
-  }
+  useMemo(
+    () =>
+      loginFx.doneData.watch(() => {
+        router.push('/');
+      }),
+    [],
+  );
 
   if (isLoading) {
     return null;

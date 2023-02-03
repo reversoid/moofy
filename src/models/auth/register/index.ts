@@ -1,7 +1,7 @@
 import {
+  combine,
   createEffect,
   createEvent,
-  createStore,
   restore,
   sample,
 } from 'effector';
@@ -17,10 +17,12 @@ registerFx.use(async (data: RegisterDTO) => {
   return authService.register(data);
 });
 
-export const $registerError = restore<Error>(registerFx.failData, null);
+const $registerError = restore<Error>(registerFx.failData, null);
 
-export const $registerSuccess = createStore<boolean>(false);
-$registerSuccess.on(registerFx.doneData, () => true);
+export const $registerStatus = combine({
+  loading: registerFx.pending,
+  error: $registerError,
+});
 
 sample({
   clock: register,
