@@ -53,10 +53,6 @@ export const PASSWORD_VALIDATORS: RegisterOptions<LoginFormData, 'password'> = {
     value: SAFE_STRING,
     message: 'Разрешено использовать латинские буквы, цифры, "_" и "-"',
   },
-  minLength: {
-    value: 8,
-    message: 'Минимальная длина пароля: 8 символов',
-  },
   maxLength: {
     value: MAX_PASSWORD_LENGTH,
     message: 'Слишком длинный пароль',

@@ -1,5 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import ApiService, { ApiError } from '@/shared/api/ApiService';
+import ApiService from '@/shared/api/ApiService';
 import { storageService } from '@/shared/services/storage.service';
 
 export interface RegisterDTO {
@@ -19,28 +18,18 @@ export interface AuthResponse {
 
 class AuthService extends ApiService {
   public async register(dto: RegisterDTO): Promise<void> {
-    const url = `${this.apiUrl}/auth/register`;
-    return axios
-      .post<AxiosError<ApiError>, AxiosResponse<AuthResponse>, RegisterDTO>(
-        url,
-        dto,
-      )
-      .then((r) => r.data)
-      .then(({ access_token }) => this.setAccessToken(access_token));
+    return this.post<AuthResponse>('/auth/register', { json: dto }).then(
+      ({ access_token }) => this.saveAccessToken(access_token),
+    );
   }
 
   public async login(dto: LoginDTO): Promise<void> {
-    const url = `${this.apiUrl}/auth/login`;
-    return axios
-      .post<AxiosError<ApiError>, AxiosResponse<AuthResponse>, LoginDTO>(
-        url,
-        dto,
-      )
-      .then((r) => r.data)
-      .then(({ access_token }) => this.setAccessToken(access_token));
+    return this.post<AuthResponse>('/auth/login', { json: dto }).then(
+      ({ access_token }) => this.saveAccessToken(access_token),
+    );
   }
 
-  private setAccessToken(token: string): void {
+  private saveAccessToken(token: string): void {
     storageService.setData('access_token', token);
   }
 }

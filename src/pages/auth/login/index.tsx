@@ -1,4 +1,4 @@
-import { Input, Text, Button, Loading } from '@nextui-org/react';
+import { Text, Button, Loading } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
