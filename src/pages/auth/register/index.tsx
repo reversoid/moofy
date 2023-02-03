@@ -25,7 +25,6 @@ import {
   checkUsernameFx,
 } from '@/models/auth/register/checkUsername';
 import { checkEmail, checkEmailFx } from '@/models/auth/register/checkEmail';
-import { useUnmount } from '@/shared/hooks/useUnmount';
 
 const INPUT_DEBOUNCE_TIME = 225;
 
@@ -37,7 +36,7 @@ function Index() {
     setError,
     clearErrors,
     trigger,
-    formState: { errors, isValid: isFormValid },
+    formState: { errors },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
   const loading = useStore(registerFx.pending);
@@ -151,7 +150,7 @@ function Index() {
           form="register-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}
           size="lg"
-          disabled={!isFormValid}
+          disabled={Boolean(Object.keys(errors).length)}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />
