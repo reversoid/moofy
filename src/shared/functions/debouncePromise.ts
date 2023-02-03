@@ -1,14 +1,14 @@
-interface PendingItem {
-  resolve: (value: unknown) => void;
+interface PendingItem<T> {
+  resolve: (value: T) => void;
   reject: (reason?: any) => void;
 }
 
-export const debouncePromise = (fn: (...args: any) => Promise<any>, ms = 0) => {
+export const debouncePromise = <T>(fn: (...args: any) => Promise<T>, ms = 0): () => Promise<T> => {
   let timeoutId: ReturnType<typeof setTimeout>;
 
-  const pending: PendingItem[] = [];
+  const pending: PendingItem<T>[] = [];
 
-  return (...args: Parameters<typeof fn>) =>
+  return (...args: Parameters<typeof fn>): Promise<T> =>
     new Promise((res, rej) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
