@@ -35,6 +35,8 @@
     "implicit-arrow-linebreak": "off",
     "function-paren-newline": "off",
     "react-hooks/exhaustive-deps": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "no-promise-executor-return": "off",
+    "no-plusplus": "off"
   }
 }
