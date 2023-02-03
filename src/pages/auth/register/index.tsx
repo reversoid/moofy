@@ -24,7 +24,9 @@ import {
   checkUsername,
   checkUsernameFx,
 } from '@/models/auth/register/checkUsername';
-import { log } from 'console';
+import { checkEmail, checkEmailFx } from '@/models/auth/register/checkEmail';
+
+const INPUT_DEBOUNCE_TIME = 225;
 
 function Index() {
   useDefaultScrollbarGutter();
@@ -33,15 +35,24 @@ function Index() {
     handleSubmit,
     setError,
     clearErrors,
+    trigger,
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
   const loading = useStore(registerFx.pending);
   const loadingUsernameCheck = useStore(checkUsernameFx.pending);
+  const loadingEmailCheck = useStore(checkEmailFx.pending);
+
+  const onChangeUsername = useEvent(checkUsername);
+  const onChangeUsernameDebounced = debounce(
+    onChangeUsername,
+    INPUT_DEBOUNCE_TIME,
+  );
+
+  const onChangeEmail = useEvent(checkEmail);
+  const onChangeEmailDebounced = debounce(onChangeEmail, INPUT_DEBOUNCE_TIME);
 
   const onSubmit = useEvent(registerEvent);
-  const onChangeUsername = useEvent(checkUsername);
-  const onChangeUsernameDebounced = debounce(onChangeUsername, 225);
 
   useMemo(
     () =>
@@ -50,6 +61,20 @@ function Index() {
           setError('username', { message: 'Имя пользователя уже занято' });
         } else {
           clearErrors('username');
+          trigger('username');
+        }
+      }),
+    [],
+  );
+
+  useMemo(
+    () =>
+      checkEmailFx.doneData.watch((userExists) => {
+        if (userExists) {
+          setError('email', { message: 'Email уже зарегистрирован' });
+        } else {
+          clearErrors('email');
+          trigger('email');
         }
       }),
     [],
@@ -89,10 +114,19 @@ function Index() {
           fullWidth
           size="xl"
           status={errors.email && 'error'}
-          {...register('email', EMAIL_VALIDATORS)}
+          {...register('email', {
+            ...EMAIL_VALIDATORS,
+            onChange(e) {
+              onChangeEmailDebounced({ email: e.target.value });
+            },
+          })}
           contentRight={
-            errors.email?.message && (
-              <InfoIconWithTooltip message={errors.email?.message} />
+            loadingEmailCheck ? (
+              <Loading size="sm" />
+            ) : (
+              errors.email?.message && (
+                <InfoIconWithTooltip message={errors.email?.message} />
+              )
             )
           }
         />
