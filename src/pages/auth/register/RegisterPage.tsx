@@ -77,10 +77,10 @@ const RegisterPage = () => {
     }
 
     if (emailExists) {
-      setError('username', { message: 'Имя пользователя уже занято' });
+      setError('email', { message: 'Email уже зарегистрирован' });
     } else {
-      clearErrors('username');
-      trigger('username');
+      clearErrors('email');
+      trigger('email');
     }
   }, [emailExists]);
 
