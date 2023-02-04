@@ -22,8 +22,6 @@ import { useForm } from 'react-hook-form';
 const LoginPage = () => {
   useDefaultScrollbarGutter();
 
-  const navigate = useNavigate()
-
   const {
     register,
     handleSubmit,
@@ -31,75 +29,65 @@ const LoginPage = () => {
   } = useForm<LoginFormData>({ mode: 'onChange' });
 
   const onSubmit = useEvent(login);
-  const { error, loading } = useStore($loginStatus);
+  const { loading } = useStore($loginStatus);
 
-  useMemo(
-    () =>
-      loginFx.doneData.watch(() => {
-        navigate('/')
-      }),
-    [],
-  );
-
-    return (
-      <AuthContainer xs>
-        <Heading h1>Вход</Heading>
-        <Form
-          id="login-form"
-          onSubmit={handleSubmit(({ emailOrUsername, password }) =>
-            onSubmit({ email: emailOrUsername, password }),
-          )}
+  return (
+    <AuthContainer xs>
+      <Heading h1>Вход</Heading>
+      <Form
+        id="login-form"
+        onSubmit={handleSubmit(({ emailOrUsername, password }) =>
+          onSubmit({ email: emailOrUsername, password }),
+        )}
+      >
+        <StyledInput
+          label="Email или имя пользователя"
+          placeholder="example@site.org"
+          fullWidth
+          size="xl"
+          {...register('emailOrUsername', USERNAME_OR_EMAIL_VALIDATORS)}
+          status={errors.emailOrUsername && 'error'}
+          contentRight={
+            errors.emailOrUsername?.message && (
+              <InfoIconWithTooltip message={errors.emailOrUsername?.message} />
+            )
+          }
+        />
+        <StyledPassword
+          label="Пароль"
+          placeholder="Пароль"
+          fullWidth
+          size="xl"
+          {...register('password', PASSWORD_VALIDATORS)}
+          status={errors.password && 'error'}
+          contentRight={
+            errors.password?.message && (
+              <InfoIconWithTooltip message={errors.password?.message} />
+            )
+          }
+        />
+      </Form>
+      <SubmitContainer>
+        <Button
+          type="submit"
+          form="login-form"
+          css={{ '@xsMin': { width: 'max-content !important' } }}
+          size="lg"
+          disabled={!isFormValid}
         >
-          <StyledInput
-            label="Email или имя пользователя"
-            placeholder="example@site.org"
-            fullWidth
-            size="xl"
-            {...register('emailOrUsername', USERNAME_OR_EMAIL_VALIDATORS)}
-            status={errors.emailOrUsername && 'error'}
-            contentRight={
-              errors.emailOrUsername?.message && (
-                <InfoIconWithTooltip
-                  message={errors.emailOrUsername?.message}
-                />
-              )
-            }
-          />
-          <StyledPassword
-            label="Пароль"
-            placeholder="Пароль"
-            fullWidth
-            size="xl"
-            {...register('password', PASSWORD_VALIDATORS)}
-            status={errors.password && 'error'}
-            contentRight={
-              errors.password?.message && (
-                <InfoIconWithTooltip message={errors.password?.message} />
-              )
-            }
-          />
-        </Form>
-        <SubmitContainer>
-          <Button
-            type="submit"
-            form="login-form"
-            css={{ '@xsMin': { width: 'max-content !important' } }}
-            size="lg"
-            disabled={!isFormValid}
-          >
-            {loading ? (
-              <Loading size="lg" type="points" color="white" />
-            ) : (
-              'Войти'
-            )}
-          </Button>
-          <Text as="p">
-            Еще нет аккаунта?{'  '}
-            <Link to="/auth/register">Зарегистрироваться</Link>
-          </Text>
-        </SubmitContainer>
-      </AuthContainer>
-    );
+          {loading ? (
+            <Loading size="lg" type="points" color="white" />
+          ) : (
+            'Войти'
+          )}
+        </Button>
+        <Text as="p">
+          Еще нет аккаунта?{'  '}
+          <Link to="/auth/register">Зарегистрироваться</Link>
+        </Text>
+      </SubmitContainer>
+    </AuthContainer>
+  );
 };
 
 export default memo(LoginPage);
