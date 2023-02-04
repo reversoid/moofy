@@ -1,5 +1,5 @@
 import ky, { Options } from 'ky';
-import { setAppError } from '@/models/app';
+import { setAppError } from '@/models/app/errors';
 
 export interface ApiError {
   code: number;

@@ -1,9 +1,6 @@
 import { Text, Button, Loading } from '@nextui-org/react';
-import { useForm } from 'react-hook-form';
-import Link from 'next/link';
 import React, { memo, useMemo } from 'react';
 import { useEvent, useStore } from 'effector-react';
-import { useRouter } from 'next/router';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import AuthContainer from '@/features/auth/components/AuthContainer';
@@ -19,17 +16,13 @@ import {
 } from '@/features/auth/utils/login/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 import { login, $loginStatus, loginFx } from '@/models/auth/login';
-import { useAuth } from '@/contexts/Auth';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
-const Index = () => {
+const LoginPage = () => {
   useDefaultScrollbarGutter();
-  const router = useRouter();
 
-  const { isLoggedIn, isLoading } = useAuth();
-
-  if (isLoggedIn) {
-    router.push('/');
-  }
+  const navigate = useNavigate()
 
   const {
     register,
@@ -43,16 +36,11 @@ const Index = () => {
   useMemo(
     () =>
       loginFx.doneData.watch(() => {
-        router.push('/');
+        navigate('/')
       }),
     [],
   );
 
-  if (isLoading) {
-    return null;
-  }
-
-  if (!isLoggedIn) {
     return (
       <AuthContainer xs>
         <Heading h1>Вход</Heading>
@@ -107,14 +95,11 @@ const Index = () => {
           </Button>
           <Text as="p">
             Еще нет аккаунта?{'  '}
-            <Link href="/auth/register">Зарегистрироваться</Link>
+            <Link to="/auth/register">Зарегистрироваться</Link>
           </Text>
         </SubmitContainer>
       </AuthContainer>
     );
-  }
-
-  return null;
 };
 
-export default memo(Index);
+export default memo(LoginPage);

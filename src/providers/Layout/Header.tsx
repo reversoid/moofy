@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Image, styled } from '@nextui-org/react';
+import logo from './img/logo.svg';
 
 export const HEADER_HEIGHT = '4.75rem';
 
@@ -30,7 +31,7 @@ function Header() {
     <HeaderStyled>
       <HeaderContainer xl>
         <CenteredImage
-          src="/img/Logo.svg"
+          src={logo}
           height="85%"
           objectFit="contain"
           width="fit-content"
