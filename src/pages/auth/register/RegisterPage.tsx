@@ -1,4 +1,3 @@
-import debounce from 'lodash.debounce';
 import { useForm } from 'react-hook-form';
 import { Text, Button, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
@@ -22,14 +21,10 @@ import {
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
-import {
-  checkUsername,
-  checkUsernameFx,
-} from '@/models/auth/register/checkUsername';
-import { checkEmail, checkEmailFx } from '@/models/auth/register/checkEmail';
 import { Link } from 'react-router-dom';
-
-const INPUT_DEBOUNCE_TIME = 225;
+import { checkEmailFx } from '@/models/auth/register/checkEmail';
+import { checkUsernameFx } from '@/models/auth/register/checkUsername';
+import { useFieldsChecks } from './useFieldsChecks';
 
 const RegisterPage = () => {
   useDefaultScrollbarGutter();
@@ -42,25 +37,12 @@ const RegisterPage = () => {
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
-  const loadingUsernameCheck = useStore(checkUsernameFx.pending);
-  const loadingEmailCheck = useStore(checkEmailFx.pending);
-
-  const onChangeUsername = useEvent(checkUsername);
-  const onChangeUsernameDebounced = debounce(
-    onChangeUsername,
-    INPUT_DEBOUNCE_TIME,
-  );
-
-  const onChangeEmail = useEvent(checkEmail);
-  const onChangeEmailDebounced = debounce(onChangeEmail, INPUT_DEBOUNCE_TIME);
-
-  let submitButtonDisabled =
-    !isFormValid ||
-    loadingEmailCheck ||
-    loadingUsernameCheck ||
-    Boolean(Object.keys(errors).length);
-
-  const onSubmit = useEvent(registerEvent);
+  const {
+    loadingEmailCheck,
+    loadingUsernameCheck,
+    onChangeEmailDebounced,
+    onChangeUsernameDebounced,
+  } = useFieldsChecks();
 
   useMemo(
     () =>
@@ -87,6 +69,14 @@ const RegisterPage = () => {
       }),
     [],
   );
+
+  let submitButtonDisabled =
+    !isFormValid ||
+    loadingEmailCheck ||
+    loadingUsernameCheck ||
+    Boolean(Object.keys(errors).length);
+
+  const onSubmit = useEvent(registerEvent);
 
   const { loading } = useStore($registerStatus);
 
@@ -177,6 +167,6 @@ const RegisterPage = () => {
       </SubmitContainer>
     </AuthContainer>
   );
-}
+};
 
 export default memo(RegisterPage);

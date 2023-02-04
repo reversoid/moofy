@@ -1,7 +1,7 @@
 import '@/styles/global.scss';
 import React, { PropsWithChildren } from 'react';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
-import Layout from '@/providers/Layout/Layout';
+import Layout from './Layout/Layout';
 
 const lightTheme = createTheme({
   type: 'light',
