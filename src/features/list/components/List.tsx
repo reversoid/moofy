@@ -31,7 +31,7 @@ export interface ListProps {
 const List = ({ id, link, text }: ListProps) => {
   return (
     <StyledLink to={link}>
-      <Card isPressable css={{ p: 0 }}>
+      <Card isPressable isHoverable css={{ p: 0 }}>
         <Card.Body css={{ p: 0 }}>
           {id === undefined ? (
             <Background
