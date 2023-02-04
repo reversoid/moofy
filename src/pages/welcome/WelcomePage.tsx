@@ -25,6 +25,7 @@ const WelcomePage = () => {
             <List
               link={'/list/' + item.id}
               text={item.name}
+              id={item.id}
             />
           </Grid>
         ))}

@@ -18,18 +18,18 @@ const CardBackground = ({ strToHash }: { strToHash: string }) => {
 };
 
 export interface ListProps {
+  /** Can be empty if component is used for list creation. Will display add icon then. */
+  id?: number;
   link: string;
   text: string;
-  /** If url is not specified will fallback with create icon */
-  imageUrl?: string;
 }
 
-const List = ({ imageUrl, link, text }: ListProps) => {
+const List = ({ id, link, text }: ListProps) => {
   return (
     <StyledLink to={link}>
       <Card isPressable css={{ p: 0 }}>
         <Card.Body css={{ p: 0 }}>
-          <CardBackground strToHash={text} />
+          <CardBackground strToHash={String(id) ?? ''} />
         </Card.Body>
         <Card.Footer css={{ justifyItems: 'flex-start' }}>
           <Row wrap="nowrap" justify="space-between" align="center">
