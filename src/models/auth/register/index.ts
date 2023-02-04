@@ -1,14 +1,9 @@
-import {
-  combine,
-  createEffect,
-  createEvent,
-  restore,
-  sample,
-} from 'effector';
+import { combine, createEffect, createEvent, restore, sample } from 'effector';
 import {
   RegisterDTO,
   authService,
 } from '@/features/auth/services/auth.service';
+import { tokenService } from '@/shared/services/token.service';
 
 export const register = createEvent<RegisterDTO>();
 

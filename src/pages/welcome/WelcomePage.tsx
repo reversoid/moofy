@@ -1,22 +1,14 @@
 import List from '@/features/list/components/List';
+import { useMount } from '@/shared/hooks/useMount';
 import { Grid, Text } from '@nextui-org/react';
-
-const list = [
-  {
-    title: 'Orange',
-    img: '/images/fruit-1.jpeg',
-  },
-  {
-    title: 'Tangerine',
-    img: '/images/fruit-2.jpeg',
-  },
-  {
-    title: 'Cherry',
-    img: '/images/fruit-3.jpeg',
-  },
-];
+import { $lists, getLists } from '@/models/lists';
+import { useStore } from 'effector-react';
+import { memo } from 'react';
 
 const WelcomePage = () => {
+  useMount(getLists);
+  const lists = useStore($lists);
+
   return (
     <>
       <Text h1 css={{ mb: '$12' }}>
@@ -28,12 +20,11 @@ const WelcomePage = () => {
           <List link="/list/new" text="Создать список" />
         </Grid>
 
-        {list.map((item, index) => (
-          <Grid xs={6} sm={3} key={index} css={{ '@xsMax': { padding: '$4' } }}>
+        {lists.items.map((item) => (
+          <Grid xs={6} sm={3} key={item.id} css={{ '@xsMax': { padding: '$4' } }}>
             <List
-              link={'/list/' + index}
-              text={item.title}
-              imageUrl={'https://nextui.org' + item.img}
+              link={'/list/' + item.id}
+              text={item.name}
             />
           </Grid>
         ))}

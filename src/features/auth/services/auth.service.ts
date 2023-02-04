@@ -1,6 +1,6 @@
 import { RetryOptions } from 'ky';
-import ApiService from '@/shared/api/ApiService';
-import { storageService } from '@/shared/services/storage.service';
+import ApiService from '@/shared/api/api.service';
+import { tokenService } from '@/shared/services/token.service';
 
 export interface RegisterDTO {
   username: string;
@@ -27,13 +27,13 @@ const LONG_RETRY_STRATEGY: RetryOptions = {
 class AuthService extends ApiService {
   public async register(dto: RegisterDTO): Promise<void> {
     return this.post<AuthResponse>('/auth/register', { json: dto }).then(
-      ({ access_token }) => this.saveAccessToken(access_token),
+      ({ access_token }) => tokenService.setAccessToken(access_token),
     );
   }
 
   public async login(dto: LoginDTO): Promise<void> {
     return this.post<AuthResponse>('/auth/login', { json: dto }).then(
-      ({ access_token }) => this.saveAccessToken(access_token),
+      ({ access_token }) => tokenService.setAccessToken(access_token),
     );
   }
 
@@ -53,12 +53,8 @@ class AuthService extends ApiService {
 
   public async checkout(): Promise<void> {
     return this.get<AuthResponse>('/auth/checkout').then(({ access_token }) =>
-      this.saveAccessToken(access_token),
+      tokenService.setAccessToken(access_token),
     );
-  }
-
-  private saveAccessToken(token: string): void {
-    storageService.setData('access_token', token);
   }
 }
 
