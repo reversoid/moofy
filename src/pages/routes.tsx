@@ -1,9 +1,9 @@
 import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
+import { routes as listRoutes } from './list/routes';
 
 const MainPage = lazy(() => import('./main/MainPage'));
-const List = lazy(() => import('./list/ListPage'));
 const Profile = lazy(() => import('./profile/ProfilePage'));
 const Welcome = lazy(() => import('./welcome/WelcomePage'));
 
@@ -21,8 +21,8 @@ export const routes: RouteObject[] = [
     element: <Welcome />,
   },
   {
-    path: 'list/[id]',
-    element: <List />,
+    path: 'list',
+    children: listRoutes,
   },
   {
     path: 'profile',

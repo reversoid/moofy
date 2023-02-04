@@ -1,7 +1,7 @@
 import React from 'react';
 
-function Index() {
+function ListPage() {
   return <div>List</div>;
 }
 
-export default Index;
+export default ListPage;
