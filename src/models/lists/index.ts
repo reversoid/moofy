@@ -1,9 +1,8 @@
 import {
   IterableResponse,
   List,
-  ListService,
   listService,
-} from '@/features/list/components/services/list.service';
+} from '@/features/list/services/list.service';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
 export const getLists = createEvent<void>();
