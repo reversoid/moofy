@@ -1,15 +1,21 @@
 import { Card, Row, styled, Text } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
+import ColorHash from 'color-hash';
 
-const Plus = styled('div', {
+const colorHash = new ColorHash();
+
+const Background = styled('div', {
   height: 140,
-  background: 'red',
 });
 
 const StyledLink = styled(Link, {
   display: 'block',
   width: '100%',
 });
+
+const CardBackground = ({ strToHash }: { strToHash: string }) => {
+  return <Background css={{ bgColor: colorHash.hex(strToHash) }} />;
+};
 
 export interface ListProps {
   link: string;
@@ -18,23 +24,12 @@ export interface ListProps {
   imageUrl?: string;
 }
 
-const CardImage = ({ url }: { url: string }) => {
-  return (
-    <Card.Image
-      src={url}
-      objectFit="cover"
-      width="100%"
-      height={140}
-    />
-  );
-}
-
 const List = ({ imageUrl, link, text }: ListProps) => {
   return (
     <StyledLink to={link}>
       <Card isPressable css={{ p: 0 }}>
         <Card.Body css={{ p: 0 }}>
-          {imageUrl ? <CardImage url={imageUrl} /> : <Plus />}
+          <CardBackground strToHash={text} />
         </Card.Body>
         <Card.Footer css={{ justifyItems: 'flex-start' }}>
           <Row wrap="nowrap" justify="space-between" align="center">

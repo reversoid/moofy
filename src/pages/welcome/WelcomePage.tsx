@@ -33,4 +33,4 @@ const WelcomePage = () => {
   );
 };
 
-export default WelcomePage;
+export default memo(WelcomePage);
