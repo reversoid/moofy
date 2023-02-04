@@ -1,10 +1,4 @@
-import {
-  combine,
-  createEffect,
-  createEvent,
-  restore,
-  sample,
-} from 'effector';
+import { combine, createEffect, createEvent, createStore, restore, sample } from 'effector';
 import {
   RegisterDTO,
   authService,

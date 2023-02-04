@@ -29,7 +29,7 @@ const CenteredImage = styled(Image, {
 function Header() {
   return (
     <HeaderStyled>
-      <HeaderContainer xl>
+      <HeaderContainer lg>
         <CenteredImage
           src={logo}
           height="85%"

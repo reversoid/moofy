@@ -1,5 +1,5 @@
 import '@/styles/global.scss';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, memo } from 'react';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
 import Layout from './Layout/Layout';
 
@@ -21,5 +21,5 @@ const UIProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default UIProvider;
+export default memo(UIProvider);
 

@@ -6,6 +6,7 @@ import { useSnackbar } from './useSnackBar';
 
 const Wrapper = styled(Container, {
   pt: HEADER_HEIGHT,
+  paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
   '@xsMax': {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
@@ -18,7 +19,7 @@ const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Header />
-      <Wrapper xl>{children}</Wrapper>
+      <Wrapper lg>{children}</Wrapper>
       <ErrorSnackBar
         open={isSnackBarOpen}
         message={errorMessage!}
