@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Text, Button, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
-import React, { useMemo, memo } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
@@ -22,8 +22,8 @@ import {
 } from '@/features/auth/utils/register/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 import { Link } from 'react-router-dom';
-import { checkEmailFx } from '@/models/auth/register/checkEmail';
-import { checkUsernameFx } from '@/models/auth/register/checkUsername';
+import { $checkEmailResult } from '@/models/auth/register/checkEmail';
+import { $checkUsernameResult } from '@/models/auth/register/checkUsername';
 import { useFieldsChecks } from './useFieldsChecks';
 
 const RegisterPage = () => {
@@ -34,6 +34,7 @@ const RegisterPage = () => {
     setError,
     clearErrors,
     trigger,
+    getFieldState,
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
@@ -44,32 +45,6 @@ const RegisterPage = () => {
     onChangeUsernameDebounced,
   } = useFieldsChecks();
 
-  useMemo(
-    () =>
-      checkUsernameFx.doneData.watch((userExists) => {
-        if (userExists) {
-          setError('username', { message: 'Имя пользователя уже занято' });
-        } else {
-          clearErrors('username');
-          trigger('username');
-        }
-      }),
-    [],
-  );
-
-  useMemo(
-    () =>
-      checkEmailFx.doneData.watch((userExists) => {
-        if (userExists) {
-          setError('email', { message: 'Email уже зарегистрирован' });
-        } else {
-          clearErrors('email');
-          trigger('email');
-        }
-      }),
-    [],
-  );
-
   let submitButtonDisabled =
     !isFormValid ||
     loadingEmailCheck ||
@@ -79,6 +54,57 @@ const RegisterPage = () => {
   const onSubmit = useEvent(registerEvent);
 
   const { loading } = useStore($registerStatus);
+
+  const usernameExists = useStore($checkUsernameResult);
+  const emailExists = useStore($checkEmailResult);
+
+  useEffect(() => {
+    if (usernameExists === null) {
+      return;
+    }
+
+    if (usernameExists) {
+      setError('username', { message: 'Имя пользователя уже занято' });
+    } else {
+      clearErrors('username');
+      trigger('username');
+    }
+  }, [usernameExists]);
+
+  useEffect(() => {
+    if (emailExists === null) {
+      return;
+    }
+
+    if (emailExists) {
+      setError('username', { message: 'Имя пользователя уже занято' });
+    } else {
+      clearErrors('username');
+      trigger('username');
+    }
+  }, [emailExists]);
+
+  const checkEmail = useCallback(
+    (event: any) =>
+      setTimeout(() => {
+        const { invalid } = getFieldState('email');
+        if (!invalid) {
+          onChangeEmailDebounced({ email: event.target.value });
+        }
+      }),
+    [],
+  );
+
+  const checkUsername = useCallback(
+    (event: any) =>
+      setTimeout(() => {
+        const { invalid } = getFieldState('username');
+        if (!invalid) {
+          onChangeUsernameDebounced({ username: event.target.value });
+        }
+      }),
+    [],
+  );
 
   return (
     <AuthContainer xs>
@@ -103,7 +129,7 @@ const RegisterPage = () => {
             ...USERNAME_VALIDATORS,
             onChange(e) {
               submitButtonDisabled = true;
-              onChangeUsernameDebounced({ username: e.target.value });
+              checkUsername(e);
             },
           })}
         />
@@ -119,7 +145,7 @@ const RegisterPage = () => {
             ...EMAIL_VALIDATORS,
             onChange(e) {
               submitButtonDisabled = true;
-              onChangeEmailDebounced({ email: e.target.value });
+              checkEmail(e);
             },
           })}
           contentRight={
