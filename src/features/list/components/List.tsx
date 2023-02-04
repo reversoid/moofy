@@ -1,7 +1,8 @@
-import { Card, Row, styled, Text } from '@nextui-org/react';
+import { Card, Image, Row, styled, Text } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import ColorHash from 'color-hash';
 import add from './img/add.svg';
+import lock from './img/lock.svg';
 
 const colorHash = new ColorHash();
 
@@ -26,9 +27,10 @@ export interface ListProps {
   id?: number;
   link: string;
   text: string;
+  isPublic?: boolean;
 }
 
-const List = ({ id, link, text }: ListProps) => {
+const List = ({ id, link, text, isPublic }: ListProps) => {
   return (
     <StyledLink to={link}>
       <Card isPressable isHoverable css={{ p: 0 }}>
@@ -56,6 +58,15 @@ const List = ({ id, link, text }: ListProps) => {
             >
               {text}
             </Text>
+            {isPublic === false && (
+              <div>
+                <Image
+                  src={lock}
+                  height={'1.125rem'}
+                  width={'1.125rem'}
+                ></Image>
+              </div>
+            )}
           </Row>
         </Card.Footer>
       </Card>

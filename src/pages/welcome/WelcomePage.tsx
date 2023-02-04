@@ -26,6 +26,7 @@ const WelcomePage = () => {
               link={'/list/' + item.id}
               text={item.name}
               id={item.id}
+              isPublic={item.is_public}
             />
           </Grid>
         ))}
