@@ -1,10 +1,15 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
+const errorsTranlations = new Map<string, string>([
+  ['EMAIL_ALREADY_TAKEN', 'Данный Email уже зарегистрирован'],
+  ['USERNAME_ALREADY_TAKEN', 'Имя пользователя уже зарегистрировано'],
+]);
+
 export const setAppError = createEvent<string>();
 export const clearAppError = createEvent();
 
-const setErrorFx = createEffect<string, string>();
-setErrorFx.use((errorCode) => errorCode); // TODO use Map to get and translate errors
+const setErrorFx = createEffect<string, string | null>();
+setErrorFx.use((errorCode) => errorsTranlations.get(errorCode) ?? null); // TODO use Map to get and translate errors
 
 export const $appErrorStore = createStore<string | null>(null);
 $appErrorStore.on(setErrorFx.doneData, (_, payload) => payload);
