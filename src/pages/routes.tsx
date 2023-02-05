@@ -2,8 +2,8 @@ import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
-import Layout from '@/providers/UIProvider/Layout/Layout';
-import WelcomePage from './welcome/WelcomePage';
+import Layout from './Layout/Layout';
+
 const MainPage = lazy(() => import('./main/MainPage'));
 const Profile = lazy(() => import('./profile/ProfilePage'));
 const Welcome = lazy(() => import('./welcome/WelcomePage'));
