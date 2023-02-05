@@ -9,6 +9,7 @@ export interface ApiError {
 }
 
 interface CustomOptions extends Options {
+  /** With this option all logic about JWT tokens on client is proceeded automatically */
   useJWT?: boolean;
 }
 
