@@ -3,7 +3,7 @@ import { useStore } from 'effector-react';
 
 export const useAuth = () => {
   const isLoading = useStore(checkoutUserFx.pending);
-  const isLoggedIn = useStore($userLoggedIn);
+  const {loggedIn, userId} = useStore($userLoggedIn);
 
-  return { isLoading, isLoggedIn };
+  return { isLoading, isLoggedIn: loggedIn, userId};
 };

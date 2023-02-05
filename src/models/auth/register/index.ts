@@ -1,4 +1,10 @@
-import { combine, createEffect, createEvent, createStore, restore, sample } from 'effector';
+import {
+  combine,
+  createEffect,
+  createEvent,
+  restore,
+  sample,
+} from 'effector';
 import {
   RegisterDTO,
   authService,
@@ -6,7 +12,7 @@ import {
 
 export const register = createEvent<RegisterDTO>();
 
-export const registerFx = createEffect<RegisterDTO, void>();
+export const registerFx = createEffect<RegisterDTO, { userId: number }>();
 registerFx.use(async (data: RegisterDTO) => {
   return authService.register(data);
 });

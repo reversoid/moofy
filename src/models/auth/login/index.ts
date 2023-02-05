@@ -9,7 +9,7 @@ import { LoginDTO, authService } from '@/features/auth/services/auth.service';
 
 export const login = createEvent<LoginDTO>();
 
-export const loginFx = createEffect<LoginDTO, void>();
+export const loginFx = createEffect<LoginDTO, {userId: number}>();
 loginFx.use(async (data: LoginDTO) => {
   return authService.login(data);
 });
