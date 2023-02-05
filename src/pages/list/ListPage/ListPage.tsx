@@ -1,4 +1,5 @@
 import {
+  Film,
   IterableResponse,
   List,
   Review,
@@ -17,6 +18,7 @@ import { useEvent, useStore } from 'effector-react';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import lock from '@/features/list/components/img/lock.svg';
+import { log } from 'console';
 
 const ImageContainer = styled('div', {
   flexShrink: 0,
@@ -26,6 +28,7 @@ const FilmInfo = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$2',
+  flexGrow: 1,
 });
 
 const mockLink =
@@ -33,7 +36,8 @@ const mockLink =
 
 const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam bibendum laoreet urna, vel egestas eros congue at. Pellentesque sit amet odio cursus, pulvinar arcu ut, pretium purus. In suscipit lectus eget nisl ultrices porta. Aliquam tempor pellentesque sollicitudin. Curabitur`;
 
-const FilmItem = () => {
+const FilmItem = ({ review }: { review: Review }) => {
+  console.log(review);
   return (
     <>
       <Card
@@ -47,7 +51,8 @@ const FilmItem = () => {
       >
         <ImageContainer>
           <Image
-            src={mockLink}
+            showSkeleton
+            src={review.film.posterPreviewUrl}
             width={'6.75rem'}
             height={'10rem'}
             objectFit="contain"
@@ -57,18 +62,18 @@ const FilmItem = () => {
         <FilmInfo>
           <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
             <NextUiLink
-              href="https://google.com"
+              href={`https://kinopoisk.ru/film/${review.film.id}`}
               target="blank"
               rel="noopenner norefferer"
             >
-              Разыскивается в Малибу
+              {review.film.name}
             </NextUiLink>
           </Text>
           <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
-            2022
+            {review.film.year}
           </Text>
           <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md' }}>
-            {mockText}
+            {review.description}
           </Text>
         </FilmInfo>
       </Card>
@@ -118,12 +123,12 @@ const ListPage = ({
         Обновлен {getUpdatedAt()}
       </Text>
 
-      <Text h2 css={{ mb: '$8' }}>
+      <Text h2 css={{ mb: '$5' }}>
         Фильмы
       </Text>
       <FilmsContainer>
         {reviews.items.map((review) => (
-          <FilmItem key={review.id} />
+          <FilmItem key={review.id} review={review} />
         ))}
       </FilmsContainer>
     </>
