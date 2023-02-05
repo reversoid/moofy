@@ -4,7 +4,7 @@ import {
   Review,
   listService,
 } from '@/features/list/services/list.service';
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import { combine, createEffect, createEvent, createStore, sample } from 'effector';
 
 export const getList = createEvent<number>();
 
@@ -19,6 +19,16 @@ export const $list = createStore<{
   list: List;
 } | null>(null);
 $list.on(getListFx.doneData, (state, payload) => payload);
+
+export const $listError = createStore<string | null>(null);
+$listError.on(getListFx.failData, (state, payload) => (payload.cause as any)?.message ?? null);
+$listError.on(getList, () => null)
+
+export const $listState = combine({
+  list: $list,
+  error: $listError,
+  loading: getListFx.pending,
+})
 
 sample({
   clock: getList,
