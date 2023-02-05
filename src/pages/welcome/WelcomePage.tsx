@@ -1,12 +1,11 @@
 import List from '@/features/list/components/List/List';
-import { useMount } from '@/shared/hooks/useMount';
 import { Grid, Text } from '@nextui-org/react';
 import { $lists, getLists } from '@/models/lists';
 import { useStore } from 'effector-react';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 const WelcomePage = () => {
-  useMount(getLists);
+  useEffect(getLists, []);
   const lists = useStore($lists);
 
   return (

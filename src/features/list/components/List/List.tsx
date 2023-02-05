@@ -8,7 +8,7 @@ const colorHash = new ColorHash();
 
 const Background = styled('div', {
   height: 140,
-  backgroundSize: '30%',
+  backgroundSize: '5rem',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
 });

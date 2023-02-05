@@ -9,7 +9,7 @@ const Container = styled('div', {
   gap: '$10rem',
 });
 
-const NotFoundPage = () => {
+const ErrorPage = ({ code = 404 }: { code?: number }) => {
   const { isLoggedIn } = useAuth();
 
   return (
@@ -28,7 +28,7 @@ const NotFoundPage = () => {
           }}
           weight="bold"
         >
-          404
+          {code}
         </Text>
         <Link to={isLoggedIn ? '/welcome' : '/'}>
           <Text
@@ -52,4 +52,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default ErrorPage;

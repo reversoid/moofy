@@ -3,7 +3,7 @@ import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
 import Layout from './Layout/Layout';
-import NotFoundPage from './404/404';
+import ErrorPage from './ErrorPage/ErrorPage';
 
 const MainPage = lazy(() => import('./main/MainPage'));
 const Profile = lazy(() => import('./profile/ProfilePage'));
@@ -13,7 +13,7 @@ export const routes: RouteObject[] = [
   {
     path: '/',
     element: <Layout />,
-    errorElement: <NotFoundPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: 'auth',
