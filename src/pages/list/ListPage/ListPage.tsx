@@ -4,23 +4,32 @@ import {
   Review,
 } from '@/features/list/services/list.service';
 import { $list, $listState, getList } from '@/models/singleList';
-import {
-  Image,
-  Row,
-  Text,
-  styled,
-} from '@nextui-org/react';
+import { Image, Row, Text, styled } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import lock from '@/assets/img/lock.svg';
 import ReviewItem from '@/features/list/components/Review/Review';
- 
+
 const FilmsContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$8',
 });
+
+const ReviewList = ({ reviews }: { reviews: Review[] }) => {
+  // TODO add create link if user is an owner
+  if (reviews.length === 0) {
+    return <Text color='$neutral'>Список пуст</Text>
+  }
+  return (
+    <FilmsContainer>
+      {reviews.map((review) => (
+        <ReviewItem key={review.id} review={review} />
+      ))}
+    </FilmsContainer>
+  );
+};
 
 const ListPage = ({
   listWithContent: { list, reviews },
@@ -61,11 +70,8 @@ const ListPage = ({
       <Text h2 css={{ mb: '$5' }}>
         Фильмы
       </Text>
-      <FilmsContainer>
-        {reviews.items.map((review) => (
-          <ReviewItem key={review.id} review={review} />
-        ))}
-      </FilmsContainer>
+
+      <ReviewList reviews={reviews.items} />
     </>
   );
 };
