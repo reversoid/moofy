@@ -9,6 +9,10 @@ export interface List {
   is_public: boolean;
   created_at: DateAsString;
   updated_at: DateAsString;
+  user: {
+    id: number;
+    username: string;
+  }
 }
 
 export enum FilmType {

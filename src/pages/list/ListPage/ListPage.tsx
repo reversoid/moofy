@@ -74,7 +74,7 @@ const ListPage = ({
       </Text>
 
       <Text as={'p'} color="$neutral">
-        Создатель <Link to={'/profile/1'}>username123</Link>
+        Создатель <Link to={`/profile/${list.user.id}`}>{list.user.username}</Link>
       </Text>
       <Text as={'p'} color="$neutral" css={{ mb: '$10' }}>
         Обновлен {getUpdatedAt()}
