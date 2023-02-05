@@ -4,12 +4,14 @@ import {
   Review,
 } from '@/features/list/services/list.service';
 import { $list, $listState, getList } from '@/models/singleList';
-import { Image, Row, Text, styled } from '@nextui-org/react';
+import { Image, Loading, Row, Text, styled } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import lock from '@/assets/img/lock.svg';
 import ReviewItem from '@/features/list/components/Review/Review';
+import { $lists } from '@/models/lists';
+import { log } from 'console';
 
 const FilmsContainer = styled('div', {
   display: 'flex',
@@ -17,17 +19,27 @@ const FilmsContainer = styled('div', {
   gap: '$8',
 });
 
-const ReviewList = ({ reviews }: { reviews: Review[] }) => {
+const ReviewList = ({ reviews }: { reviews?: Review[] }) => {
   // TODO add create link if user is an owner
-  if (reviews.length === 0) {
-    return <Text color='$neutral'>Список пуст</Text>
-  }
+
   return (
-    <FilmsContainer>
-      {reviews.map((review) => (
-        <ReviewItem key={review.id} review={review} />
-      ))}
-    </FilmsContainer>
+    <>
+      <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
+        <Text h2 css={{ mb: '$5' }}>
+          Фильмы
+        </Text>
+        {!reviews && <Loading size="md" type="default" />}
+      </Row>
+      {reviews?.length === 0 ? (
+        <Text color="$neutral">Список пуст</Text>
+      ) : (
+        <FilmsContainer>
+          {reviews?.map((review) => (
+            <ReviewItem key={review.id} review={review} />
+          ))}
+        </FilmsContainer>
+      )}
+    </>
   );
 };
 
@@ -35,7 +47,7 @@ const ListPage = ({
   listWithContent: { list, reviews },
 }: {
   listWithContent: {
-    reviews: IterableResponse<Review>;
+    reviews?: IterableResponse<Review>;
     list: List;
   };
 }) => {
@@ -67,11 +79,7 @@ const ListPage = ({
         Обновлен {getUpdatedAt()}
       </Text>
 
-      <Text h2 css={{ mb: '$5' }}>
-        Фильмы
-      </Text>
-
-      <ReviewList reviews={reviews.items} />
+      <ReviewList reviews={reviews?.items} />
     </>
   );
 };
@@ -79,13 +87,28 @@ const ListPage = ({
 const ListPageWithData = () => {
   const { id } = useParams();
   const getListWithContent = useEvent(getList);
-  const listWithContent = useStore($list);
 
   useEffect(() => {
     getListWithContent(Number(id));
   }, []);
 
+  const lists = useStore($lists);
+  const listWithContent = useStore($list);
+
   const { error, list, loading } = useStore($listState);
+
+  const listAlreadyLoaded = useMemo(
+    () => lists.items.find((list) => list.id === Number(id)),
+    [],
+  );
+
+  if (list) {
+    return <ListPage listWithContent={{ ...listWithContent! }} />;
+  }
+
+  if (listAlreadyLoaded) {
+    return <ListPage listWithContent={{ list: listAlreadyLoaded }} />;
+  }
 
   if (loading) {
     return null;
@@ -95,11 +118,7 @@ const ListPageWithData = () => {
     return <>Ошибка... {error}</>;
   }
 
-  if (list !== null) {
-    return <ListPage listWithContent={listWithContent!} />;
-  }
-
   return null;
 };
 
-export default ListPageWithData;
+export default memo(ListPageWithData);

@@ -19,6 +19,7 @@ export const $list = createStore<{
   list: List;
 } | null>(null);
 $list.on(getListFx.doneData, (state, payload) => payload);
+$list.on(getList, () => null)
 
 export const $listError = createStore<string | null>(null);
 $listError.on(getListFx.failData, (state, payload) => (payload.cause as any)?.message ?? null);
