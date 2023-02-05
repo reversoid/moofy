@@ -1,8 +1,8 @@
 import { Card, Image, Row, styled, Text } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import ColorHash from 'color-hash';
-import add from './img/add.svg';
-import lock from './img/lock.svg';
+import add from '@/assets/img/add.svg';
+import lock from '@/assets/img/lock.svg';
 
 const colorHash = new ColorHash();
 

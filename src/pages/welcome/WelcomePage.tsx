@@ -1,4 +1,4 @@
-import List from '@/features/list/components/List';
+import List from '@/features/list/components/List/List';
 import { useMount } from '@/shared/hooks/useMount';
 import { Grid, Text } from '@nextui-org/react';
 import { $lists, getLists } from '@/models/lists';

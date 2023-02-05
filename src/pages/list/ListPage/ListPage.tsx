@@ -1,79 +1,21 @@
 import {
-  Film,
   IterableResponse,
   List,
   Review,
 } from '@/features/list/services/list.service';
 import { $list, $listState, getList } from '@/models/singleList';
 import {
-  Card,
   Image,
   Row,
   Text,
-  Textarea,
   styled,
-  Link as NextUiLink,
 } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import lock from '@/features/list/components/img/lock.svg';
-
-const ImageContainer = styled('div', {
-  flexShrink: 0,
-});
-
-const FilmInfo = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '$2',
-  flexGrow: 1,
-});
-
-const FilmItem = ({ review }: { review: Review }) => {
-  return (
-    <>
-      <Card
-        css={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          gap: '$6',
-          padding: '$3 $6',
-        }}
-      >
-        <ImageContainer>
-          <Image
-            showSkeleton
-            src={review.film.posterPreviewUrl}
-            width={'6.75rem'}
-            height={'10rem'}
-            objectFit="contain"
-            css={{ flexShrink: 0 }}
-          />
-        </ImageContainer>
-        <FilmInfo>
-          <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
-            <NextUiLink
-              href={`https://kinopoisk.ru/film/${review.film.id}`}
-              target="blank"
-              rel="noopenner norefferer"
-            >
-              {review.film.name}
-            </NextUiLink>
-          </Text>
-          <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
-            {review.film.year}
-          </Text>
-          <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md' }}>
-            {review.description}
-          </Text>
-        </FilmInfo>
-      </Card>
-    </>
-  );
-};
-
+import lock from '@/assets/img/lock.svg';
+import ReviewItem from '@/features/list/components/Review/Review';
+ 
 const FilmsContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
@@ -110,7 +52,7 @@ const ListPage = ({
       </Text>
 
       <Text as={'p'} color="$neutral">
-        Создатель <Link to={'/'}>username123</Link>
+        Создатель <Link to={'/profile/1'}>username123</Link>
       </Text>
       <Text as={'p'} color="$neutral" css={{ mb: '$10' }}>
         Обновлен {getUpdatedAt()}
@@ -121,7 +63,7 @@ const ListPage = ({
       </Text>
       <FilmsContainer>
         {reviews.items.map((review) => (
-          <FilmItem key={review.id} review={review} />
+          <ReviewItem key={review.id} review={review} />
         ))}
       </FilmsContainer>
     </>
