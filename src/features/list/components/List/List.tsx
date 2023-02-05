@@ -39,7 +39,7 @@ const List = ({ id, link, text, isPublic }: ListProps) => {
             <Background
               css={{
                 backgroundImage: `url(${add});`,
-                backgroundColor: '#f1d302',
+                backgroundColor: '#FFD131',
               }}
             />
           ) : (
