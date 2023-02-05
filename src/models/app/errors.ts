@@ -1,6 +1,7 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
 const errorsTranlations = new Map<string, string>([
+  ['NETWORK_ERROR', 'Ошибка соединения'],
   ['EMAIL_ALREADY_TAKEN', 'Данный Email уже зарегистрирован'],
   ['USERNAME_ALREADY_TAKEN', 'Имя пользователя уже занято'],
 ]);
