@@ -18,7 +18,6 @@ import { useEvent, useStore } from 'effector-react';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import lock from '@/features/list/components/img/lock.svg';
-import { log } from 'console';
 
 const ImageContainer = styled('div', {
   flexShrink: 0,
@@ -31,13 +30,7 @@ const FilmInfo = styled('div', {
   flexGrow: 1,
 });
 
-const mockLink =
-  'https://kinopoiskapiunofficial.tech/images/posters/kp_small/307.jpg';
-
-const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam bibendum laoreet urna, vel egestas eros congue at. Pellentesque sit amet odio cursus, pulvinar arcu ut, pretium purus. In suscipit lectus eget nisl ultrices porta. Aliquam tempor pellentesque sollicitudin. Curabitur`;
-
 const FilmItem = ({ review }: { review: Review }) => {
-  console.log(review);
   return (
     <>
       <Card

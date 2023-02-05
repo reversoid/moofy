@@ -14,12 +14,7 @@ const darkTheme = createTheme({
 });
 
 const UIProvider = ({ children }: PropsWithChildren) => {
-  return (
-    <NextUIProvider theme={darkTheme}>
-      <Layout>{children}</Layout>
-    </NextUIProvider>
-  );
+  return <NextUIProvider theme={darkTheme}>{children}</NextUIProvider>;
 };
 
 export default memo(UIProvider);
-
