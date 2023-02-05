@@ -7,6 +7,7 @@ export const HEADER_HEIGHT = '4.75rem';
 const HeaderStyled = styled('header', {
   position: 'fixed',
   width: '100%',
+  zIndex: 10,
 });
 
 const HeaderContainer = styled(Container, {

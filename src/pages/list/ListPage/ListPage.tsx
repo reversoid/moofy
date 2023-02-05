@@ -4,28 +4,50 @@ import {
   Review,
 } from '@/features/list/services/list.service';
 import { $list, $listState, getList } from '@/models/singleList';
-import { Image, Text } from '@nextui-org/react';
+import { Image, Row, Text, Textarea } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import React, { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import lock from '@/features/list/components/img/lock.svg';
 
 const ListPage = ({
-  listWithContent,
+  listWithContent: { list, reviews },
 }: {
   listWithContent: {
     reviews: IterableResponse<Review>;
     list: List;
   };
 }) => {
+  const getUpdatedAt = () => {
+    const date = new Date(list.updated_at);
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + date.getMonth()).slice(-2);
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`
+  } 
   return (
     <>
-      <Text h1>{listWithContent?.list.name}</Text>
-      <Text as={'p'}>Описание {listWithContent?.list.description}</Text>
-      <Text as={'p'}>Обновлен {listWithContent?.list.updated_at}</Text>
-      <Text as={'p'}>
-        Публичный список? {String(listWithContent?.list.is_public)}
+      <Row align="center" css={{ gap: '$10' }}>
+        <Text h1>{list.name}</Text>
+        {!list.is_public && (
+          <div>
+            <Image src={lock} height={'1.5rem'} width={'1.5rem'}></Image>
+          </div>
+        )}
+      </Row>
+      <Text as={'p'} css={{ mb: '$5' }}>
+        {list.description}
       </Text>
-      {listWithContent?.reviews.items.map((review) => (
+
+      <Text as={'p'} color="$neutral">
+        Создатель <Link to={'/'}>username123</Link>
+      </Text>
+      <Text as={'p'} color="$neutral" css={{ mb: '$10' }}>
+        Обновлен {getUpdatedAt()}
+      </Text>
+
+      <Text h2>Фильмы</Text>
+      {reviews.items.map((review) => (
         <>
           <Text>Описание {review.description}</Text>
           <Text>Теги {String(review.tags)}</Text>
