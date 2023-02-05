@@ -4,11 +4,83 @@ import {
   Review,
 } from '@/features/list/services/list.service';
 import { $list, $listState, getList } from '@/models/singleList';
-import { Image, Row, Text, Textarea } from '@nextui-org/react';
+import {
+  Card,
+  Image,
+  Row,
+  Text,
+  Textarea,
+  styled,
+  Link as NextUiLink,
+} from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import lock from '@/features/list/components/img/lock.svg';
+
+const ImageContainer = styled('div', {
+  flexShrink: 0,
+});
+
+const FilmInfo = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$2',
+});
+
+const mockLink =
+  'https://kinopoiskapiunofficial.tech/images/posters/kp_small/307.jpg';
+
+const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam bibendum laoreet urna, vel egestas eros congue at. Pellentesque sit amet odio cursus, pulvinar arcu ut, pretium purus. In suscipit lectus eget nisl ultrices porta. Aliquam tempor pellentesque sollicitudin. Curabitur`;
+
+const FilmItem = () => {
+  return (
+    <>
+      <Card
+        css={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          gap: '$6',
+          padding: '$3 $6',
+        }}
+      >
+        <ImageContainer>
+          <Image
+            src={mockLink}
+            width={'6.75rem'}
+            height={'10rem'}
+            objectFit="contain"
+            css={{ flexShrink: 0 }}
+          />
+        </ImageContainer>
+        <FilmInfo>
+          <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
+            <NextUiLink
+              href="https://google.com"
+              target="blank"
+              rel="noopenner norefferer"
+            >
+              Разыскивается в Малибу
+            </NextUiLink>
+          </Text>
+          <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
+            2022
+          </Text>
+          <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md' }}>
+            {mockText}
+          </Text>
+        </FilmInfo>
+      </Card>
+    </>
+  );
+};
+
+const FilmsContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$8',
+});
 
 const ListPage = ({
   listWithContent: { list, reviews },
@@ -23,8 +95,8 @@ const ListPage = ({
     const day = ('0' + date.getDate()).slice(-2);
     const month = ('0' + date.getMonth()).slice(-2);
     const year = date.getFullYear();
-    return `${day}.${month}.${year}`
-  } 
+    return `${day}.${month}.${year}`;
+  };
   return (
     <>
       <Row align="center" css={{ gap: '$10' }}>
@@ -46,24 +118,14 @@ const ListPage = ({
         Обновлен {getUpdatedAt()}
       </Text>
 
-      <Text h2>Фильмы</Text>
-      {reviews.items.map((review) => (
-        <>
-          <Text>Описание {review.description}</Text>
-          <Text>Теги {String(review.tags)}</Text>
-          <Text>Оценка {String(review.score)}</Text>
-          <div>
-            <Image
-              src={review.film.posterPreviewUrl}
-              width={100}
-              height={100}
-              objectFit="contain"
-            />
-            <Text h4>{review.film.name}</Text>
-            <Text>Год{review.film.year}</Text>
-          </div>
-        </>
-      ))}
+      <Text h2 css={{ mb: '$8' }}>
+        Фильмы
+      </Text>
+      <FilmsContainer>
+        {reviews.items.map((review) => (
+          <FilmItem key={review.id} />
+        ))}
+      </FilmsContainer>
     </>
   );
 };
