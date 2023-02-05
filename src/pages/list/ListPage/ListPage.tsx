@@ -12,6 +12,7 @@ import lock from '@/assets/img/lock.svg';
 import ReviewItem from '@/features/list/components/Review/Review';
 import { $lists } from '@/models/lists';
 import { log } from 'console';
+import NotFoundPage from '@/pages/404/404';
 
 const FilmsContainer = styled('div', {
   display: 'flex',
@@ -115,7 +116,7 @@ const ListPageWithData = () => {
   }
 
   if (error) {
-    return <>Ошибка... {error}</>;
+    return <NotFoundPage />;
   }
 
   return null;
