@@ -1,7 +1,8 @@
 import ReviewItem from '@/features/list/components/Review/Review';
 import { Review } from '@/features/list/services/list.service';
+import AddFilmModal from '@/features/review/components/AddFilmModal/AddFilmModal';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 
 const FilmsContainer = styled('div', {
   display: 'flex',
@@ -15,6 +16,8 @@ interface ReviewListProps {
 }
 
 const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <>
       <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
@@ -26,7 +29,7 @@ const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
       {reviews?.length === 0 ? (
         <>
           {isUserOwner ? (
-            <Button color={'gradient'}>Добавить</Button>
+            <Button color={'gradient'} onPress={() => setModalOpen(true)}>Добавить</Button>
           ) : (
             <Text color="$neutral">Список пуст</Text>
           )}
@@ -38,6 +41,7 @@ const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
           ))}
         </FilmsContainer>
       )}
+      <AddFilmModal isOpen={modalOpen} setIsOpen={setModalOpen} />
     </>
   );
 };
