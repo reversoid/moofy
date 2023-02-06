@@ -4,12 +4,11 @@ import { tokenService } from '@/shared/services/token.service';
 
 export interface RegisterDTO {
   username: string;
-  email: string;
   password: string;
 }
 
 export interface LoginDTO {
-  email: string;
+  username: string;
   password: string;
 }
 

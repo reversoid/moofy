@@ -15,14 +15,12 @@ import {
   StyledPassword,
 } from '@/features/auth/components/StyledInputs';
 import {
-  EMAIL_VALIDATORS,
   RegisterFormData,
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 import { Link } from 'react-router-dom';
-import { $checkEmailResult } from '@/models/auth/register/checkEmail';
 import { $checkUsernameResult } from '@/models/auth/register/checkUsername';
 import { useFieldsChecks } from './useFieldsChecks';
 
@@ -38,12 +36,8 @@ const RegisterPage = () => {
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
-  const {
-    loadingEmailCheck,
-    loadingUsernameCheck,
-    onChangeEmailDebounced,
-    onChangeUsernameDebounced,
-  } = useFieldsChecks();
+  const { loadingEmailCheck, loadingUsernameCheck, onChangeUsernameDebounced } =
+    useFieldsChecks();
 
   let submitButtonDisabled =
     !isFormValid ||
@@ -56,7 +50,6 @@ const RegisterPage = () => {
   const { loading } = useStore($registerStatus);
 
   const usernameExists = useStore($checkUsernameResult);
-  const emailExists = useStore($checkEmailResult);
 
   useEffect(() => {
     if (usernameExists === null) {
@@ -70,30 +63,6 @@ const RegisterPage = () => {
       trigger('username');
     }
   }, [usernameExists]);
-
-  useEffect(() => {
-    if (emailExists === null) {
-      return;
-    }
-
-    if (emailExists) {
-      setError('email', { message: 'Email уже зарегистрирован' });
-    } else {
-      clearErrors('email');
-      trigger('email');
-    }
-  }, [emailExists]);
-
-  const checkEmail = useCallback(
-    (event: any) =>
-      setTimeout(() => {
-        const { invalid } = getFieldState('email');
-        if (!invalid) {
-          onChangeEmailDebounced({ email: event.target.value });
-        }
-      }),
-    [],
-  );
 
   const checkUsername = useCallback(
     (event: any) =>
@@ -133,31 +102,6 @@ const RegisterPage = () => {
             },
           })}
         />
-        <StyledInput
-          autoComplete="true"
-          type="email"
-          label="Email"
-          placeholder="example@site.org"
-          fullWidth
-          size="xl"
-          status={errors.email && 'error'}
-          {...register('email', {
-            ...EMAIL_VALIDATORS,
-            onChange(e) {
-              submitButtonDisabled = true;
-              checkEmail(e);
-            },
-          })}
-          contentRight={
-            loadingEmailCheck ? (
-              <Loading size="sm" />
-            ) : (
-              errors.email?.message && (
-                <InfoIconWithTooltip message={errors.email?.message} />
-              )
-            )
-          }
-        />
         <StyledPassword
           label="Пароль"
           placeholder="Пароль"
@@ -174,6 +118,7 @@ const RegisterPage = () => {
       </Form>
       <SubmitContainer>
         <Button
+          color={'gradient'}
           type="submit"
           form="register-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}

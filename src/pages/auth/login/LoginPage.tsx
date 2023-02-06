@@ -12,12 +12,12 @@ import {
 import {
   LoginFormData,
   PASSWORD_VALIDATORS,
-  USERNAME_OR_EMAIL_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
 import { login, $loginStatus, loginFx } from '@/models/auth/login';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { USERNAME_VALIDATORS } from '@/features/auth/utils/register/formUtils';
 
 const LoginPage = () => {
   useDefaultScrollbarGutter();
@@ -34,22 +34,17 @@ const LoginPage = () => {
   return (
     <AuthContainer xs>
       <Heading h1>Вход</Heading>
-      <Form
-        id="login-form"
-        onSubmit={handleSubmit(({ emailOrUsername, password }) =>
-          onSubmit({ email: emailOrUsername, password }),
-        )}
-      >
+      <Form id="login-form" onSubmit={handleSubmit(onSubmit)}>
         <StyledInput
           label="Email или имя пользователя"
           placeholder="example@site.org"
           fullWidth
           size="xl"
-          {...register('emailOrUsername', USERNAME_OR_EMAIL_VALIDATORS)}
-          status={errors.emailOrUsername && 'error'}
+          {...register('username', USERNAME_VALIDATORS)}
+          status={errors.username && 'error'}
           contentRight={
-            errors.emailOrUsername?.message && (
-              <InfoIconWithTooltip message={errors.emailOrUsername?.message} />
+            errors.username?.message && (
+              <InfoIconWithTooltip message={errors.username?.message} />
             )
           }
         />
@@ -69,6 +64,7 @@ const LoginPage = () => {
       </Form>
       <SubmitContainer>
         <Button
+          color={'gradient'}
           type="submit"
           form="login-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}
