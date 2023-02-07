@@ -10,6 +10,7 @@ import {
   styled,
 } from '@nextui-org/react';
 import React, { useState } from 'react';
+import Autocomplete from '../Autocomplete/Autocomplete';
 
 const marks = [
   {
@@ -104,6 +105,7 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
         <Text h3>Добавить фильм</Text>
       </Modal.Header>
       <Modal.Body>
+        <Autocomplete />
         <Textarea
           css={{ '& label': { color: '$text' }, '& textarea': {
             color: '$text'
