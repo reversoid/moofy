@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ColorHash from 'color-hash';
 import add from '@/assets/img/add.svg';
 import lock from '@/assets/img/lock.svg';
+import { memo } from 'react';
 
 const colorHash = new ColorHash();
 
@@ -13,11 +14,6 @@ const Background = styled('div', {
   backgroundPosition: 'center',
 });
 
-const StyledLink = styled(Link, {
-  display: 'block',
-  width: '100%',
-});
-
 const CardBackground = ({ strToHash }: { strToHash: string }) => {
   return <Background css={{ bgColor: colorHash.hex(strToHash) }} />;
 };
@@ -25,53 +21,46 @@ const CardBackground = ({ strToHash }: { strToHash: string }) => {
 export interface ListProps {
   /** Used for hashing color. If not specified, add icon will be shown */
   id?: number;
-  link: string;
   text: string;
   isPublic?: boolean;
 }
 
-const List = ({ id, link, text, isPublic }: ListProps) => {
+const List = ({ id, text, isPublic }: ListProps) => {
   return (
-    <StyledLink to={link}>
-      <Card isPressable isHoverable css={{ p: 0 }}>
-        <Card.Body css={{ p: 0 }}>
-          {id === undefined ? (
-            <Background
-              css={{
-                backgroundImage: `url(${add});`,
-                backgroundColor: '#FFD131',
-              }}
-            />
-          ) : (
-            <CardBackground strToHash={String(id)} />
+    <Card isPressable isHoverable css={{ p: 0 }}>
+      <Card.Body css={{ p: 0 }}>
+        {id === undefined ? (
+          <Background
+            css={{
+              backgroundImage: `url(${add});`,
+              backgroundColor: '#FFD131',
+            }}
+          />
+        ) : (
+          <CardBackground strToHash={String(id)} />
+        )}
+      </Card.Body>
+      <Card.Footer css={{ justifyItems: 'flex-start' }}>
+        <Row wrap="nowrap" justify="space-between" align="center">
+          <Text
+            b
+            css={{
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {text}
+          </Text>
+          {isPublic === false && (
+            <div>
+              <Image src={lock} height={'1.125rem'} width={'1.125rem'}></Image>
+            </div>
           )}
-        </Card.Body>
-        <Card.Footer css={{ justifyItems: 'flex-start' }}>
-          <Row wrap="nowrap" justify="space-between" align="center">
-            <Text
-              b
-              css={{
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {text}
-            </Text>
-            {isPublic === false && (
-              <div>
-                <Image
-                  src={lock}
-                  height={'1.125rem'}
-                  width={'1.125rem'}
-                ></Image>
-              </div>
-            )}
-          </Row>
-        </Card.Footer>
-      </Card>
-    </StyledLink>
+        </Row>
+      </Card.Footer>
+    </Card>
   );
 };
 
-export default List;
+export default memo(List);
