@@ -6,18 +6,15 @@ import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {
-  StyledInput,
-  StyledPassword,
-} from '@/features/auth/components/StyledInputs';
-import {
   LoginFormData,
   PASSWORD_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
-import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
+import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
 import { login, $loginStatus, loginFx } from '@/models/auth/login';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { USERNAME_VALIDATORS } from '@/features/auth/utils/register/formUtils';
+import { Input, InputPassword } from '@/shared/ui/Input';
 
 const LoginPage = () => {
   useDefaultScrollbarGutter();
@@ -35,7 +32,7 @@ const LoginPage = () => {
     <AuthContainer xs>
       <Heading h1>Вход</Heading>
       <Form id="login-form" onSubmit={handleSubmit(onSubmit)}>
-        <StyledInput
+        <Input
           label="Email или имя пользователя"
           placeholder="example@site.org"
           fullWidth
@@ -48,7 +45,7 @@ const LoginPage = () => {
             )
           }
         />
-        <StyledPassword
+        <InputPassword
           label="Пароль"
           placeholder="Пароль"
           fullWidth

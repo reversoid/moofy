@@ -11,18 +11,15 @@ import {
 } from '@/models/auth/register';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {
-  StyledInput,
-  StyledPassword,
-} from '@/features/auth/components/StyledInputs';
-import {
   RegisterFormData,
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
-import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
+import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
 import { Link } from 'react-router-dom';
 import { $checkUsernameResult } from '@/models/auth/register/checkUsername';
 import { useFieldsChecks } from './useFieldsChecks';
+import { Input, InputPassword } from '@/shared/ui/Input';
 
 const RegisterPage = () => {
   useDefaultScrollbarGutter();
@@ -79,7 +76,7 @@ const RegisterPage = () => {
     <AuthContainer xs>
       <Heading h1>Регистрация</Heading>
       <Form id="register-form" onSubmit={handleSubmit(onSubmit)}>
-        <StyledInput
+        <Input
           label="Имя пользователя"
           placeholder="username123"
           fullWidth
@@ -102,7 +99,7 @@ const RegisterPage = () => {
             },
           })}
         />
-        <StyledPassword
+        <InputPassword
           label="Пароль"
           placeholder="Пароль"
           fullWidth
