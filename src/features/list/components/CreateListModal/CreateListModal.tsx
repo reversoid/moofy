@@ -1,9 +1,10 @@
+import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
+import { Input } from '@/shared/ui/Input';
 import {
   Modal,
   Text,
   Textarea,
   Button,
-  Input,
   Checkbox,
   styled,
 } from '@nextui-org/react';
@@ -29,10 +30,13 @@ interface CreateListModalProps {
 const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
   const {
     register,
-    formState: { isValid: isFormValid },
+    formState: { isValid: isFormValid, errors },
     getValues,
     setValue,
-  } = useForm<FormData>({ defaultValues: { isPrivate: false } });
+  } = useForm<FormData>({
+    defaultValues: { isPrivate: false },
+    mode: 'onChange',
+  });
 
   return (
     <Modal
@@ -49,11 +53,19 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
         <Form>
           <Input
             bordered
+            fullWidth
             label="Название списка"
             size="xl"
             placeholder="Название123"
+            status={errors.name && 'error'}
+            contentRight={
+              errors.name?.message && (
+                <InfoIconWithTooltip message={errors.name.message} />
+              )
+            }
             {...register('name', {
               required: { value: true, message: 'Поле не должно быть пустым' },
+              maxLength: { value: 32, message: 'Слишком длинное название' },
             })}
           />
           <Textarea
