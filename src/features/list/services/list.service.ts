@@ -12,7 +12,7 @@ export interface List {
   user: {
     id: number;
     username: string;
-  }
+  };
 }
 
 export enum FilmType {
@@ -49,6 +49,12 @@ export interface IterableResponse<T> {
   items: T[];
 }
 
+export interface CreateListDTO {
+  name: string;
+  description: string;
+  isPublic: boolean;
+}
+
 export class ListService extends ApiService {
   public async getMyLists() {
     return this.get<IterableResponse<List>>('/list', { useJWT: true });
@@ -64,6 +70,10 @@ export class ListService extends ApiService {
         },
       },
     );
+  }
+
+  public async createList(dto: CreateListDTO) {
+    return this.post<List>('/list', { useJWT: true, json: dto });
   }
 }
 

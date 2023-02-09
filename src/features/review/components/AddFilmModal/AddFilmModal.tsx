@@ -11,6 +11,8 @@ import {
 } from '@nextui-org/react';
 import React, { useState } from 'react';
 import Autocomplete from '../Autocomplete/Autocomplete';
+import { useEvent } from 'effector-react';
+import { createList } from '@/models/lists/createList';
 
 const marks = [
   {
@@ -107,9 +109,12 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
       <Modal.Body>
         <Autocomplete />
         <Textarea
-          css={{ '& label': { color: '$text' }, '& textarea': {
-            color: '$text'
-          } }}
+          css={{
+            '& label': { color: '$text' },
+            '& textarea': {
+              color: '$text',
+            },
+          }}
           size="xl"
           status="primary"
           label="Описание"
@@ -117,9 +122,7 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
         />
 
         <SliderContainer>
-          <StyledLabel htmlFor="slider">
-            Оценка
-          </StyledLabel>
+          <StyledLabel htmlFor="slider">Оценка</StyledLabel>
           <StyledSlider
             id="slider"
             aria-label="Restricted values"
@@ -133,7 +136,12 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
         </SliderContainer>
       </Modal.Body>
       <Modal.Footer>
-        <Button color={'gradient'} auto onPress={() => setIsOpen(false)}>
+        <Button
+          type="submit"
+          color={'gradient'}
+          auto
+          onPress={() => setIsOpen(false)}
+        >
           Добавить
         </Button>
       </Modal.Footer>

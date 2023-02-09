@@ -1,3 +1,9 @@
+import {
+  $createListSuccess,
+  createList,
+  createListFx,
+  removeSuccessStatus,
+} from '@/models/lists/createList';
 import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
 import { Input } from '@/shared/ui/Input';
 import {
@@ -7,7 +13,10 @@ import {
   Button,
   Checkbox,
   styled,
+  Loading,
 } from '@nextui-org/react';
+import { useEvent, useStore } from 'effector-react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Form = styled('form', {
@@ -33,10 +42,33 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
     formState: { isValid: isFormValid, errors },
     getValues,
     setValue,
+    handleSubmit,
+    resetField,
   } = useForm<FormData>({
     defaultValues: { isPrivate: false },
     mode: 'onChange',
   });
+
+  const onSubmit = useEvent(createList);
+  const onClose = useEvent(removeSuccessStatus);
+
+  const loading = useStore(createListFx.pending);
+  const success = useStore($createListSuccess);
+
+  const handleClose = () => {
+    resetField('name');
+    resetField('description');
+    resetField('isPrivate');
+    setIsOpen(false);
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!success) {
+      return;
+    }
+    handleClose();
+  }, [success]);
 
   return (
     <Modal
@@ -50,7 +82,12 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
         <Text h3>Создать список</Text>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form
+          onSubmit={handleSubmit(({ description, isPrivate, name }) =>
+            onSubmit({ isPublic: !isPrivate, name, description }),
+          )}
+          id="create-list-modal-form"
+        >
           <Input
             bordered
             fullWidth
@@ -75,9 +112,11 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           <Checkbox
             color="gradient"
             label="Сделать список приватным"
-            css={{'& .nextui-checkbox-text': {
-              fontSize: '$lg'
-            }}}
+            css={{
+              '& .nextui-checkbox-text': {
+                fontSize: '$lg',
+              },
+            }}
             {...register('isPrivate')}
             defaultSelected={getValues().isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
@@ -86,13 +125,18 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
       </Modal.Body>
       <Modal.Footer>
         <Button
+          form="create-list-modal-form"
+          type="submit"
           size="lg"
           disabled={!isFormValid}
           color={'gradient'}
           auto
-          onClick={() => console.log(getValues())}
         >
-          Добавить
+          {loading ? (
+            <Loading size="lg" type="points" color="white" />
+          ) : (
+            'Добавить'
+          )}
         </Button>
       </Modal.Footer>
     </Modal>
