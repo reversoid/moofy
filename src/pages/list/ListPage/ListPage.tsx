@@ -3,7 +3,7 @@ import {
   List,
   Review,
 } from '@/features/list/services/list.service';
-import { $list, $listState, getList } from '@/models/singleList';
+import { $list, $listState, getList } from '@/models/lists/singleList';
 import { useEvent, useStore } from 'effector-react';
 import React, { memo, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';

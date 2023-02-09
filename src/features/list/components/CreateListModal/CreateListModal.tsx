@@ -4,7 +4,6 @@ import {
   createListFx,
   removeSuccessStatus,
 } from '@/models/lists/createList';
-import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
 import { Input } from '@/shared/ui/Input';
 import {
   Modal,
