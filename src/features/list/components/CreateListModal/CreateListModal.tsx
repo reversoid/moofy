@@ -58,11 +58,6 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
             size="xl"
             placeholder="Название123"
             status={errors.name && 'error'}
-            contentRight={
-              errors.name?.message && (
-                <InfoIconWithTooltip message={errors.name.message} />
-              )
-            }
             {...register('name', {
               required: { value: true, message: 'Поле не должно быть пустым' },
               maxLength: { value: 32, message: 'Слишком длинное название' },
@@ -80,6 +75,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           <Checkbox
             color="gradient"
             label="Сделать список приватным"
+            {...register('isPrivate')}
             defaultSelected={getValues().isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
           />
