@@ -75,6 +75,9 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           <Checkbox
             color="gradient"
             label="Сделать список приватным"
+            css={{'& .nextui-checkbox-text': {
+              fontSize: '$lg'
+            }}}
             {...register('isPrivate')}
             defaultSelected={getValues().isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
