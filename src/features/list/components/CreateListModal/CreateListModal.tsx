@@ -83,6 +83,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
       </Modal.Body>
       <Modal.Footer>
         <Button
+          size="lg"
           disabled={!isFormValid}
           color={'gradient'}
           auto
