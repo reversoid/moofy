@@ -29,22 +29,34 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
   return (
     <>
       <ListInfoContainer>
-        <Row align="center" justify="space-between">
+        <Row align="center" justify="space-between" css={{ gap: '$15' }}>
           <Row align="center" css={{ gap: '$10' }}>
-            <Text h1>{list.name}</Text>
-            {!list.is_public && (
-              <div>
-                <Image src={lock} height={'1.5rem'} width={'1.5rem'}></Image>
-              </div>
-            )}
+            <Text
+              h1
+              css={{
+                flexShrink: 1,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {list.name}
+            </Text>
+            <Button
+              light
+              css={{
+                width: '1.5rem',
+                height: '1.5rem',
+                p: 0,
+                minWidth: 'auto',
+                ml: 'auto',
+                flexShrink: 0,
+              }}
+              onPress={() => setIsUpdateDialogOpen(true)}
+            >
+              <Image src={gear} height={'1.5rem'} width={'1.5rem'}></Image>
+            </Button>
           </Row>
-          <Button
-            light
-            css={{ width: '1.5rem', height: '1.5rem', p: 0, minWidth: 'auto' }}
-            onPress={() => setIsUpdateDialogOpen(true)}
-          >
-            <Image src={gear} height={'1.5rem'} width={'1.5rem'}></Image>
-          </Button>
         </Row>
 
         <Text as={'p'} css={{ mb: '$5', fontSize: '$xl' }}>
