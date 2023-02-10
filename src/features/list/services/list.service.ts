@@ -55,6 +55,10 @@ export interface CreateListDTO {
   isPublic: boolean;
 }
 
+export interface UpdateListDTO extends Partial<CreateListDTO> {
+  listId: number;
+}
+
 export class ListService extends ApiService {
   public async getMyLists() {
     return this.get<IterableResponse<List>>('/list', { useJWT: true });
@@ -74,6 +78,10 @@ export class ListService extends ApiService {
 
   public async createList(dto: CreateListDTO) {
     return this.post<List>('/list', { useJWT: true, json: dto });
+  }
+
+  public async updateList(dto: UpdateListDTO) {
+    return this.patch<List>('/list', { useJWT: true, json: dto });
   }
 }
 
