@@ -130,6 +130,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           disabled={!isFormValid}
           color={'gradient'}
           auto
+          css={{ minWidth: '7.5rem' }}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />

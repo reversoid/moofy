@@ -7,13 +7,16 @@ const ListInfoContainer = styled('div', {
   mb: '$10',
 });
 
-interface ListInfoProps { list: List, isUserOwner: boolean }
+interface ListInfoProps {
+  list: List;
+  isUserOwner: boolean;
+}
 
 const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
   const getUpdatedAt = () => {
     const date = new Date(list.updated_at);
     const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + date.getMonth()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const year = date.getFullYear();
     return `${day}.${month}.${year}`;
   };
