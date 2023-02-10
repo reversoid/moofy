@@ -33,8 +33,8 @@ const LoginPage = () => {
       <Heading h1>Вход</Heading>
       <Form id="login-form" onSubmit={handleSubmit(onSubmit)}>
         <Input
-          label="Email или имя пользователя"
-          placeholder="example@site.org"
+          label="Имя пользователя"
+          placeholder="username123"
           fullWidth
           size="xl"
           {...register('username', USERNAME_VALIDATORS)}

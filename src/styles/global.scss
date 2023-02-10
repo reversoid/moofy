@@ -6,3 +6,9 @@ html {
 body {
   min-height: 100%;
 }
+
+html, body {
+  @media (max-width: 650px) {
+    font-size: 0.9375rem;
+  }
+}
