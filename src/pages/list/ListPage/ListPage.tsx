@@ -64,10 +64,6 @@ const ListPageWithData = () => {
     return null;
   }
 
-  if (error) {
-    return <ErrorPage />;
-  }
-
   return null;
 };
 
