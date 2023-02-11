@@ -113,7 +113,9 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
             {options.map((option, index) => (
-              <Li {...getOptionProps({ option, index })}>
+              <Li
+                {...{ ...getOptionProps({ option, index }), key: option.id }}
+              >
                 <Image
                   showSkeleton
                   src={option.posterPreviewUrl}
