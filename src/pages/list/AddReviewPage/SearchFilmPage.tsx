@@ -5,9 +5,12 @@ import { Input } from '@/shared/ui/Input';
 import { Text, Image, styled, Row, Button } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, memo, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
+import { filmService } from '@/features/films/film.service';
+import debounce from 'lodash.debounce';
+import { $films, getFilmsByName } from '@/models/films';
 
 const Listbox = styled('ul', {
   width: '100%',
@@ -61,7 +64,7 @@ interface PageContentProps {
   listId: number;
 }
 
-const PageContent = ({ listId }: PageContentProps) => {
+const PageContent = memo(({ listId }: PageContentProps) => {
   const [options, setOptions] = useState<Film[]>([
     {
       filmLength: '10:99',
@@ -78,7 +81,7 @@ const PageContent = ({ listId }: PageContentProps) => {
       filmLength: '10:99',
       genres: ['HORROR'],
       id: '6',
-      name: 'Побег из шоушенка 2',
+      name: 'Побег курятника',
       posterPreviewUrl:
         'http://kinohod.ru/o/f2/21/f2216441-4843-4e4d-a9e1-e3dc9bb63178.jpg',
       posterUrl: '',
@@ -92,12 +95,30 @@ const PageContent = ({ listId }: PageContentProps) => {
     getListboxProps,
     getOptionProps,
     groupedOptions,
+    inputValue,
   } = useAutocomplete({
     options: options,
     getOptionLabel: (option) => option.name ?? '',
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const films = useStore($films);
+
+  console.log(films);
+
+  const _searchFilms = useEvent(getFilmsByName);
+  const searchFilms = debounce(() => console.log('function called'), 5000);
+
+  useEffect(() => {
+    if (!inputValue) return;
+
+    searchFilms();
+  }, [inputValue]);
+
+  useEffect(() => {
+    setOptions(films ?? []);
+  }, [films]);
 
   return (
     <>
@@ -112,7 +133,7 @@ const PageContent = ({ listId }: PageContentProps) => {
         />
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
-            {(groupedOptions as typeof options).map((option, index) => (
+            {((options) as typeof options).map((option, index) => (
               <Li {...getOptionProps({ option, index })}>
                 <Image
                   showSkeleton
@@ -148,7 +169,7 @@ const PageContent = ({ listId }: PageContentProps) => {
       <AddFilmModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </>
   );
-};
+});
 
 const AddReviewPage = () => {
   const { id } = useParams();
