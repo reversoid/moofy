@@ -37,7 +37,7 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                pr: '0.25rem'
+                pr: '0.25rem',
               }}
             >
               {list.name}
@@ -71,18 +71,17 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
           Обновлен {getUpdatedAt()}
         </Text>
       </ListInfoContainer>
-      {isUpdateDialogOpen && (
-        <UpdateListModal
-          isOpen={isUpdateDialogOpen}
-          listId={list.id}
-          setIsOpen={setIsUpdateDialogOpen}
-          form={{
-            description: list.description,
-            isPrivate: !list.is_public,
-            name: list.name,
-          }}
-        />
-      )}
+
+      <UpdateListModal
+        isOpen={isUpdateDialogOpen}
+        listId={list.id}
+        setIsOpen={setIsUpdateDialogOpen}
+        form={{
+          description: list.description,
+          isPrivate: !list.is_public,
+          name: list.name,
+        }}
+      />
     </>
   );
 };
