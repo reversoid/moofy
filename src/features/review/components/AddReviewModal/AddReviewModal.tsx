@@ -1,18 +1,6 @@
+import { Form } from '@/shared/ui/Form';
 import { Slider } from '@mui/material';
-import {
-  Button,
-  Checkbox,
-  Input,
-  Modal,
-  Row,
-  Text,
-  Textarea,
-  styled,
-} from '@nextui-org/react';
-import React, { useState } from 'react';
-import Autocomplete from '../Autocomplete/Autocomplete';
-import { useEvent } from 'effector-react';
-import { createList } from '@/models/lists/createList';
+import { Button, Modal, Text, Textarea, styled } from '@nextui-org/react';
 
 const marks = [
   {
@@ -100,40 +88,50 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
       aria-labelledby="modal-title"
       open={isOpen}
       onClose={() => setIsOpen(false)}
-      preventClose
       width="45rem"
     >
       <Modal.Header css={{ paddingBottom: '$3' }}>
-        <Text h3>Добавить фильм</Text>
+        <Text h3>Обзор к фильму</Text>
       </Modal.Header>
-      <Modal.Body>
-        <Autocomplete />
-        <Textarea
-          css={{
-            '& label': { color: '$text' },
-            '& textarea': {
-              color: '$text',
-            },
-          }}
-          size="xl"
-          status="primary"
-          label="Описание"
-          placeholder="Ваше описание фильма, пожалуйста, без спойлеров"
-        />
 
-        <SliderContainer>
-          <StyledLabel htmlFor="slider">Оценка</StyledLabel>
-          <StyledSlider
-            id="slider"
-            aria-label="Restricted values"
-            defaultValue={1}
-            valueLabelFormat={valueLabelFormat}
-            getAriaValueText={ariaValueText}
-            step={null}
-            valueLabelDisplay="off"
-            marks={marks}
+      <Modal.Body>
+        <Form>
+          <Textarea
+            bordered
+            size="xl"
+            label="Описание"
+            placeholder="Ваше описание фильма"
+            // {...register('description', {
+            //   maxLength: { value: 280, message: 'Слишком длинное описание' },
+            // })}
           />
-        </SliderContainer>
+
+          <SliderContainer>
+            <StyledLabel htmlFor="slider">Оценка</StyledLabel>
+            <StyledSlider
+              id="slider"
+              aria-label="Restricted values"
+              defaultValue={1}
+              valueLabelFormat={valueLabelFormat}
+              getAriaValueText={ariaValueText}
+              step={null}
+              valueLabelDisplay="off"
+              marks={marks}
+            />
+          </SliderContainer>
+        </Form>
+        {/* <Input
+          bordered
+          fullWidth
+          label="Название списка"
+          size="xl"
+          placeholder="Название123"
+          status={errors.name && 'error'}
+          {...register('name', {
+            required: { value: true, message: 'Поле не должно быть пустым' },
+            maxLength: { value: 32, message: 'Слишком длинное название' },
+          })}
+        /> */}
       </Modal.Body>
       <Modal.Footer>
         <Button

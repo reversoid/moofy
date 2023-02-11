@@ -7,6 +7,7 @@ import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
 
 const Listbox = styled('ul', {
   width: '100%',
@@ -96,6 +97,8 @@ const PageContent = ({ listId }: PageContentProps) => {
     getOptionLabel: (option) => option.name ?? '',
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <Wrapper {...getRootProps()}>
@@ -133,9 +136,17 @@ const PageContent = ({ listId }: PageContentProps) => {
           </Listbox>
         ) : null}
         <Row justify="flex-end" css={{ mt: '$10' }}>
-          <Button css={{ width: 'fit-content', minWidth: 0 }}>Далее</Button>
+          <Button
+            css={{ width: 'fit-content', minWidth: 0 }}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Далее
+          </Button>
         </Row>
       </Wrapper>
+      {isModalOpen && (
+        <AddFilmModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      )}
     </>
   );
 };
