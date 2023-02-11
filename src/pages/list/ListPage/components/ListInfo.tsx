@@ -37,6 +37,7 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                pr: '0.25rem'
               }}
             >
               {list.name}
