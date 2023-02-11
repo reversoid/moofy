@@ -1,14 +1,13 @@
-import { Film, FilmType } from '@/features/list/services/list.service';
+import { Film } from '@/features/list/services/list.service';
 import { $lists } from '@/models/lists';
 import { $list, $listState, getList } from '@/models/lists/singleList';
 import { Input } from '@/shared/ui/Input';
 import { Text, Image, styled, Row, Button } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
-import { ChangeEvent, memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
-import { filmService } from '@/features/films/film.service';
 import debounce from 'lodash.debounce';
 import { $films, getFilmsByName } from '@/models/films';
 
@@ -65,30 +64,8 @@ interface PageContentProps {
 }
 
 const PageContent = memo(({ listId }: PageContentProps) => {
-  const [options, setOptions] = useState<Film[]>([
-    {
-      filmLength: '10:99',
-      genres: ['HORROR'],
-      id: '1',
-      name: 'Побег из шоушенка',
-      posterPreviewUrl:
-        'http://kinohod.ru/o/f2/21/f2216441-4843-4e4d-a9e1-e3dc9bb63178.jpg',
-      posterUrl: '',
-      type: FilmType.FILM,
-      year: 2022,
-    },
-    {
-      filmLength: '10:99',
-      genres: ['HORROR'],
-      id: '6',
-      name: 'Побег курятника',
-      posterPreviewUrl:
-        'http://kinohod.ru/o/f2/21/f2216441-4843-4e4d-a9e1-e3dc9bb63178.jpg',
-      posterUrl: '',
-      type: FilmType.FILM,
-      year: 2023,
-    },
-  ]);
+  const [options, setOptions] = useState<Film[]>([]);
+
   const {
     getRootProps,
     getInputProps,
@@ -97,27 +74,29 @@ const PageContent = memo(({ listId }: PageContentProps) => {
     groupedOptions,
     inputValue,
   } = useAutocomplete({
-    options: options,
     getOptionLabel: (option) => option.name ?? '',
+    filterOptions: (x) => x,
+    options,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const films = useStore($films);
 
-  console.log(films);
-
   const _searchFilms = useEvent(getFilmsByName);
-  const searchFilms = debounce(() => console.log('function called'), 5000);
+  const searchFilms = useMemo(() => debounce(_searchFilms, 250), []);
 
   useEffect(() => {
     if (!inputValue) return;
-
-    searchFilms();
+    searchFilms(inputValue);
   }, [inputValue]);
 
   useEffect(() => {
-    setOptions(films ?? []);
+    if (!films) return;
+
+    if (films.length > 0) {
+      setOptions(films);
+    }
   }, [films]);
 
   return (
@@ -133,7 +112,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         />
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
-            {((options) as typeof options).map((option, index) => (
+            {options.map((option, index) => (
               <Li {...getOptionProps({ option, index })}>
                 <Image
                   showSkeleton
@@ -180,9 +159,8 @@ const AddReviewPage = () => {
   }, []);
 
   const lists = useStore($lists);
-  const listWithContent = useStore($list);
 
-  const { error, list, loading } = useStore($listState);
+  const { list } = useStore($listState);
 
   const listAlreadyLoaded = useMemo(
     () => lists.items.find((list) => list.id === Number(id)),
