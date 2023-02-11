@@ -1,9 +1,9 @@
 import {
-  $createListSuccess,
   createList,
-  createListFx,
-  removeSuccessStatus,
+  clearState,
+  $createListState,
 } from '@/models/lists/createList';
+import { Form } from '@/shared/ui/Form';
 import { Input } from '@/shared/ui/Input';
 import {
   Modal,
@@ -11,18 +11,11 @@ import {
   Textarea,
   Button,
   Checkbox,
-  styled,
   Loading,
 } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-
-const Form = styled('form', {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '$10',
-});
 
 interface FormData {
   name: string;
@@ -42,22 +35,19 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
     getValues,
     setValue,
     handleSubmit,
-    resetField,
+    reset
   } = useForm<FormData>({
     defaultValues: { isPrivate: false },
     mode: 'onChange',
   });
 
   const onSubmit = useEvent(createList);
-  const onClose = useEvent(removeSuccessStatus);
+  const onClose = useEvent(clearState);
 
-  const loading = useStore(createListFx.pending);
-  const success = useStore($createListSuccess);
+  const { loading, success } = useStore($createListState);
 
   const handleClose = () => {
-    resetField('name');
-    resetField('description');
-    resetField('isPrivate');
+    reset()
     setIsOpen(false);
     onClose();
   };

@@ -1,7 +1,7 @@
 import {
   updateList,
   clearState,
-  updateListState,
+  $updateListState,
 } from '@/models/lists/updateList';
 import { Input } from '@/shared/ui/Input';
 import {
@@ -51,7 +51,7 @@ const UpdateListModal = ({
   const onSubmit = useEvent(updateList);
   const onClose = useEvent(clearState);
 
-  const { loading, success } = useStore(updateListState);
+  const { loading, success } = useStore($updateListState);
 
   const handleClose = () => {
     onClose();

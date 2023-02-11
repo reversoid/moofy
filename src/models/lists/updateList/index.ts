@@ -16,7 +16,7 @@ $updateListSuccess.on(updateList, () => false)
 $updateListSuccess.on(updateListFx.doneData, () => true)
 $updateListSuccess.on(clearState, () => false)
 
-export const updateListState = combine({
+export const $updateListState = combine({
   success: $updateListSuccess,
   loading: updateListFx.pending
 })
