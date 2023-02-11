@@ -76,7 +76,7 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
         isOpen={isUpdateDialogOpen}
         listId={list.id}
         setIsOpen={setIsUpdateDialogOpen}
-        form={{
+        listData={{
           description: list.description,
           isPrivate: !list.is_public,
           name: list.name,

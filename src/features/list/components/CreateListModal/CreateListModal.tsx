@@ -105,7 +105,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
             label="Описание"
             placeholder="Ваше описание списка"
             {...register('description', {
-              maxLength: { value: 280, message: 'Слишком длинное описание' },
+              maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
           />
           <Checkbox

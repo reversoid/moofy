@@ -1,8 +1,7 @@
 import {
   updateList,
-  $updateListSuccess,
-  removeSuccessStatus,
-  updateListFx,
+  clearState,
+  updateListState,
 } from '@/models/lists/updateList';
 import { Input } from '@/shared/ui/Input';
 import {
@@ -11,20 +10,15 @@ import {
   Textarea,
   Button,
   Checkbox,
-  styled,
   Loading,
 } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDefaultFormValues } from './useDefaultFormValues';
+import { Form } from '@/shared/ui/Form';
 
-const Form = styled('form', {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '$10',
-});
-
-interface FormData {
+export interface FormData {
   name: string;
   description: string;
   isPrivate: boolean;
@@ -33,14 +27,14 @@ interface FormData {
 interface UpdateListModalProps {
   isOpen: boolean;
   setIsOpen: (newValue: boolean) => void;
-  form: FormData;
+  listData: FormData;
   listId: number;
 }
 
 const UpdateListModal = ({
   isOpen,
   setIsOpen,
-  form: { name, isPrivate, description },
+  listData,
   listId,
 }: UpdateListModalProps) => {
   const {
@@ -49,24 +43,15 @@ const UpdateListModal = ({
     setValue,
     handleSubmit,
   } = useForm<FormData>({
-    defaultValues: { isPrivate, name, description },
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    setValue('name', name);
-    setValue('description', description);
-    setValue('isPrivate', isPrivate);
-  }, [isOpen]);
+  useDefaultFormValues(isOpen, setValue, listData);
 
   const onSubmit = useEvent(updateList);
-  const onClose = useEvent(removeSuccessStatus);
+  const onClose = useEvent(clearState);
 
-  const loading = useStore(updateListFx.pending);
-  const success = useStore($updateListSuccess);
+  const { loading, success } = useStore(updateListState);
 
   const handleClose = () => {
     onClose();
@@ -116,7 +101,7 @@ const UpdateListModal = ({
             label="Описание"
             placeholder="Ваше описание списка"
             {...register('description', {
-              maxLength: { value: 280, message: 'Слишком длинное описание' },
+              maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
           />
           <Checkbox
@@ -128,7 +113,7 @@ const UpdateListModal = ({
               },
             }}
             {...register('isPrivate')}
-            defaultSelected={isPrivate}
+            defaultSelected={listData.isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
           />
         </Form>
@@ -156,9 +141,9 @@ const UpdateListModal = ({
 
 export default memo(UpdateListModal, (prev, next) => {
   const formEqual =
-    (prev.form.description === next.form.description &&
-      prev.form.isPrivate === next.form.isPrivate) ??
-    prev.form.name === next.form.name;
+    (prev.listData.description === next.listData.description &&
+      prev.listData.isPrivate === next.listData.isPrivate) ??
+    prev.listData.name === next.listData.name;
   return (
     formEqual && prev.isOpen === next.isOpen && prev.listId === next.listId
   );

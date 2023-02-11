@@ -168,7 +168,7 @@ const AddReviewModal = ({
             label="Описание"
             placeholder="Ваше описание фильма"
             {...register('description', {
-              maxLength: { value: 280, message: 'Слишком длинное описание' },
+              maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
           />
 
