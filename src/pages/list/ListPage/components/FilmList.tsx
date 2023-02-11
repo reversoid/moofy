@@ -1,6 +1,6 @@
 import ReviewItem from '@/features/list/components/Review/Review';
 import { Review } from '@/features/list/services/list.service';
-import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
+import AddReviewModal from '@/features/review/components/AddReviewModal/AddReviewModal';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
 import { memo, useState } from 'react';
 
@@ -41,7 +41,7 @@ const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
           ))}
         </FilmsContainer>
       )}
-      <AddFilmModal isOpen={modalOpen} setIsOpen={setModalOpen} />
+      <AddReviewModal isOpen={modalOpen} setIsOpen={setModalOpen} />
     </>
   );
 };

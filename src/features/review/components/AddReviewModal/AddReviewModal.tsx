@@ -1,6 +1,11 @@
+import { Film } from '@/features/list/services/list.service';
+import { createReview, createReviewFx } from '@/models/reviews';
 import { Form } from '@/shared/ui/Form';
 import { Slider } from '@mui/material';
 import { Button, Modal, Text, Textarea, styled } from '@nextui-org/react';
+import { useEvent, useStore } from 'effector-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const marks = [
   {
@@ -52,10 +57,17 @@ const StyledSlider = styled(Slider, {
     fontWeight: 'bold',
   },
   '& .MuiSlider-thumb': {
-    background: '$primary',
+    background: '$gray900',
+    boxShadow: 'none !important',
   },
   '& .MuiSlider-track': {
-    background: '$primary',
+    background: '$gray800',
+  },
+  '& .MuiSlider-rail': {
+    background: '$gray700',
+  },
+  '&#slider': {
+    color: '$gray700',
   },
 });
 
@@ -63,9 +75,11 @@ const ariaValueText = (value: number, index: number) => {
   return `Score ${value}`;
 };
 
-interface AddFilmModalProps {
+interface AddReviewModalProps {
   isOpen: boolean;
   setIsOpen: (newState: boolean) => void;
+  film?: Film;
+  listId: number;
 }
 
 const SliderContainer = styled('div', {
@@ -81,7 +95,28 @@ function valueLabelFormat(value: number) {
   return marks.findIndex((mark) => mark.value === value) + 1;
 }
 
-const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
+interface FormData {
+  description: string;
+  score: string;
+}
+
+const AddReviewModal = ({
+  isOpen,
+  setIsOpen,
+  film,
+  listId
+}: AddReviewModalProps) => {
+  const {
+    handleSubmit,
+    register,
+    formState: { isValid },
+  } = useForm<FormData>();
+
+  const onSubmit = useEvent(createReview);
+
+  const pending = useStore(createReviewFx.pending);
+  console.log(pending);
+
   return (
     <Modal
       closeButton
@@ -95,15 +130,25 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
       </Modal.Header>
 
       <Modal.Body>
-        <Form>
+        <Form
+          onSubmit={handleSubmit(({ description, score }) =>
+            onSubmit({
+              filmId: film?.id ?? '-1',
+              description,
+              score: Math.ceil(Number(score) / 10) * 10,
+              listId
+            }),
+          )}
+          id="add-review-modal-form"
+        >
           <Textarea
             bordered
             size="xl"
             label="Описание"
             placeholder="Ваше описание фильма"
-            // {...register('description', {
-            //   maxLength: { value: 280, message: 'Слишком длинное описание' },
-            // })}
+            {...register('description', {
+              maxLength: { value: 280, message: 'Слишком длинное описание' },
+            })}
           />
 
           <SliderContainer>
@@ -111,31 +156,21 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
             <StyledSlider
               id="slider"
               aria-label="Restricted values"
-              defaultValue={1}
               valueLabelFormat={valueLabelFormat}
               getAriaValueText={ariaValueText}
               step={null}
               valueLabelDisplay="off"
               marks={marks}
+              {...register('score')}
             />
           </SliderContainer>
         </Form>
-        {/* <Input
-          bordered
-          fullWidth
-          label="Название списка"
-          size="xl"
-          placeholder="Название123"
-          status={errors.name && 'error'}
-          {...register('name', {
-            required: { value: true, message: 'Поле не должно быть пустым' },
-            maxLength: { value: 32, message: 'Слишком длинное название' },
-          })}
-        /> */}
       </Modal.Body>
       <Modal.Footer>
         <Button
+          disabled={!isValid}
           type="submit"
+          form="add-review-modal-form"
           color={'gradient'}
           auto
           onPress={() => setIsOpen(false)}
@@ -147,4 +182,4 @@ const AddFilmModal = ({ isOpen, setIsOpen }: AddFilmModalProps) => {
   );
 };
 
-export default AddFilmModal;
+export default AddReviewModal;

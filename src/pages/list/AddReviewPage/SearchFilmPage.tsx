@@ -7,7 +7,7 @@ import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
+import AddReviewModal from '@/features/review/components/AddReviewModal/AddReviewModal';
 import debounce from 'lodash.debounce';
 import { $films, getFilmsByName } from '@/models/films';
 
@@ -73,7 +73,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
     getOptionProps,
     groupedOptions,
     inputValue,
-    value: selectedFilm
+    value: selectedFilm,
   } = useAutocomplete({
     getOptionLabel: (option) => option.name ?? '',
     filterOptions: (x) => x,
@@ -114,9 +114,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
             {options.map((option, index) => (
-              <Li
-                {...{ ...getOptionProps({ option, index }), key: option.id }}
-              >
+              <Li {...{ ...getOptionProps({ option, index }), key: option.id }}>
                 <Image
                   showSkeleton
                   src={option.posterPreviewUrl}
@@ -149,7 +147,12 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         </Row>
       </Wrapper>
 
-      <AddFilmModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <AddReviewModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        film={selectedFilm!}
+        listId={listId}
+      />
     </>
   );
 });
