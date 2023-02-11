@@ -48,11 +48,19 @@ const UpdateListModal = ({
     formState: { isValid: isFormValid, errors },
     setValue,
     handleSubmit,
-    unregister,
   } = useForm<FormData>({
     defaultValues: { isPrivate, name, description },
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    setValue('name', name);
+    setValue('description', description);
+    setValue('isPrivate', isPrivate);
+  }, [isOpen]);
 
   const onSubmit = useEvent(updateList);
   const onClose = useEvent(removeSuccessStatus);
@@ -62,7 +70,6 @@ const UpdateListModal = ({
 
   const handleClose = () => {
     onClose();
-    unregister();
     setIsOpen(false);
   };
 
@@ -152,5 +159,7 @@ export default memo(UpdateListModal, (prev, next) => {
     (prev.form.description === next.form.description &&
       prev.form.isPrivate === next.form.isPrivate) ??
     prev.form.name === next.form.name;
-  return formEqual && prev.isOpen === next.isOpen && prev.listId === next.listId;
+  return (
+    formEqual && prev.isOpen === next.isOpen && prev.listId === next.listId
+  );
 });
