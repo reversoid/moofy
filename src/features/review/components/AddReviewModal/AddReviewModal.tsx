@@ -1,10 +1,21 @@
 import { Film } from '@/features/list/services/list.service';
-import { createReview, createReviewFx } from '@/models/reviews';
+import {
+  $createReviewState,
+  clearState,
+  createReview,
+} from '@/models/reviews';
 import { Form } from '@/shared/ui/Form';
 import { Slider } from '@mui/material';
-import { Button, Modal, Text, Textarea, styled } from '@nextui-org/react';
+import {
+  Button,
+  Loading,
+  Modal,
+  Text,
+  Textarea,
+  styled,
+} from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const marks = [
@@ -104,7 +115,7 @@ const AddReviewModal = ({
   isOpen,
   setIsOpen,
   film,
-  listId
+  listId,
 }: AddReviewModalProps) => {
   const {
     handleSubmit,
@@ -113,9 +124,19 @@ const AddReviewModal = ({
   } = useForm<FormData>();
 
   const onSubmit = useEvent(createReview);
+  const onCloseModal = useEvent(clearState);
 
-  const pending = useStore(createReviewFx.pending);
-  console.log(pending);
+  const { loading, success } = useStore($createReviewState);
+
+  const handleClose = () => {
+    onCloseModal();
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    if (!success) return;
+    handleClose();
+  }, [success]);
 
   return (
     <Modal
@@ -136,7 +157,7 @@ const AddReviewModal = ({
               filmId: film?.id ?? '-1',
               description,
               score: Math.ceil(Number(score) / 10) * 10,
-              listId
+              listId,
             }),
           )}
           id="add-review-modal-form"
@@ -172,10 +193,14 @@ const AddReviewModal = ({
           type="submit"
           form="add-review-modal-form"
           color={'gradient'}
+          css={{ minWidth: '6.5rem' }}
           auto
-          onPress={() => setIsOpen(false)}
         >
-          Добавить
+          {loading ? (
+            <Loading size="lg" type="points" color="white" />
+          ) : (
+            'Добавить'
+          )}
         </Button>
       </Modal.Footer>
     </Modal>
