@@ -144,9 +144,8 @@ const PageContent = ({ listId }: PageContentProps) => {
           </Button>
         </Row>
       </Wrapper>
-      {isModalOpen && (
-        <AddFilmModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
-      )}
+
+      <AddFilmModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </>
   );
 };
