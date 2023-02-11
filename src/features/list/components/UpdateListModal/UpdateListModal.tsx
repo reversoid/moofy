@@ -54,13 +54,6 @@ const UpdateListModal = ({
     mode: 'onChange',
   });
 
-  console.log({
-    isOpen,
-    setIsOpen,
-    form: { name, isPrivate, description },
-    listId,
-  });
-
   const onSubmit = useEvent(updateList);
   const onClose = useEvent(removeSuccessStatus);
 
