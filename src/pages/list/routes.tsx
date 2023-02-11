@@ -2,7 +2,7 @@ import { Navigate, RouteObject } from "react-router-dom";
 import { lazy } from "react";
 
 const ListPage = lazy(() => import('./ListPage/ListPage'));
-const AddReviewPage = lazy(() => import('./AddReviewPage/AddReviewPage'));
+const AddReviewPage = lazy(() => import('./AddReviewPage/SearchFilmPage'));
 
 export const routes: RouteObject[] = [
     {
