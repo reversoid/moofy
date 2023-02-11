@@ -13,6 +13,7 @@ const SnackBarStyled = styled(Snackbar, {
     background: '$error',
     fontFamily: 'inherit',
   },
+  zIndex: '10000 !important'
 });
 
 export const ErrorSnackBar = ({
