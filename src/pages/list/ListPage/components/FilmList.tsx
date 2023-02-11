@@ -2,8 +2,8 @@ import ReviewItem from '@/features/list/components/Review/Review';
 import { Review } from '@/features/list/services/list.service';
 import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
-import { memo, useState } from 'react';
-import { Link } from '@/shared/ui/Link';
+import { memo } from 'react';
+import { useRoutes, useLocation, useNavigate } from 'react-router-dom';
 
 const FilmsContainer = styled('div', {
   display: 'flex',
@@ -17,7 +17,7 @@ interface ReviewListProps {
 }
 
 const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -32,15 +32,13 @@ const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
       ) : (
         <>
           {isUserOwner && reviews && (
-            <Link to="add">
-              <Button
-                color={'gradient'}
-                css={{ mb: '$8' }}
-                onPress={() => setModalOpen(true)}
-              >
-                Добавить
-              </Button>
-            </Link>
+            <Button
+              color={'gradient'}
+              css={{ mb: '$8' }}
+              onPress={() => navigate('add')}
+            >
+              Добавить
+            </Button>
           )}
 
           <FilmsContainer>
