@@ -73,6 +73,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
     getOptionProps,
     groupedOptions,
     inputValue,
+    value: selectedFilm
   } = useAutocomplete({
     getOptionLabel: (option) => option.name ?? '',
     filterOptions: (x) => x,
@@ -139,6 +140,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         ) : null}
         <Row justify="flex-end" css={{ mt: '$10' }}>
           <Button
+            disabled={!selectedFilm}
             css={{ width: 'fit-content', minWidth: 0 }}
             onClick={() => setIsModalOpen(true)}
           >
