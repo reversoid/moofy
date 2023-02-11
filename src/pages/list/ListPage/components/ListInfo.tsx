@@ -1,7 +1,6 @@
 import { List } from '@/features/list/services/list.service';
 import { styled, Row, Text, Image, Button } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
-import lock from '@/assets/img/lock.svg';
 import gear from '@/assets/img/gear.svg';
 import { memo, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
