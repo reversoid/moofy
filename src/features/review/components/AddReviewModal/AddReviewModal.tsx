@@ -156,7 +156,7 @@ const AddReviewModal = ({
             onSubmit({
               filmId: film?.id ?? '-1',
               description,
-              score: Math.ceil(Number(score) / 10) * 10,
+              score: score==='0' ? 1 : Math.ceil(Number(score) / 10),
               listId,
             }),
           )}
