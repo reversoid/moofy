@@ -1,4 +1,9 @@
-import { updateList, $updateListSuccess, removeSuccessStatus, updateListFx } from '@/models/lists/updateList';
+import {
+  updateList,
+  $updateListSuccess,
+  removeSuccessStatus,
+  updateListFx,
+} from '@/models/lists/updateList';
 import { Input } from '@/shared/ui/Input';
 import {
   Modal,
@@ -10,7 +15,7 @@ import {
   Loading,
 } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Form = styled('form', {
@@ -32,16 +37,28 @@ interface UpdateListModalProps {
   listId: number;
 }
 
-const UpdateListModal = ({ isOpen, setIsOpen, form: {name, isPrivate, description}, listId }: UpdateListModalProps) => {
+const UpdateListModal = ({
+  isOpen,
+  setIsOpen,
+  form: { name, isPrivate, description },
+  listId,
+}: UpdateListModalProps) => {
   const {
     register,
     formState: { isValid: isFormValid, errors },
-    getValues,
     setValue,
     handleSubmit,
+    unregister,
   } = useForm<FormData>({
     defaultValues: { isPrivate, name, description },
     mode: 'onChange',
+  });
+
+  console.log({
+    isOpen,
+    setIsOpen,
+    form: { name, isPrivate, description },
+    listId,
   });
 
   const onSubmit = useEvent(updateList);
@@ -51,8 +68,9 @@ const UpdateListModal = ({ isOpen, setIsOpen, form: {name, isPrivate, descriptio
   const success = useStore($updateListSuccess);
 
   const handleClose = () => {
-    setIsOpen(false);
     onClose();
+    unregister();
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -136,4 +154,10 @@ const UpdateListModal = ({ isOpen, setIsOpen, form: {name, isPrivate, descriptio
   );
 };
 
-export default UpdateListModal;
+export default memo(UpdateListModal, (prev, next) => {
+  const formEqual =
+    (prev.form.description === next.form.description &&
+      prev.form.isPrivate === next.form.isPrivate) ??
+    prev.form.name === next.form.name;
+  return formEqual && prev.isOpen === next.isOpen && prev.listId === next.listId;
+});

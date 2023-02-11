@@ -3,7 +3,7 @@ import { styled, Row, Text, Image, Button } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import lock from '@/assets/img/lock.svg';
 import gear from '@/assets/img/gear.svg';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
 
 const ListInfoContainer = styled('div', {
@@ -71,18 +71,20 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
           Обновлен {getUpdatedAt()}
         </Text>
       </ListInfoContainer>
-      <UpdateListModal
-        isOpen={isUpdateDialogOpen}
-        listId={list.id}
-        setIsOpen={setIsUpdateDialogOpen}
-        form={{
-          description: list.description,
-          isPrivate: !list.is_public,
-          name: list.name,
-        }}
-      />
+      {isUpdateDialogOpen && (
+        <UpdateListModal
+          isOpen={isUpdateDialogOpen}
+          listId={list.id}
+          setIsOpen={setIsUpdateDialogOpen}
+          form={{
+            description: list.description,
+            isPrivate: !list.is_public,
+            name: list.name,
+          }}
+        />
+      )}
     </>
   );
 };
 
-export default ListInfo;
+export default memo(ListInfo);
