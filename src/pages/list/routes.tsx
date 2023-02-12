@@ -11,10 +11,16 @@ export const routes: RouteObject[] = [
   },
   {
     path: ':id',
-    element: <ListPage />,
+    children: [
+      {
+        index: true,
+        element: <ListPage />,
+      },
+      {
+        path: 'add',
+        element: <SearchFilmPage />,
+      },
+    ],
   },
-  {
-    path: ':id/add',
-    element: <SearchFilmPage />,
-  },
+  
 ];
