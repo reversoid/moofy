@@ -1,9 +1,8 @@
 import ReviewItem from '@/features/list/components/Review/Review';
-import { Review } from '@/features/list/services/list.service';
-import AddFilmModal from '@/features/review/components/AddReviewModal/AddReviewModal';
+import { Review } from '@/shared/api/types/review.type';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
 import { memo } from 'react';
-import { useRoutes, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const FilmsContainer = styled('div', {
   display: 'flex',

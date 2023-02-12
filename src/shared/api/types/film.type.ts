@@ -3,6 +3,7 @@ export enum FilmType {
   TV_SERIES = 'TV_SERIES',
   TV_SHOW = 'TV_SHOW',
   MINI_SERIES = 'MINI_SERIES',
+  VIDEO = 'VIDEO',
 }
 
 export interface Film {
