@@ -12,9 +12,7 @@ function App() {
 
   return (
     <UIProvider>
-      <Suspense>
-        <RouterProvider router={router} />
-      </Suspense>
+      <RouterProvider router={router} />
     </UIProvider>
   );
 }
