@@ -1,7 +1,6 @@
 import { $createReviewState, clearState, createReview } from '@/models/reviews';
 import { Film } from '@/shared/api/types/film.type';
 import { Form } from '@/shared/ui/Form';
-import { Slider } from '@mui/material';
 import {
   Button,
   Loading,
@@ -11,78 +10,9 @@ import {
   styled,
 } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-
-// TODO refactor
-
-const marks = [
-  {
-    value: 0,
-    label: '1',
-  },
-  {
-    value: 11.1111111111,
-    label: '2',
-  },
-  {
-    value: 22.222222222199996,
-    label: '3',
-  },
-  {
-    value: 33.3333333333,
-    label: '4',
-  },
-  {
-    value: 44.4444444444,
-    label: '5',
-  },
-  {
-    value: 55.55555555549999,
-    label: '6',
-  },
-  {
-    value: 66.6666666666,
-    label: '7',
-  },
-  {
-    value: 77.7777777777,
-    label: '8',
-  },
-  {
-    value: 88.8888888888,
-    label: '9',
-  },
-  {
-    value: 100,
-    label: '10',
-  },
-];
-
-const StyledSlider = styled(Slider, {
-  '& .MuiSlider-markLabel': {
-    fontFamily: 'inherit',
-    color: '$text',
-    fontWeight: 'bold',
-  },
-  '& .MuiSlider-thumb': {
-    background: '$gray900',
-    boxShadow: 'none !important',
-  },
-  '& .MuiSlider-track': {
-    background: '$gray800',
-  },
-  '& .MuiSlider-rail': {
-    background: '$gray700',
-  },
-  '&#slider': {
-    color: '$gray700',
-  },
-});
-
-const ariaValueText = (value: number, index: number) => {
-  return `Score ${value}`;
-};
+import { StyledSlider, ariaValueText, getNumbericScore, marks, valueLabelFormat } from '../Slider/Slider';
 
 interface AddReviewModalProps {
   isOpen: boolean;
@@ -99,10 +29,6 @@ const StyledLabel = styled('label', {
   fontSize: '$lg',
   color: '$text',
 });
-
-function valueLabelFormat(value: number) {
-  return marks.findIndex((mark) => mark.value === value) + 1;
-}
 
 interface FormData {
   description: string;
@@ -154,7 +80,7 @@ const AddReviewModal = ({
             onSubmit({
               filmId: film?.id ?? '-1',
               description,
-              score: score === '0' ? 1 : Math.ceil(Number(score) / 10),
+              score: getNumbericScore(score),
               listId,
             }),
           )}
