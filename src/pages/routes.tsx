@@ -2,7 +2,8 @@ import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
-import Layout from './Layout/Layout';
+
+import Layout from '../features/app/Layout/Layout';
 import ErrorPage from './ErrorPage/ErrorPage';
 
 const MainPage = lazy(() => import('./main/MainPage'));
@@ -15,6 +16,10 @@ export const routes: RouteObject[] = [
     element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
+      {
+        index: true,
+        element: <MainPage />
+      },
       {
         path: 'auth',
         children: authRoutes,
