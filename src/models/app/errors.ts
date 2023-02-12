@@ -5,6 +5,7 @@ const errorsTranlations = {
   EMAIL_ALREADY_TAKEN: 'Данный Email уже зарегистрирован',
   USERNAME_ALREADY_TAKEN: 'Имя пользователя уже занято',
   REVIEW_FOR_FILM_ALREADY_EXISTS: 'Обзор на фильм уже существует',
+  'Internal server error': 'Ошибка сервера',
 };
 
 export const setAppError = createEvent<string>();

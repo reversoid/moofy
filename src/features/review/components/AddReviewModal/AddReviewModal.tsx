@@ -14,6 +14,8 @@ import { useEvent, useStore } from 'effector-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+// TODO refactor
+
 const marks = [
   {
     value: 0,
