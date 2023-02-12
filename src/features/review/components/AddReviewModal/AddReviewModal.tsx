@@ -1,9 +1,5 @@
-import { Film } from '@/features/list/services/list.service';
-import {
-  $createReviewState,
-  clearState,
-  createReview,
-} from '@/models/reviews';
+import { $createReviewState, clearState, createReview } from '@/models/reviews';
+import { Film } from '@/shared/api/types/film.type';
 import { Form } from '@/shared/ui/Form';
 import { Slider } from '@mui/material';
 import {
@@ -156,7 +152,7 @@ const AddReviewModal = ({
             onSubmit({
               filmId: film?.id ?? '-1',
               description,
-              score: score==='0' ? 1 : Math.ceil(Number(score) / 10),
+              score: score === '0' ? 1 : Math.ceil(Number(score) / 10),
               listId,
             }),
           )}
