@@ -12,6 +12,7 @@ const Wrapper = styled(Container, {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
+  paddingBottom: '$12'
 });
 
 const Layout = ({ children }: PropsWithChildren) => {
