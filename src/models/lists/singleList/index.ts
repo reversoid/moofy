@@ -1,9 +1,4 @@
-import {
-  IterableResponse,
-  List,
-  Review,
-  listService,
-} from '@/features/list/services/list.service';
+import { listService } from '@/features/list/services/list.service';
 import {
   combine,
   createEffect,
@@ -12,6 +7,10 @@ import {
   sample,
 } from 'effector';
 import { updateListFx } from '../updateList';
+import { IterableResponse } from '@/shared/api/types/shared';
+import { Review } from '@/shared/api/types/review.type';
+import { List } from '@/shared/api/types/list.type';
+import { loadMoreFx } from './loadMore';
 
 export const getList = createEvent<number>();
 
@@ -30,9 +29,21 @@ $list.on(updateListFx.doneData, (state, payload) => {
   if (!state) {
     return state;
   }
-  return {...state, list: payload}
+  return { ...state, list: payload };
 });
 $list.on(getList, () => null);
+$list.on(loadMoreFx.doneData, (state, payload) => {
+  if (!state) {
+    return state;
+  }
+  return {
+    ...state,
+    reviews: {
+      nextKey: payload.nextKey,
+      items: [...state.reviews.items, ...payload.items],
+    },
+  };
+});
 
 export const $listError = createStore<string | null>(null);
 $listError.on(

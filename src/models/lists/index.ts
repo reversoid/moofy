@@ -1,11 +1,9 @@
-import {
-  IterableResponse,
-  List,
-  listService,
-} from '@/features/list/services/list.service';
+import { listService } from '@/features/list/services/list.service';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { createListFx } from './createList';
 import { updateListFx } from './updateList';
+import { IterableResponse } from '@/shared/api/types/shared';
+import { List } from '@/shared/api/types/list.type';
 
 export const getLists = createEvent<void>();
 
@@ -26,7 +24,7 @@ $lists.on(updateListFx.doneData, (state, payload) => {
   if (listIndex === -1) return state;
 
   const updatedItems = [...state.items];
-  updatedItems[listIndex] = payload
+  updatedItems[listIndex] = payload;
   return {
     ...state,
     items: updatedItems,

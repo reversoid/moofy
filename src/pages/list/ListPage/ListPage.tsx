@@ -1,17 +1,14 @@
-import {
-  IterableResponse,
-  List,
-  Review,
-} from '@/features/list/services/list.service';
 import { $list, $listState, getList } from '@/models/lists/singleList';
 import { useEvent, useStore } from 'effector-react';
 import React, { memo, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { $lists } from '@/models/lists';
-import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import { useAuth } from '@/shared/hooks/useAuth';
-import FilmList from './components/FilmList';
+import ReviewList from './components/ReviewList';
 import ListInfo from './components/ListInfo';
+import { Review } from '@/shared/api/types/review.type';
+import { IterableResponse } from '@/shared/api/types/shared';
+import { List } from '@/shared/api/types/list.type';
 
 const ListPage = ({
   listWithContent: { list, reviews },
@@ -26,9 +23,10 @@ const ListPage = ({
   return (
     <>
       <ListInfo list={list} isUserOwner={userId === list.user.id} />
-      <FilmList
+      <ReviewList
         isUserOwner={userId === list.user.id}
-        reviews={reviews?.items}
+        reviews={reviews}
+        listId={list.id}
       />
     </>
   );

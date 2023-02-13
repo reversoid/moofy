@@ -1,8 +1,8 @@
 import {
   CreateListDTO,
-  List,
   listService,
 } from '@/features/list/services/list.service';
+import { List } from '@/shared/api/types/list.type';
 import {
   combine,
   createEffect,

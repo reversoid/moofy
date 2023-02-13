@@ -1,6 +1,9 @@
 import ReviewItem from '@/features/list/components/Review/Review';
+import { loadMore } from '@/models/lists/singleList/loadMore';
 import { Review } from '@/shared/api/types/review.type';
+import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
+import { useEvent } from 'effector-react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,12 +13,20 @@ const FilmsContainer = styled('div', {
   gap: '$8',
 });
 
+const LoadMoreContainer = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  mt: '$8',
+});
+
 interface ReviewListProps {
-  reviews?: Review[];
+  reviews?: IterableResponse<Review>;
   isUserOwner: boolean;
+  listId: number;
 }
 
-const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
+const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
   const navigate = useNavigate();
 
   return (
@@ -26,7 +37,7 @@ const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
         </Text>
         {!reviews && <Loading size="md" type="default" />}
       </Row>
-      {reviews?.length === 0 && !isUserOwner ? (
+      {reviews?.items.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Список пуст</Text>
       ) : (
         <>
@@ -41,14 +52,25 @@ const FilmList = ({ reviews, isUserOwner }: ReviewListProps) => {
           )}
 
           <FilmsContainer>
-            {reviews?.map((review) => (
+            {reviews?.items.map((review) => (
               <ReviewItem key={review.id} review={review} />
             ))}
           </FilmsContainer>
+
+          {reviews?.nextKey && (
+            <LoadMoreContainer>
+              <Button
+                color={'gradient'}
+                onClick={() => loadMore({ lowerBound: reviews.nextKey as DateAsString, listId })}
+              >
+                Загрузить больше
+              </Button>
+            </LoadMoreContainer>
+          )}
         </>
       )}
     </>
   );
 };
 
-export default memo(FilmList);
+export default memo(ReviewList);

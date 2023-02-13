@@ -1,5 +1,5 @@
 import { filmService } from '@/features/films/film.service';
-import { Film } from '@/features/list/services/list.service';
+import { Film } from '@/shared/api/types/film.type';
 import { createEffect, createEvent, createStore, sample } from 'effector';
 
 export const getFilmsByName = createEvent<string>();
