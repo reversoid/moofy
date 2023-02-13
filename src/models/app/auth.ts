@@ -4,24 +4,32 @@ import { authService } from '@/features/auth/services/auth.service';
 import { registerFx } from '../auth/register';
 import { loginFx } from '../auth/login';
 
+interface UserLoggedInState {
+  loggedIn?: boolean;
+  userId?: number;
+}
+
 export const checkoutUser = createEvent();
-export const checkoutUserFx = createEffect<void, boolean | undefined>();
+export const checkoutUserFx = createEffect<void, UserLoggedInState>();
 checkoutUserFx.use(() =>
   authService
     .checkout()
-    .then(() => true)
+    .then(({ userId }) => ({ userId, loggedIn: true }))
     .catch((error) => {
       if (error.message === 'NETWORK_ERROR') {
-        return undefined;
+        return {};
       }
-      return false;
+      return { loggedIn: false };
     }),
 );
 
-export const $userLoggedIn = createStore<boolean | undefined>(false)
-$userLoggedIn.on(checkoutUserFx.doneData, (state, payload) => payload)
-$userLoggedIn.on(registerFx.doneData, () => true)
-$userLoggedIn.on(loginFx.doneData, () => true)
+export const $userLoggedIn = createStore<UserLoggedInState>({loggedIn: false});
+$userLoggedIn.on(
+  checkoutUserFx.doneData,
+  (state, checkoutResult) => checkoutResult,
+);
+$userLoggedIn.on(registerFx.doneData, (state, {userId}) => ({loggedIn: true, userId}));
+$userLoggedIn.on(loginFx.doneData, (state, {userId}) => ({loggedIn: true, userId}));
 
 sample({
   clock: appStarted,

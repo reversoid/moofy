@@ -1,8 +1,9 @@
-import React, { PropsWithChildren, memo } from 'react';
+import React, { PropsWithChildren, Suspense, memo } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';
 import { useSnackbar } from './useSnackBar';
+import { Outlet } from 'react-router-dom';
 
 const Wrapper = styled(Container, {
   pt: HEADER_HEIGHT,
@@ -19,7 +20,11 @@ const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Header />
-      <Wrapper lg>{children}</Wrapper>
+      <Wrapper lg>
+        <Suspense>
+          <Outlet />
+        </Suspense>
+      </Wrapper>
       <ErrorSnackBar
         open={isSnackBarOpen}
         message={errorMessage!}

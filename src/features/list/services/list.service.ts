@@ -1,48 +1,17 @@
 import ApiService from '@/shared/api/api.service';
+import { List } from '@/shared/api/types/list.type';
+import { Review } from '@/shared/api/types/review.type';
+import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
+import { SearchParamsOption } from 'ky';
 
-export type DateAsString = string;
-
-export interface List {
-  id: number;
+export interface CreateListDTO {
   name: string;
   description: string;
-  is_public: boolean;
-  created_at: DateAsString;
-  updated_at: DateAsString;
+  isPublic: boolean;
 }
 
-export enum FilmType {
-  FILM = 'FILM',
-  TV_SERIES = 'TV_SERIES',
-  TV_SHOW = 'TV_SHOW',
-  MINI_SERIES = 'MINI_SERIES',
-}
-
-export interface Film {
-  id: string;
-  name: string;
-  year: number;
-  type: FilmType;
-  filmLength: string;
-  posterPreviewUrl: string;
-  posterUrl: string;
-  genres: string[];
-}
-
-export interface Review {
-  id: number;
-  film: Film;
-  score: number;
-  description: string;
-  tags?: string[];
-  created_at: Date;
-  updated_at: Date;
-}
-
-export interface IterableResponse<T> {
-  /**Represents a date */
-  nextKey: DateAsString | null;
-  items: T[];
+export interface UpdateListDTO extends Partial<CreateListDTO> {
+  listId: number;
 }
 
 export class ListService extends ApiService {
@@ -50,16 +19,29 @@ export class ListService extends ApiService {
     return this.get<IterableResponse<List>>('/list', { useJWT: true });
   }
 
-  public async getMyListWithContent(id: number) {
+  public async getMyListWithContent(listId: number, lowerBound?: DateAsString) {
+    const searchParams: SearchParamsOption = {
+      listId,
+    };
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+
     return this.get<{ reviews: IterableResponse<Review>; list: List }>(
       '/review',
       {
         useJWT: true,
-        searchParams: {
-          listId: id,
-        },
+        searchParams,
       },
     );
+  }
+
+  public async createList(dto: CreateListDTO) {
+    return this.post<List>('/list', { useJWT: true, json: dto });
+  }
+
+  public async updateList(dto: UpdateListDTO) {
+    return this.patch<List>('/list', { useJWT: true, json: dto });
   }
 }
 

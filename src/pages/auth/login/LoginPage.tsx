@@ -6,18 +6,15 @@ import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {
-  StyledInput,
-  StyledPassword,
-} from '@/features/auth/components/StyledInputs';
-import {
   LoginFormData,
   PASSWORD_VALIDATORS,
-  USERNAME_OR_EMAIL_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
-import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip';
-import { login, $loginStatus, loginFx } from '@/models/auth/login';
-import { Link, useNavigate } from 'react-router-dom';
+import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
+import { login, $loginStatus } from '@/models/auth/login';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { USERNAME_VALIDATORS } from '@/features/auth/utils/register/formUtils';
+import { Input, InputPassword } from '@/shared/ui/Input';
 
 const LoginPage = () => {
   useDefaultScrollbarGutter();
@@ -34,26 +31,21 @@ const LoginPage = () => {
   return (
     <AuthContainer xs>
       <Heading h1>Вход</Heading>
-      <Form
-        id="login-form"
-        onSubmit={handleSubmit(({ emailOrUsername, password }) =>
-          onSubmit({ email: emailOrUsername, password }),
-        )}
-      >
-        <StyledInput
-          label="Email или имя пользователя"
-          placeholder="example@site.org"
+      <Form id="login-form" onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          label="Имя пользователя"
+          placeholder="username123"
           fullWidth
           size="xl"
-          {...register('emailOrUsername', USERNAME_OR_EMAIL_VALIDATORS)}
-          status={errors.emailOrUsername && 'error'}
+          {...register('username', USERNAME_VALIDATORS)}
+          status={errors.username && 'error'}
           contentRight={
-            errors.emailOrUsername?.message && (
-              <InfoIconWithTooltip message={errors.emailOrUsername?.message} />
+            errors.username?.message && (
+              <InfoIconWithTooltip message={errors.username?.message} />
             )
           }
         />
-        <StyledPassword
+        <InputPassword
           label="Пароль"
           placeholder="Пароль"
           fullWidth
@@ -69,6 +61,7 @@ const LoginPage = () => {
       </Form>
       <SubmitContainer>
         <Button
+          color={'gradient'}
           type="submit"
           form="login-form"
           css={{ '@xsMin': { width: 'max-content !important' } }}

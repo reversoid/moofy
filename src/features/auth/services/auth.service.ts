@@ -4,17 +4,17 @@ import { tokenService } from '@/shared/services/token.service';
 
 export interface RegisterDTO {
   username: string;
-  email: string;
   password: string;
 }
 
 export interface LoginDTO {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface AuthResponse {
   access_token: string;
+  userId: number;
 }
 
 const LONG_RETRY_STRATEGY: RetryOptions = {
@@ -25,15 +25,21 @@ const LONG_RETRY_STRATEGY: RetryOptions = {
 };
 
 class AuthService extends ApiService {
-  public async register(dto: RegisterDTO): Promise<void> {
+  public async register(dto: RegisterDTO): Promise<{ userId: number }> {
     return this.post<AuthResponse>('/auth/register', { json: dto }).then(
-      ({ access_token }) => tokenService.setAccessToken(access_token),
+      ({ access_token, userId }) => {
+        tokenService.setAccessToken(access_token);
+        return { userId };
+      },
     );
   }
 
-  public async login(dto: LoginDTO): Promise<void> {
+  public async login(dto: LoginDTO): Promise<{ userId: number }> {
     return this.post<AuthResponse>('/auth/login', { json: dto }).then(
-      ({ access_token }) => tokenService.setAccessToken(access_token),
+      ({ access_token, userId }) => {
+        tokenService.setAccessToken(access_token);
+        return { userId };
+      },
     );
   }
 
@@ -51,9 +57,12 @@ class AuthService extends ApiService {
     }).then(({ userExists }) => userExists);
   }
 
-  public async checkout(): Promise<void> {
-    return this.get<AuthResponse>('/auth/checkout').then(({ access_token }) =>
-      tokenService.setAccessToken(access_token),
+  public async checkout(): Promise<{ userId: number }> {
+    return this.get<AuthResponse>('/auth/checkout').then(
+      ({ access_token, userId }) => {
+        tokenService.setAccessToken(access_token);
+        return { userId };
+      },
     );
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip, Button, Image } from '@nextui-org/react';
-import infoIcon from './img/info.svg';
+import infoIcon from '@/assets/img/info.svg';
 
 const InfoIconWithTooltip = ({ message }: { message: string }) => {
   return (

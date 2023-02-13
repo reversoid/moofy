@@ -1,6 +1,8 @@
 import React from 'react';
 import { Container, Image, styled } from '@nextui-org/react';
 import logo from './img/logo.svg';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/shared/hooks/useAuth';
 
 export const HEADER_HEIGHT = '4.75rem';
 
@@ -25,18 +27,23 @@ const CenteredImage = styled(Image, {
   top: '50%',
   transform: 'translateY(-50%)',
   margin: 0,
+  display: 'inline-block',
 });
 
 function Header() {
+  const { isLoggedIn } = useAuth();
+
   return (
     <HeaderStyled>
       <HeaderContainer lg>
-        <CenteredImage
-          src={logo}
-          height="85%"
-          objectFit="contain"
-          width="fit-content"
-        />
+        <Link to={isLoggedIn ? '/welcome' : ''}>
+          <CenteredImage
+            src={logo}
+            height="85%"
+            objectFit="contain"
+            width="fit-content"
+          />
+        </Link>
       </HeaderContainer>
     </HeaderStyled>
   );

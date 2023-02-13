@@ -1,9 +1,8 @@
 import { RegisterOptions } from 'react-hook-form';
-import { SAFE_STRING, EMAIL_PATTERN } from '@/features/auth/utils/patterns';
-import { MAX_EMAIL_LENGTH, MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH } from '../constants';
+import { SAFE_STRING } from '@/features/auth/utils/patterns';
+import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH } from '../constants';
 
 export interface RegisterFormData {
-  email: string;
   username: string;
   password: string;
 }
@@ -23,22 +22,6 @@ export const USERNAME_VALIDATORS: RegisterOptions<
   maxLength: {
     value: MAX_USERNAME_LENGTH,
     message: 'Имя пользователя очень длинное',
-  },
-};
-
-export const EMAIL_VALIDATORS: RegisterOptions<RegisterFormData, 'email'> = {
-  required: {
-    value: true,
-    message: 'Данное поле не должно быть пустым',
-  },
-
-  pattern: {
-    value: EMAIL_PATTERN,
-    message: 'Неверный формат email',
-  },
-  maxLength: {
-    value: MAX_EMAIL_LENGTH,
-    message: 'Email слишком длинный',
   },
 };
 

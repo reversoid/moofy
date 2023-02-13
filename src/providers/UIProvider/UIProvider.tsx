@@ -1,7 +1,6 @@
 import '@/styles/global.scss';
 import React, { PropsWithChildren, memo } from 'react';
-import { NextUIProvider, createTheme } from '@nextui-org/react';
-import Layout from './Layout/Layout';
+import { NextUIProvider, createTheme, styled } from '@nextui-org/react';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -13,13 +12,26 @@ const darkTheme = createTheme({
   theme: {},
 });
 
+const UiWrapper = styled('div', {
+  '@xsMax': {
+    '& h1': {
+      fontSize: '$4xl',
+    },
+    '& h2': {
+      fontSize: '$3xl',
+    },
+    '& h3': {
+      fontSize: '$2xl',
+    }
+  },
+});
+
 const UIProvider = ({ children }: PropsWithChildren) => {
   return (
     <NextUIProvider theme={darkTheme}>
-      <Layout>{children}</Layout>
+      <UiWrapper>{children}</UiWrapper>
     </NextUIProvider>
   );
 };
 
 export default memo(UIProvider);
-
