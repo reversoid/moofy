@@ -1,5 +1,4 @@
 import React from 'react';
-import { Review } from '../../services/list.service';
 import {
   Card,
   styled,
@@ -7,6 +6,7 @@ import {
   Text,
   Link as NextUILink,
 } from '@nextui-org/react';
+import { Review } from '@/shared/api/types/review.type';
 
 const ImageContainer = styled('div', {
   display: 'flex',
@@ -53,8 +53,8 @@ const ReviewItem = ({ review }: { review: Review }) => {
           <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
             <NextUILink
               href={`https://kinopoisk.ru/film/${review.film.id}`}
-              target="blank"
-              rel="noopenner norefferer"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {review.film.name}
             </NextUILink>

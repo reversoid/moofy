@@ -1,4 +1,4 @@
-import { $createReviewState, clearState, createReview } from '@/models/reviews';
+import { $createReviewState, clearState, createReview } from '@/models/reviews/createReview';
 import { Film } from '@/shared/api/types/film.type';
 import { Form } from '@/shared/ui/Form';
 import {
