@@ -1,9 +1,12 @@
 import ReviewItem from '@/features/list/components/Review/Review';
-import { loadMoreReviews } from '@/models/lists/singleList/loadMoreReviews';
+import {
+  loadMoreReviews,
+  loadMoreReviewsFx,
+} from '@/models/lists/singleList/loadMoreReviews';
 import { Review } from '@/shared/api/types/review.type';
 import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
-import { useEvent } from 'effector-react';
+import { useEvent, useStore } from 'effector-react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,6 +31,15 @@ interface ReviewListProps {
 
 const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
   const navigate = useNavigate();
+
+  const loading = useStore(loadMoreReviewsFx.pending);
+
+  const handleLoadMore = () => {
+    if (loading) {
+      return;
+    }
+    loadMoreReviews({ lowerBound: reviews!.nextKey as DateAsString, listId });
+  };
 
   return (
     <>
@@ -59,11 +71,12 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
 
           {reviews?.nextKey && (
             <LoadMoreContainer>
-              <Button
-                color={'gradient'}
-                onClick={() => loadMoreReviews({ lowerBound: reviews.nextKey as DateAsString, listId })}
-              >
-                Загрузить больше
+              <Button color={'gradient'} onClick={handleLoadMore}>
+                {loading ? (
+                  <Loading type="points" color="white" />
+                ) : (
+                  'Загрузить больше'
+                )}
               </Button>
             </LoadMoreContainer>
           )}
