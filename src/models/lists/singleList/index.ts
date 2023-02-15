@@ -10,7 +10,7 @@ import { updateListFx } from '../updateList';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { Review } from '@/shared/api/types/review.type';
 import { List } from '@/shared/api/types/list.type';
-import { loadMoreFx } from './loadMore';
+import { loadMoreReviewsFx } from './loadMoreReviews';
 
 export const getList = createEvent<number>();
 
@@ -32,7 +32,7 @@ $list.on(updateListFx.doneData, (state, payload) => {
   return { ...state, list: payload };
 });
 $list.on(getList, () => null);
-$list.on(loadMoreFx.doneData, (state, payload) => {
+$list.on(loadMoreReviewsFx.doneData, (state, payload) => {
   if (!state) {
     return state;
   }

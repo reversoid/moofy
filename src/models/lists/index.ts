@@ -4,6 +4,8 @@ import { createListFx } from './createList';
 import { updateListFx } from './updateList';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
+import { $list } from './singleList';
+import { loadMoreListsFx } from './loadMoreLists';
 
 export const getLists = createEvent<void>();
 
@@ -29,6 +31,9 @@ $lists.on(updateListFx.doneData, (state, payload) => {
     ...state,
     items: updatedItems,
   };
+});
+$lists.on(loadMoreListsFx.doneData, (state, payload) => {
+  return { nextKey: payload.nextKey, items: [...state.items, ...payload.items] };
 });
 
 sample({

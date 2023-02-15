@@ -15,8 +15,15 @@ export interface UpdateListDTO extends Partial<CreateListDTO> {
 }
 
 export class ListService extends ApiService {
-  public async getMyLists() {
-    return this.get<IterableResponse<List>>('/list', { useJWT: true });
+  public async getMyLists(lowerBound?: DateAsString) {
+    const searchParams: SearchParamsOption = {};
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+    return this.get<IterableResponse<List>>('/list', {
+      useJWT: true,
+      searchParams,
+    });
   }
 
   public async getMyListWithContent(listId: number, lowerBound?: DateAsString) {

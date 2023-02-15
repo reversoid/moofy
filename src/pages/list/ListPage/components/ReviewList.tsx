@@ -1,5 +1,5 @@
 import ReviewItem from '@/features/list/components/Review/Review';
-import { loadMore } from '@/models/lists/singleList/loadMore';
+import { loadMoreReviews } from '@/models/lists/singleList/loadMoreReviews';
 import { Review } from '@/shared/api/types/review.type';
 import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
 import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
@@ -61,7 +61,7 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
             <LoadMoreContainer>
               <Button
                 color={'gradient'}
-                onClick={() => loadMore({ lowerBound: reviews.nextKey as DateAsString, listId })}
+                onClick={() => loadMoreReviews({ lowerBound: reviews.nextKey as DateAsString, listId })}
               >
                 Загрузить больше
               </Button>
