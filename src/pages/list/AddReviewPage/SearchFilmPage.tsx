@@ -138,6 +138,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         ) : null}
         <Row justify="flex-end" css={{ mt: '$10' }}>
           <Button
+            size='lg'
             disabled={!selectedFilm}
             css={{ width: 'fit-content', minWidth: 0 }}
             onClick={() => setIsModalOpen(true)}

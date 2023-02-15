@@ -119,6 +119,7 @@ const AddReviewModal = ({
           color={'gradient'}
           css={{ minWidth: '6.5rem' }}
           auto
+          size='lg'
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />
