@@ -5,15 +5,16 @@ import { $appErrorStore } from '@/models/app/errors';
 export const useSnackbar = () => {
   const error = useStore($appErrorStore);
 
-  const [isSnackBarOpen, setIsSnackBarOpen] = useState(Boolean(error));
+  const [isSnackBarOpen, setIsSnackBarOpen] = useState(Boolean(error.error));
 
   useEffect(() => {
-    setIsSnackBarOpen(Boolean(error));
+    console.log(error)
+    setIsSnackBarOpen(Boolean(error.error));
   }, [error]);
 
   const handleSnackbarClose = useCallback(() => {
     setIsSnackBarOpen(false);
   }, []);
 
-  return { isSnackBarOpen, errorMessage: error, handleSnackbarClose };
+  return { isSnackBarOpen, errorMessage: error.error, handleSnackbarClose };
 };

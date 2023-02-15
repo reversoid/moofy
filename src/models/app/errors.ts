@@ -11,15 +11,16 @@ const errorsTranlations = {
 export const setAppError = createEvent<string>();
 export const clearAppError = createEvent();
 
-const setErrorFx = createEffect<string, string | null>();
-setErrorFx.use(
-  (errorCode) =>
-    errorsTranlations[errorCode as keyof typeof errorsTranlations] ?? null,
-);
+const setErrorFx = createEffect<string, { error: string | null }>();
+setErrorFx.use((errorCode) => ({
+  error: errorsTranlations[errorCode as keyof typeof errorsTranlations] ?? null,
+}));
 
-export const $appErrorStore = createStore<string | null>(null);
+export const $appErrorStore = createStore<{ error: string | null }>({
+  error: null,
+});
 $appErrorStore.on(setErrorFx.doneData, (_, payload) => payload);
-$appErrorStore.on(clearAppError, () => null);
+$appErrorStore.on(clearAppError, () => ({ error: null }));
 
 sample({
   clock: setAppError,
