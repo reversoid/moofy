@@ -5,6 +5,7 @@ import {
 } from '@/models/lists/createList';
 import { Form } from '@/shared/ui/Form';
 import { Input } from '@/shared/ui/Input';
+import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
 import {
   Modal,
   Text,
@@ -35,7 +36,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
     getValues,
     setValue,
     handleSubmit,
-    reset
+    reset,
   } = useForm<FormData>({
     defaultValues: { isPrivate: false },
     mode: 'onChange',
@@ -47,7 +48,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
   const { loading, success } = useStore($createListState);
 
   const handleClose = () => {
-    reset()
+    reset();
     setIsOpen(false);
     onClose();
   };
@@ -70,7 +71,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
       <Modal.Header>
         <Text h3>Создать список</Text>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
             onSubmit({ isPublic: !isPrivate, name, description }),
@@ -112,7 +113,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           />
         </Form>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer css={decreasedPaddingMobileModal}>
         <Button
           form="create-list-modal-form"
           type="submit"
@@ -120,7 +121,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           disabled={!isFormValid}
           color={'gradient'}
           auto
-          css={{ minWidth: '7.5rem' }}
+          css={{ minWidth: '7.5rem', m: 0 }}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />

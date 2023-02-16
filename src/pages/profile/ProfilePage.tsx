@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-function Index() {
+function ProfilePage() {
   return <div>Profile page</div>;
 }
 
-export default Index;
+export default memo(ProfilePage);

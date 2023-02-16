@@ -17,6 +17,7 @@ import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDefaultFormValues } from './useDefaultFormValues';
 import { Form } from '@/shared/ui/Form';
+import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
 
 export interface FormData {
   name: string;
@@ -76,7 +77,7 @@ const UpdateListModal = ({
       <Modal.Header>
         <Text h3>Изменить список</Text>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
             onSubmit({ isPublic: !isPrivate, name, description, listId }),
@@ -118,7 +119,7 @@ const UpdateListModal = ({
           />
         </Form>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer css={decreasedPaddingMobileModal}>
         <Button
           form="create-list-modal-form"
           type="submit"
@@ -126,7 +127,7 @@ const UpdateListModal = ({
           disabled={!isFormValid}
           color={'gradient'}
           auto
-          css={{ minWidth: '7.5rem' }}
+          css={{ minWidth: '7.5rem', m: 0 }}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />

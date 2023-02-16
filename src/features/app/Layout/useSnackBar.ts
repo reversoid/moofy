@@ -8,7 +8,6 @@ export const useSnackbar = () => {
   const [isSnackBarOpen, setIsSnackBarOpen] = useState(Boolean(error.error));
 
   useEffect(() => {
-    console.log(error)
     setIsSnackBarOpen(Boolean(error.error));
   }, [error]);
 

@@ -1,4 +1,8 @@
-import { $createReviewState, clearState, createReview } from '@/models/reviews/createReview';
+import {
+  $createReviewState,
+  clearState,
+  createReview,
+} from '@/models/reviews/createReview';
 import { Film } from '@/shared/api/types/film.type';
 import { Form } from '@/shared/ui/Form';
 import {
@@ -12,7 +16,8 @@ import {
 import { useEvent, useStore } from 'effector-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { StyledSlider, ariaValueText, getNumbericScore, marks, valueLabelFormat } from '../Slider/Slider';
+import Counter from '../Counter/Counter';
+import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
 
 interface AddReviewModalProps {
   isOpen: boolean;
@@ -21,8 +26,10 @@ interface AddReviewModalProps {
   listId: number;
 }
 
-const SliderContainer = styled('div', {
-  paddingBottom: '1rem',
+const ScoreContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$4',
 });
 
 const StyledLabel = styled('label', {
@@ -32,8 +39,9 @@ const StyledLabel = styled('label', {
 
 interface FormData {
   description: string;
-  score: string;
+  score: number;
 }
+
 
 const AddReviewModal = ({
   isOpen,
@@ -45,7 +53,13 @@ const AddReviewModal = ({
     handleSubmit,
     register,
     formState: { isValid },
-  } = useForm<FormData>();
+    getValues,
+    setValue,
+  } = useForm<FormData>({
+    defaultValues: {
+      score: 7,
+    },
+  });
 
   const onSubmit = useEvent(createReview);
   const onCloseModal = useEvent(clearState);
@@ -53,8 +67,10 @@ const AddReviewModal = ({
   const { loading, success } = useStore($createReviewState);
 
   const handleClose = () => {
-    onCloseModal();
     setIsOpen(false);
+    onCloseModal();
+    setValue('description', '')
+    setValue('score', 7)
   };
 
   useEffect(() => {
@@ -74,13 +90,13 @@ const AddReviewModal = ({
         <Text h3>Обзор к фильму</Text>
       </Modal.Header>
 
-      <Modal.Body>
+      <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
           onSubmit={handleSubmit(({ description, score }) =>
             onSubmit({
               filmId: film?.id ?? '-1',
               description,
-              score: getNumbericScore(score),
+              score: score,
               listId,
             }),
           )}
@@ -95,31 +111,25 @@ const AddReviewModal = ({
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
           />
-
-          <SliderContainer>
+          <ScoreContainer>
             <StyledLabel htmlFor="slider">Оценка</StyledLabel>
-            <StyledSlider
-              id="slider"
-              aria-label="Restricted values"
-              valueLabelFormat={valueLabelFormat}
-              getAriaValueText={ariaValueText}
-              step={null}
-              valueLabelDisplay="off"
-              marks={marks}
-              {...register('score')}
+            <Counter
+              getValue={() => Number(getValues().score)}
+              registerReturn={register('score')}
+              setValue={(newValue) => setValue('score', newValue)}
             />
-          </SliderContainer>
+          </ScoreContainer>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer css={decreasedPaddingMobileModal}>
         <Button
           disabled={!isValid}
           type="submit"
           form="add-review-modal-form"
           color={'gradient'}
-          css={{ minWidth: '6.5rem' }}
+          css={{ minWidth: '7.5rem', margin: 0 }}
           auto
-          size='lg'
+          size="lg"
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />

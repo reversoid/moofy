@@ -33,7 +33,7 @@ export const routes: RouteObject[] = [
         children: listRoutes,
       },
       {
-        path: 'profile',
+        path: 'profile/:id',
         element: <Profile />,
       },
     ],
