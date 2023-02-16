@@ -32,8 +32,10 @@ interface AddReviewModalProps {
   listId: number;
 }
 
-const SliderContainer = styled('div', {
-  paddingBottom: '1rem',
+const ScoreContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$4',
 });
 
 const StyledLabel = styled('label', {
@@ -112,30 +114,32 @@ const AddReviewModal = ({
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
           />
-          <StyledLabel htmlFor="slider">Оценка</StyledLabel>
-          <Counter
-            getValue={() => Number(getValues().score)}
-            registerReturn={register('score', {
-              onChange(event) {
-                let currentValue = Number(event.target.value);                
+          <ScoreContainer>
+            <StyledLabel htmlFor="slider">Оценка</StyledLabel>
+            <Counter
+              getValue={() => Number(getValues().score)}
+              registerReturn={register('score', {
+                onChange(event) {
+                  let currentValue = Number(event.target.value);                  
 
-                if (currentValue === null) {
-                  event.target.value = 1
-                }
+                  if (currentValue === null) {
+                    event.target.value = 1;
+                  }
 
-                if (currentValue < 1) {
-                  event.target.value = 1
-                }
+                  if (currentValue < 1) {
+                    event.target.value = 1;
+                  }
 
-                if (currentValue > 10) {
-                  event.target.value = 10
-                }
+                  if (currentValue > 10) {
+                    event.target.value = 10;                    
+                  }
 
-                return event
-              },
-            })}
-            setValue={(newValue) => setValue('score', newValue)}
-          />
+                  return event;
+                },
+              })}
+              setValue={(newValue) => setValue('score', newValue)}
+            />
+          </ScoreContainer>
         </Form>
       </Modal.Body>
       <Modal.Footer css={{ '@xsMax': { padding: '$sm' } }}>

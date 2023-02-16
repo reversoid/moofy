@@ -81,7 +81,7 @@ const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
         <Icon src={down} alt="Down arrow" />
       </IconButton>
 
-      <InputStyled type="number" {...registerReturn} />
+      <InputStyled readOnly type="number" {...registerReturn} />
 
       <IconButton onPress={increase}>
         <Icon src={up} alt="Up arrow" />
