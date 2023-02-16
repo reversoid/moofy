@@ -57,7 +57,7 @@ const AddReviewModal = ({
     setValue,
   } = useForm<FormData>({
     defaultValues: {
-      score: 5,
+      score: 7,
     },
   });
 
