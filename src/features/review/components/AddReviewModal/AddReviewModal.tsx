@@ -42,6 +42,10 @@ interface FormData {
   score: number;
 }
 
+const COLORS = ['#ed1b24', '#f36523', '#f8931d', '#ffc20d', '#fef200', '#cadb2a', '#8ec63f', '#3ab54b', '#00a650', '#008641']
+
+
+
 const AddReviewModal = ({
   isOpen,
   setIsOpen,
@@ -112,25 +116,7 @@ const AddReviewModal = ({
             <StyledLabel htmlFor="slider">Оценка</StyledLabel>
             <Counter
               getValue={() => Number(getValues().score)}
-              registerReturn={register('score', {
-                onChange(event) {
-                  let currentValue = Number(event.target.value);                  
-
-                  if (currentValue === null) {
-                    event.target.value = 1;
-                  }
-
-                  if (currentValue < 1) {
-                    event.target.value = 1;
-                  }
-
-                  if (currentValue > 10) {
-                    event.target.value = 10;                    
-                  }
-
-                  return event;
-                },
-              })}
+              registerReturn={register('score')}
               setValue={(newValue) => setValue('score', newValue)}
             />
           </ScoreContainer>

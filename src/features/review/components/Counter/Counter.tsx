@@ -1,13 +1,11 @@
-import { Button, Dropdown, Input, styled } from '@nextui-org/react';
-import React, { memo } from 'react';
-import up from '@/assets/img/up.svg';
 import down from '@/assets/img/down.svg';
+import up from '@/assets/img/up.svg';
+import { Button, styled } from '@nextui-org/react';
+import { memo } from 'react';
 import {
-  FieldValues,
-  UseFormRegister,
-  UseFormRegisterReturn,
-  useForm,
+  UseFormRegisterReturn
 } from 'react-hook-form';
+
 
 const removeArrows = {
   '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
