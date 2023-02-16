@@ -1,11 +1,21 @@
 import down from '@/assets/img/down.svg';
 import up from '@/assets/img/up.svg';
 import { Button, styled } from '@nextui-org/react';
-import { memo } from 'react';
-import {
-  UseFormRegisterReturn
-} from 'react-hook-form';
+import { memo, useEffect, useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
+const COLORS = [
+  '#ed1b24',
+  '#f36523',
+  '#f8931d',
+  '#ffc20d',
+  '#fef200',
+  '#cadb2a',
+  '#8ec63f',
+  '#3ab54b',
+  '#00a650',
+  '#008641',
+];
 
 const removeArrows = {
   '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
@@ -41,7 +51,7 @@ const IconButton = styled(Button, {
   maxWidth: 'auto',
   width: '3rem !important',
   height: '3rem !important',
-  background: 'transparent !important'
+  background: 'transparent !important',
 });
 
 const CounterContainer = styled('div', {
@@ -63,6 +73,7 @@ const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
       return;
     }
     setValue(currentValue + 1);
+    changeColor();
   };
 
   const decrease = () => {
@@ -71,6 +82,13 @@ const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
       return;
     }
     setValue(currentValue - 1);
+    changeColor();
+  };
+
+  const [color, setColor] = useState(COLORS[getValue() - 1]);
+
+  const changeColor = () => {
+    setColor(COLORS[getValue() - 1]);
   };
 
   return (
@@ -79,7 +97,17 @@ const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
         <Icon src={down} alt="Down arrow" />
       </IconButton>
 
-      <InputStyled readOnly type="number" {...registerReturn} />
+      <InputStyled
+        readOnly
+        type="number"
+        {...registerReturn}
+        style={{
+          background: color,
+          color: ['#ffc20d', '#fef200', '#cadb2a'].includes(color)
+            ? '#2e2e2e'
+            : 'white',
+        }}
+      />
 
       <IconButton onPress={increase}>
         <Icon src={up} alt="Up arrow" />
