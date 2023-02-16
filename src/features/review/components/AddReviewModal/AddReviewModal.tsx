@@ -67,8 +67,10 @@ const AddReviewModal = ({
   const { loading, success } = useStore($createReviewState);
 
   const handleClose = () => {
-    onCloseModal();
     setIsOpen(false);
+    onCloseModal();
+    setValue('description', '')
+    setValue('score', 7)
   };
 
   useEffect(() => {
