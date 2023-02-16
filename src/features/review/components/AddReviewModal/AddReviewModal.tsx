@@ -16,14 +16,8 @@ import {
 import { useEvent, useStore } from 'effector-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  StyledSlider,
-  ariaValueText,
-  getNumbericScore,
-  marks,
-  valueLabelFormat,
-} from '../Slider/Slider';
 import Counter from '../Counter/Counter';
+import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
 
 interface AddReviewModalProps {
   isOpen: boolean;
@@ -93,7 +87,7 @@ const AddReviewModal = ({
         <Text h3>Обзор к фильму</Text>
       </Modal.Header>
 
-      <Modal.Body css={{ '@xsMax': { padding: '$sm' } }}>
+      <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
           onSubmit={handleSubmit(({ description, score }) =>
             onSubmit({
@@ -142,7 +136,7 @@ const AddReviewModal = ({
           </ScoreContainer>
         </Form>
       </Modal.Body>
-      <Modal.Footer css={{ '@xsMax': { padding: '$sm' } }}>
+      <Modal.Footer css={decreasedPaddingMobileModal}>
         <Button
           disabled={!isValid}
           type="submit"
