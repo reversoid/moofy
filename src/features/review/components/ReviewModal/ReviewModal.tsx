@@ -23,7 +23,7 @@ const StyledLabel = styled('label', {
   color: '$text',
 });
 
-interface FormData {
+export interface ReviewFormData {
   description: string;
   score: number;
 }
@@ -31,14 +31,14 @@ interface FormData {
 export interface ReviewModalProps {
   isOpen: boolean;
   setIsOpen: (newState: boolean) => void;
-  form?: FormData;
+  form?: ReviewFormData;
 
   state: {
     loading: boolean;
     success: boolean;
   };
   handlers: {
-    onSubmit: (data: FormData) => any;
+    onSubmit: (data: ReviewFormData) => any;
     onSuccess: () => void;
   };
 }
@@ -57,7 +57,7 @@ const ReviewModal = ({
     formState: { isValid },
     getValues,
     setValue,
-  } = useForm<FormData>({ defaultValues: form });
+  } = useForm<ReviewFormData>({ defaultValues: form });
 
   useEffect(() => {
     setValue('description', form?.description ?? '');
