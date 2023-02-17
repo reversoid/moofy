@@ -59,7 +59,7 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
           </Row>
         </Row>
 
-        <Text as={'p'} css={{ mb: '$5', fontSize: '$xl' }}>
+        <Text as={'p'} css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}>
           {list.description}
         </Text>
 
