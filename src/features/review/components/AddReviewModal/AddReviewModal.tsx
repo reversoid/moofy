@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Counter from '../Counter/Counter';
 import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
+import { useNavigate } from 'react-router-dom';
 
 interface AddReviewModalProps {
   isOpen: boolean;
@@ -61,6 +62,8 @@ const AddReviewModal = ({
     },
   });
 
+  const navigate = useNavigate()
+
   const onSubmit = useEvent(createReview);
   const onCloseModal = useEvent(clearState);
 
@@ -76,6 +79,7 @@ const AddReviewModal = ({
   useEffect(() => {
     if (!success) return;
     handleClose();
+    navigate('../')
   }, [success]);
 
   return (
