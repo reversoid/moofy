@@ -5,8 +5,8 @@ import {
 } from '@/models/lists/singleList/loadMoreReviews';
 import { Review } from '@/shared/api/types/review.type';
 import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
-import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
-import { useEvent, useStore } from 'effector-react';
+import { Button, Loading, Row, Text, styled } from '@nextui-org/react';
+import { useStore } from 'effector-react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   styled,
@@ -9,6 +9,7 @@ import {
 import { Review } from '@/shared/api/types/review.type';
 import { IconButton } from '@/shared/ui/IconButton';
 import gear from '@/assets/img/gear.svg';
+import ReviewModal from '@/features/review/components/ReviewModal/ReviewModal';
 
 const ImageContainer = styled('div', {
   display: 'flex',
