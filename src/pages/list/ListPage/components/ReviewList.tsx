@@ -27,15 +27,16 @@ interface ReviewListProps {
   reviews?: IterableResponse<Review>;
   isUserOwner: boolean;
   listId: number;
+  reviewsLoading: boolean;
 }
 
-const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
+const ReviewList = ({ reviews, isUserOwner, listId, reviewsLoading }: ReviewListProps) => {
   const navigate = useNavigate();
 
-  const loading = useStore(loadMoreReviewsFx.pending);
+  const loadingMore = useStore(loadMoreReviewsFx.pending);
 
   const handleLoadMore = () => {
-    if (loading) {
+    if (loadingMore) {
       return;
     }
     loadMoreReviews({ lowerBound: reviews!.nextKey as DateAsString, listId });
@@ -47,7 +48,7 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
         <Text h2 css={{ mb: '$5' }}>
           Фильмы
         </Text>
-        {!reviews && <Loading size="md" type="default" />}
+        {reviewsLoading && <Loading size="md" type="default" />}
       </Row>
       {reviews?.items.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Список пуст</Text>
@@ -72,7 +73,7 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
           {reviews?.nextKey && (
             <LoadMoreContainer>
               <Button color={'gradient'} onClick={handleLoadMore}>
-                {loading ? (
+                {loadingMore ? (
                   <Loading type="points" color="white" />
                 ) : (
                   'Загрузить больше'

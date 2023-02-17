@@ -10,14 +10,18 @@ import { Review } from '@/shared/api/types/review.type';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
 
-const ListPage = ({
-  listWithContent: { list, reviews },
-}: {
+interface ListPageProps {
   listWithContent: {
     reviews?: IterableResponse<Review>;
     list: List;
   };
-}) => {
+  reviewsLoading: boolean;
+}
+
+const ListPage = ({
+  listWithContent: { list, reviews },
+  reviewsLoading,
+}: ListPageProps) => {
   const { userId } = useAuth();
 
   return (
@@ -27,6 +31,7 @@ const ListPage = ({
         isUserOwner={userId === list.user.id}
         reviews={reviews}
         listId={list.id}
+        reviewsLoading={reviewsLoading}
       />
     </>
   );
@@ -50,12 +55,22 @@ const ListPageWithData = () => {
     [],
   );
 
-  if (list) {
-    return <ListPage listWithContent={{ ...listWithContent! }} />;
+  const listWithContentAlreadyLoaded = useMemo(
+    () => Boolean(list && list.list.id === Number(id)),
+    [list],
+  );
+
+  if (listWithContentAlreadyLoaded) {
+    return (
+      <ListPage
+        listWithContent={{ ...listWithContent! }}
+        reviewsLoading={loading}
+      />
+    );
   }
 
   if (listAlreadyLoaded) {
-    return <ListPage listWithContent={{ list: listAlreadyLoaded }} />;
+    return <ListPage listWithContent={{ list: listAlreadyLoaded }} reviewsLoading={loading} />;
   }
 
   if (loading) {

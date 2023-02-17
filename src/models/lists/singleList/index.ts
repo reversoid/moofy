@@ -31,7 +31,6 @@ $list.on(updateListFx.doneData, (state, payload) => {
   }
   return { ...state, list: payload };
 });
-$list.on(getList, () => null);
 $list.on(loadMoreReviewsFx.doneData, (state, payload) => {
   if (!state) {
     return state;
