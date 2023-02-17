@@ -16,7 +16,9 @@ export interface UpdateListDTO extends Partial<CreateListDTO> {
 
 export class ListService extends ApiService {
   public async getMyLists(lowerBound?: DateAsString) {
-    const searchParams: SearchParamsOption = {};
+    const searchParams: SearchParamsOption = {
+      limit: 19,
+    };
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
     }
