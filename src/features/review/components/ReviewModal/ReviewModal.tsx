@@ -1,12 +1,12 @@
 import { Form } from '@/shared/ui/Form';
 import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
 import {
-    Button,
-    Loading,
-    Modal,
-    Text,
-    Textarea,
-    styled,
+  Button,
+  Loading,
+  Modal,
+  Text,
+  Textarea,
+  styled,
 } from '@nextui-org/react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -43,12 +43,13 @@ export interface ReviewModalProps {
   };
 }
 
+/** Provides basis for update and create review modal */
 const ReviewModal = ({
   isOpen,
   setIsOpen,
   form,
   handlers,
-  state
+  state,
 }: ReviewModalProps) => {
   const {
     handleSubmit,
@@ -59,9 +60,16 @@ const ReviewModal = ({
   } = useForm<FormData>({ defaultValues: form });
 
   useEffect(() => {
-    setValue('description', form?.description ?? '')
-    setValue('score', form?.score ?? 7)
-  }, [form])
+    setValue('description', form?.description ?? '');
+    setValue('score', form?.score ?? 7);
+  }, [form]);
+
+  useEffect(() => {
+    if (!state.success) {
+      return;
+    }
+    handlers.onSuccess();
+  }, [state.success]);
 
   return (
     <Modal
@@ -77,9 +85,7 @@ const ReviewModal = ({
 
       <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
-          onSubmit={handleSubmit((data) =>
-            handlers.onSubmit(data),
-          )}
+          onSubmit={handleSubmit((data) => handlers.onSubmit(data))}
           id="add-review-modal-form"
         >
           <Textarea
