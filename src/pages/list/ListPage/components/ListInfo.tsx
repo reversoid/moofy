@@ -1,9 +1,10 @@
-import { List } from '@/features/list/services/list.service';
 import { styled, Row, Text, Image, Button } from '@nextui-org/react';
 import { Link } from 'react-router-dom';
 import gear from '@/assets/img/gear.svg';
 import { memo, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
+import { List } from '@/shared/api/types/list.type';
+import { IconButton } from '@/shared/ui/IconButton';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -42,20 +43,15 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
             >
               {list.name}
             </Text>
-            <Button
+            <IconButton
               light
               css={{
-                width: '1.5rem',
-                height: '1.5rem',
-                p: 0,
-                minWidth: 'auto',
                 ml: 'auto',
-                flexShrink: 0,
               }}
               onPress={() => setIsUpdateDialogOpen(true)}
             >
               <Image src={gear} height={'1.5rem'} width={'1.5rem'}></Image>
-            </Button>
+            </IconButton>
           </Row>
         </Row>
 

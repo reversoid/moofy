@@ -66,7 +66,7 @@ const ReviewList = ({ reviews, isUserOwner, listId, reviewsLoading }: ReviewList
 
           <FilmsContainer>
             {reviews?.items.map((review) => (
-              <ReviewItem key={review.id} review={review} />
+              <ReviewItem key={review.id} review={review} isUserOwner={isUserOwner} />
             ))}
           </FilmsContainer>
 

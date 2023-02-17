@@ -7,6 +7,8 @@ import {
   Link as NextUILink,
 } from '@nextui-org/react';
 import { Review } from '@/shared/api/types/review.type';
+import { IconButton } from '@/shared/ui/IconButton';
+import gear from '@/assets/img/gear.svg';
 
 const ImageContainer = styled('div', {
   display: 'flex',
@@ -33,12 +35,28 @@ const ReviewWrapper = styled('div', {
   },
   background: '$gray50',
   borderRadius: '$lg',
+  position: 'relative',
 });
 
-const ReviewItem = ({ review }: { review: Review }) => {
+const EditButton = styled(IconButton, {
+  position: 'absolute',
+  top: '$sm',
+  right: '$sm',
+});
+interface ReviewItemProps {
+  review: Review;
+  isUserOwner: boolean;
+}
+
+const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
   return (
     <>
       <ReviewWrapper>
+        {isUserOwner && (
+          <EditButton light>
+            <Image src={gear} width={'1.5rem'} height={'1.5rem'} />
+          </EditButton>
+        )}
         <ImageContainer>
           <Image
             showSkeleton
