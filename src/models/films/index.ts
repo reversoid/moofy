@@ -1,6 +1,6 @@
 import { filmService } from '@/features/films/film.service';
 import { Film } from '@/shared/api/types/film.type';
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import { combine, createEffect, createEvent, createStore, sample } from 'effector';
 
 export const getFilmsByName = createEvent<string>();
 
@@ -9,6 +9,11 @@ getFilmsByNameFx.use((name) => filmService.getFilmsByName(name));
 
 export const $films = createStore<Film[] | null>(null);
 $films.on(getFilmsByNameFx.doneData, (state, payload) => payload.items);
+
+export const $getFilmsState = combine({
+  loading: getFilmsByNameFx.pending,
+  result: $films
+})
 
 sample({
   clock: getFilmsByName,

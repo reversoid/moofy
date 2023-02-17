@@ -1,15 +1,15 @@
-import { Film } from '@/features/list/services/list.service';
 import { $lists } from '@/models/lists';
 import { $list, $listState, getList } from '@/models/lists/singleList';
 import { Input } from '@/shared/ui/Input';
-import { Text, Image, styled, Row, Button } from '@nextui-org/react';
+import { Text, Image, styled, Row, Button, Loading } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AddReviewModal from '@/features/review/components/AddReviewModal/AddReviewModal';
 import debounce from 'lodash.debounce';
-import { $films, getFilmsByName } from '@/models/films';
+import { $films, $getFilmsState, getFilmsByName } from '@/models/films';
+import { Film } from '@/shared/api/types/film.type';
 
 const Listbox = styled('ul', {
   width: '100%',
@@ -82,7 +82,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const films = useStore($films);
+  const { result, loading } = useStore($getFilmsState);
 
   const _searchFilms = useEvent(getFilmsByName);
   const searchFilms = useMemo(() => debounce(_searchFilms, 250), []);
@@ -93,12 +93,12 @@ const PageContent = memo(({ listId }: PageContentProps) => {
   }, [inputValue]);
 
   useEffect(() => {
-    if (!films) return;
+    if (!result) return;
 
-    if (films.length > 0) {
-      setOptions(films);
+    if (result.length > 0) {
+      setOptions(result);
     }
-  }, [films]);
+  }, [result]);
 
   return (
     <>
@@ -110,6 +110,9 @@ const PageContent = memo(({ listId }: PageContentProps) => {
           fullWidth
           placeholder="Поиск фильма"
           size="lg"
+          contentRight={
+            loading ? <Loading size="sm" /> : <div></div>
+          }
         />
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
@@ -138,7 +141,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         ) : null}
         <Row justify="flex-end" css={{ mt: '$10' }}>
           <Button
-            size='lg'
+            size="lg"
             disabled={!selectedFilm}
             css={{ width: 'fit-content', minWidth: 0 }}
             onClick={() => setIsModalOpen(true)}
