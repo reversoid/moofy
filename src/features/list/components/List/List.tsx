@@ -36,12 +36,11 @@ const ListWrapper = styled('div', {
   transition: 'all 0.1s ease-in-out',
   '&:hover': {
     transform: 'translateY(-0.2rem)'
-  }
+  },
+  cursor: 'pointer'
 })
 
-const ListBody = styled('div', {
-
-})
+const ListBody = styled('div', {})
 
 const List = ({ id, text, isPublic }: ListProps) => {
   return (
