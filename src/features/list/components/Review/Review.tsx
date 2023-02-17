@@ -20,23 +20,25 @@ const FilmInfo = styled('div', {
   flexGrow: 1,
 });
 
+const ReviewWrapper = styled('div', {
+  display: 'flex',
+  justifyContent: 'space-between',
+  flexDirection: 'row',
+  gap: '$6',
+  padding: '$6',
+  '@xsMax': {
+    flexDirection: 'column',
+    paddingTop: '$7',
+    paddingBottom: '$7',
+  },
+  background: '$gray50',
+  borderRadius: '$lg',
+});
+
 const ReviewItem = ({ review }: { review: Review }) => {
   return (
     <>
-      <Card
-        css={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          gap: '$6',
-          padding: '$6',
-          '@xsMax': {
-            flexDirection: 'column',
-            paddingTop: '$7',
-            paddingBottom: '$7',
-          },
-        }}
-      >
+      <ReviewWrapper>
         <ImageContainer>
           <Image
             showSkeleton
@@ -66,7 +68,7 @@ const ReviewItem = ({ review }: { review: Review }) => {
             {review.description}
           </Text>
         </FilmInfo>
-      </Card>
+      </ReviewWrapper>
     </>
   );
 };

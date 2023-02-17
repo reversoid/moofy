@@ -25,10 +25,27 @@ export interface ListProps {
   isPublic?: boolean;
 }
 
+const ListWrapper = styled('div', {
+  display: 'flex',
+  width: '100%',
+  flexDirection: 'column',
+  borderRadius: '$lg',
+  borderCollapse: 'separate',
+  overflow: 'hidden',
+  backgroundColor: '$gray50',
+  transition: 'all 0.1s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-0.2rem)'
+  },
+  cursor: 'pointer'
+})
+
+const ListBody = styled('div', {})
+
 const List = ({ id, text, isPublic }: ListProps) => {
   return (
-    <Card isPressable isHoverable css={{ p: 0 }}>
-      <Card.Body css={{ p: 0 }}>
+    <ListWrapper>
+      <ListBody>
         {id === undefined ? (
           <Background
             css={{
@@ -39,7 +56,7 @@ const List = ({ id, text, isPublic }: ListProps) => {
         ) : (
           <CardBackground strToHash={String(id)} />
         )}
-      </Card.Body>
+      </ListBody>
       <Card.Footer css={{ justifyItems: 'flex-start' }}>
         <Row wrap="nowrap" justify="space-between" align="center">
           <Text
@@ -59,7 +76,7 @@ const List = ({ id, text, isPublic }: ListProps) => {
           )}
         </Row>
       </Card.Footer>
-    </Card>
+    </ListWrapper>
   );
 };
 
