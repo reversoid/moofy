@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   styled,
@@ -7,6 +7,10 @@ import {
   Link as NextUILink,
 } from '@nextui-org/react';
 import { Review } from '@/shared/api/types/review.type';
+import { IconButton } from '@/shared/ui/IconButton';
+import gear from '@/assets/img/gear.svg';
+import ReviewModal from '@/features/review/components/ReviewModal/ReviewModal';
+import UpdateReviewModal from '@/features/review/components/UpdateReviewModal/UpdateReviewModal';
 
 const ImageContainer = styled('div', {
   display: 'flex',
@@ -33,12 +37,30 @@ const ReviewWrapper = styled('div', {
   },
   background: '$gray50',
   borderRadius: '$lg',
+  position: 'relative',
 });
 
-const ReviewItem = ({ review }: { review: Review }) => {
+const EditButton = styled(IconButton, {
+  position: 'absolute',
+  top: '$sm',
+  right: '$sm',
+});
+interface ReviewItemProps {
+  review: Review;
+  isUserOwner: boolean;
+}
+
+const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <>
       <ReviewWrapper>
+        {isUserOwner && (
+          <EditButton light onPress={() => setModalOpen(true)}>
+            <Image src={gear} width={'1.5rem'} height={'1.5rem'} />
+          </EditButton>
+        )}
         <ImageContainer>
           <Image
             showSkeleton
@@ -68,6 +90,15 @@ const ReviewItem = ({ review }: { review: Review }) => {
             {review.description}
           </Text>
         </FilmInfo>
+        <UpdateReviewModal
+          isOpen={modalOpen}
+          setIsOpen={setModalOpen}
+          reviewId={review.id}
+          formData={{
+            description: review.description,
+            score: review.score,
+          }}
+        />
       </ReviewWrapper>
     </>
   );

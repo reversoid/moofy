@@ -11,6 +11,7 @@ import { IterableResponse } from '@/shared/api/types/shared';
 import { Review } from '@/shared/api/types/review.type';
 import { List } from '@/shared/api/types/list.type';
 import { loadMoreReviewsFx } from './loadMoreReviews';
+import { updateReviewFx } from '@/models/reviews/updateReview';
 
 export const getList = createEvent<number>();
 
@@ -31,7 +32,6 @@ $list.on(updateListFx.doneData, (state, payload) => {
   }
   return { ...state, list: payload };
 });
-$list.on(getList, () => null);
 $list.on(loadMoreReviewsFx.doneData, (state, payload) => {
   if (!state) {
     return state;
@@ -41,6 +41,29 @@ $list.on(loadMoreReviewsFx.doneData, (state, payload) => {
     reviews: {
       nextKey: payload.nextKey,
       items: [...state.reviews.items, ...payload.items],
+    },
+  };
+});
+$list.on(updateReviewFx.doneData, (state, payload) => {
+  if (!state) {
+    return state;
+  }
+  const reviewToUpdateIndex = state.reviews.items.findIndex(
+    (r) => r.id === payload.id,
+  );
+  if (reviewToUpdateIndex === -1) {
+    return state;
+  }
+
+  const updatedItems = [...state.reviews.items];
+  const film = state.reviews.items[reviewToUpdateIndex].film
+  updatedItems[reviewToUpdateIndex] = {...payload, film};
+
+  return {
+    ...state,
+    reviews: {
+      nextKey: state.reviews.nextKey,
+      items: updatedItems,
     },
   };
 });

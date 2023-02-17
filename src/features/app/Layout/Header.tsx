@@ -8,7 +8,9 @@ export const HEADER_HEIGHT = '4.75rem';
 
 const HeaderStyled = styled('header', {
   position: 'fixed',
-  width: '100%',
+  top: 0,
+  left: 0,
+  width: '100vw',
   zIndex: 10,
 });
 

@@ -5,8 +5,8 @@ import {
 } from '@/models/lists/singleList/loadMoreReviews';
 import { Review } from '@/shared/api/types/review.type';
 import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
-import { Button, Loading, Row, styled, Text } from '@nextui-org/react';
-import { useEvent, useStore } from 'effector-react';
+import { Button, Loading, Row, Text, styled } from '@nextui-org/react';
+import { useStore } from 'effector-react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,15 +27,16 @@ interface ReviewListProps {
   reviews?: IterableResponse<Review>;
   isUserOwner: boolean;
   listId: number;
+  reviewsLoading: boolean;
 }
 
-const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
+const ReviewList = ({ reviews, isUserOwner, listId, reviewsLoading }: ReviewListProps) => {
   const navigate = useNavigate();
 
-  const loading = useStore(loadMoreReviewsFx.pending);
+  const loadingMore = useStore(loadMoreReviewsFx.pending);
 
   const handleLoadMore = () => {
-    if (loading) {
+    if (loadingMore) {
       return;
     }
     loadMoreReviews({ lowerBound: reviews!.nextKey as DateAsString, listId });
@@ -47,7 +48,7 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
         <Text h2 css={{ mb: '$5' }}>
           Фильмы
         </Text>
-        {!reviews && <Loading size="md" type="default" />}
+        {reviewsLoading && <Loading size="md" type="default" />}
       </Row>
       {reviews?.items.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Список пуст</Text>
@@ -65,14 +66,14 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
 
           <FilmsContainer>
             {reviews?.items.map((review) => (
-              <ReviewItem key={review.id} review={review} />
+              <ReviewItem key={review.id} review={review} isUserOwner={isUserOwner} />
             ))}
           </FilmsContainer>
 
           {reviews?.nextKey && (
             <LoadMoreContainer>
               <Button color={'gradient'} onClick={handleLoadMore}>
-                {loading ? (
+                {loadingMore ? (
                   <Loading type="points" color="white" />
                 ) : (
                   'Загрузить больше'
