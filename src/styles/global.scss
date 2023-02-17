@@ -1,14 +1,12 @@
 html {
   scrollbar-gutter: stable;
   height: 100%;
+
+  @media (max-width: 650px) {
+    font-size: 0.9375em;
+  }
 }
 
 body {
   min-height: 100%;
-}
-
-html, body {
-  @media (max-width: 650px) {
-    font-size: 0.9375rem;
-  }
 }
