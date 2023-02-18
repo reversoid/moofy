@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
-import {
-  Card,
-  styled,
-  Image,
-  Text,
-  Link as NextUILink,
-} from '@nextui-org/react';
-import { Review } from '@/shared/api/types/review.type';
-import { IconButton } from '@/shared/ui/IconButton';
-import gear from '@/assets/img/gear.svg';
-import ReviewModal from '@/features/review/components/ReviewModal/ReviewModal';
 import UpdateReviewModal from '@/features/review/components/UpdateReviewModal/UpdateReviewModal';
+import { Review } from '@/shared/api/types/review.type';
+import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
+import { Image, Link as NextUILink, Text, styled } from '@nextui-org/react';
+import { useMemo, useState } from 'react';
+import GearButton from './GearButton';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
 
 const ImageContainer = styled('div', {
   display: 'flex',
@@ -40,26 +34,39 @@ const ReviewWrapper = styled('div', {
   position: 'relative',
 });
 
-const EditButton = styled(IconButton, {
-  position: 'absolute',
-  top: '$sm',
-  right: '$sm',
-});
 interface ReviewItemProps {
   review: Review;
   isUserOwner: boolean;
 }
 
 const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
+  const dropdownOptions: Option[] = useMemo(() => {
+    return [
+      {
+        key: 'update',
+        callback: () => setEditModalOpen(true),
+        label: 'Изменить',
+      },
+      {
+        key: 'delete',
+        callback: () => console.log('delete'),
+        label: 'Удалить',
+        color: 'error',
+      },
+    ];
+  }, []);
 
   return (
     <>
       <ReviewWrapper>
         {isUserOwner && (
-          <EditButton light onPress={() => setModalOpen(true)}>
-            <Image src={gear} width={'1.5rem'} height={'1.5rem'} />
-          </EditButton>
+          <ActionsDropdown
+            trigger={<GearButton />}
+            options={dropdownOptions}
+            placement="left"
+          />
         )}
         <ImageContainer>
           <Image
@@ -91,8 +98,8 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
           </Text>
         </FilmInfo>
         <UpdateReviewModal
-          isOpen={modalOpen}
-          setIsOpen={setModalOpen}
+          isOpen={editModalOpen}
+          setIsOpen={setEditModalOpen}
           reviewId={review.id}
           formData={{
             description: review.description,
