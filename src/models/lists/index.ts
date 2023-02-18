@@ -6,6 +6,7 @@ import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
 import { $list } from './singleList';
 import { loadMoreListsFx } from './loadMoreLists';
+import { deleteListFx } from './deleteList';
 
 export const getLists = createEvent<void>();
 
@@ -33,7 +34,13 @@ $lists.on(updateListFx.doneData, (state, payload) => {
   };
 });
 $lists.on(loadMoreListsFx.doneData, (state, payload) => {
-  return { nextKey: payload.nextKey, items: [...state.items, ...payload.items] };
+  return {
+    nextKey: payload.nextKey,
+    items: [...state.items, ...payload.items],
+  };
+});
+$lists.on(deleteListFx.doneData, (state, { listId }) => {
+  return { ...state, items: state.items.filter((item) => item.id !== listId) };
 });
 
 sample({

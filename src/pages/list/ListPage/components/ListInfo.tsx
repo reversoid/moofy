@@ -1,14 +1,20 @@
 import { styled, Row, Text, Image, Button } from '@nextui-org/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import gear from '@/assets/img/gear.svg';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
 import { List } from '@/shared/api/types/list.type';
 import { IconButton } from '@/shared/ui/IconButton';
 import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
 import GearButton from '@/features/list/components/Review/GearButton';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
-import DeleteModalContent from './DeleteModalContent';
+import DeleteModalContent from './DeleteListModalContent';
+import { useStore } from 'effector-react';
+import {
+  $deleteListState,
+  clearState,
+  deleteList,
+} from '@/models/lists/deleteList';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -45,6 +51,18 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
     },
   ];
 
+  const { loading, success: deleteSuccess } = useStore($deleteListState);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!deleteSuccess) {
+      return;
+    }
+    clearState();
+    setIsDeleteDialogOpen(false);
+    navigate('/welcome')
+  }, [deleteSuccess]);
+
   return (
     <>
       <ListInfoContainer>
@@ -66,11 +84,13 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
               {list.name}
             </Text>
 
-            <ActionsDropdown
-              trigger={<GearButton />}
-              options={dropdownOptions}
-              placement="left"
-            />
+            {isUserOwner && (
+              <ActionsDropdown
+                trigger={<GearButton />}
+                options={dropdownOptions}
+                placement="left"
+              />
+            )}
           </Row>
         </Row>
 
@@ -104,9 +124,9 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
         content={<DeleteModalContent />}
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
-        loading={false}
+        loading={loading}
         submitText="Удалить"
-        onSubmit={() => console.log('Удаляем список')}
+        onSubmit={() => deleteList({ listId: list.id })}
         buttonColor="error"
       />
     </>
