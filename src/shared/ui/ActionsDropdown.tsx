@@ -18,17 +18,26 @@ const ActionsDropdown = ({
   trigger,
   options,
   placement,
-  menuAriaLabel
+  menuAriaLabel,
 }: ActionsDropdownProps) => {
   return (
     <Dropdown placement={placement} isBordered>
       <Dropdown.Trigger>{trigger}</Dropdown.Trigger>
 
-      <Dropdown.Menu aria-label={ menuAriaLabel ?? "Dropdown Actions"} onAction={key => {
-        const optionCallback = options.find(option => option.key === key)?.callback;
-        optionCallback && optionCallback()
-      }}>
-        {options.map(option => (<Dropdown.Item key={option.key} color={option.color}>{option.label}</Dropdown.Item>))}
+      <Dropdown.Menu
+        aria-label={menuAriaLabel ?? 'Dropdown Actions'}
+        onAction={(key) => {
+          const optionCallback = options.find(
+            (option) => option.key === key,
+          )?.callback;
+          optionCallback && optionCallback();
+        }}
+      >
+        {options.map((option) => (
+          <Dropdown.Item key={option.key} color={option.color}>
+            {option.label}
+          </Dropdown.Item>
+        ))}
       </Dropdown.Menu>
     </Dropdown>
   );
