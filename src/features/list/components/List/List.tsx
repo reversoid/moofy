@@ -1,8 +1,7 @@
-import { Card, Image, Row, styled, Text } from '@nextui-org/react';
-import { Link } from 'react-router-dom';
-import ColorHash from 'color-hash';
 import add from '@/assets/img/add.svg';
 import lock from '@/assets/img/lock.svg';
+import { Card, Image, Row, styled, Text } from '@nextui-org/react';
+import ColorHash from 'color-hash';
 import { memo } from 'react';
 
 const colorHash = new ColorHash();
@@ -35,12 +34,13 @@ const ListWrapper = styled('div', {
   backgroundColor: '$gray50',
   transition: 'all 0.1s ease-in-out',
   '&:hover': {
-    transform: 'translateY(-0.2rem)'
+    transform: 'translateY(-0.2rem)',
   },
-  cursor: 'pointer'
-})
+  cursor: 'pointer',
+  position: 'relative',
+});
 
-const ListBody = styled('div', {})
+const ListBody = styled('div', {});
 
 const List = ({ id, text, isPublic }: ListProps) => {
   return (

@@ -1,10 +1,20 @@
 import { styled, Row, Text, Image, Button } from '@nextui-org/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import gear from '@/assets/img/gear.svg';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
 import { List } from '@/shared/api/types/list.type';
 import { IconButton } from '@/shared/ui/IconButton';
+import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
+import GearButton from '@/features/list/components/Review/GearButton';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
+import DeleteModalContent from './DeleteListModalContent';
+import { useStore } from 'effector-react';
+import {
+  $deleteListState,
+  clearState,
+  deleteList,
+} from '@/models/lists/deleteList';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -25,12 +35,42 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
   };
 
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const dropdownOptions: Option[] = [
+    {
+      label: 'Изменить',
+      key: 'update',
+      callback: () => setIsUpdateDialogOpen(true),
+    },
+    {
+      label: 'Удалить',
+      key: 'delete',
+      callback: () => setIsDeleteDialogOpen(true),
+      color: 'error',
+    },
+  ];
+
+  const { loading, success: deleteSuccess } = useStore($deleteListState);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!deleteSuccess) {
+      return;
+    }
+    clearState();
+    setIsDeleteDialogOpen(false);
+    navigate('/welcome')
+  }, [deleteSuccess]);
 
   return (
     <>
       <ListInfoContainer>
         <Row align="center" justify="space-between" css={{ gap: '$15' }}>
-          <Row align="center" css={{ gap: '$10' }}>
+          <Row
+            align="center"
+            css={{ gap: '$10', justifyContent: 'space-between' }}
+          >
             <Text
               h1
               css={{
@@ -43,19 +83,21 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
             >
               {list.name}
             </Text>
-            <IconButton
-              light
-              css={{
-                ml: 'auto',
-              }}
-              onPress={() => setIsUpdateDialogOpen(true)}
-            >
-              <Image src={gear} height={'1.5rem'} width={'1.5rem'}></Image>
-            </IconButton>
+
+            {isUserOwner && (
+              <ActionsDropdown
+                trigger={<GearButton />}
+                options={dropdownOptions}
+                placement="left"
+              />
+            )}
           </Row>
         </Row>
 
-        <Text as={'p'} css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}>
+        <Text
+          as={'p'}
+          css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}
+        >
           {list.description}
         </Text>
 
@@ -77,6 +119,15 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
           isPrivate: !list.is_public,
           name: list.name,
         }}
+      />
+      <ConfirmModal
+        content={<DeleteModalContent />}
+        isOpen={isDeleteDialogOpen}
+        setIsOpen={setIsDeleteDialogOpen}
+        loading={loading}
+        submitText="Удалить"
+        onSubmit={() => deleteList({ listId: list.id })}
+        buttonColor="error"
       />
     </>
   );

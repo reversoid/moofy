@@ -14,6 +14,10 @@ export interface UpdateListDTO extends Partial<CreateListDTO> {
   listId: number;
 }
 
+export interface DeleteListDTO {
+  listId: number;
+}
+
 export class ListService extends ApiService {
   public async getMyLists(lowerBound?: DateAsString) {
     const searchParams: SearchParamsOption = {
@@ -51,6 +55,13 @@ export class ListService extends ApiService {
 
   public async updateList(dto: UpdateListDTO) {
     return this.patch<List>('/list', { useJWT: true, json: dto });
+  }
+
+  public async deleteList(listId: number) {
+    return this.delete<{ listId: number }>('/list', {
+      useJWT: true,
+      json: { listId },
+    });
   }
 }
 

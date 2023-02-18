@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Image, styled } from '@nextui-org/react';
-import logo from './img/logo.svg';
+import logo from '@/assets/img/Logo.svg';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/shared/hooks/useAuth';
 

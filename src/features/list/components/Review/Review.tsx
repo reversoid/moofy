@@ -44,6 +44,12 @@ interface ReviewItemProps {
   isUserOwner: boolean;
 }
 
+const GearButtonStyled = styled(GearButton, {
+  position: 'absolute',
+  top: '$sm',
+  right: '$sm',
+});
+
 const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -68,7 +74,9 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
       <ReviewWrapper>
         {isUserOwner && (
           <ActionsDropdown
-            trigger={<GearButton />}
+            trigger={
+              <GearButtonStyled />
+            }
             options={dropdownOptions}
             placement="left"
           />
