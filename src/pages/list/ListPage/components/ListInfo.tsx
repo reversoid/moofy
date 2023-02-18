@@ -5,6 +5,10 @@ import { memo, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
 import { List } from '@/shared/api/types/list.type';
 import { IconButton } from '@/shared/ui/IconButton';
+import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
+import GearButton from '@/features/list/components/Review/GearButton';
+import ConfirmModal from '@/shared/ui/ConfirmModal';
+import DeleteModalContent from './DeleteModalContent';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -25,12 +29,30 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
   };
 
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const dropdownOptions: Option[] = [
+    {
+      label: 'Изменить',
+      key: 'update',
+      callback: () => setIsUpdateDialogOpen(true),
+    },
+    {
+      label: 'Удалить',
+      key: 'delete',
+      callback: () => setIsDeleteDialogOpen(true),
+      color: 'error',
+    },
+  ];
 
   return (
     <>
       <ListInfoContainer>
         <Row align="center" justify="space-between" css={{ gap: '$15' }}>
-          <Row align="center" css={{ gap: '$10' }}>
+          <Row
+            align="center"
+            css={{ gap: '$10', justifyContent: 'space-between' }}
+          >
             <Text
               h1
               css={{
@@ -43,19 +65,19 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
             >
               {list.name}
             </Text>
-            <IconButton
-              light
-              css={{
-                ml: 'auto',
-              }}
-              onPress={() => setIsUpdateDialogOpen(true)}
-            >
-              <Image src={gear} height={'1.5rem'} width={'1.5rem'}></Image>
-            </IconButton>
+
+            <ActionsDropdown
+              trigger={<GearButton />}
+              options={dropdownOptions}
+              placement="left"
+            />
           </Row>
         </Row>
 
-        <Text as={'p'} css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}>
+        <Text
+          as={'p'}
+          css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}
+        >
           {list.description}
         </Text>
 
@@ -77,6 +99,15 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
           isPrivate: !list.is_public,
           name: list.name,
         }}
+      />
+      <ConfirmModal
+        content={<DeleteModalContent />}
+        isOpen={isDeleteDialogOpen}
+        setIsOpen={setIsDeleteDialogOpen}
+        loading={false}
+        submitText="Удалить"
+        onSubmit={() => console.log('Удаляем список')}
+        buttonColor="error"
       />
     </>
   );

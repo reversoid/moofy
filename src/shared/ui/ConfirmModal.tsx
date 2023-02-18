@@ -9,6 +9,14 @@ interface ConfirmModalProps {
   onSubmit: () => void;
   submitText: string;
   content: React.ReactNode;
+  buttonColor?:
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'gradient';
 }
 
 const ConfirmModal = ({
@@ -17,7 +25,8 @@ const ConfirmModal = ({
   loading,
   onSubmit,
   submitText,
-  content
+  content,
+  buttonColor,
 }: ConfirmModalProps) => {
   return (
     <Modal
@@ -32,10 +41,16 @@ const ConfirmModal = ({
       <Modal.Body css={decreasedPaddingMobileModal}>{content}</Modal.Body>
       <Modal.Footer css={decreasedPaddingMobileModal}>
         <Button
-          size="lg"
-          color={'gradient'}
+          size="md"
+          color={buttonColor}
           auto
-          css={{ minWidth: '7.5rem', m: 0 }}
+          css={{
+            minWidth: '7.5rem',
+            m: 0,
+            '@xsMax': {
+              width: '100%',
+            },
+          }}
           onPress={onSubmit}
         >
           {loading ? (
