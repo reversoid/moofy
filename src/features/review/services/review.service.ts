@@ -14,6 +14,10 @@ export interface UpdateReviewDTO {
   score: number;
 }
 
+export interface DeleteReviewDTO {
+  reviewId: number;
+}
+
 export class ReviewService extends ApiService {
   public createReview(dto: CreateReviewDTO) {
     return this.post<Review>('/review', {
@@ -26,6 +30,13 @@ export class ReviewService extends ApiService {
     return this.patch<Review>('/review', {
       useJWT: true,
       json: dto,
+    });
+  }
+
+  public deleteReview(reviewId: number) {
+    return this.delete<{ reviewId: number }>('/review', {
+      useJWT: true,
+      json: { reviewId },
     });
   }
 }

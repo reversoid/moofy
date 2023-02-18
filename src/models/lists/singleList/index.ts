@@ -4,6 +4,7 @@ import {
   createEffect,
   createEvent,
   createStore,
+  restore,
   sample,
 } from 'effector';
 import { updateListFx } from '../updateList';
@@ -12,6 +13,13 @@ import { Review } from '@/shared/api/types/review.type';
 import { List } from '@/shared/api/types/list.type';
 import { loadMoreReviewsFx } from './loadMoreReviews';
 import { updateReviewFx } from '@/models/reviews/updateReview';
+import { deleteReview, deleteReviewFx } from '@/models/reviews/deleteReview';
+import { deleteReviewById, updateReviewInList } from './utils';
+
+export type ListStore = {
+  reviews: IterableResponse<Review>;
+  list: List;
+} | null;
 
 export const getList = createEvent<number>();
 
@@ -21,10 +29,7 @@ export const getListFx = createEffect<
 >();
 getListFx.use((id) => listService.getMyListWithContent(id));
 
-export const $list = createStore<{
-  reviews: IterableResponse<Review>;
-  list: List;
-} | null>(null);
+export const $list = createStore<ListStore>(null);
 $list.on(getListFx.doneData, (state, payload) => payload);
 $list.on(updateListFx.doneData, (state, payload) => {
   if (!state) {
@@ -32,6 +37,7 @@ $list.on(updateListFx.doneData, (state, payload) => {
   }
   return { ...state, list: payload };
 });
+
 $list.on(loadMoreReviewsFx.doneData, (state, payload) => {
   if (!state) {
     return state;
@@ -44,26 +50,30 @@ $list.on(loadMoreReviewsFx.doneData, (state, payload) => {
     },
   };
 });
+
 $list.on(updateReviewFx.doneData, (state, payload) => {
   if (!state) {
     return state;
   }
-  const reviewToUpdateIndex = state.reviews.items.findIndex(
-    (r) => r.id === payload.id,
-  );
-  if (reviewToUpdateIndex === -1) {
-    return state;
-  }
-
-  const updatedItems = [...state.reviews.items];
-  const film = state.reviews.items[reviewToUpdateIndex].film
-  updatedItems[reviewToUpdateIndex] = {...payload, film};
 
   return {
     ...state,
     reviews: {
       nextKey: state.reviews.nextKey,
-      items: updatedItems,
+      items: updateReviewInList(state.reviews.items, payload),
+    },
+  };
+});
+
+$list.on(deleteReviewFx.doneData, (state, payload) => {
+  if (!state) {
+    return;
+  }
+  return {
+    ...state,
+    reviews: {
+      nextKey: state.reviews.nextKey,
+      items: deleteReviewById(state.reviews.items, payload.reviewId),
     },
   };
 });
@@ -75,10 +85,16 @@ $listError.on(
 );
 $listError.on(getList, () => null);
 
+export const $listLoading = createStore<boolean>(false)
+$listLoading.on(getList, () => true)
+$listLoading.on(getListFx.finally, () => false)
+$listLoading.on(deleteReview, () => true)
+$listLoading.on(deleteReviewFx.finally, () => false)
+
 export const $listState = combine({
   list: $list,
   error: $listError,
-  loading: getListFx.pending,
+  loading: $listLoading,
 });
 
 sample({

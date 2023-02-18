@@ -5,6 +5,11 @@ import { Image, Link as NextUILink, Text, styled } from '@nextui-org/react';
 import { useMemo, useState } from 'react';
 import GearButton from './GearButton';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
+import { useStore } from 'effector-react';
+import {
+  $deleteReviewState,
+  deleteReview,
+} from '@/models/reviews/deleteReview';
 
 const ImageContainer = styled('div', {
   display: 'flex',
@@ -51,7 +56,7 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
       },
       {
         key: 'delete',
-        callback: () => console.log('delete'),
+        callback: () => deleteReview({ reviewId: review.id }),
         label: 'Удалить',
         color: 'error',
       },
