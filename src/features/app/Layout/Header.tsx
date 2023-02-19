@@ -1,4 +1,4 @@
-import logo from '@/assets/img/Logo.svg';
+import logo from '@/assets/img/Logo2.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
