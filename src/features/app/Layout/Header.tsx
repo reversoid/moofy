@@ -2,13 +2,7 @@ import logo from '@/assets/img/Logo2.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
-import {
-  Button,
-  Container,
-  Image,
-  Loading,
-  styled
-} from '@nextui-org/react';
+import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -78,9 +72,11 @@ function Header() {
             css={{ width: '7rem', minWidth: 'auto' }}
             onPress={() => navigate('/auth/register')}
           >
-            Войти
+            Регистрация
           </Button>
-        ) : <Loading />}
+        ) : (
+          <Loading />
+        )}
       </HeaderContainer>
     </HeaderStyled>
   );
