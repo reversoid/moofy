@@ -12,8 +12,8 @@ const DeleteModalContent = () => {
     >
       <Image
         css={{
-          width: '7rem',
-          height: '7rem',
+          width: '6rem',
+          height: '6rem',
           objectFit: 'contain',
           flexShrink: 0,
           flexGrow: 0,
