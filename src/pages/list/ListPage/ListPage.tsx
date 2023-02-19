@@ -9,6 +9,7 @@ import ListInfo from './components/ListInfo';
 import { Review } from '@/shared/api/types/review.type';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
+import { Text } from '@nextui-org/react';
 
 interface ListPageProps {
   listWithContent: {
@@ -75,6 +76,14 @@ const ListPageWithData = () => {
 
   if (loading) {
     return null;
+  }
+
+  if (error === 'NOT_ALLOWED') {
+    return <><Text size={'$lg'}>Список скрыт пользователем</Text></>
+  }
+
+  if (error === 'WRONG_LIST_ID') {
+    return <><Text size={'$lg'}>Список недоступен</Text></>
   }
 
   return null;
