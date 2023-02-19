@@ -38,7 +38,7 @@ const WelcomePage = () => {
         <Grid
           xs={6}
           sm={3}
-          css={{ '@xsMax': { padding: '$4' } }}
+          css={{ '@xsMax': { padding: '$3' } }}
           onClick={() => setIsModalOpen(true)}
         >
           <List text="Создать список" />
@@ -49,7 +49,7 @@ const WelcomePage = () => {
             xs={6}
             sm={3}
             key={item.id}
-            css={{ '@xsMax': { padding: '$4' } }}
+            css={{ '@xsMax': { padding: '$3' } }}
           >
             <Link to={'/list/' + item.id}>
               <List text={item.name} id={item.id} isPublic={item.is_public} />
