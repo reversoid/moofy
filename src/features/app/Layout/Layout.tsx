@@ -4,15 +4,13 @@ import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';
 import { useSnackbar } from './useSnackBar';
 import { Outlet } from 'react-router-dom';
+import Footer from './Footer';
 
-const Wrapper = styled(Container, {
-  pt: HEADER_HEIGHT,
-  paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
+export const Wrapper = styled(Container, {
   '@xsMax': {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
-  paddingBottom: '$12'
 });
 
 const Layout = ({ children }: PropsWithChildren) => {
@@ -21,11 +19,19 @@ const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Header />
-      <Wrapper lg>
+      <Wrapper
+        lg
+        css={{
+          paddingBottom: '$12',
+          paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
+          minHeight: '100%',
+        }}
+      >
         <Suspense>
           <Outlet />
         </Suspense>
       </Wrapper>
+      <Footer />
       <ErrorSnackBar
         open={isSnackBarOpen}
         message={errorMessage!}

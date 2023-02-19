@@ -2,13 +2,13 @@ import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
+import { routes as profileRoutes } from './profile/routes';
 
 import Layout from '../features/app/Layout/Layout';
 import ErrorPage from './ErrorPage/ErrorPage';
 
 const MainPage = lazy(() => import('./main/MainPage'));
-const Profile = lazy(() => import('./profile/ProfilePage'));
-const Welcome = lazy(() => import('./welcome/WelcomePage'));
+const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
 
 export const routes: RouteObject[] = [
   {
@@ -18,7 +18,7 @@ export const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <MainPage />
+        element: <MainPage />,
       },
       {
         path: 'auth',
@@ -26,15 +26,15 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'welcome',
-        element: <Welcome />,
+        element: <WelcomePage />,
       },
       {
         path: 'list',
         children: listRoutes,
       },
       {
-        path: 'profile/:id',
-        element: <Profile />,
+        path: 'profile',
+        children: profileRoutes,
       },
     ],
   },

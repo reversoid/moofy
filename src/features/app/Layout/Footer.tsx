@@ -1,7 +1,72 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { Wrapper } from './Layout';
+import { Image, Text, styled, Link } from '@nextui-org/react';
+import logo from '@/assets/img/Logo2.svg';
+import { Link as MyLink } from '@/shared/ui/Link';
 
+const Div = styled('div', {});
+const PagesWrapper = styled('div', {
+  display: 'flex',
+  gap: '$7',
+});
+
+const LinkStyled = styled(MyLink, {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 'fit-content',
+  transition: 'color 0.05s linear',
+  '&:hover': {
+    color: '$primary',
+  },
+});
 function Footer() {
-  return <div>Footer</div>;
+  return (
+    <Wrapper
+      lg
+      css={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        pt: '$10',
+        pb: '$8',
+        '@xsMax': {
+          flexDirection: 'column',
+          gap: '$5',
+          pb: '$10'
+        }
+      }}
+    >
+      <Div css={{ display: 'flex', alignItems: 'center', gap: '$3' }}>
+        <Text color="$neutral">Created by</Text>{' '}
+        <Link
+          href="https://github.com/reversoid"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          reversoid
+        </Link>
+      </Div>
+      <PagesWrapper>
+        <Link
+          href="https://github.com/reversoid/moofy-frontend"
+          target="_blank"
+          rel="noopener noreferrer"
+          css={{ color: '$neutral' }}
+        >
+          Github
+        </Link>
+        <LinkStyled to="" css={{ color: '$neutral' }}>
+          Поддержка
+        </LinkStyled>
+        <LinkStyled to="" css={{ color: '$neutral' }}>
+          Помочь проекту
+        </LinkStyled>
+      </PagesWrapper>
+    </Wrapper>
+  );
 }
 
-export default Footer;
+export default memo(Footer);

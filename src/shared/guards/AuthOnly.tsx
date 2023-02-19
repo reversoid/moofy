@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 
 interface AuthOnlyProps {
   redirect?: string;
-  fallback?: ReactNode
+  fallback?: JSX.Element;
 }
 
 /** Redirects to specific page or shows a fallback when user is not authorized*/
@@ -16,22 +16,18 @@ const AuthOnly = ({
   const { isLoading, isLoggedIn } = useAuth();
 
   if (isLoading) {
-    return null
+    return null;
   }
 
-  if (isLoggedIn) {
-    return <>{children}</>
+  if (!isLoggedIn && redirect) {
+    return <Navigate to={redirect} />;
   }
 
-  if (redirect) {
-    return <Navigate to={redirect=''}/>;
+  if (!isLoggedIn && fallback) {
+    return <>{fallback}</>;
   }
 
-  if (fallback) {
-    return <>{fallback}</>
-  }
-
-  return null;
+  return <>{children}</>;
 };
 
 export default AuthOnly;
