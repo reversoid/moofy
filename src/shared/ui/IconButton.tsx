@@ -1,9 +1,27 @@
-import { Button, styled } from '@nextui-org/react';
+import { Button, ButtonProps, styled } from '@nextui-org/react';
+import { forwardRef } from 'react';
 
-export const IconButton = styled(Button, {
-  width: '1.5rem !important',
-  height: '1.5rem !important',
-  p: '0 !important',
-  minWidth: 'auto !important',
-  flexShrink: '0 !important',
-});
+const ButtonStyled = styled(Button);
+
+export const IconButton = forwardRef<HTMLButtonElement, ButtonProps>(
+  (props, ref) => {
+    return (
+      <ButtonStyled
+        {...{
+          ...props,
+          css: {
+            width: '1.5rem',
+            height: '1.5rem',
+            p: '0',
+            minWidth: 'auto',
+            flexShrink: '0',
+            ...props.css,
+          },
+        }}
+        ref={ref}
+        light
+        ripple={false}
+      ></ButtonStyled>
+    );
+  },
+);

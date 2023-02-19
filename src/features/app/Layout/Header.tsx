@@ -4,6 +4,7 @@ import logo from '@/assets/img/Logo.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
+import { IconButton } from '@/shared/ui/IconButton';
 
 export const HEADER_HEIGHT = '4.75rem';
 
@@ -49,14 +50,19 @@ function Header() {
             width="fit-content"
           />
         </Link>
-        <div>
+        <IconButton
+          css={{
+            width: '3rem',
+            height: '3rem',
+          }}
+        >
           <Image
             src={profile}
             height="3rem"
             objectFit="contain"
             width="fit-content"
           />
-        </div>
+        </IconButton>
       </HeaderContainer>
     </HeaderStyled>
   );
