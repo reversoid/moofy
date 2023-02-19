@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Container, Image, styled } from '@nextui-org/react';
 import logo from '@/assets/img/Logo.svg';
-import { Link } from 'react-router-dom';
+import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { Link } from '@/shared/ui/Link';
 
 export const HEADER_HEIGHT = '4.75rem';
 
@@ -24,31 +25,41 @@ const HeaderContainer = styled(Container, {
   },
 });
 
-const CenteredImage = styled(Image, {
-  position: 'relative',
-  top: '50%',
-  transform: 'translateY(-50%)',
-  margin: 0,
-  display: 'inline-block',
-});
-
 function Header() {
   const { isLoggedIn } = useAuth();
 
   return (
     <HeaderStyled>
-      <HeaderContainer lg>
-        <Link to={isLoggedIn ? '/welcome' : ''}>
-          <CenteredImage
+      <HeaderContainer
+        lg
+        css={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Link
+          to={isLoggedIn ? '/welcome' : ''}
+          css={{ height: 'fix-content', width: 'fit-content', dflex: 'center' }}
+        >
+          <Image
             src={logo}
-            height="85%"
+            height="4rem"
             objectFit="contain"
             width="fit-content"
           />
         </Link>
+        <div>
+          <Image
+            src={profile}
+            height="3rem"
+            objectFit="contain"
+            width="fit-content"
+          />
+        </div>
       </HeaderContainer>
     </HeaderStyled>
   );
 }
 
-export default Header;
+export default memo(Header);
