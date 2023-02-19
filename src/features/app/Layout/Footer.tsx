@@ -31,7 +31,7 @@ function Footer() {
         alignItems: 'center',
         width: '100%',
         pt: '$10',
-        pb: '$5',
+        pb: '$8',
         '@xsMax': {
           flexDirection: 'column',
           gap: '$5',
