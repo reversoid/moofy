@@ -35,8 +35,8 @@ function Footer() {
         '@xsMax': {
           flexDirection: 'column',
           gap: '$5',
-          pb: '$10'
-        }
+          pb: '$10',
+        },
       }}
     >
       <Div css={{ display: 'flex', alignItems: 'center', gap: '$3' }}>
@@ -54,7 +54,14 @@ function Footer() {
           href="https://github.com/reversoid/moofy-frontend"
           target="_blank"
           rel="noopener noreferrer"
-          css={{ color: '$neutral' }}
+          css={{
+            color: '$neutral',
+            '&:hover': {
+              color: '$primary',
+              opacity: 1,
+              transition: 'color 0.05s linear',
+            },
+          }}
         >
           Github
         </Link>

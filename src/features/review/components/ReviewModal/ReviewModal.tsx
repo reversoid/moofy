@@ -11,6 +11,7 @@ import {
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Counter from '../Counter/Counter';
+import TextareaCount from '@/shared/ui/TextareaCount';
 
 const ScoreContainer = styled('div', {
   display: 'flex',
@@ -88,7 +89,8 @@ const ReviewModal = ({
           onSubmit={handleSubmit((data) => handlers.onSubmit(data))}
           id="add-review-modal-form"
         >
-          <Textarea
+          <TextareaCount
+            maxLength={400}
             bordered
             size="xl"
             label="Описание"
@@ -96,6 +98,7 @@ const ReviewModal = ({
             {...register('description', {
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
+            initialValue={getValues('description')}
           />
           <ScoreContainer>
             <StyledLabel htmlFor="slider">Оценка</StyledLabel>
