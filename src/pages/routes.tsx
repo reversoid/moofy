@@ -8,8 +8,7 @@ import Layout from '../features/app/Layout/Layout';
 import ErrorPage from './ErrorPage/ErrorPage';
 
 const MainPage = lazy(() => import('./main/MainPage'));
-const Profile = lazy(() => import('./profile/ProfilePage'));
-const Welcome = lazy(() => import('./welcome/WelcomePage'));
+const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
 
 export const routes: RouteObject[] = [
   {
@@ -27,7 +26,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'welcome',
-        element: <Welcome />,
+        element: <WelcomePage />,
       },
       {
         path: 'list',
