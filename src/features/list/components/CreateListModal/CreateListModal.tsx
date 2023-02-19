@@ -5,6 +5,7 @@ import {
 } from '@/models/lists/createList';
 import { Form } from '@/shared/ui/Form';
 import { Input } from '@/shared/ui/Input';
+import TextareaCount from '@/shared/ui/TextareaCount';
 import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
 import {
   Modal,
@@ -90,7 +91,8 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
               maxLength: { value: 32, message: 'Слишком длинное название' },
             })}
           />
-          <Textarea
+          <TextareaCount
+            maxLength={400}
             bordered
             size="xl"
             label="Описание"
@@ -98,6 +100,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
             {...register('description', {
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
+            initialValue={getValues('description')}
           />
           <Checkbox
             color="gradient"

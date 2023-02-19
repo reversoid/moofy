@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { useDefaultFormValues } from './useDefaultFormValues';
 import { Form } from '@/shared/ui/Form';
 import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
+import TextareaCount from '@/shared/ui/TextareaCount';
 
 export interface FormData {
   name: string;
@@ -43,6 +44,7 @@ const UpdateListModal = ({
     formState: { isValid: isFormValid, errors },
     setValue,
     handleSubmit,
+    getValues
   } = useForm<FormData>({
     mode: 'onChange',
   });
@@ -96,7 +98,8 @@ const UpdateListModal = ({
               maxLength: { value: 32, message: 'Слишком длинное название' },
             })}
           />
-          <Textarea
+          <TextareaCount
+            maxLength={400}
             bordered
             size="xl"
             label="Описание"
@@ -104,6 +107,7 @@ const UpdateListModal = ({
             {...register('description', {
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
+            initialValue={getValues('description')}
           />
           <Checkbox
             color="gradient"
