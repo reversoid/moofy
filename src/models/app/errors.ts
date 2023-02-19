@@ -2,10 +2,13 @@ import { createEffect, createEvent, createStore, sample } from 'effector';
 
 const errorsTranlations = {
   NETWORK_ERROR: 'Ошибка соединения',
+  'Internal server error': 'Ошибка сервера',
+
+  WRONG_CREDENTIALS: 'Неверное имя пользователя или пароль',
   EMAIL_ALREADY_TAKEN: 'Данный Email уже зарегистрирован',
   USERNAME_ALREADY_TAKEN: 'Имя пользователя уже занято',
+
   REVIEW_FOR_FILM_ALREADY_EXISTS: 'Обзор на фильм уже существует',
-  'Internal server error': 'Ошибка сервера',
 };
 
 export const setAppError = createEvent<string>();
