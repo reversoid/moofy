@@ -36,7 +36,7 @@ const HeaderContainer = styled(Container, {
 });
 
 function Header() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -61,7 +61,9 @@ function Header() {
           />
         </Link>
 
-        {isLoggedIn === true ? (
+        {isAuthLoading ? (
+          <Loading />
+        ) : isLoggedIn === true ? (
           <Link
             to={'/profile'}
             css={{ display: 'block', width: 'fit-content' }}
@@ -82,7 +84,6 @@ function Header() {
             Войти
           </Button>
         ) : <Loading />}
-        
       </HeaderContainer>
     </HeaderStyled>
   );
