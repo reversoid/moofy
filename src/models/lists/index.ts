@@ -11,7 +11,7 @@ import { deleteListFx } from './deleteList';
 export const getLists = createEvent<void>();
 
 export const getListsFx = createEffect<void, IterableResponse<List>>();
-getListsFx.use(() => listService.getMyLists());
+getListsFx.use(() => listService.getMyLists(undefined, 19));
 
 export const $lists = createStore<IterableResponse<List>>({
   nextKey: null,

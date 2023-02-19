@@ -12,7 +12,7 @@ export const loadMoreListsFx = createEffect<
   { lowerBound: DateAsString },
   IterableResponse<List>
 >();
-loadMoreListsFx.use(({ lowerBound }) => listService.getMyLists(lowerBound));
+loadMoreListsFx.use(({ lowerBound }) => listService.getMyLists(lowerBound, 20));
 
 sample({
   clock: loadMoreLists,

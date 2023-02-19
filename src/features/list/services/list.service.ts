@@ -19,9 +19,9 @@ export interface DeleteListDTO {
 }
 
 export class ListService extends ApiService {
-  public async getMyLists(lowerBound?: DateAsString) {
+  public async getMyLists(lowerBound?: DateAsString, limit = 20) {
     const searchParams: SearchParamsOption = {
-      limit: 19,
+      limit,
     };
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
