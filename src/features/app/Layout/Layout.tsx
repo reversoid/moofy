@@ -24,7 +24,7 @@ const Layout = ({ children }: PropsWithChildren) => {
         css={{
           paddingBottom: '$12',
           paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
-          minHeight: '100%', // TODO calc 100% - footerHeight
+          minHeight: '100%',
         }}
       >
         <Suspense>

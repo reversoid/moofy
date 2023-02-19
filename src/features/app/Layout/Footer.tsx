@@ -1,16 +1,16 @@
 import React, { memo } from 'react';
 import { Wrapper } from './Layout';
-import { Image, Text, styled } from '@nextui-org/react';
+import { Image, Text, styled, Link } from '@nextui-org/react';
 import logo from '@/assets/img/Logo2.svg';
-import { Link } from '@/shared/ui/Link';
+import { Link as MyLink } from '@/shared/ui/Link';
 
-const LogoWrapper = styled('div', {});
+const Div = styled('div', {});
 const PagesWrapper = styled('div', {
   display: 'flex',
-  gap: '$10',
+  gap: '$7',
 });
 
-const LinkStyled = styled(Link, {
+const LinkStyled = styled(MyLink, {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -27,14 +27,37 @@ function Footer() {
       css={{
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        pt: '$5',
-        pb: '$5'
+        pt: '$10',
+        pb: '$5',
+        '@xsMax': {
+          flexDirection: 'column',
+          gap: '$5',
+          pb: '$10'
+        }
       }}
     >
+      <Div css={{ display: 'flex', alignItems: 'center', gap: '$3' }}>
+        <Text color="$neutral">Created by</Text>{' '}
+        <Link
+          href="https://github.com/reversoid"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          reversoid
+        </Link>
+      </Div>
       <PagesWrapper>
+        <Link
+          href="https://github.com/reversoid/moofy-frontend"
+          target="_blank"
+          rel="noopener noreferrer"
+          css={{ color: '$neutral' }}
+        >
+          Github
+        </Link>
         <LinkStyled to="" css={{ color: '$neutral' }}>
           Поддержка
         </LinkStyled>
