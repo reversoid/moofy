@@ -3,7 +3,7 @@ import { Wrapper } from './Layout';
 
 function Footer() {
   return (
-    <Wrapper lg css={{ pt: 0, pb: 0 }}>
+    <Wrapper lg>
       hello footer
     </Wrapper>
   );

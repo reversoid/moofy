@@ -7,13 +7,10 @@ import { Outlet } from 'react-router-dom';
 import Footer from './Footer';
 
 export const Wrapper = styled(Container, {
-  pt: HEADER_HEIGHT,
-  paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
   '@xsMax': {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
-  paddingBottom: '$12'
 });
 
 const Layout = ({ children }: PropsWithChildren) => {
@@ -22,7 +19,14 @@ const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Header />
-      <Wrapper lg>
+      <Wrapper
+        lg
+        css={{
+          paddingBottom: '$12',
+          paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
+          minHeight: '100%', // TODO calc 100% - footerHeight
+        }}
+      >
         <Suspense>
           <Outlet />
         </Suspense>
