@@ -34,8 +34,8 @@ export const PASSWORD_VALIDATORS: RegisterOptions<
     message: 'Данное поле не должно быть пустым',
   },
   pattern: {
-    value: SAFE_STRING,
-    message: 'Разрешено использовать латинские буквы, цифры, "_" и "-"',
+    value: /^\S*$/,
+    message: 'Нельзя использовать пробелы',
   },
   minLength: {
     value: 8,
