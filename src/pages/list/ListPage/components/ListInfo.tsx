@@ -102,11 +102,16 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
         </Text>
 
         <Text as={'p'} color="$neutral">
+          {list.is_public ? 'Публичный' : 'Приватный'}
+          {' '}
+          cписок
+        </Text>
+        <Text as={'p'} color="$neutral">
           Создатель{' '}
           <Link to={`/profile/${list.user.id}`}>{list.user.username}</Link>
         </Text>
         <Text as={'p'} color="$neutral">
-          Обновлен {getUpdatedAt()}
+          Обновлен <Text as='span'>{getUpdatedAt()}</Text>
         </Text>
       </ListInfoContainer>
 
