@@ -1,18 +1,15 @@
-import React, { forwardRef, memo } from 'react';
-import {
-  Button,
-  ButtonProps,
-  Container,
-  Image,
-  Loading,
-  styled,
-} from '@nextui-org/react';
 import logo from '@/assets/img/Logo.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
-import { IconButton } from '@/shared/ui/IconButton';
-import ActionsDropdown from '@/shared/ui/ActionsDropdown';
+import {
+  Button,
+  Container,
+  Image,
+  Loading,
+  styled
+} from '@nextui-org/react';
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const HEADER_HEIGHT = '4.75rem';

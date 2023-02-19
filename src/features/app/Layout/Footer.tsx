@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { Wrapper } from './Layout';
 
 function Footer() {
-  return <div>Footer</div>;
+  return (
+    <Wrapper lg css={{ pt: 0, pb: 0 }}>
+      hello footer
+    </Wrapper>
+  );
 }
 
-export default Footer;
+export default memo(Footer);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Alert, Snackbar } from '@mui/material';
 import { styled } from '@nextui-org/react';
 
@@ -16,7 +16,7 @@ const SnackBarStyled = styled(Snackbar, {
   zIndex: '10000 !important'
 });
 
-export const ErrorSnackBar = ({
+export const ErrorSnackBar = memo(({
   open,
   message,
   closeSnackBar,
@@ -33,4 +33,4 @@ export const ErrorSnackBar = ({
       </Alert>
     </SnackBarStyled>
   );
-};
+});
