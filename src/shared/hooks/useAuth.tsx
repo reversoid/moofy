@@ -1,4 +1,4 @@
-import { $userLoggedIn, checkoutUserFx } from '@/models/app/auth';
+import { $userLoggedIn, checkoutUserFx } from '@/models/app/auth/checkout';
 import { useStore } from 'effector-react';
 
 export const useAuth = () => {

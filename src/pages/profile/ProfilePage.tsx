@@ -1,3 +1,4 @@
+import { logout } from '@/models/app/auth/logout';
 import { $getProfileState, getProfile } from '@/models/profile';
 import { Button, Row, Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
@@ -37,7 +38,7 @@ function ProfilePage({ userOwner }: ProfilePageProps) {
         </Row>
 
         {userOwner && (
-          <Button css={{ mt: '$5' }} color="gradient">
+          <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>
             Выйти
           </Button>
         )}

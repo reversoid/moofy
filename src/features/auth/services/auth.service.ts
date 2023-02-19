@@ -20,7 +20,7 @@ export interface AuthResponse {
 const LONG_RETRY_STRATEGY: RetryOptions = {
   limit: 5,
   methods: ['get'],
-  statusCodes: [408, 413, 429, 500, 502, 503, 504],
+  statusCodes: [408, 413, 429, 502, 503, 504],
   backoffLimit: 2000,
 };
 
@@ -58,12 +58,16 @@ class AuthService extends ApiService {
   }
 
   public async checkout(): Promise<{ userId: number }> {
-    return this.get<AuthResponse>('/auth/checkout').then(
+    return this.get<AuthResponse>('/auth/protected/checkout').then(
       ({ access_token, userId }) => {
         tokenService.setAccessToken(access_token);
         return { userId };
       },
     );
+  }
+
+  public async logout(): Promise<void> {
+    return this.get<void>('/auth/protected/logout');
   }
 }
 

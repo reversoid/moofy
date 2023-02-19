@@ -1,8 +1,9 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { appStarted } from './app';
+import { appStarted } from '../app';
 import { authService } from '@/features/auth/services/auth.service';
-import { registerFx } from '../auth/register';
-import { loginFx } from '../auth/login';
+import { registerFx } from '../../auth/register';
+import { loginFx } from '../../auth/login';
+import { logoutFx } from './logout';
 
 interface UserLoggedInState {
   loggedIn?: boolean;
@@ -23,13 +24,22 @@ checkoutUserFx.use(() =>
     }),
 );
 
-export const $userLoggedIn = createStore<UserLoggedInState>({loggedIn: undefined});
+export const $userLoggedIn = createStore<UserLoggedInState>({
+  loggedIn: undefined,
+});
 $userLoggedIn.on(
   checkoutUserFx.doneData,
   (state, checkoutResult) => checkoutResult,
 );
-$userLoggedIn.on(registerFx.doneData, (state, {userId}) => ({loggedIn: true, userId}));
-$userLoggedIn.on(loginFx.doneData, (state, {userId}) => ({loggedIn: true, userId}));
+$userLoggedIn.on(registerFx.doneData, (state, { userId }) => ({
+  loggedIn: true,
+  userId,
+}));
+$userLoggedIn.on(loginFx.doneData, (state, { userId }) => ({
+  loggedIn: true,
+  userId,
+}));
+$userLoggedIn.on(logoutFx.doneData, () => ({ loggedIn: false }));
 
 sample({
   clock: appStarted,
