@@ -23,7 +23,7 @@ checkoutUserFx.use(() =>
     }),
 );
 
-export const $userLoggedIn = createStore<UserLoggedInState>({loggedIn: false});
+export const $userLoggedIn = createStore<UserLoggedInState>({loggedIn: undefined});
 $userLoggedIn.on(
   checkoutUserFx.doneData,
   (state, checkoutResult) => checkoutResult,
