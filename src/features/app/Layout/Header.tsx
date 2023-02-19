@@ -1,10 +1,19 @@
-import React, { memo } from 'react';
-import { Container, Image, styled } from '@nextui-org/react';
+import React, { forwardRef, memo } from 'react';
+import {
+  Button,
+  ButtonProps,
+  Container,
+  Image,
+  Loading,
+  styled,
+} from '@nextui-org/react';
 import logo from '@/assets/img/Logo.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
 import { IconButton } from '@/shared/ui/IconButton';
+import ActionsDropdown from '@/shared/ui/ActionsDropdown';
+import { useNavigate } from 'react-router-dom';
 
 export const HEADER_HEIGHT = '4.75rem';
 
@@ -28,6 +37,7 @@ const HeaderContainer = styled(Container, {
 
 function Header() {
   const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <HeaderStyled>
@@ -50,19 +60,29 @@ function Header() {
             width="fit-content"
           />
         </Link>
-        <IconButton
-          css={{
-            width: '3rem',
-            height: '3rem',
-          }}
-        >
-          <Image
-            src={profile}
-            height="3rem"
-            objectFit="contain"
-            width="fit-content"
-          />
-        </IconButton>
+
+        {isLoggedIn === true ? (
+          <Link
+            to={'/profile'}
+            css={{ display: 'block', width: 'fit-content' }}
+          >
+            <Image
+              src={profile}
+              height="3rem"
+              objectFit="contain"
+              width="fit-content"
+            />
+          </Link>
+        ) : isLoggedIn === false ? (
+          <Button
+            color="gradient"
+            css={{ width: '7rem', minWidth: 'auto' }}
+            onPress={() => navigate('/auth/register')}
+          >
+            Войти
+          </Button>
+        ) : <Loading />}
+        
       </HeaderContainer>
     </HeaderStyled>
   );
