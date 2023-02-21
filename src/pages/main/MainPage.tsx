@@ -166,7 +166,7 @@ const MainPage = () => {
               fontSize: '$5xl !important',
             },
             '@xsMax': {
-              fontSize: '$4xl !important',
+              fontSize: '2.5rem !important',
               lineHeight: '120%',
               mb: '$10',
             },
@@ -184,7 +184,7 @@ const MainPage = () => {
               fontSize: '$4xl !important',
             },
             '@xsMax': {
-              fontSize: '$3xl !important',
+              fontSize: '2rem !important',
               lineHeight: '120%',
             },
             ta: 'center',
