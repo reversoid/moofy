@@ -12,12 +12,12 @@ import waves from './img/waves.svg';
 import { Link } from '@/shared/ui/Link';
 
 const WelcomeContainer = styled('div', {
-  pt: '$15',
+  pt: '$20',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   backgroundImage: `url(${waves})`,
-  backgroundSize: 'auto 20rem',
+  backgroundSize: 'auto 18rem',
   backgroundPosition: 'bottom',
   backgroundRepeat: 'repeat-x',
   paddingBottom: '25rem',
@@ -180,7 +180,7 @@ const MainPage = () => {
       </WelcomeContainer>
 
       <FeaturesContainer>
-        <Text h2 css={{ textAlign: 'center', mb: '$13' }}>
+        <Text h2 css={{ textAlign: 'center', mb: '$13', fontSize: '$4xl' }}>
           Возможности
         </Text>
       </FeaturesContainer>
