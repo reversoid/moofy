@@ -65,7 +65,7 @@ function Footer() {
         >
           Github
         </Link>
-        <LinkStyled to="" css={{ color: '$neutral' }}>
+        <LinkStyled to="support" css={{ color: '$neutral' }}>
           Поддержка
         </LinkStyled>
         <LinkStyled to="" css={{ color: '$neutral' }}>

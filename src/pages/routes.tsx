@@ -9,6 +9,7 @@ import ErrorPage from './ErrorPage/ErrorPage';
 
 const MainPage = lazy(() => import('./main/MainPage'));
 const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
+const SupportPage = lazy(() => import('./Support/SupportPage'))
 
 export const routes: RouteObject[] = [
   {
@@ -41,6 +42,10 @@ export const routes: RouteObject[] = [
       {
         path: 'profile',
         children: profileRoutes,
+      },
+      {
+        path: 'support',
+        element: <SupportPage />,
       },
     ],
   },
