@@ -1,10 +1,14 @@
-import React, { PropsWithChildren, Suspense, memo } from 'react';
+import React, { PropsWithChildren, Suspense, memo, useMemo } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';
 import { useSnackbar } from './useSnackBar';
 import { Outlet } from 'react-router-dom';
 import Footer from './Footer';
+
+interface LayoutProps {
+  disableMaxWidth?: boolean;
+}
 
 export const Wrapper = styled(Container, {
   '@xsMax': {
@@ -13,8 +17,15 @@ export const Wrapper = styled(Container, {
   },
 });
 
-const Layout = ({ children }: PropsWithChildren) => {
+const Layout = ({ disableMaxWidth }: LayoutProps) => {
   const { errorMessage, handleSnackbarClose, isSnackBarOpen } = useSnackbar();
+
+  const maxWidthStyles = useMemo(() => {
+    if (disableMaxWidth) {
+      return { maxWidth: '100%' };
+    }
+    return {};
+  }, [disableMaxWidth]);
 
   return (
     <>
@@ -25,6 +36,7 @@ const Layout = ({ children }: PropsWithChildren) => {
           paddingBottom: '$12',
           paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
           minHeight: '100%',
+          ...maxWidthStyles,
         }}
       >
         <Suspense>

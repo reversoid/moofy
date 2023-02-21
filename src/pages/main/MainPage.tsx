@@ -1,17 +1,30 @@
-import { Button, Card, Grid, Text, styled } from '@nextui-org/react';
+import { Button, Card, Grid, Row, Text, styled } from '@nextui-org/react';
 import { ReactNode, memo } from 'react';
-import bg from './img/bg.svg';
+import wave from './img/waves.svg';
 import { Link } from '@/shared/ui/Link';
 
 const WelcomeContainer = styled('div', {
+  pt: '$15',
   display: 'flex',
-  justifyContent: 'center',
   flexDirection: 'column',
   alignItems: 'center',
-  mb: '$20',
+  backgroundImage: `url(${wave})`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  paddingBottom: '25rem',
 });
 
-const InfoContainer = styled('div', {});
+const FeaturesContainer = styled('div', {
+  background: '#d53867',
+  paddingBottom: '25rem',
+});
+
+const CardsContainer = styled('div', {
+  display: 'flex',
+  gap: '$10',
+  px: '$10',
+});
 
 interface MyCardProps {
   headerGradient: string;
@@ -20,7 +33,7 @@ interface MyCardProps {
 }
 const MyCard = (props: MyCardProps) => {
   return (
-    <Card css={{ p: '$6', mw: '400px' }}>
+    <Card css={{ p: '$6', mw: '400px', background: '#00000080' }}>
       <Card.Header>
         <img
           alt="nextui logo"
@@ -47,6 +60,79 @@ const MyCard = (props: MyCardProps) => {
         <Text>{props.content}</Text>
       </Card.Body>
     </Card>
+  );
+};
+
+const Cards = () => {
+  return (
+    <CardsContainer>
+      <MyCard
+        content={
+          'Сервис позволяет создавать списки фильмов и делиться ими с друзьями по открытой ссылке'
+        }
+        header="Что посмотреть?"
+        headerGradient="rgb(94, 162, 239) 25%, rgb(0, 114, 245) 100%"
+      />
+      <MyCard
+        header="Обзоры"
+        content={
+          'На каждый фильм в списке можно написать краткий обзор и поставить оценку'
+        }
+        headerGradient="rgb(243, 101, 52) 25%, rgb(246, 159, 39) 100%"
+      />
+      <MyCard
+        header="Приватные списки"
+        content={
+          'Любой ваш список можно сделать приватным, тогда никто, кроме вас, не сможет его прочесть'
+        }
+        headerGradient="rgb(0, 183, 250) 25%, rgb(1, 207, 234) 100%"
+      />
+      <MyCard
+        header="Открытость"
+        content={
+          <>
+            Каждый может предложить свою помощь в развитии проекта, подробнее:{' '}
+            <Link
+              css={{ width: 'fit-content', display: 'inline' }}
+              to={'welcome'}
+            >
+              здесь
+            </Link>
+          </>
+        }
+        headerGradient="rgb(255, 28, 247) 25%, rgb(178, 73, 248) 100%"
+      />
+    </CardsContainer>
+  );
+};
+
+interface FeatureItemProps {
+  stepNumber: number;
+  content: JSX.Element;
+}
+
+const Count = styled('div', {
+  fontSize: '$4xl',
+  width: '4rem',
+  height: '4rem',
+  borderRadius: '50%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: '$gradient',
+});
+const Content = styled('div', {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexGrow: '1',
+});
+const FeatureItem = (props: FeatureItemProps) => {
+  return (
+    <Row css={{ alignItems: 'center', gap: '$7', jc: 'center' }}>
+      <Count>{props.stepNumber}</Count>
+      <Text h3>Что посмотреть?</Text>
+    </Row>
   );
 };
 
@@ -83,39 +169,11 @@ const MainPage = () => {
           Присоединиться
         </Button>
       </WelcomeContainer>
-      <MyCard
-        content={
-          'Сервис позволяет создавать списки фильмов и делиться ими с друзьями по открытой ссылке'
-        }
-        header="Что посмотреть?"
-        headerGradient="rgb(94, 162, 239) 25%, rgb(0, 114, 245) 100%"
-      />
-      <MyCard
-        header="Обзоры"
-        content={
-          'На каждый фильм в списке можно написать краткий обзор и поставить оценку'
-        }
-        headerGradient="rgb(243, 101, 52) 25%, rgb(246, 159, 39) 100%"
-      />
-      <MyCard
-        header="Приватные списки"
-        content={
-          'Любой ваш список можно сделать приватным, тогда никто, кроме вас, не сможет его прочесть'
-        }
-        headerGradient="rgb(0, 183, 250) 25%, rgb(1, 207, 234) 100%"
-      />
-      <MyCard
-        header="Открытость"
-        content={
-          <>
-            Каждый может предложить свою помощь в развитии проекта, подробнее:{' '}
-            <Link css={{ width: 'fit-content', display: 'inline' }} to={'welcome'}>
-              здесь
-            </Link>
-          </>
-        }
-        headerGradient="rgb(255, 28, 247) 25%, rgb(178, 73, 248) 100%"
-      />
+      <FeaturesContainer>
+        <Text h2 css={{ textAlign: 'center', mb: '$13' }}>
+          Возможности
+        </Text>
+      </FeaturesContainer>
     </>
   );
 };

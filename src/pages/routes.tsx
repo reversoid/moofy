@@ -13,13 +13,19 @@ const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Layout />,
-    errorElement: <ErrorPage />,
+    element: <Layout disableMaxWidth={true} />,
     children: [
       {
         index: true,
         element: <MainPage />,
       },
+    ],
+  },
+  {
+    path: '/',
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
       {
         path: 'auth',
         children: authRoutes,
