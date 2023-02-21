@@ -21,12 +21,16 @@ const WelcomeContainer = styled('div', {
   backgroundPosition: 'bottom',
   backgroundRepeat: 'repeat-x',
   paddingBottom: '25rem',
+  '@xsMax': {
+    pt: '$15',
+    paddingBottom: '22rem',
+  },
 });
 
 const FeaturesContainer = styled('div', {
   background: '#c62368',
-  paddingBottom: '25rem',
-  mt: '-2px'
+  paddingBottom: '10rem',
+  mt: '-2px',
 });
 
 const CardsContainer = styled('div', {
@@ -155,6 +159,14 @@ const MainPage = () => {
             textGradient: '45deg, $yellow600 -20%, $red600 100%',
             fontSize: '$6xl',
             ta: 'center',
+            '@lgMax': {
+              fontSize: '$5xl !important',
+            },
+            '@xsMax': {
+              fontSize: '$4xl !important',
+              lineHeight: '120%',
+              mb: '$10',
+            },
           }}
         >
           Создавай списки фильмов
@@ -165,6 +177,13 @@ const MainPage = () => {
             textGradient: '45deg, $blue600 -20%, $pink600 50%',
             fontWeight: '700',
             fontSize: '$5xl',
+            '@lgMax': {
+              fontSize: '$4xl !important',
+            },
+            '@xsMax': {
+              fontSize: '$3xl !important',
+              lineHeight: '120%',
+            },
             ta: 'center',
           }}
         >
@@ -173,17 +192,19 @@ const MainPage = () => {
         <Button
           size={'lg'}
           color={'gradient'}
-          css={{ width: 'fit-content', mt: '$10' }}
+          css={{
+            width: 'fit-content',
+            mt: '$10',
+            '@xsMax': {
+              mt: '$13',
+            },
+          }}
         >
           Присоединиться
         </Button>
       </WelcomeContainer>
 
-      <FeaturesContainer>
-        <Text h2 css={{ textAlign: 'center', mb: '$13', fontSize: '$4xl' }}>
-          Возможности
-        </Text>
-      </FeaturesContainer>
+      <FeaturesContainer></FeaturesContainer>
     </>
   );
 };

@@ -22,7 +22,7 @@ const Layout = ({ disableMaxWidth }: LayoutProps) => {
 
   const maxWidthStyles = useMemo(() => {
     if (disableMaxWidth) {
-      return { maxWidth: '100%', px: 0, };
+      return { maxWidth: '100%', px: 0, pb: 0 };
     }
     return {};
   }, [disableMaxWidth]);
