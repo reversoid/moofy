@@ -1,6 +1,14 @@
-import { Button, Card, Grid, Row, Text, styled } from '@nextui-org/react';
+import {
+  Button,
+  Card,
+  Grid,
+  Image,
+  Row,
+  Text,
+  styled,
+} from '@nextui-org/react';
 import { ReactNode, memo } from 'react';
-import wave from './img/waves.svg';
+import waves from './img/waves.svg';
 import { Link } from '@/shared/ui/Link';
 
 const WelcomeContainer = styled('div', {
@@ -8,16 +16,17 @@ const WelcomeContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundImage: `url(${wave})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
+  backgroundImage: `url(${waves})`,
+  backgroundSize: 'auto 20rem',
+  backgroundPosition: 'bottom',
+  backgroundRepeat: 'repeat-x',
   paddingBottom: '25rem',
 });
 
 const FeaturesContainer = styled('div', {
-  background: '#d53867',
+  background: '#c62368',
   paddingBottom: '25rem',
+  mt: '-2px'
 });
 
 const CardsContainer = styled('div', {
@@ -169,6 +178,7 @@ const MainPage = () => {
           Присоединиться
         </Button>
       </WelcomeContainer>
+
       <FeaturesContainer>
         <Text h2 css={{ textAlign: 'center', mb: '$13' }}>
           Возможности
