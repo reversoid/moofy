@@ -21,6 +21,9 @@ const WelcomeContainer = styled('div', {
   backgroundPosition: 'bottom',
   backgroundRepeat: 'repeat-x',
   paddingBottom: '25rem',
+  '@lgMax': {
+    pb: '23rem',
+  },
   '@xsMax': {
     pt: '$15',
     paddingBottom: '22rem',
