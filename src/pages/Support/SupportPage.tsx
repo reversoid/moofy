@@ -10,6 +10,15 @@ const SupportPage = () => {
         сервиса — пишите на почту{'  '}
         <Link css={{ fontSize: '$lg' }} href="mailto:grenka7777777@gmail.com">
           grenka7777777@gmail.com
+        </Link>{' '}
+        или Telegram{' '}
+        <Link
+          css={{ fontSize: '$lg' }}
+          href="https://t.me/xoxo_gosha"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @xoxo_gosha
         </Link>
       </Text>
     </>
