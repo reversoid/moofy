@@ -86,7 +86,9 @@ const ReviewModal = ({
 
       <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
-          onSubmit={handleSubmit((data) => handlers.onSubmit(data))}
+          onSubmit={handleSubmit((data) => {
+            handlers.onSubmit(data);
+          })}
           id="add-review-modal-form"
         >
           <TextareaCount
