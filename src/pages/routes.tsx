@@ -9,17 +9,25 @@ import ErrorPage from './ErrorPage/ErrorPage';
 
 const MainPage = lazy(() => import('./main/MainPage'));
 const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
+const SupportPage = lazy(() => import('./Support/SupportPage'));
+const HelpPage = lazy(() => import('./Help/HelpPage'));
 
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Layout />,
-    errorElement: <ErrorPage />,
+    element: <Layout disableMaxWidth={true} />,
     children: [
       {
         index: true,
         element: <MainPage />,
       },
+    ],
+  },
+  {
+    path: '/',
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
       {
         path: 'auth',
         children: authRoutes,
@@ -35,6 +43,14 @@ export const routes: RouteObject[] = [
       {
         path: 'profile',
         children: profileRoutes,
+      },
+      {
+        path: 'support',
+        element: <SupportPage />,
+      },
+      {
+        path: 'help',
+        element: <HelpPage />,
       },
     ],
   },

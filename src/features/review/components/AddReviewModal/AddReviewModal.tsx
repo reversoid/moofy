@@ -34,7 +34,7 @@ const AddReviewModal = ({
           return onSubmit({
             filmId: film?.id ?? '-1',
             description,
-            score: score,
+            score: Number(score),
             listId,
           });
         },

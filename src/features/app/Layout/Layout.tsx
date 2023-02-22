@@ -1,10 +1,20 @@
-import React, { PropsWithChildren, Suspense, memo } from 'react';
+import React, {
+  PropsWithChildren,
+  Suspense,
+  memo,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';
 import { useSnackbar } from './useSnackBar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
+
+interface LayoutProps {
+  disableMaxWidth?: boolean;
+}
 
 export const Wrapper = styled(Container, {
   '@xsMax': {
@@ -13,11 +23,29 @@ export const Wrapper = styled(Container, {
   },
 });
 
-const Layout = ({ children }: PropsWithChildren) => {
+export const ScrollToTop = memo(() => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+});
+
+const Layout = ({ disableMaxWidth }: LayoutProps) => {
   const { errorMessage, handleSnackbarClose, isSnackBarOpen } = useSnackbar();
+
+  const maxWidthStyles = useMemo(() => {
+    if (disableMaxWidth) {
+      return { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' };
+    }
+    return {};
+  }, [disableMaxWidth]);
 
   return (
     <>
+      <ScrollToTop />
       <Header />
       <Wrapper
         lg
@@ -25,6 +53,7 @@ const Layout = ({ children }: PropsWithChildren) => {
           paddingBottom: '$12',
           paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
           minHeight: '100%',
+          ...maxWidthStyles,
         }}
       >
         <Suspense>
