@@ -1,9 +1,15 @@
-import React, { PropsWithChildren, Suspense, memo, useMemo } from 'react';
+import React, {
+  PropsWithChildren,
+  Suspense,
+  memo,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';
 import { useSnackbar } from './useSnackBar';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
 
 interface LayoutProps {
@@ -15,6 +21,16 @@ export const Wrapper = styled(Container, {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
+});
+
+export const ScrollToTop = memo(() => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
 });
 
 const Layout = ({ disableMaxWidth }: LayoutProps) => {
@@ -29,6 +45,7 @@ const Layout = ({ disableMaxWidth }: LayoutProps) => {
 
   return (
     <>
+      <ScrollToTop />
       <Header />
       <Wrapper
         lg
