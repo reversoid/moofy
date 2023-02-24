@@ -49,7 +49,7 @@ function Header() {
             src={logo}
             height="4rem"
             objectFit="contain"
-            width="fit-content"
+            width="8rem"
           />
         </Link>
 
