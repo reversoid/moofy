@@ -64,7 +64,7 @@ function Header() {
               src={profile}
               height="3rem"
               objectFit="contain"
-              width="fit-content"
+              width="3rem"
             />
           </Link>
         ) : isLoggedIn === false ? (
