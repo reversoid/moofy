@@ -124,7 +124,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
           {...(getInputProps() as unknown as InputProps)}
           fullWidth
           placeholder="Поиск фильма"
-          size="lg"
+          size="xl"
           contentRight={loading ? <Loading size="sm" /> : <div></div>}
         />
         {groupedOptions.length > 0 ? (
