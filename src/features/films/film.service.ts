@@ -1,5 +1,5 @@
 import ApiService from '@/shared/api/api.service';
-import { Film } from '../list/services/list.service';
+import { Film } from '@/shared/api/types/film.type';
 
 export class FilmService extends ApiService {
   public async getFilmsByName(filmName: string) {
