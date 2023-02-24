@@ -110,6 +110,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
                 fontSize: '$lg',
               },
             }}
+            size='lg'
             {...register('isPrivate')}
             defaultSelected={getValues().isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}

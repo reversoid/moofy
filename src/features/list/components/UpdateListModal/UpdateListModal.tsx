@@ -117,6 +117,7 @@ const UpdateListModal = ({
                 fontSize: '$lg',
               },
             }}
+            size='lg'
             {...register('isPrivate')}
             defaultSelected={listData.isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
