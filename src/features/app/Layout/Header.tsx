@@ -38,11 +38,12 @@ function Header() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexWrap: 'nowrap'
         }}
       >
         <Link
           to={isLoggedIn ? '/welcome' : ''}
-          css={{ height: 'fix-content', width: 'fit-content', dflex: 'center' }}
+          css={{ height: '100%', width: 'fit-content', dflex: 'center' }}
         >
           <Image
             src={logo}
@@ -57,7 +58,7 @@ function Header() {
         ) : isLoggedIn === true ? (
           <Link
             to={'/profile'}
-            css={{ display: 'block', width: 'fit-content' }}
+            css={{ display: 'inline-block', width: 'fit-content', height: '100%' }}
           >
             <Image
               src={profile}
