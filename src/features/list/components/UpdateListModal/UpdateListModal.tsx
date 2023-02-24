@@ -44,7 +44,7 @@ const UpdateListModal = ({
     formState: { isValid: isFormValid, errors },
     setValue,
     handleSubmit,
-    getValues
+    getValues,
   } = useForm<FormData>({
     mode: 'onChange',
   });
@@ -131,7 +131,13 @@ const UpdateListModal = ({
           disabled={!isFormValid}
           color={'gradient'}
           auto
-          css={{ minWidth: '7.5rem', m: 0 }}
+          css={{
+            minWidth: '7.5rem',
+            m: 0,
+            '@xsMax': {
+              width: '100%',
+            },
+          }}
         >
           {loading ? (
             <Loading size="lg" type="points" color="white" />

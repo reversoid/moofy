@@ -30,7 +30,12 @@ interface ReviewListProps {
   reviewsLoading: boolean;
 }
 
-const ReviewList = ({ reviews, isUserOwner, listId, reviewsLoading }: ReviewListProps) => {
+const ReviewList = ({
+  reviews,
+  isUserOwner,
+  listId,
+  reviewsLoading,
+}: ReviewListProps) => {
   const navigate = useNavigate();
 
   const loadingMore = useStore(loadMoreReviewsFx.pending);
@@ -57,8 +62,9 @@ const ReviewList = ({ reviews, isUserOwner, listId, reviewsLoading }: ReviewList
           {isUserOwner && reviews && (
             <Button
               color={'gradient'}
-              css={{ mb: '$8' }}
+              css={{ mb: '$8', '@xsMax': { width: '100%' } }}
               onPress={() => navigate('add')}
+              size={'lg'}
             >
               Добавить
             </Button>
@@ -66,7 +72,11 @@ const ReviewList = ({ reviews, isUserOwner, listId, reviewsLoading }: ReviewList
 
           <FilmsContainer>
             {reviews?.items.map((review) => (
-              <ReviewItem key={review.id} review={review} isUserOwner={isUserOwner} />
+              <ReviewItem
+                key={review.id}
+                review={review}
+                isUserOwner={isUserOwner}
+              />
             ))}
           </FilmsContainer>
 

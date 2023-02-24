@@ -69,7 +69,7 @@ const ImageContainer = styled('div', {
   display: 'flex',
   justifyContent: 'flex-start',
   height: '100%',
-  width: '2.86875rem'
+  width: '2.86875rem',
 });
 
 const Wrapper = styled('div', { width: '100%', position: 'relative' });
@@ -158,7 +158,13 @@ const PageContent = memo(({ listId }: PageContentProps) => {
           <Button
             size="lg"
             disabled={!selectedFilm}
-            css={{ width: 'fit-content', minWidth: 0 }}
+            css={{
+              width: 'fit-content',
+              minWidth: 0,
+              '@xsMax': {
+                width: '100%',
+              },
+            }}
             onClick={() => setIsModalOpen(true)}
           >
             Далее
