@@ -1,6 +1,15 @@
 import { $lists } from '@/models/lists';
 import { $list, $listState, getList } from '@/models/lists/singleList';
-import { Text, Image, styled, Row, Button, Loading, Input, InputProps } from '@nextui-org/react';
+import {
+  Text,
+  Image,
+  styled,
+  Row,
+  Button,
+  Loading,
+  Input,
+  InputProps,
+} from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
@@ -52,6 +61,12 @@ const Li = styled('li', {
 const LiBody = styled('div', {
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'flex-start',
+  height: '100%',
+});
+
+const ImageContainer = styled('div', {
+  display: 'flex',
   justifyContent: 'flex-start',
   height: '100%',
 });
@@ -109,23 +124,23 @@ const PageContent = memo(({ listId }: PageContentProps) => {
           fullWidth
           placeholder="Поиск фильма"
           size="lg"
-          contentRight={
-            loading ? <Loading size="sm" /> : <div></div>
-          }
+          contentRight={loading ? <Loading size="sm" /> : <div></div>}
         />
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
             {options.map((option, index) => (
               <Li {...{ ...getOptionProps({ option, index }), key: option.id }}>
-                <Image
-                  showSkeleton
-                  src={option.posterPreviewUrl}
-                  height={'100%'}
-                  objectFit="cover"
-                  css={{
-                    aspectRatio: '27 / 40',
-                  }}
-                />
+                <ImageContainer>
+                  <Image
+                    showSkeleton
+                    src={option.posterPreviewUrl}
+                    height={'100%'}
+                    objectFit="cover"
+                    css={{
+                      aspectRatio: '27 / 40',
+                    }}
+                  />
+                </ImageContainer>
                 <LiBody css={{ flexGrow: 1 }}>
                   <Text b color="inherit">
                     {option.name}

@@ -1,15 +1,12 @@
 import UpdateReviewModal from '@/features/review/components/UpdateReviewModal/UpdateReviewModal';
+import {
+  deleteReview
+} from '@/models/reviews/deleteReview';
 import { Review } from '@/shared/api/types/review.type';
 import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
 import { Image, Link as NextUILink, Text, styled } from '@nextui-org/react';
 import { useMemo, useState } from 'react';
 import GearButton from './GearButton';
-import ConfirmModal from '@/shared/ui/ConfirmModal';
-import { useStore } from 'effector-react';
-import {
-  $deleteReviewState,
-  deleteReview,
-} from '@/models/reviews/deleteReview';
 
 const ImageContainer = styled('div', {
   display: 'flex',
