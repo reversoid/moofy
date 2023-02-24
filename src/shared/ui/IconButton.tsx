@@ -10,8 +10,8 @@ export const IconButton = forwardRef<HTMLButtonElement, ButtonProps>(
         {...{
           ...props,
           css: {
-            width: '2rem',
-            height: '2rem',
+            width: '1.75rem',
+            height: '1.75rem',
             p: '0',
             minWidth: 'auto',
             flexShrink: '0',
