@@ -16,10 +16,6 @@ jobs:
       - name: Build project
         run: yarn build
 
-      - name: Create file with ssh key
-        run: touch id_rsa |
-            echo $ {{ secrets.VPS_SSH_KEY }} >> id_rsa
-
       - name: Deploy via rsync
         uses: burnett01/rsync-deployments@5.2.1
         with:

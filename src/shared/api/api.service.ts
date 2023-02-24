@@ -12,7 +12,7 @@ type HttpMethods = 'get' | 'post' | 'patch' | 'delete';
 
 /** This base class provides apiUrl and fetch methods with JWT support*/
 export default class ApiService {
-  protected apiUrl = 'http://localhost:3333';
+  protected apiUrl = 'http://77.222.42.131';
 
   protected async post<Response = unknown>(
     relativeUrl: `/${string}`,
