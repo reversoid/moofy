@@ -2,6 +2,7 @@ import ky, { Options } from 'ky';
 import { setAppError } from '@/models/app/errors';
 import { AuthResponse } from '@/features/auth/services/auth.service';
 import { tokenService } from '../services/token.service';
+import environment from '@/environment';
 
 interface CustomOptions extends Options {
   /** With this option all logic about JWT tokens on client is proceeded automatically */
@@ -12,7 +13,7 @@ type HttpMethods = 'get' | 'post' | 'patch' | 'delete';
 
 /** This base class provides apiUrl and fetch methods with JWT support*/
 export default class ApiService {
-  protected apiUrl = 'http://localhost:3333';
+  protected apiUrl =  environment.apiUrl;
 
   protected async post<Response = unknown>(
     relativeUrl: `/${string}`,

@@ -1,7 +1,6 @@
 import { $lists } from '@/models/lists';
 import { $list, $listState, getList } from '@/models/lists/singleList';
-import { Input } from '@/shared/ui/Input';
-import { Text, Image, styled, Row, Button, Loading } from '@nextui-org/react';
+import { Text, Image, styled, Row, Button, Loading, Input, InputProps } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
@@ -106,7 +105,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         <Text h1>Найти фильм</Text>
 
         <Input
-          {...getInputProps()}
+          {...(getInputProps() as unknown as InputProps)}
           fullWidth
           placeholder="Поиск фильма"
           size="lg"
