@@ -6,7 +6,7 @@ import gear from '@/assets/img/gear.svg';
 const GearButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   return (
     <IconButton ref={ref} {...props}>
-      <Image src={gear} width={'1.5rem'} height={'1.5rem'} />
+      <Image src={gear} width={'2rem'} height={'2rem'} />
     </IconButton>
   );
 });
