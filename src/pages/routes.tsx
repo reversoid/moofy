@@ -6,6 +6,7 @@ import { routes as profileRoutes } from './profile/routes';
 
 import Layout from '../features/app/Layout/Layout';
 import ErrorPage from './ErrorPage/ErrorPage';
+import AuthOnly from '@/shared/guards/AuthOnly';
 
 const MainPage = lazy(() => import('./main/MainPage'));
 const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
@@ -34,7 +35,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'welcome',
-        element: <WelcomePage />,
+        element: <AuthOnly redirect='/auth'><WelcomePage /></AuthOnly>,
       },
       {
         path: 'list',
