@@ -21,4 +21,4 @@ jobs:
             echo $ {{ secrets.VPS_SSH_KEY }} >> id_rsa
 
       - name: Send dist folder to server
-        run: rsync -avz -e "ssh -i id_rsa" ./dist ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:${{ secrets.FRONTEND_DESTINATION }}
+        run: rsync -avz -e ssh -i ./id_rsa ./dist ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:${{ secrets.FRONTEND_DESTINATION }}
