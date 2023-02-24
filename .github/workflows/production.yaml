@@ -17,4 +17,4 @@ jobs:
         run: yarn build
 
       - name: Send dist folder to server
-        run: echo hello
+        run: rsync -avz ./dist ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP }}:${{ secrets.FRONTEND_DESTINATION }}
