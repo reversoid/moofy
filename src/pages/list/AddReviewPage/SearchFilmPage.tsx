@@ -69,6 +69,7 @@ const ImageContainer = styled('div', {
   display: 'flex',
   justifyContent: 'flex-start',
   height: '100%',
+  width: '2.86875rem'
 });
 
 const Wrapper = styled('div', { width: '100%', position: 'relative' });
