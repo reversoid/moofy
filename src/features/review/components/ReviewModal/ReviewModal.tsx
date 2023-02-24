@@ -118,7 +118,7 @@ const ReviewModal = ({
           type="submit"
           form="add-review-modal-form"
           color={'gradient'}
-          css={{ minWidth: '7.5rem', margin: 0 }}
+          css={{ minWidth: '7.5rem', margin: 0, '@xsMax': { width: '100%' } }}
           auto
           size="lg"
         >
