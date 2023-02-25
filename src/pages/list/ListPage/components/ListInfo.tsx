@@ -103,7 +103,7 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
 
         {isUserOwner ? (
           <Text as={'p'} color="$neutral">
-            {list.is_public ? 'Публичный' : 'Приватный'} cписок
+            {list.is_public ? 'Публичная' : 'Приватная'} коллекция
           </Text>
         ) : (
           <Text as={'p'} color="$neutral">

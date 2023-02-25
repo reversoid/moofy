@@ -79,11 +79,11 @@ const ListPageWithData = () => {
   }
 
   if (error === 'NOT_ALLOWED') {
-    return <><Text size={'$lg'}>Список скрыт пользователем</Text></>
+    return <><Text size={'$lg'}>Коллекция скрыта пользователем</Text></>
   }
 
   if (error === 'WRONG_LIST_ID') {
-    return <><Text size={'$lg'}>Список недоступен</Text></>
+    return <><Text size={'$lg'}>Коллекция недоступна</Text></>
   }
 
   return null;

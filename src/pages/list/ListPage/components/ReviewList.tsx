@@ -56,7 +56,7 @@ const ReviewList = ({
         {reviewsLoading && <Loading size="md" type="default" />}
       </Row>
       {reviews?.items.length === 0 && !isUserOwner ? (
-        <Text color="$neutral">Список пуст</Text>
+        <Text color="$neutral">Коллекция пуста</Text>
       ) : (
         <>
           {isUserOwner && reviews && (

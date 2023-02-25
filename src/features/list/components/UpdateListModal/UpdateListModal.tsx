@@ -77,7 +77,7 @@ const UpdateListModal = ({
       width="45rem"
     >
       <Modal.Header>
-        <Text h3>Изменить список</Text>
+        <Text h3>Изменить коллекцию</Text>
       </Modal.Header>
       <Modal.Body css={decreasedPaddingMobileModal}>
         <Form
@@ -103,7 +103,7 @@ const UpdateListModal = ({
             bordered
             size="xl"
             label="Описание"
-            placeholder="Ваше описание списка"
+            placeholder="Ваше описание коллекции"
             {...register('description', {
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
@@ -111,7 +111,7 @@ const UpdateListModal = ({
           />
           <Checkbox
             color="gradient"
-            label="Сделать список приватным"
+            label="Сделать коллекцию приватной"
             css={{
               '& .nextui-checkbox-text': {
                 fontSize: '$lg',

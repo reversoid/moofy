@@ -33,7 +33,7 @@ const WelcomePage = () => {
       <Text h1 css={{ mb: '$12' }}>
         Добро пожаловать!
       </Text>
-      <Text h2>Ваши списки фильмов</Text>
+      <Text h2>Ваши коллекции</Text>
       <Grid.Container gap={2} justify="flex-start">
         <Grid
           xs={6}
@@ -41,7 +41,7 @@ const WelcomePage = () => {
           css={{ '@xsMax': { padding: '$3' } }}
           onClick={() => setIsModalOpen(true)}
         >
-          <List text="Создать список" />
+          <List text="Создать коллекцию" />
         </Grid>
 
         {lists.items.map((item) => (
