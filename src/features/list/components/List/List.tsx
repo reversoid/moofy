@@ -11,6 +11,10 @@ const Background = styled('div', {
   backgroundSize: '5rem',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
+  '@xsMax': {
+    height: 110,
+    backgroundSize: '4rem'
+  }
 });
 
 const CardBackground = ({ strToHash }: { strToHash: string }) => {
