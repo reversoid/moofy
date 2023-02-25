@@ -12,7 +12,7 @@ const Background = styled('div', {
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
   '@xsMax': {
-    height: 110,
+    height: 105,
     backgroundSize: '4rem'
   }
 });

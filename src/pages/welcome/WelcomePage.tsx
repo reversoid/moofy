@@ -34,7 +34,19 @@ const WelcomePage = () => {
         Добро пожаловать!
       </Text>
       <Text h2>Ваши коллекции</Text>
-      <Grid.Container gap={2} justify="flex-start">
+      <Grid.Container
+        gap={2}
+        justify="flex-start"
+        css={{
+          '@xsMax': {
+            paddingLeft: 0,
+            width: '100% !important',
+            margin: '0 !important',
+            paddingRight: 0,
+            pt: 0,
+          },
+        }}
+      >
         <Grid
           xs={6}
           sm={3}
