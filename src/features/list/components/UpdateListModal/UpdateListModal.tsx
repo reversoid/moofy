@@ -17,7 +17,7 @@ import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDefaultFormValues } from './useDefaultFormValues';
 import { Form } from '@/shared/ui/Form';
-import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
+import { decreasedPaddingMobile, increasedPaddingBottom } from '@/shared/ui/modalStyles';
 import TextareaCount from '@/shared/ui/TextareaCount';
 
 export interface FormData {
@@ -79,7 +79,7 @@ const UpdateListModal = ({
       <Modal.Header>
         <Text h3>Изменить коллекцию</Text>
       </Modal.Header>
-      <Modal.Body css={decreasedPaddingMobileModal}>
+      <Modal.Body css={decreasedPaddingMobile}>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
             onSubmit({ isPublic: !isPrivate, name, description, listId }),
@@ -124,7 +124,7 @@ const UpdateListModal = ({
           />
         </Form>
       </Modal.Body>
-      <Modal.Footer css={decreasedPaddingMobileModal}>
+      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
         <Button
           form="create-list-modal-form"
           type="submit"

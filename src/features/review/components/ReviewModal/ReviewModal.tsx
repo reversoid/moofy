@@ -1,5 +1,5 @@
 import { Form } from '@/shared/ui/Form';
-import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
+import { decreasedPaddingMobile, increasedPaddingBottom } from '@/shared/ui/modalStyles';
 import {
   Button,
   Loading,
@@ -84,7 +84,7 @@ const ReviewModal = ({
         <Text h3>Обзор к фильму</Text>
       </Modal.Header>
 
-      <Modal.Body css={decreasedPaddingMobileModal}>
+      <Modal.Body css={decreasedPaddingMobile}>
         <Form
           onSubmit={handleSubmit((data) => {
             handlers.onSubmit(data);
@@ -112,7 +112,7 @@ const ReviewModal = ({
           </ScoreContainer>
         </Form>
       </Modal.Body>
-      <Modal.Footer css={decreasedPaddingMobileModal}>
+      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
         <Button
           disabled={!isValid}
           type="submit"

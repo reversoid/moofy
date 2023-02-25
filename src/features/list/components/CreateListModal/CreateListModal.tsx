@@ -6,7 +6,7 @@ import {
 import { Form } from '@/shared/ui/Form';
 import { Input } from '@/shared/ui/Input';
 import TextareaCount from '@/shared/ui/TextareaCount';
-import { decreasedPaddingMobileModal } from '@/shared/ui/styles';
+import { decreasedPaddingMobile, increasedPaddingBottom } from '@/shared/ui/modalStyles';
 import {
   Modal,
   Text,
@@ -72,7 +72,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
       <Modal.Header>
         <Text h3>Создать коллекцию</Text>
       </Modal.Header>
-      <Modal.Body css={decreasedPaddingMobileModal}>
+      <Modal.Body css={decreasedPaddingMobile}>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
             onSubmit({ isPublic: !isPrivate, name, description }),
@@ -117,7 +117,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
           />
         </Form>
       </Modal.Body>
-      <Modal.Footer css={decreasedPaddingMobileModal}>
+      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
         <Button
           form="create-list-modal-form"
           type="submit"

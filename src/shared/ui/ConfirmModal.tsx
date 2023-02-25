@@ -1,6 +1,6 @@
 import { Modal, Text, Button, Loading } from '@nextui-org/react';
 import React, { memo } from 'react';
-import { decreasedPaddingMobileModal } from './styles';
+import { decreasedPaddingMobile, increasedPaddingBottom } from './modalStyles';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -38,8 +38,8 @@ const ConfirmModal = ({
       <Modal.Header>
         <Text h3>Подтверждение</Text>
       </Modal.Header>
-      <Modal.Body css={decreasedPaddingMobileModal}>{content}</Modal.Body>
-      <Modal.Footer css={decreasedPaddingMobileModal}>
+      <Modal.Body css={decreasedPaddingMobile}>{content}</Modal.Body>
+      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
         <Button
           size="md"
           color={buttonColor}
