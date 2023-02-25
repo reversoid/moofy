@@ -17,7 +17,7 @@ export const USERNAME_VALIDATORS: RegisterOptions<
   },
   pattern: {
     value: SAFE_STRING,
-    message: "Разрешено использовать латинские буквы, цифры, '_' и '-'",
+    message: "Разрешено использовать латинские буквы, цифры, '.' '_' и '-'",
   },
   maxLength: {
     value: MAX_USERNAME_LENGTH,
