@@ -1,9 +1,9 @@
 import CreateListModal from '@/features/list/components/CreateListModal/CreateListModal';
 import List from '@/features/list/components/List/List';
-import { $lists, getLists } from '@/models/lists';
+import { $lists, $listsState, getLists } from '@/models/lists';
 import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
 import { Link } from '@/shared/ui/Link';
-import { Button, Grid, Loading, Text, styled } from '@nextui-org/react';
+import { Button, Grid, Loading, Row, Text, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
 
@@ -16,13 +16,13 @@ const LoadMoreContainer = styled('div', {
 
 const WelcomePage = () => {
   useEffect(getLists, []);
-  const lists = useStore($lists);
+  const { lists, loading: listsLoading } = useStore($listsState);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const loading = useStore(loadMoreListsFx.pending);
+  const loadMoreLoading = useStore(loadMoreListsFx.pending);
 
   const handleLoadMore = () => {
-    if (loading) {
+    if (loadMoreLoading) {
       return;
     }
     loadMoreLists({ lowerBound: lists.nextKey! });
@@ -33,7 +33,10 @@ const WelcomePage = () => {
       <Text h1 css={{ mb: '$12' }}>
         Добро пожаловать!
       </Text>
-      <Text h2>Ваши коллекции</Text>
+      <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
+        <Text h2>Ваши коллекции</Text>
+        {listsLoading && <Loading size="md" type="default" />}
+      </Row>
       <Grid.Container
         gap={2}
         justify="flex-start"
@@ -72,7 +75,7 @@ const WelcomePage = () => {
       {lists.nextKey && (
         <LoadMoreContainer>
           <Button color="gradient" onPress={handleLoadMore}>
-            {loading ? (
+            {loadMoreLoading ? (
               <Loading type="points" color="white" />
             ) : (
               'Загрузить больше'

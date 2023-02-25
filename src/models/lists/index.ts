@@ -1,17 +1,23 @@
 import { listService } from '@/features/list/services/list.service';
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import { combine, createEffect, createEvent, createStore, sample } from 'effector';
 import { createListFx } from './createList';
 import { updateListFx } from './updateList';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
 import { $list } from './singleList';
-import { loadMoreListsFx } from './loadMoreLists';
+import { loadMoreLists, loadMoreListsFx } from './loadMoreLists';
 import { deleteListFx } from './deleteList';
 
 export const getLists = createEvent<void>();
 
 export const getListsFx = createEffect<void, IterableResponse<List>>();
 getListsFx.use(() => listService.getMyLists(undefined, 19));
+
+export const $listsLoading = createStore<boolean>(false)
+$listsLoading.on(getLists, () => true)
+$listsLoading.on(getListsFx.finally, () => false)
+$listsLoading.on(loadMoreLists, () => true)
+$listsLoading.on(loadMoreListsFx.finally, () => false)
 
 export const $lists = createStore<IterableResponse<List>>({
   nextKey: null,
@@ -42,6 +48,11 @@ $lists.on(loadMoreListsFx.doneData, (state, payload) => {
 $lists.on(deleteListFx.doneData, (state, { listId }) => {
   return { ...state, items: state.items.filter((item) => item.id !== listId) };
 });
+
+export const $listsState = combine({
+  loading: $listsLoading,
+  lists: $lists,
+})
 
 sample({
   clock: getLists,
