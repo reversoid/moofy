@@ -66,40 +66,40 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
   return (
     <>
       <ListInfoContainer>
-        <Row align="center" justify="space-between" css={{ gap: '$15' }}>
-          <Row
-            align="center"
-            css={{ gap: '$10', justifyContent: 'space-between' }}
+        <Row
+          align="center"
+          css={{ gap: '$10', justifyContent: 'space-between' }}
+        >
+          <Text
+            h1
+            css={{
+              flexShrink: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              pr: '0.25rem',
+            }}
           >
-            <Text
-              h1
-              css={{
-                flexShrink: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                pr: '0.25rem',
-              }}
-            >
-              {list.name}
-            </Text>
+            {list.name}
+          </Text>
 
-            {isUserOwner && (
-              <ActionsDropdown
-                trigger={<GearButton />}
-                options={dropdownOptions}
-                placement="left"
-              />
-            )}
-          </Row>
+          {isUserOwner && (
+            <ActionsDropdown
+              trigger={<GearButton />}
+              options={dropdownOptions}
+              placement="left"
+            />
+          )}
         </Row>
 
-        <Text
-          as={'p'}
-          css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}
-        >
-          {list.description}
-        </Text>
+        {list.description && (
+          <Text
+            as={'p'}
+            css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}
+          >
+            {list.description}
+          </Text>
+        )}
 
         {isUserOwner ? (
           <Text as={'p'} color="$neutral">

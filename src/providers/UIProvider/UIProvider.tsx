@@ -16,6 +16,7 @@ const UiWrapper = styled('div', {
   '@xsMax': {
     '& h1': {
       fontSize: '$4xl',
+      mb: '$10',
     },
     '& h2': {
       fontSize: '$3xl',
