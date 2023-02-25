@@ -89,7 +89,7 @@ const UpdateListModal = ({
           <Input
             bordered
             fullWidth
-            label="Название списка"
+            label="Название"
             size="xl"
             placeholder="Название123"
             status={errors.name && 'error'}
