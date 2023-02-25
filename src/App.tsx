@@ -1,13 +1,13 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { routes } from './pages/routes';
 import UIProvider from './providers/UIProvider/UIProvider';
-import { useEffect } from 'react';
 import { appStarted } from './models/app/app';
+import { useMount } from './shared/hooks/useMount';
 
 const router = createBrowserRouter(routes);
 
 function App() {
-  useEffect(appStarted, []);
+  useMount(appStarted);
 
   return (
     <UIProvider>
