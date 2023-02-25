@@ -1,11 +1,11 @@
+import CreateListModal from '@/features/list/components/CreateListModal/CreateListModal';
 import List from '@/features/list/components/List/List';
-import { Button, Grid, Loading, Text, styled } from '@nextui-org/react';
 import { $lists, getLists } from '@/models/lists';
+import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
+import { Link } from '@/shared/ui/Link';
+import { Button, Grid, Loading, Text, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
-import { Link } from '@/shared/ui/Link';
-import CreateListModal from '@/features/list/components/CreateListModal/CreateListModal';
-import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
 
 const LoadMoreContainer = styled('div', {
   display: 'flex',

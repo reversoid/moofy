@@ -13,7 +13,7 @@ const HeaderStyled = styled('header', {
   top: 0,
   left: 0,
   width: '100vw',
-  zIndex: 10,
+  zIndex: 201,
 });
 
 const HeaderContainer = styled(Container, {
