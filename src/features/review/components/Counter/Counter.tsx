@@ -36,6 +36,7 @@ const InputStyled = styled('input', {
   width: '3rem',
   height: '3rem',
   lineHeight: '3rem',
+  padding: 0,
   ...removeArrows,
 });
 
