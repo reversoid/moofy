@@ -48,9 +48,12 @@ const MainPage = () => {
               lineHeight: '120%',
               mb: '$10',
             },
+            '@media(max-width: 400px)': {
+              fontSize: 'calc(5vw + 1.05rem) !important',
+            },
           }}
         >
-          Создавай списки фильмов
+          Создавай подборки фильмов
         </Text>
         <Text
           h2
@@ -64,6 +67,9 @@ const MainPage = () => {
             '@xsMax': {
               fontSize: '2rem !important',
               lineHeight: '120%',
+            },
+            '@media(max-width: 400px)': {
+              fontSize: 'calc(5vw + 0.55rem) !important',
             },
             ta: 'center',
           }}
