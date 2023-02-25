@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Wrapper } from './Layout';
 import { Image, Text, styled, Link } from '@nextui-org/react';
-import logo from '@/assets/img/Logo2.svg';
+import logo from '@/assets/img/Logo.svg';
 import { Link as MyLink } from '@/shared/ui/Link';
 
 const Div = styled('div', {});
