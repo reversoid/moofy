@@ -55,7 +55,7 @@ export default class ApiService {
     try {
       return await this._fetchWithJWT<Response>(url, method, options);
     } catch (error: any) {
-      if (error.cause?.status !== 401) {
+      if (error.cause?.statusCode !== 401) {
         throw error;
       }
       return this._checkoutAndFetch<Response>(url, method, options);
@@ -85,7 +85,7 @@ export default class ApiService {
     options?: Options,
   ): Promise<Response> {
     const { access_token } = await this._fetchWithRetry<AuthResponse>(
-      '/auth/checkout',
+      this.apiUrl + '/auth/protected/checkout',
       'get',
     );
     tokenService.setAccessToken(access_token);
