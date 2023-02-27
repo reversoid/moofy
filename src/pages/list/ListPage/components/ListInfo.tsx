@@ -68,7 +68,12 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
       <ListInfoContainer>
         <Row
           align="center"
-          css={{ gap: '$10', justifyContent: 'space-between' }}
+          css={{
+            gap: '$10',
+            justifyContent: 'space-between',
+            mb: '$12',
+            '@xsMax': { mb: '$10' },
+          }}
         >
           <Text
             h1
@@ -78,6 +83,7 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               pr: '0.25rem',
+              mb: '0 !important',
             }}
           >
             {list.name}
