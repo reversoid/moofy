@@ -29,7 +29,7 @@ const UpdateReviewModal = ({
       form={formData}
       handlers={{
         onSubmit({ description, score }) {
-          return updateReview({ description, score, reviewId });
+          return updateReview({ description, score: Number(score), reviewId });
         },
         onSuccess() {
           setIsOpen(false);
