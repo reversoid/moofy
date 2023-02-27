@@ -83,6 +83,7 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
             showSkeleton
             src={review.film.posterPreviewUrl}
             width={'6.75rem'}
+            height={'10rem'}
             objectFit="cover"
             css={{
               flexShrink: 0,
