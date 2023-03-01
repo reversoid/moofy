@@ -85,6 +85,9 @@ const MainPage = () => {
             '@xsMax': {
               mt: '$13',
             },
+            '@media(max-width: 500px)': {
+              width: '80%',
+            },
           }}
           onPress={() => navigate('/auth')}
         >
