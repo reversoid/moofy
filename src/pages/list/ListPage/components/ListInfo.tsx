@@ -101,7 +101,14 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
         {list.description && (
           <Text
             as={'p'}
-            css={{ mb: '$5', fontSize: '$xl', wordBreak: 'break-word' }}
+            css={{
+              mb: '$12',
+              '@xsMax': {
+                marginBottom: '$10',
+              },
+              fontSize: '$xl',
+              wordBreak: 'break-word',
+            }}
           >
             {list.description}
           </Text>
