@@ -3,5 +3,5 @@ export interface Environment {
   apiUrl: string;
 
   /** Amount of times **App.tsx** is mounted */
-  RERENDER_AMOUNT: number;
+  RERENDER_AMOUNT: 1 | 2;
 }
