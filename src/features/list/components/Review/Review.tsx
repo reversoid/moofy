@@ -104,7 +104,7 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
           <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
             {review.film.year}
           </Text>
-          <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md' }}>
+          <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$lg' }}>
             {review.description}
           </Text>
         </FilmInfo>
