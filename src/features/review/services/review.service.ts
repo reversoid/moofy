@@ -1,4 +1,5 @@
 import ApiService from '@/shared/api/api.service';
+import { List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 
 export interface CreateReviewDTO {
@@ -20,21 +21,21 @@ export interface DeleteReviewDTO {
 
 export class ReviewService extends ApiService {
   public createReview(dto: CreateReviewDTO) {
-    return this.post<Review>('/review', {
+    return this.post<{ review: Review; list: List }>('/review', {
       useJWT: true,
       json: dto,
     });
   }
 
   public updateReview(dto: UpdateReviewDTO) {
-    return this.patch<Review>('/review', {
+    return this.patch<{ review: Review; list: List }>('/review', {
       useJWT: true,
       json: dto,
     });
   }
 
   public deleteReview(reviewId: number) {
-    return this.delete<{ reviewId: number }>('/review', {
+    return this.delete<{ reviewId: number, list: List }>('/review', {
       useJWT: true,
       json: { reviewId },
     });

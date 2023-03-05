@@ -1,7 +1,5 @@
 import UpdateReviewModal from '@/features/review/components/UpdateReviewModal/UpdateReviewModal';
-import {
-  deleteReview
-} from '@/models/reviews/deleteReview';
+import { deleteReview } from '@/models/reviews/deleteReview';
 import { Review } from '@/shared/api/types/review.type';
 import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
 import { Image, Link as NextUILink, Text, styled } from '@nextui-org/react';
@@ -66,14 +64,16 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
     ];
   }, []);
 
+  const description = useMemo(() => {
+    return review.description.replace(/\n/g, '<br />');
+  }, [review.description]);
+
   return (
     <>
       <ReviewWrapper>
         {isUserOwner && (
           <ActionsDropdown
-            trigger={
-              <GearButtonStyled />
-            }
+            trigger={<GearButtonStyled />}
             options={dropdownOptions}
             placement="left"
           />
@@ -104,9 +104,11 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
           <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
             {review.film.year}
           </Text>
-          <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md' }}>
-            {review.description}
-          </Text>
+          <Text
+            as={'p'}
+            css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$lg' }}
+            dangerouslySetInnerHTML={{ __html: description }}
+          ></Text>
         </FilmInfo>
         <UpdateReviewModal
           isOpen={editModalOpen}
