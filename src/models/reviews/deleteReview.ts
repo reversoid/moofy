@@ -1,4 +1,5 @@
 import { reviewService } from '@/features/review/services/review.service';
+import { List } from '@/shared/api/types/list.type';
 import {
   combine,
   createEffect,
@@ -16,7 +17,7 @@ export const clearState = createEvent();
 
 export const deleteReviewFx = createEffect<
   DeleteReviewDTO,
-  { reviewId: number }
+  { reviewId: number, list: List }
 >();
 deleteReviewFx.use(({ reviewId }) => reviewService.deleteReview(reviewId));
 

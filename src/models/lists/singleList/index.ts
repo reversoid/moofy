@@ -15,6 +15,7 @@ import { loadMoreReviewsFx } from './loadMoreReviews';
 import { updateReviewFx } from '@/models/reviews/updateReview';
 import { deleteReview, deleteReviewFx } from '@/models/reviews/deleteReview';
 import { deleteReviewById, updateReviewInList } from './utils';
+import { createReviewFx } from '@/models/reviews/createReview';
 
 export type ListStore = {
   reviews: IterableResponse<Review>;
@@ -29,7 +30,7 @@ export const getListFx = createEffect<
 >();
 getListFx.use((id) => listService.getMyListWithContent(id));
 
-export const $list = createStore<ListStore>(null);
+export const $list = createStore<ListStore | null>(null);
 $list.on(getListFx.doneData, (state, payload) => payload);
 $list.on(updateListFx.doneData, (state, payload) => {
   if (!state) {
@@ -51,29 +52,46 @@ $list.on(loadMoreReviewsFx.doneData, (state, payload) => {
   };
 });
 
-$list.on(updateReviewFx.doneData, (state, payload) => {
+$list.on(updateReviewFx.doneData, (state, { review, list }) => {
   if (!state) {
     return state;
   }
 
   return {
-    ...state,
     reviews: {
       nextKey: state.reviews.nextKey,
-      items: updateReviewInList(state.reviews.items, payload),
+      items: updateReviewInList(state.reviews.items, review),
     },
+    list
   };
 });
 
 $list.on(deleteReviewFx.doneData, (state, payload) => {
   if (!state) {
-    return;
+    return state;
   }
   return {
-    ...state,
     reviews: {
       nextKey: state.reviews.nextKey,
       items: deleteReviewById(state.reviews.items, payload.reviewId),
+    },
+    list: payload.list,
+  };
+});
+
+$list.on(createReviewFx.doneData, (state, { list, review }) => {
+  if (!state) {
+    return state;
+  }
+  if (state.list.id !== list.id) {
+    return state;
+  }
+
+  return {
+    list: list,
+    reviews: {
+      items: [review, ...state.reviews.items],
+      nextKey: state.reviews.nextKey,
     },
   };
 });
@@ -85,11 +103,11 @@ $listError.on(
 );
 $listError.on(getList, () => null);
 
-export const $listLoading = createStore<boolean>(false)
-$listLoading.on(getList, () => true)
-$listLoading.on(getListFx.finally, () => false)
-$listLoading.on(deleteReview, () => true)
-$listLoading.on(deleteReviewFx.finally, () => false)
+export const $listLoading = createStore<boolean>(false);
+$listLoading.on(getList, () => true);
+$listLoading.on(getListFx.finally, () => false);
+$listLoading.on(deleteReview, () => true);
+$listLoading.on(deleteReviewFx.finally, () => false);
 
 export const $listState = combine({
   list: $list,

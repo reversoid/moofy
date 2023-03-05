@@ -1,4 +1,5 @@
 import { Film } from "./film.type";
+import { List } from "./list.type";
 
 export interface Review {
   id: number;
