@@ -5,11 +5,20 @@ import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
 import { Image, Link as NextUILink, Text, styled } from '@nextui-org/react';
 import { useMemo, useState } from 'react';
 import GearButton from './GearButton';
+import { COLORS } from '@/features/review/components/Counter/Counter';
 
 const ImageContainer = styled('div', {
   display: 'flex',
   justifyContent: 'flex-start',
+  '@xsMax': {
+    justifyContent: 'center',
+  },
+  '& .nextui-image-container': {
+    margin: '0 !important',
+  },
 });
+
+const ImgWrapper = styled('div');
 
 const FilmInfo = styled('div', {
   display: 'flex',
@@ -32,6 +41,12 @@ const ReviewWrapper = styled('div', {
   background: '$gray50',
   borderRadius: '$lg',
   position: 'relative',
+});
+
+const Score = styled('div', {
+  padding: '0 0.2rem',
+  fontSize: '$sm',
+  background: '$red100',
 });
 
 interface ReviewItemProps {
@@ -68,6 +83,8 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
     return review.description.replace(/\n/g, '<br />');
   }, [review.description]);
 
+  const color = review.score ? COLORS[review.score - 1] : null;
+
   return (
     <>
       <ReviewWrapper>
@@ -79,17 +96,38 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
           />
         )}
         <ImageContainer>
-          <Image
-            showSkeleton
-            src={review.film.posterPreviewUrl}
-            width={'6.75rem'}
-            height={'10rem'}
-            objectFit="cover"
+          <ImgWrapper
             css={{
-              flexShrink: 0,
-              aspectRatio: '27 / 40',
+              position: 'relative',
             }}
-          />
+          >
+            <Image
+              showSkeleton
+              src={review.film.posterPreviewUrl}
+              width={'6.75rem'}
+              height={'10rem'}
+              objectFit="cover"
+              css={{
+                flexShrink: 0,
+                aspectRatio: '27 / 40',
+              }}
+            />
+            {review.score && (
+              <Score
+                css={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  background: color ?? '',
+                  color: ['#ffc20d', '#fef200', '#cadb2a'].includes(color)
+                    ? '#2e2e2e'
+                    : 'white',
+                }}
+              >
+                {review.score}
+              </Score>
+            )}
+          </ImgWrapper>
         </ImageContainer>
         <FilmInfo>
           <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
