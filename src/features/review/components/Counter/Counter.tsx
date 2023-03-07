@@ -4,7 +4,8 @@ import { Button, styled } from '@nextui-org/react';
 import { memo, useEffect, useState } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
-const COLORS = [
+// TODO make this reusable, create function or object or smth like that with contrast text colors
+export const COLORS = [
   '#ed1b24',
   '#f36523',
   '#f8931d',
