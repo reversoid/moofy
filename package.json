@@ -1,11 +1,12 @@
 {
   "name": "moofy-frontend",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
-    "build": "tsc && vite build --mode production",
+    "build:prod": "tsc && vite build --mode production",
+    "build:test": "tsc && vite build --mode test",
     "preview": "vite preview"
   },
   "engines": {

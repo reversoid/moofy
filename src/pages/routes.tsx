@@ -1,4 +1,4 @@
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
@@ -35,7 +35,11 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'welcome',
-        element: <AuthOnly redirect='/auth'><WelcomePage /></AuthOnly>,
+        element: (
+          <AuthOnly redirect="/auth">
+            <WelcomePage />
+          </AuthOnly>
+        ),
       },
       {
         path: 'list',
@@ -52,6 +56,10 @@ export const routes: RouteObject[] = [
       {
         path: 'help',
         element: <HelpPage />,
+      },
+      {
+        path: '*',
+        element: <Navigate to={'/'} />,
       },
     ],
   },

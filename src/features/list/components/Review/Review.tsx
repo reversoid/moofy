@@ -1,17 +1,24 @@
 import UpdateReviewModal from '@/features/review/components/UpdateReviewModal/UpdateReviewModal';
-import {
-  deleteReview
-} from '@/models/reviews/deleteReview';
+import { deleteReview } from '@/models/reviews/deleteReview';
 import { Review } from '@/shared/api/types/review.type';
 import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
 import { Image, Link as NextUILink, Text, styled } from '@nextui-org/react';
 import { useMemo, useState } from 'react';
 import GearButton from './GearButton';
+import { COLORS } from '@/features/review/components/Counter/Counter';
 
 const ImageContainer = styled('div', {
   display: 'flex',
   justifyContent: 'flex-start',
+  '@xsMax': {
+    justifyContent: 'center',
+  },
+  '& .nextui-image-container': {
+    margin: '0 !important',
+  },
 });
+
+const ImgWrapper = styled('div');
 
 const FilmInfo = styled('div', {
   display: 'flex',
@@ -34,6 +41,14 @@ const ReviewWrapper = styled('div', {
   background: '$gray50',
   borderRadius: '$lg',
   position: 'relative',
+});
+
+const Score = styled('div', {
+  width: '1.5rem',
+  textAlign: 'center',
+  fontSize: '$sm',
+  background: '$red100',
+  lineHeight: 1.25
 });
 
 interface ReviewItemProps {
@@ -66,30 +81,55 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
     ];
   }, []);
 
+  const description = useMemo(() => {
+    return review.description.replace(/\n/g, '<br />');
+  }, [review.description]);
+
+  const color = review.score ? COLORS[review.score - 1] : null;
+
   return (
     <>
       <ReviewWrapper>
         {isUserOwner && (
           <ActionsDropdown
-            trigger={
-              <GearButtonStyled />
-            }
+            trigger={<GearButtonStyled />}
             options={dropdownOptions}
             placement="left"
           />
         )}
         <ImageContainer>
-          <Image
-            showSkeleton
-            src={review.film.posterPreviewUrl}
-            width={'6.75rem'}
-            height={'10rem'}
-            objectFit="cover"
+          <ImgWrapper
             css={{
-              flexShrink: 0,
-              aspectRatio: '27 / 40',
+              position: 'relative',
             }}
-          />
+          >
+            <Image
+              showSkeleton
+              src={review.film.posterPreviewUrl}
+              width={'6.75rem'}
+              height={'10rem'}
+              objectFit="cover"
+              css={{
+                flexShrink: 0,
+                aspectRatio: '27 / 40',
+              }}
+            />
+            {review.score && (
+              <Score
+                css={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  background: color ?? '',
+                  color: ['#ffc20d', '#fef200', '#cadb2a'].includes(color ?? '')
+                    ? '#2e2e2e'
+                    : 'white',
+                }}
+              >
+                {review.score}
+              </Score>
+            )}
+          </ImgWrapper>
         </ImageContainer>
         <FilmInfo>
           <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
@@ -104,9 +144,11 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
           <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
             {review.film.year}
           </Text>
-          <Text as={'p'} css={{ flexShrink: 1, lineHeight: '$md' }}>
-            {review.description}
-          </Text>
+          <Text
+            as={'p'}
+            css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$lg' }}
+            dangerouslySetInnerHTML={{ __html: description }}
+          ></Text>
         </FilmInfo>
         <UpdateReviewModal
           isOpen={editModalOpen}

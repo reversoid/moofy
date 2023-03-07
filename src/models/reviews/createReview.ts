@@ -2,6 +2,7 @@ import {
   CreateReviewDTO,
   reviewService,
 } from '@/features/review/services/review.service';
+import { List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import {
   combine,
@@ -14,7 +15,7 @@ import {
 export const createReview = createEvent<CreateReviewDTO>();
 export const clearState = createEvent();
 
-export const createReviewFx = createEffect<CreateReviewDTO, Review>();
+export const createReviewFx = createEffect<CreateReviewDTO, { review: Review; list: List }>();
 createReviewFx.use((dto) => reviewService.createReview(dto));
 
 export const $createReviewSuccess = createStore<boolean>(false);

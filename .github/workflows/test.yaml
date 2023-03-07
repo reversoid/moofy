@@ -1,9 +1,9 @@
 name: moofy-frontend
-run-name: Deploy
+run-name: Deploy test
 on: 
   push:
     branches:
-      - "main"
+      - "dev"
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,17 +14,17 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: yarn build:prod
+        run: yarn
 
       - name: Build project
-        run: yarn build
+        run: yarn build:test
 
       - name: Deploy via rsync
         uses: burnett01/rsync-deployments@5.2.1
         with:
           switches: -avzr --delete
           path: dist/
-          remote_path: ${{ secrets.FRONTEND_DESTINATION }}
+          remote_path: ${{ secrets.FRONTEND_TEST_DESTINATION }}
           remote_host: ${{ secrets.VPS_IP }}
           remote_user: ${{ secrets.VPS_USERNAME }}
           remote_key: ${{ secrets.VPS_SSH_KEY }}
