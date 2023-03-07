@@ -16,35 +16,44 @@ const ErrorPage = ({ code = 404 }: { code?: number }) => {
     <>
       <Container>
         <Text
-          h1
-          size={60}
+          b
           css={{
-            textGradient: '45deg, $blue600 -20%, $pink600 50%',
-            fontSize: '20rem',
             textAlign: 'center',
-            '@xsMax': {
-              fontSize: '10rem',
-            },
+            fontSize: '2rem',
+            width: '100%',
+            display: 'block',
+            textGradient: '45deg, $blue600 -20%, $pink600 50%',
+            fontWeight: 'bold',
           }}
-          weight="bold"
         >
-          {code}
+          Что-то пошло не так...
+        </Text>
+        <Text
+          b
+          css={{
+            textAlign: 'center',
+            fontSize: '1.25rem',
+            width: '100%',
+            display: 'block',
+            color: '$neutral',
+            fontWeight: 'bold',
+          }}
+        >
+          Если ошибка повторяется, то свяжитесь, пожалуйста, с{' '}
+          <Link to={'/support'}>поддержкой</Link>
         </Text>
         <Link to={isLoggedIn ? '/welcome' : '/'}>
           <Text
-            b
             css={{
               textAlign: 'center',
-              fontSize: '2rem',
+              fontSize: '1.25rem',
               width: '100%',
               display: 'block',
-              textGradient: '45deg, $blue600 -20%, $pink600 50%',
-              '@xsMax': {
-                fontSize: '1.5rem',
-              },
+              fontWeight: 'bold',
+              color: '$link',
             }}
           >
-            Вернуться на главную
+            На главную
           </Text>
         </Link>
       </Container>
