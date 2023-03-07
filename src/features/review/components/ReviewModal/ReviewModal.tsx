@@ -76,10 +76,10 @@ const ReviewModal = ({
     handlers.onSuccess();
   }, [state.success]);
 
-  const [includeScore, setIncludeScore] = useState(form === undefined || form?.score !== null);
+  const [includeScore, setIncludeScore] = useState(form !== undefined && form.score !== null);
 
   useEffect(() => {
-    setIncludeScore(form?.score !== null);
+    setIncludeScore(form !== undefined && form.score !== null);
   }, [form?.score]);
 
   return (
