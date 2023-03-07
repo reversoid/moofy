@@ -14,10 +14,10 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: yarn build:prod
+        run: yarn
 
       - name: Build project
-        run: yarn build
+        run: yarn build:prod
 
       - name: Deploy via rsync
         uses: burnett01/rsync-deployments@5.2.1
