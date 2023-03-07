@@ -1,14 +1,18 @@
 import { Form } from '@/shared/ui/Form';
-import { decreasedPaddingMobile, increasedPaddingBottom } from '@/shared/ui/modalStyles';
+import {
+  decreasedPaddingMobile,
+  increasedPaddingBottom,
+} from '@/shared/ui/modalStyles';
 import {
   Button,
+  Checkbox,
   Loading,
   Modal,
   Text,
   Textarea,
   styled,
 } from '@nextui-org/react';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Counter from '../Counter/Counter';
 import TextareaCount from '@/shared/ui/TextareaCount';
@@ -26,7 +30,7 @@ const StyledLabel = styled('label', {
 
 export interface ReviewFormData {
   description: string;
-  score: number;
+  score: number | null;
 }
 
 export interface ReviewModalProps {
@@ -72,6 +76,12 @@ const ReviewModal = ({
     handlers.onSuccess();
   }, [state.success]);
 
+  const [includeScore, setIncludeScore] = useState(form?.score !== null);
+
+  useEffect(() => {
+    setIncludeScore(form?.score !== null);
+  }, [form?.score]);
+
   return (
     <Modal
       closeButton
@@ -87,7 +97,10 @@ const ReviewModal = ({
       <Modal.Body css={decreasedPaddingMobile}>
         <Form
           onSubmit={handleSubmit((data) => {
-            handlers.onSubmit(data);
+            handlers.onSubmit({
+              ...data,
+              score: includeScore ? data.score : null,
+            });
           })}
           id="add-review-modal-form"
         >
@@ -102,17 +115,32 @@ const ReviewModal = ({
             })}
             initialValue={getValues('description')}
           />
+          <Checkbox
+            color="gradient"
+            label="Включить оценку"
+            css={{
+              '& .nextui-checkbox-text': {
+                fontSize: '$lg',
+              },
+            }}
+            size="lg"
+            defaultSelected={includeScore}
+            onChange={(newValue) => setIncludeScore(newValue)}
+          />
           <ScoreContainer>
             <StyledLabel htmlFor="slider">Оценка</StyledLabel>
             <Counter
               getValue={() => Number(getValues().score)}
               registerReturn={register('score')}
               setValue={(newValue) => setValue('score', newValue)}
+              disabled={!includeScore}
             />
           </ScoreContainer>
         </Form>
       </Modal.Body>
-      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
+      <Modal.Footer
+        css={{ ...decreasedPaddingMobile, ...increasedPaddingBottom }}
+      >
         <Button
           disabled={!isValid}
           type="submit"
