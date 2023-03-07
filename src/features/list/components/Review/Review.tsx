@@ -44,7 +44,8 @@ const ReviewWrapper = styled('div', {
 });
 
 const Score = styled('div', {
-  padding: '0 0.25rem',
+  width: '1.5rem',
+  textAlign: 'center',
   fontSize: '$sm',
   background: '$red100',
   lineHeight: 1.25
