@@ -119,7 +119,7 @@ const ReviewItem = ({ review, isUserOwner }: ReviewItemProps) => {
                   top: 0,
                   right: 0,
                   background: color ?? '',
-                  color: ['#ffc20d', '#fef200', '#cadb2a'].includes(color)
+                  color: ['#ffc20d', '#fef200', '#cadb2a'].includes(color ?? '')
                     ? '#2e2e2e'
                     : 'white',
                 }}
