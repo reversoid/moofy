@@ -44,9 +44,10 @@ const ReviewWrapper = styled('div', {
 });
 
 const Score = styled('div', {
-  padding: '0 0.2rem',
+  padding: '0 0.25rem',
   fontSize: '$sm',
   background: '$red100',
+  lineHeight: 1.25
 });
 
 interface ReviewItemProps {
