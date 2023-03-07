@@ -1,6 +1,6 @@
 import { Environment } from './Environment';
 
 export const devEnv: Environment = {
-  apiUrl: 'http://localhost:3333',
+  apiUrl: 'https://api.test.moofy.ru',
   RERENDER_AMOUNT: 2,
 };
