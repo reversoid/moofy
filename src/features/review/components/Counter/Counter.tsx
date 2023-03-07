@@ -38,6 +38,14 @@ const InputStyled = styled('input', {
   lineHeight: '3rem',
   padding: 0,
   ...removeArrows,
+  variants: {
+    disabled: {
+      true: {
+        backgroundColor: '$neutral !important',
+        cursor: 'default'
+      }
+    }
+  }
 });
 
 const Icon = styled('img', {
@@ -65,9 +73,10 @@ interface CounterProps {
   registerReturn: UseFormRegisterReturn;
   setValue: (newValue: number) => void;
   getValue: () => number;
+  disabled?: boolean;
 }
 
-const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
+const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps) => {
   const increase = () => {
     const currentValue = getValue();
     if (currentValue >= 10) {
@@ -94,7 +103,7 @@ const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
 
   return (
     <CounterContainer>
-      <IconButton onPress={decrease}>
+      <IconButton onPress={decrease} disabled={disabled}>
         <Icon src={down} alt="Down arrow" />
       </IconButton>
 
@@ -108,9 +117,10 @@ const Counter = ({ registerReturn, setValue, getValue }: CounterProps) => {
             ? '#2e2e2e'
             : 'white',
         }}
+        disabled={disabled}
       />
 
-      <IconButton onPress={increase}>
+      <IconButton onPress={increase} disabled={disabled}>
         <Icon src={up} alt="Up arrow" />
       </IconButton>
     </CounterContainer>

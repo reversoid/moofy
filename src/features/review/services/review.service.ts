@@ -5,14 +5,14 @@ import { Review } from '@/shared/api/types/review.type';
 export interface CreateReviewDTO {
   filmId: string;
   description: string;
-  score: number;
+  score: number | null;
   listId: number;
 }
 
 export interface UpdateReviewDTO {
   reviewId: number;
   description: string;
-  score: number;
+  score: number | null;
 }
 
 export interface DeleteReviewDTO {

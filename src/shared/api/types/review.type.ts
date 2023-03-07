@@ -4,7 +4,7 @@ import { List } from "./list.type";
 export interface Review {
   id: number;
   film: Film;
-  score: number;
+  score: number | null;
   description: string;
   tags?: string[];
   created_at: Date;
