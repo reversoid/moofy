@@ -3,6 +3,8 @@ import List from '@/features/list/components/List/List';
 import { $lists, $listsState, getLists } from '@/models/lists';
 import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
 import { Link } from '@/shared/ui/Link';
+import { LinkTab } from '@/shared/ui/LinkTab/LinkTab';
+import { Tabs } from '@mui/material';
 import { Button, Grid, Loading, Row, Text, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
@@ -28,13 +30,32 @@ const WelcomePage = () => {
     loadMoreLists({ lowerBound: lists.nextKey! });
   };
 
+  const [value, setValue] = useState(1);
+
   return (
     <>
       <Text h1 css={{ mb: '$12' }}>
         Добро пожаловать!
       </Text>
       <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
-        <Text h2>Ваши коллекции</Text>
+        <Tabs
+          value={value}
+          onChange={(e, newValue) => setValue(newValue)}
+          sx={{
+            width: '100%',
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#ffd131',
+              height: '3px',
+            },
+            mb: '0.625rem',
+          }}
+        >
+          <LinkTab to="/" label="Мои коллекции" />
+          <LinkTab to="/abc" label="Избранное" />
+          <LinkTab to="/abc" label="Удаленное" />
+        </Tabs>
+
+        {/* <Text h2>Ваши коллекции</Text> */}
         {listsLoading && <Loading size="md" type="default" />}
       </Row>
       <Grid.Container
