@@ -1,7 +1,7 @@
 import LinkTabs from '@/shared/ui/LinkTabs/LinkTabs';
 import { Row, Text, styled } from '@nextui-org/react';
-import { memo } from 'react';
-import { Outlet } from 'react-router-dom';
+import { memo, useMemo } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 
 /** Is used for containing button to load more collections */
 export const LoadMoreContainer = styled('div', {
@@ -11,7 +11,20 @@ export const LoadMoreContainer = styled('div', {
   mt: '$10',
 });
 
+enum Tabs {
+  'collections',
+  'favorite',
+}
+
 const Layout = () => {
+  const { pathname } = useLocation();
+
+  const tabValue = useMemo(() => {
+    console.log('call')
+    const currentPath = pathname.split('/').at(-1) ?? '';
+    return Number(Tabs[currentPath as keyof typeof Tabs] ?? 1);
+  }, [pathname]);
+
   return (
     <>
       <Text h1 css={{ mb: '$12' }}>
@@ -20,7 +33,7 @@ const Layout = () => {
 
       <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
         <LinkTabs
-          tabValue={0}
+          tabValue={tabValue}
           tabs={[
             { to: '/welcome/collections', label: 'Мои коллекции' },
             { to: '/welcome/favorite', label: 'Избранное' },

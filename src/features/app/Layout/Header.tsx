@@ -37,7 +37,7 @@ const HeaderContainer = styled(Container, {
 function Header() {
   const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
-  const loading = true;
+  const loading = false;
 
   return (
     <HeaderStyled>
