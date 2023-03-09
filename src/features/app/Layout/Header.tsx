@@ -2,7 +2,15 @@ import logo from '@/assets/img/Logo.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
-import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
+import { LinearProgress } from '@mui/material';
+import {
+  Button,
+  Container,
+  Image,
+  Loading,
+  Progress,
+  styled,
+} from '@nextui-org/react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,6 +40,22 @@ function Header() {
 
   return (
     <HeaderStyled>
+      {/* <Progress color="warning" size="xs" value={68} indeterminated /> */}
+      <LinearProgress
+        sx={{
+          '&.MuiLinearProgress-root': {
+            background: 'transparent',
+          },
+          '& .MuiLinearProgress-bar': {
+            background: '#ffd131'
+          },
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 202
+        }}
+      />
       <HeaderContainer
         lg
         css={{
