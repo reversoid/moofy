@@ -20,7 +20,6 @@ const Layout = () => {
   const { pathname } = useLocation();
 
   const tabValue = useMemo(() => {
-    console.log('call')
     const currentPath = pathname.split('/').at(-1) ?? '';
     return Number(Tabs[currentPath as keyof typeof Tabs] ?? 1);
   }, [pathname]);
