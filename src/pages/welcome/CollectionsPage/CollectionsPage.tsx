@@ -1,23 +1,15 @@
 import CreateListModal from '@/features/list/components/CreateListModal/CreateListModal';
 import List from '@/features/list/components/List/List';
-import { $lists, $listsState, getLists } from '@/models/lists';
+import { $listsState, getLists } from '@/models/lists';
 import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
 import { Link } from '@/shared/ui/Link';
-import { LinkTab } from '@/shared/ui/LinkTabs/LinkTab';
 import LinkTabs from '@/shared/ui/LinkTabs/LinkTabs';
-import { Tabs } from '@mui/material';
 import { Button, Grid, Loading, Row, Text, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
+import { LoadMoreContainer } from '../Layout';
 
-const LoadMoreContainer = styled('div', {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  mt: '$10',
-});
-
-const WelcomePage = () => {
+const CollectionsPage = () => {
   useEffect(getLists, []);
   const { lists, loading: listsLoading } = useStore($listsState);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,21 +25,6 @@ const WelcomePage = () => {
 
   return (
     <>
-      <Text h1 css={{ mb: '$12' }}>
-        Добро пожаловать!
-      </Text>
-      <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
-        <LinkTabs
-          tabValue={0}
-          tabs={[
-            { to: '/', label: 'Мои коллекции' },
-            { to: '/', label: 'Избранное' },
-            { to: '/', label: 'Удаленное' },
-          ]}
-          css={{ mb: '0.75rem' }}
-        />
-        {listsLoading && <Loading size="md" type="default" />}
-      </Row>
       <Grid.Container
         gap={2}
         justify="flex-start"
@@ -99,4 +76,4 @@ const WelcomePage = () => {
   );
 };
 
-export default memo(WelcomePage);
+export default memo(CollectionsPage);

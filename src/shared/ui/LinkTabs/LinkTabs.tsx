@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
-import { LinkTab, LinkTabProps } from './LinkTab';
 import { SxProps, Tabs, Theme } from '@mui/material';
+import { FC, useEffect, useState } from 'react';
+import { LinkTab, LinkTabProps } from './LinkTab';
 
 export interface LinkTabsProps {
   tabs: LinkTabProps[];

@@ -1,10 +1,7 @@
-import React, { FC, PropsWithChildren } from 'react';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab, { TabTypeMap } from '@mui/material/Tab';
-import { Link } from '../Link';
-import { styled } from '@nextui-org/react';
 import { ExtendButtonBase } from '@mui/material';
+import Tab, { TabTypeMap } from '@mui/material/Tab';
+import { styled } from '@nextui-org/react';
+import { Link } from '../Link';
 
 export interface LinkTabProps {
   label?: string;
@@ -29,7 +26,6 @@ const StyledTab = styled(Tab, {
 export const LinkTab = (props: LinkTabProps) => {
   return (
     <StyledTab
-      onClick={(e) => e.preventDefault()}
       component={Link}
       {...props}
     />

@@ -19,6 +19,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'add',
+        // TODO shoul create authOnly with mathing id guard
         element: <AuthOnly redirect='/auth'><SearchFilmPage /></AuthOnly>,
       },
     ],
