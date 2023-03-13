@@ -13,7 +13,6 @@ const CollectionsPage = () => {
   useEffect(getLists, []);
   const { lists, loading: listsLoading } = useStore($listsState);
   const [isCreateListModalOpen, setCreateListModalOpen] = useState(false);
-  useLoadingBar(listsLoading)
 
   const loadMoreLoading = useStore(loadMoreListsFx.pending);
 
@@ -23,6 +22,8 @@ const CollectionsPage = () => {
     }
     loadMoreLists({ lowerBound: lists.nextKey });
   };
+
+  useLoadingBar(listsLoading)
 
   return (
     <>

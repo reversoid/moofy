@@ -28,19 +28,14 @@ interface ReviewListProps {
   reviews?: IterableResponse<Review>;
   isUserOwner: boolean;
   listId: number;
-  reviewsLoading: boolean;
 }
 
-const ReviewList = ({
-  reviews,
-  isUserOwner,
-  listId,
-  reviewsLoading,
-}: ReviewListProps) => {
+const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
   const navigate = useNavigate();
-  useLoadingBar(reviewsLoading)
 
   const loadingMore = useStore(loadMoreReviewsFx.pending);
+
+  useLoadingBar(loadingMore);
 
   const handleLoadMore = () => {
     if (loadingMore) {

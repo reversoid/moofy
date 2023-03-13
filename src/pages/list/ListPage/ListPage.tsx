@@ -10,19 +10,16 @@ import { Review } from '@/shared/api/types/review.type';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
 import { Text } from '@nextui-org/react';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 interface ListPageProps {
   listWithContent: {
     reviews?: IterableResponse<Review>;
     list: List;
   };
-  reviewsLoading: boolean;
 }
 
-const ListPage = ({
-  listWithContent: { list, reviews },
-  reviewsLoading,
-}: ListPageProps) => {
+const ListPage = ({ listWithContent: { list, reviews } }: ListPageProps) => {
   const { userId } = useAuth();
 
   return (
@@ -32,7 +29,6 @@ const ListPage = ({
         isUserOwner={userId === list.user.id}
         reviews={reviews}
         listId={list.id}
-        reviewsLoading={reviewsLoading}
       />
     </>
   );
@@ -61,17 +57,14 @@ const ListPageWithData = () => {
     [list],
   );
 
+  useLoadingBar(loading);
+
   if (listWithContentAlreadyLoaded) {
-    return (
-      <ListPage
-        listWithContent={{ ...listWithContent! }}
-        reviewsLoading={loading}
-      />
-    );
+    return <ListPage listWithContent={{ ...listWithContent! }} />;
   }
 
   if (listAlreadyLoaded) {
-    return <ListPage listWithContent={{ list: listAlreadyLoaded }} reviewsLoading={loading} />;
+    return <ListPage listWithContent={{ list: listAlreadyLoaded }} />;
   }
 
   if (loading) {
@@ -79,11 +72,19 @@ const ListPageWithData = () => {
   }
 
   if (error === 'NOT_ALLOWED') {
-    return <><Text size={'$lg'}>Коллекция скрыта пользователем</Text></>
+    return (
+      <>
+        <Text size={'$lg'}>Коллекция скрыта пользователем</Text>
+      </>
+    );
   }
 
   if (error === 'WRONG_LIST_ID') {
-    return <><Text size={'$lg'}>Коллекция недоступна</Text></>
+    return (
+      <>
+        <Text size={'$lg'}>Коллекция недоступна</Text>
+      </>
+    );
   }
 
   return null;
