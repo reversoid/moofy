@@ -1,8 +1,9 @@
+import { Text } from '@nextui-org/react'
 import React from 'react'
 
 const FavoritePage = () => {
   return (
-    <div>FavoritePage</div>
+    <Text size={'$xl'}>Список пуст</Text>
   )
 }
 
