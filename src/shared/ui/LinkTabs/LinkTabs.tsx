@@ -29,7 +29,7 @@ const LinkTabs: FC<LinkTabsProps> = ({ tabValue, tabs, css }) => {
           height: '3px',
         },
         '& .MuiTabs-flexContainer': {
-          gap: '3rem !important',
+          gap: '2rem !important',
         },
         ...(css ?? {})
       }}

@@ -2,7 +2,7 @@ import add from '@/assets/img/add.svg';
 import lock from '@/assets/img/lock.svg';
 import { Card, Image, Row, styled, Text } from '@nextui-org/react';
 import ColorHash from 'color-hash';
-import { Component, FC, memo } from 'react';
+import { FC, memo } from 'react';
 
 const colorHash = new ColorHash();
 
