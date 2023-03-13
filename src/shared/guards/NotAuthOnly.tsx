@@ -13,7 +13,7 @@ const NotAuthOnly = ({
 }: PropsWithChildren<NotAuthOnlyProps>) => {
   const { isLoading, isLoggedIn } = useAuth();
 
-  if (isLoading) {
+  if (isLoading || isLoggedIn === undefined) {
     return null
   }
 
