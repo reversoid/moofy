@@ -1,21 +1,10 @@
 import { Form } from '@/shared/ui/Form';
-import {
-  decreasedPaddingMobile,
-  increasedPaddingBottom,
-} from '@/shared/ui/modalStyles';
-import {
-  Button,
-  Checkbox,
-  Loading,
-  Modal,
-  Text,
-  Textarea,
-  styled,
-} from '@nextui-org/react';
+import { Button, Checkbox, Loading, Text, styled } from '@nextui-org/react';
 import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Counter from '../Counter/Counter';
 import TextareaCount from '@/shared/ui/TextareaCount';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 
 const ScoreContainer = styled('div', {
   display: 'flex',
@@ -76,7 +65,9 @@ const ReviewModal = ({
     handlers.onSuccess();
   }, [state.success]);
 
-  const [includeScore, setIncludeScore] = useState(form !== undefined && form.score !== null);
+  const [includeScore, setIncludeScore] = useState(
+    form !== undefined && form.score !== null,
+  );
 
   useEffect(() => {
     setIncludeScore(form !== undefined && form.score !== null);
@@ -88,13 +79,12 @@ const ReviewModal = ({
       aria-labelledby="modal-title"
       open={isOpen}
       onClose={() => setIsOpen(false)}
-      width="45rem"
     >
-      <Modal.Header css={{ paddingBottom: '$3' }}>
+      <ModalHeader css={{ paddingBottom: '$3' }}>
         <Text h3>Обзор к фильму</Text>
-      </Modal.Header>
+      </ModalHeader>
 
-      <Modal.Body css={decreasedPaddingMobile}>
+      <ModalBody>
         <Form
           onSubmit={handleSubmit((data) => {
             handlers.onSubmit({
@@ -137,10 +127,8 @@ const ReviewModal = ({
             />
           </ScoreContainer>
         </Form>
-      </Modal.Body>
-      <Modal.Footer
-        css={{ ...decreasedPaddingMobile, ...increasedPaddingBottom }}
-      >
+      </ModalBody>
+      <ModalFooter>
         <Button
           disabled={!isValid}
           type="submit"
@@ -156,7 +144,7 @@ const ReviewModal = ({
             'Добавить'
           )}
         </Button>
-      </Modal.Footer>
+      </ModalFooter>
     </Modal>
   );
 };

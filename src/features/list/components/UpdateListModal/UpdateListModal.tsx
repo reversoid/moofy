@@ -4,21 +4,14 @@ import {
   $updateListState,
 } from '@/models/lists/updateList';
 import { Input } from '@/shared/ui/Input';
-import {
-  Modal,
-  Text,
-  Textarea,
-  Button,
-  Checkbox,
-  Loading,
-} from '@nextui-org/react';
+import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDefaultFormValues } from './useDefaultFormValues';
 import { Form } from '@/shared/ui/Form';
-import { decreasedPaddingMobile, increasedPaddingBottom } from '@/shared/ui/modalStyles';
 import TextareaCount from '@/shared/ui/TextareaCount';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 
 export interface FormData {
   name: string;
@@ -74,12 +67,11 @@ const UpdateListModal = ({
       aria-labelledby="modal-title"
       open={isOpen}
       onClose={() => setIsOpen(false)}
-      width="45rem"
     >
-      <Modal.Header>
+      <ModalHeader>
         <Text h3>Изменить коллекцию</Text>
-      </Modal.Header>
-      <Modal.Body css={decreasedPaddingMobile}>
+      </ModalHeader>
+      <ModalBody>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
             onSubmit({ isPublic: !isPrivate, name, description, listId }),
@@ -117,14 +109,14 @@ const UpdateListModal = ({
                 fontSize: '$lg',
               },
             }}
-            size='lg'
+            size="lg"
             {...register('isPrivate')}
             defaultSelected={listData.isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
           />
         </Form>
-      </Modal.Body>
-      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
+      </ModalBody>
+      <ModalFooter>
         <Button
           form="create-list-modal-form"
           type="submit"
@@ -146,7 +138,7 @@ const UpdateListModal = ({
             'Обновить'
           )}
         </Button>
-      </Modal.Footer>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -5,16 +5,16 @@ import {
 } from '@/models/lists/createList';
 import { Form } from '@/shared/ui/Form';
 import { Input } from '@/shared/ui/Input';
+import { Modal } from '@/shared/ui/Modal/Modal';
+import { ModalBody } from '@/shared/ui/Modal/ModalBody';
+import { ModalFooter } from '@/shared/ui/Modal/ModalFooter';
+import { ModalHeader } from '@/shared/ui/Modal/ModalHeader';
 import TextareaCount from '@/shared/ui/TextareaCount';
-import { decreasedPaddingMobile, increasedPaddingBottom } from '@/shared/ui/modalStyles';
 import {
-  Modal,
-  Text,
-  Textarea,
-  Button,
-  Checkbox,
-  Loading,
-} from '@nextui-org/react';
+  decreasedPaddingMobile,
+  increasedPaddingBottom,
+} from '@/shared/ui/modalStyles';
+import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -67,12 +67,11 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
       aria-labelledby="modal-title"
       open={isOpen}
       onClose={() => setIsOpen(false)}
-      width="45rem"
     >
-      <Modal.Header>
+      <ModalHeader>
         <Text h3>Создать коллекцию</Text>
-      </Modal.Header>
-      <Modal.Body css={decreasedPaddingMobile}>
+      </ModalHeader>
+      <ModalBody css={decreasedPaddingMobile}>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
             onSubmit({ isPublic: !isPrivate, name, description }),
@@ -110,14 +109,14 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
                 fontSize: '$lg',
               },
             }}
-            size='lg'
+            size="lg"
             {...register('isPrivate')}
             defaultSelected={getValues().isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
           />
         </Form>
-      </Modal.Body>
-      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
+      </ModalBody>
+      <ModalFooter>
         <Button
           form="create-list-modal-form"
           type="submit"
@@ -139,7 +138,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
             'Добавить'
           )}
         </Button>
-      </Modal.Footer>
+      </ModalFooter>
     </Modal>
   );
 };
