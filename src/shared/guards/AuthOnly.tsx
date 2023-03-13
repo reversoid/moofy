@@ -15,7 +15,7 @@ const AuthOnly = ({
 }: PropsWithChildren<AuthOnlyProps>) => {
   const { isLoading, isLoggedIn } = useAuth();
 
-  if (isLoading) {
+  if (isLoading || isLoggedIn === undefined) {
     return null;
   }
 
