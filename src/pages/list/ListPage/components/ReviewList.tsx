@@ -5,6 +5,7 @@ import {
 } from '@/models/lists/singleList/loadMoreReviews';
 import { Review } from '@/shared/api/types/review.type';
 import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { Button, Loading, Row, Text, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo } from 'react';
@@ -37,6 +38,7 @@ const ReviewList = ({
   reviewsLoading,
 }: ReviewListProps) => {
   const navigate = useNavigate();
+  useLoadingBar(reviewsLoading)
 
   const loadingMore = useStore(loadMoreReviewsFx.pending);
 
@@ -53,7 +55,6 @@ const ReviewList = ({
         <Text h2 css={{ mb: '$5' }}>
           Фильмы
         </Text>
-        {reviewsLoading && <Loading size="md" type="default" />}
       </Row>
       {reviews?.items.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Коллекция пуста</Text>
