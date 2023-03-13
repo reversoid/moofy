@@ -1,6 +1,6 @@
 import LinkTabs from '@/shared/ui/LinkTabs/LinkTabs';
 import { Row, Text, styled } from '@nextui-org/react';
-import { memo, useMemo } from 'react';
+import { Suspense, memo, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 /** Is used for containing button to load more collections */
@@ -41,7 +41,9 @@ const Layout = () => {
         />
       </Row>
 
-      <Outlet />
+      <Suspense>
+        <Outlet />
+      </Suspense>
     </>
   );
 };
