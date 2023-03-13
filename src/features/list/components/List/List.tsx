@@ -2,7 +2,7 @@ import add from '@/assets/img/add.svg';
 import lock from '@/assets/img/lock.svg';
 import { Card, Image, Row, styled, Text } from '@nextui-org/react';
 import ColorHash from 'color-hash';
-import { memo } from 'react';
+import { Component, FC, memo } from 'react';
 
 const colorHash = new ColorHash();
 
@@ -13,15 +13,17 @@ const Background = styled('div', {
   backgroundPosition: 'center',
   '@xsMax': {
     height: 105,
-    backgroundSize: '4rem'
-  }
+    backgroundSize: '4rem',
+  },
 });
 
 const CardBackground = ({ strToHash }: { strToHash: string }) => {
   return <Background css={{ bgColor: colorHash.hex(strToHash) }} />;
 };
 
-export interface ListProps {
+type OnProps = Pick<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'onClick'>
+
+export interface ListProps extends OnProps {
   /** Used for hashing color. If not specified, add icon will be shown */
   id?: number;
   text: string;
@@ -46,9 +48,9 @@ const ListWrapper = styled('div', {
 
 const ListBody = styled('div', {});
 
-const List = ({ id, text, isPublic }: ListProps) => {
+const List: FC<ListProps> = ({ id, text, isPublic, onClick }) => {
   return (
-    <ListWrapper>
+    <ListWrapper onClick={onClick}>
       <ListBody>
         {id === undefined ? (
           <Background
