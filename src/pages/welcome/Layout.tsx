@@ -21,7 +21,7 @@ const Layout = () => {
 
   const tabValue = useMemo(() => {
     const currentPath = pathname.split('/').at(-1) ?? '';
-    return Number(Tabs[currentPath as keyof typeof Tabs] ?? 1);
+    return Number(Tabs[currentPath as keyof typeof Tabs] ?? 0);
   }, [pathname]);
 
   return (
