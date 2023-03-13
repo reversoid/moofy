@@ -2,17 +2,12 @@ import logo from '@/assets/img/Logo.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Link } from '@/shared/ui/Link';
-import {
-  Button,
-  Container,
-  Image,
-  Loading,
-  Progress,
-  styled,
-} from '@nextui-org/react';
+import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LinearProgress from './LinearProgress';
+import { useStore } from 'effector-react';
+import { $loading } from '@/models/app/loading';
 
 export const HEADER_HEIGHT = '4.75rem';
 
@@ -37,11 +32,10 @@ const HeaderContainer = styled(Container, {
 function Header() {
   const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
-  const loading = false;
+  const loading = useStore($loading);
 
   return (
     <HeaderStyled>
-      {/* <Progress color="warning" size="xs" value={68} indeterminated /> */}
       <LinearProgress loading={loading} />
       <HeaderContainer
         lg

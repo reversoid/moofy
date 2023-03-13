@@ -7,11 +7,13 @@ import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
 import { LoadMoreContainer } from '../Layout';
 import ListGrid from '@/features/list/components/ListGrid/ListGrid';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 const CollectionsPage = () => {
   useEffect(getLists, []);
-  const { lists } = useStore($listsState);
+  const { lists, loading: listsLoading } = useStore($listsState);
   const [isCreateListModalOpen, setCreateListModalOpen] = useState(false);
+  useLoadingBar(listsLoading)
 
   const loadMoreLoading = useStore(loadMoreListsFx.pending);
 
