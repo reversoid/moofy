@@ -2,7 +2,7 @@ import { IconButton } from '@/shared/ui/IconButton';
 import { forwardRef, useState } from 'react';
 import { ButtonProps, Image } from '@nextui-org/react';
 import bookmark from '@/assets/img/bookmark.svg';
-import BookmarkIcon from '@/shared/JsIcons/BookmarkIcon';
+import BookmarkIcon from '@/shared/JsIcons/Bookmark.icon';
 
 // TODO maybe make icon button more declarative? with src, width and height props
 const BookmarkButton = forwardRef<HTMLButtonElement, ButtonProps>(
