@@ -4,8 +4,8 @@ import React, { memo, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { $lists } from '@/models/lists';
 import { useAuth } from '@/shared/hooks/useAuth';
-import ReviewList from './components/ReviewList';
-import ListInfo from './components/ListInfo';
+import ListBody from './components/ListBody';
+import ListHeader from './components/ListHeader';
 import { Review } from '@/shared/api/types/review.type';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
@@ -24,8 +24,8 @@ const ListPage = ({ listWithContent: { list, reviews } }: ListPageProps) => {
 
   return (
     <>
-      <ListInfo list={list} isUserOwner={userId === list.user.id} />
-      <ReviewList
+      <ListHeader list={list} isUserOwner={userId === list.user.id} />
+      <ListBody
         isUserOwner={userId === list.user.id}
         reviews={reviews}
         listId={list.id}

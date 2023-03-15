@@ -30,7 +30,7 @@ interface ReviewListProps {
   listId: number;
 }
 
-const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
+const ListBody = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
   const navigate = useNavigate();
 
   const loadingMore = useStore(loadMoreReviewsFx.pending);
@@ -93,4 +93,4 @@ const ReviewList = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
   );
 };
 
-export default memo(ReviewList);
+export default memo(ListBody);

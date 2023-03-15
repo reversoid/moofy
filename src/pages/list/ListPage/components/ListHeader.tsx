@@ -15,6 +15,7 @@ import {
   clearState,
   deleteList,
 } from '@/models/lists/deleteList';
+import BookmarkButton from '@/features/list/components/Review/BookmarkButton';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -25,7 +26,7 @@ interface ListInfoProps {
   isUserOwner: boolean;
 }
 
-const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
+const ListHeader = ({ list, isUserOwner }: ListInfoProps) => {
   const getUpdatedAt = () => {
     const date = new Date(list.updated_at);
     const day = ('0' + date.getDate()).slice(-2);
@@ -89,12 +90,14 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
             {list.name}
           </Text>
 
-          {isUserOwner && (
+          {isUserOwner ? (
             <ActionsDropdown
               trigger={<GearButton />}
               options={dropdownOptions}
               placement="left"
             />
+          ) : (
+            <BookmarkButton />
           )}
         </Row>
 
@@ -153,4 +156,4 @@ const ListInfo = ({ list, isUserOwner }: ListInfoProps) => {
   );
 };
 
-export default memo(ListInfo);
+export default memo(ListHeader);
