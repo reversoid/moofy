@@ -24,6 +24,7 @@ export const $listsLoading = createStore<boolean>(false);
 $listsLoading.on(getLists, () => true);
 $listsLoading.on(getListsFx.finally, () => false);
 $listsLoading.on(loadMoreLists, () => true);
+// TODO is it necessary?
 $listsLoading.on(loadMoreListsFx.finally, () => false);
 
 export const $lists = createStore<IterableResponse<List>>({

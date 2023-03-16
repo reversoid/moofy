@@ -20,7 +20,6 @@ const FavoritePage = () => {
   }, []);
   const favLists = useStore($favoriteLists);
   const listsLoading = useStore($favoriteListsLoading);
-  useLoadingBar(listsLoading);
 
   const lists = useMemo(() => {
     if (!favLists) return [];
@@ -33,6 +32,8 @@ const FavoritePage = () => {
   }, [favLists]);
 
   const loadMoreLoading = useStore($loadMoreFavoritesLoading);
+
+  useLoadingBar(listsLoading, loadMoreLoading);
 
   const handleLoadMore = () => {
     if (loadMoreLoading || !favLists?.nextKey) {

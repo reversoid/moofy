@@ -48,12 +48,8 @@ $favoriteLists.on(removeFromFavoritesFx.doneData, (state, { listId }) => {
   }
   return {
     ...state,
-    items: state.items.splice(listIndex, 1)
-  }
-  // return {
-  //   ...state,
-  //   items: [payload, ...state.items]
-  // };
+    items: state.items.splice(listIndex, 1),
+  };
 });
 
 export const $favoriteListsLoading = loadFavoriteListsFx.pending;
