@@ -88,9 +88,16 @@ export class ListService extends ApiService {
     });
   }
 
-  public async getFavoritesLists() {
+  public async getFavoritesLists(lowerBound?: DateAsString) {
+    // TODO maybe create createParams function?
+    const searchParams: SearchParamsOption = {};
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+
     return this.get<IterableResponse<FavoriteList>>('/list/favorites', {
       useJWT: true,
+      searchParams,
     });
   }
 }

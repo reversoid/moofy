@@ -8,6 +8,9 @@ import {
   sample,
   createStore,
 } from 'effector';
+import { loadMoreFavoritesFx } from './loadMoreFavorites';
+import { addToFavoritesFx } from './addToFavorites';
+import { removeFromFavoritesFx } from './removeFromFavorites';
 
 export const loadFavoriteLists = createEvent<void>();
 
@@ -20,6 +23,38 @@ loadFavoriteListsFx.use(() => listService.getFavoritesLists());
 export const $favoriteLists =
   createStore<IterableResponse<FavoriteList> | null>(null);
 $favoriteLists.on(loadFavoriteListsFx.doneData, (state, payload) => payload);
+$favoriteLists.on(loadMoreFavoritesFx.doneData, (state, payload) => {
+  if (!state) {
+    return state;
+  }
+  return payload;
+});
+$favoriteLists.on(addToFavoritesFx.doneData, (state, payload) => {
+  if (!state) {
+    return state;
+  }
+  return {
+    ...state,
+    items: [payload, ...state.items],
+  };
+});
+$favoriteLists.on(removeFromFavoritesFx.doneData, (state, { listId }) => {
+  if (!state) {
+    return state;
+  }
+  const listIndex = state.items.findIndex((l) => l.list.id === listId);
+  if (listIndex === -1) {
+    return state;
+  }
+  return {
+    ...state,
+    items: state.items.splice(listIndex, 1)
+  }
+  // return {
+  //   ...state,
+  //   items: [payload, ...state.items]
+  // };
+});
 
 export const $favoriteListsLoading = loadFavoriteListsFx.pending;
 

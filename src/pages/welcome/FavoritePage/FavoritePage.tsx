@@ -5,9 +5,14 @@ import {
   loadFavoriteLists,
 } from '@/models/favoriteLists';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { Text } from '@nextui-org/react';
+import { Button, Loading, Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import React, { memo, useEffect, useMemo } from 'react';
+import { LoadMoreContainer } from '../Layout';
+import {
+  $loadMoreFavoritesLoading,
+  loadMoreFavorites,
+} from '@/models/favoriteLists/loadMoreFavorites';
 
 const FavoritePage = () => {
   useEffect(() => {
@@ -27,8 +32,32 @@ const FavoritePage = () => {
       .map((f) => f.list);
   }, [favLists]);
 
-  // return <Text size={'$xl'}>Список пуст</Text>;
-  return <ListGrid items={lists} />;
+  const loadMoreLoading = useStore($loadMoreFavoritesLoading);
+
+  const handleLoadMore = () => {
+    if (loadMoreLoading || !favLists?.nextKey) {
+      return;
+    }
+    loadMoreFavorites({ lowerBound: favLists.nextKey });
+  };
+
+  return (
+    <>
+      <ListGrid items={lists} />
+      {favLists?.nextKey && (
+        // TODO maybe use component with pagination?
+        <LoadMoreContainer>
+          <Button color="gradient" onPress={handleLoadMore}>
+            {loadMoreLoading ? (
+              <Loading type="points" color="white" />
+            ) : (
+              'Загрузить больше'
+            )}
+          </Button>
+        </LoadMoreContainer>
+      )}
+    </>
+  );
 };
 
 export default memo(FavoritePage);
