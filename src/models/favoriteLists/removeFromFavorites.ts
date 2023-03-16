@@ -14,12 +14,7 @@ removeFromFavoritesFx.use(({ listId }) =>
   listService.removeFromFavorites({ listId }),
 );
 
-const $removeFromFavoritesResult = restore(removeFromFavoritesFx, null);
-
-export const $removeFromFavoritesState = combine({
-  result: $removeFromFavoritesResult,
-  loading: removeFromFavoritesFx.pending,
-});
+export const $removeFromFavoritesLoading = removeFromFavoritesFx.pending;
 
 sample({
   clock: removeFromFavorites,

@@ -16,8 +16,8 @@ import { updateReviewFx } from '@/models/reviews/updateReview';
 import { deleteReview, deleteReviewFx } from '@/models/reviews/deleteReview';
 import { deleteReviewById, updateReviewInList } from './utils';
 import { createReviewFx } from '@/models/reviews/createReview';
-import { addToFavoritesFx } from './addToFavorites';
-import { removeFromFavoritesFx } from './removeFromFavorites';
+import { addToFavoritesFx } from '../../favoriteLists/addToFavorites';
+import { removeFromFavoritesFx } from '../../favoriteLists/removeFromFavorites';
 
 export type ListStore = {
   reviews: IterableResponse<Review>;

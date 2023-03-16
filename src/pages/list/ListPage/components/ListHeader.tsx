@@ -15,13 +15,14 @@ import {
 } from '@/models/lists/deleteList';
 import BookmarkButton from '@/features/list/components/Review/BookmarkButton';
 import {
-  $addToFavoritesState,
+  $addToFavoritesLoading,
   addToFavorites,
-} from '@/models/lists/singleList/addToFavorites';
+} from '@/models/favoriteLists/addToFavorites';
 import {
+  $removeFromFavoritesLoading,
   removeFromFavorites,
   removeFromFavoritesFx,
-} from '@/models/lists/singleList/removeFromFavorites';
+} from '@/models/favoriteLists/removeFromFavorites';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -71,7 +72,8 @@ const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
     navigate('/welcome');
   }, [deleteSuccess]);
 
-  const { loading: addToFavsLoading } = useStore($addToFavoritesState);
+  const addToFavsLoading = useStore($addToFavoritesLoading);
+  const removeFromFavsLoading = useStore($removeFromFavoritesLoading);
 
   return (
     <>
@@ -112,7 +114,7 @@ const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
                   ? removeFromFavorites({ listId: list.id })
                   : addToFavorites({ listId: list.id })
               }
-              disabled={addToFavsLoading}
+              disabled={addToFavsLoading || removeFromFavsLoading}
               iconFilled={isFavorite}
             />
           )}

@@ -87,6 +87,12 @@ export class ListService extends ApiService {
       json: { listId },
     });
   }
+
+  public async getFavoritesLists() {
+    return this.get<IterableResponse<FavoriteList>>('/list/favorites', {
+      useJWT: true,
+    });
+  }
 }
 
 export const listService = new ListService();

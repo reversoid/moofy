@@ -3,26 +3,14 @@ import {
   listService,
 } from '@/features/list/services/list.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import {
-  combine,
-  createEffect,
-  createEvent,
-  createStore,
-  restore,
-  sample,
-} from 'effector';
+import { combine, createEffect, createEvent, restore, sample } from 'effector';
 
 export const addToFavorites = createEvent<AddToFavoritesDTO>();
 
 export const addToFavoritesFx = createEffect<AddToFavoritesDTO, FavoriteList>();
 addToFavoritesFx.use(({ listId }) => listService.addToFavorites({ listId }));
 
-const $addToFavoritesResult = restore(addToFavoritesFx, null);
-
-export const $addToFavoritesState = combine({
-  result: $addToFavoritesResult,
-  loading: addToFavoritesFx.pending,
-});
+export const $addToFavoritesLoading = addToFavoritesFx.pending;
 
 sample({
   clock: addToFavorites,
