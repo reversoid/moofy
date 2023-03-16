@@ -1,10 +1,8 @@
 import { styled, Row, Text, Image, Button } from '@nextui-org/react';
 import { Link, useNavigate } from 'react-router-dom';
-import gear from '@/assets/img/gear.svg';
 import { memo, useEffect, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
 import { List } from '@/shared/api/types/list.type';
-import { IconButton } from '@/shared/ui/IconButton';
 import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
 import GearButton from '@/features/list/components/Review/GearButton';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
@@ -16,6 +14,14 @@ import {
   deleteList,
 } from '@/models/lists/deleteList';
 import BookmarkButton from '@/features/list/components/Review/BookmarkButton';
+import {
+  $addToFavoritesState,
+  addToFavorites,
+} from '@/models/lists/singleList/addToFavorites';
+import {
+  removeFromFavorites,
+  removeFromFavoritesFx,
+} from '@/models/lists/singleList/removeFromFavorites';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -24,9 +30,10 @@ const ListInfoContainer = styled('div', {
 interface ListInfoProps {
   list: List;
   isUserOwner: boolean;
+  isFavorite?: boolean;
 }
 
-const ListHeader = ({ list, isUserOwner }: ListInfoProps) => {
+const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
   const getUpdatedAt = () => {
     const date = new Date(list.updated_at);
     const day = ('0' + date.getDate()).slice(-2);
@@ -64,6 +71,8 @@ const ListHeader = ({ list, isUserOwner }: ListInfoProps) => {
     navigate('/welcome');
   }, [deleteSuccess]);
 
+  const { loading: addToFavsLoading } = useStore($addToFavoritesState);
+
   return (
     <>
       <ListInfoContainer>
@@ -97,7 +106,15 @@ const ListHeader = ({ list, isUserOwner }: ListInfoProps) => {
               placement="left"
             />
           ) : (
-            <BookmarkButton />
+            <BookmarkButton
+              onClick={() =>
+                isFavorite
+                  ? removeFromFavorites({ listId: list.id })
+                  : addToFavorites({ listId: list.id })
+              }
+              disabled={addToFavsLoading}
+              iconFilled={isFavorite}
+            />
           )}
         </Row>
 

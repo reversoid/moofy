@@ -16,15 +16,24 @@ interface ListPageProps {
   listWithContent: {
     reviews?: IterableResponse<Review>;
     list: List;
+    additionalInfo?: {
+      isFavorite?: boolean;
+    };
   };
 }
 
-const ListPage = ({ listWithContent: { list, reviews } }: ListPageProps) => {
+const ListPage = ({
+  listWithContent: { list, reviews, additionalInfo },
+}: ListPageProps) => {
   const { userId } = useAuth();
 
   return (
     <>
-      <ListHeader list={list} isUserOwner={userId === list.user.id} />
+      <ListHeader
+        list={list}
+        isUserOwner={userId === list.user.id}
+        isFavorite={additionalInfo?.isFavorite}
+      />
       <ListBody
         isUserOwner={userId === list.user.id}
         reviews={reviews}

@@ -16,17 +16,28 @@ import { updateReviewFx } from '@/models/reviews/updateReview';
 import { deleteReview, deleteReviewFx } from '@/models/reviews/deleteReview';
 import { deleteReviewById, updateReviewInList } from './utils';
 import { createReviewFx } from '@/models/reviews/createReview';
+import { addToFavoritesFx } from './addToFavorites';
+import { removeFromFavoritesFx } from './removeFromFavorites';
 
 export type ListStore = {
   reviews: IterableResponse<Review>;
   list: List;
+  additionalInfo: {
+    isFavorite: boolean;
+  };
 } | null;
 
 export const getList = createEvent<number>();
 
 export const getListFx = createEffect<
   number,
-  { reviews: IterableResponse<Review>; list: List }
+  {
+    reviews: IterableResponse<Review>;
+    list: List;
+    additionalInfo: {
+      isFavorite: boolean;
+    };
+  }
 >();
 getListFx.use((id) => listService.getMyListWithContent(id));
 
@@ -58,11 +69,12 @@ $list.on(updateReviewFx.doneData, (state, { review, list }) => {
   }
 
   return {
+    ...state,
     reviews: {
       nextKey: state.reviews.nextKey,
       items: updateReviewInList(state.reviews.items, review),
     },
-    list
+    list,
   };
 });
 
@@ -71,6 +83,7 @@ $list.on(deleteReviewFx.doneData, (state, payload) => {
     return state;
   }
   return {
+    ...state,
     reviews: {
       nextKey: state.reviews.nextKey,
       items: deleteReviewById(state.reviews.items, payload.reviewId),
@@ -88,10 +101,38 @@ $list.on(createReviewFx.doneData, (state, { list, review }) => {
   }
 
   return {
+    ...state,
     list: list,
     reviews: {
       items: [review, ...state.reviews.items],
       nextKey: state.reviews.nextKey,
+    },
+  };
+});
+
+// TODO check for list ids
+$list.on(addToFavoritesFx.doneData, (state) => {
+  if (!state) {
+    return state;
+  }
+
+  return {
+    ...state,
+    additionalInfo: {
+      isFavorite: true,
+    },
+  };
+});
+
+$list.on(removeFromFavoritesFx.doneData, (state) => {
+  if (!state) {
+    return state;
+  }
+
+  return {
+    ...state,
+    additionalInfo: {
+      isFavorite: false,
     },
   };
 });
