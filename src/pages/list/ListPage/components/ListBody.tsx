@@ -1,4 +1,4 @@
-import ReviewItem from '@/features/list/components/Review/Review';
+import Review from '@/entities/Review/ui/Review/Review';
 import {
   loadMoreReviews,
   loadMoreReviewsFx,
@@ -68,7 +68,7 @@ const ListBody = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
 
           <FilmsContainer>
             {reviews?.items.map((review) => (
-              <ReviewItem
+              <Review
                 key={review.id}
                 review={review}
                 isUserOwner={isUserOwner}

@@ -1,4 +1,4 @@
-import { Dropdown, PopoverPlacement } from '@nextui-org/react';
+import { Dropdown as _Dropdown, PopoverPlacement } from '@nextui-org/react';
 import React, { memo } from 'react';
 
 export interface Option {
@@ -14,17 +14,17 @@ export interface ActionsDropdownProps {
   menuAriaLabel?: string;
 }
 
-const ActionsDropdown = ({
+const Dropdown = ({
   trigger,
   options,
   placement,
   menuAriaLabel,
 }: ActionsDropdownProps) => {
   return (
-    <Dropdown placement={placement} isBordered>
-      <Dropdown.Trigger>{trigger}</Dropdown.Trigger>
+    <_Dropdown placement={placement} isBordered>
+      <_Dropdown.Trigger>{trigger}</_Dropdown.Trigger>
 
-      <Dropdown.Menu
+      <_Dropdown.Menu
         aria-label={menuAriaLabel ?? 'Dropdown Actions'}
         onAction={(key) => {
           const optionCallback = options.find(
@@ -34,13 +34,13 @@ const ActionsDropdown = ({
         }}
       >
         {options.map((option) => (
-          <Dropdown.Item key={option.key} color={option.color}>
+          <_Dropdown.Item key={option.key} color={option.color}>
             {option.label}
-          </Dropdown.Item>
+          </_Dropdown.Item>
         ))}
-      </Dropdown.Menu>
-    </Dropdown>
+      </_Dropdown.Menu>
+    </_Dropdown>
   );
 };
 
-export default memo(ActionsDropdown);
+export default memo(_Dropdown);

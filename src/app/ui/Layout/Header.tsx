@@ -1,7 +1,7 @@
 import logo from '@/assets/img/Logo.svg';
 import profile from '@/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
-import { Link } from '@/shared/ui/Link';
+import { Link } from '@/shared/ui/Link/Link';
 import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';

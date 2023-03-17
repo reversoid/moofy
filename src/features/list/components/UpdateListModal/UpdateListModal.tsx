@@ -3,14 +3,14 @@ import {
   clearState,
   $updateListState,
 } from '@/models/lists/updateList';
-import { Input } from '@/shared/ui/Input';
+import { Input } from '@/shared/ui/Input/Input';
 import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDefaultFormValues } from './useDefaultFormValues';
-import { Form } from '@/shared/ui/Form';
-import TextareaCount from '@/shared/ui/TextareaCount';
+import { Form } from '@/shared/ui/Form/Form';
+import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 
 export interface FormData {
@@ -90,7 +90,7 @@ const UpdateListModal = ({
               maxLength: { value: 32, message: 'Слишком длинное название' },
             })}
           />
-          <TextareaCount
+          <Textarea
             maxLength={400}
             bordered
             size="xl"

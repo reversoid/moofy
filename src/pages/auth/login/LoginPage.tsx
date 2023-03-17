@@ -9,12 +9,14 @@ import {
   LoginFormData,
   PASSWORD_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
-import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
+import TooltipIcon from '@/shared/ui/TooltipIcon/InfoIconWithTooltip';
 import { login, $loginStatus } from '@/models/auth/login';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { USERNAME_VALIDATORS } from '@/features/auth/utils/register/formUtils';
-import { Input, InputPassword } from '@/shared/ui/Input';
+import { Input, InputPassword } from '@/shared/ui/Input/Input';
+import infoIcon from '@/assets/img/info.svg';
+import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip/InfoIconWithTooltip';
 
 const LoginPage = () => {
   useDefaultScrollbarGutter();

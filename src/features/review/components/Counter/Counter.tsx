@@ -1,22 +1,9 @@
 import down from '@/assets/img/down.svg';
 import up from '@/assets/img/up.svg';
+import { getColorsByScore } from '@/shared/lib/scoreColors';
 import { Button, styled } from '@nextui-org/react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import { UseFormRegisterReturn } from 'react-hook-form';
-
-// TODO make this reusable, create function or object or smth like that with contrast text colors
-export const COLORS = [
-  '#ed1b24',
-  '#f36523',
-  '#f8931d',
-  '#ffc20d',
-  '#fef200',
-  '#cadb2a',
-  '#8ec63f',
-  '#3ab54b',
-  '#00a650',
-  '#008641',
-];
 
 const removeArrows = {
   '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
@@ -96,10 +83,10 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
     changeColor();
   };
 
-  const [color, setColor] = useState(COLORS[getValue() - 1]);
+  const [color, setColor] = useState(getColorsByScore(getValue() - 1));
 
   const changeColor = () => {
-    setColor(COLORS[getValue() - 1]);
+    setColor(getColorsByScore(getValue() - 1));
   };
 
   return (
@@ -113,10 +100,8 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
         type="number"
         {...registerReturn}
         style={{
-          background: color,
-          color: ['#ffc20d', '#fef200', '#cadb2a'].includes(color)
-            ? '#2e2e2e'
-            : 'white',
+          background: color?.main,
+          color: color?.contrast,
         }}
         disabled={disabled}
       />

@@ -1,8 +1,8 @@
 import { Grid, styled } from '@nextui-org/react';
 import React, { FC, memo } from 'react';
-import List from '../List/List';
+import List from '../../../../entities/List/ui/List/List';
 import { List as IList } from '@/shared/api/types/list.type';
-import { Link } from '@/shared/ui/Link';
+import { Link } from '@/shared/ui/Link/Link';
 
 const GridStyled = styled(Grid, { '@xsMax': { padding: '$3' } });
 

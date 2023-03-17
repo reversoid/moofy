@@ -15,11 +15,12 @@ import {
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
-import InfoIconWithTooltip from '@/shared/ui/InfoIconWithTooltip';
+import TooltipIcon from '@/shared/ui/TooltipIcon/InfoIconWithTooltip';
 import { Link } from 'react-router-dom';
 import { $checkUsernameResult } from '@/models/auth/register/checkUsername';
 import { useFieldsChecks } from './useFieldsChecks';
-import { Input, InputPassword } from '@/shared/ui/Input';
+import { Input, InputPassword } from '@/shared/ui/Input/Input';
+import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip/InfoIconWithTooltip';
 
 const RegisterPage = () => {
   useDefaultScrollbarGutter();

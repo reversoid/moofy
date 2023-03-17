@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Text, Textarea, styled } from '@nextui-org/react';
+import { Text, Textarea as _Textarea, styled } from '@nextui-org/react';
 import { TextareaProps } from '@nextui-org/react/types/textarea';
 import React, { forwardRef, memo, useEffect, useRef, useState } from 'react';
 
@@ -18,7 +18,7 @@ interface TextAreaCountProps extends Partial<TextareaProps> {
   /** Provide for correct count of initial value */
   initialValue?: string;
 }
-const TextareaCount = forwardRef<HTMLTextAreaElement, TextAreaCountProps>(
+const Textarea = forwardRef<HTMLTextAreaElement, TextAreaCountProps>(
   (props, ref) => {
     const [length, setLength] = useState(
       (props.initialValue as string)?.length ??
@@ -38,7 +38,7 @@ const TextareaCount = forwardRef<HTMLTextAreaElement, TextAreaCountProps>(
         <CountText color="$neutral">
           {length}/{props.maxLength}
         </CountText>
-        <Textarea
+        <_Textarea
           ref={ref}
           {...{
             ...props,
@@ -58,4 +58,4 @@ const TextareaCount = forwardRef<HTMLTextAreaElement, TextAreaCountProps>(
   },
 );
 
-export default memo(TextareaCount);
+export default memo(Textarea);

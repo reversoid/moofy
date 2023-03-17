@@ -5,7 +5,7 @@ import { routes as listRoutes } from './list/routes';
 import { routes as profileRoutes } from './profile/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
 
-import Layout from '../features/app/Layout/Layout';
+import Layout from '../app/ui/Layout/Layout';
 import ErrorPage from './ErrorPage/ErrorPage';
 import AuthOnly from '@/shared/guards/AuthOnly';
 

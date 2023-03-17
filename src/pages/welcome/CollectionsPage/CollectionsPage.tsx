@@ -1,5 +1,5 @@
 import CreateListModal from '@/features/list/components/CreateListModal/CreateListModal';
-import List from '@/features/list/components/List/List';
+import List from '@/entities/List/ui/List/List';
 import { $listsState, getLists } from '@/models/lists';
 import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
 import { Button, Loading } from '@nextui-org/react';

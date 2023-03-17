@@ -1,7 +1,7 @@
-import { IconButton } from '@/shared/ui/IconButton';
+import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { FC, forwardRef } from 'react';
 import { ButtonProps } from '@nextui-org/react';
-import BookmarkIcon from '@/shared/JsIcons/Bookmark.icon';
+import BookmarkIcon from '@/shared/Icons/Bookmark.icon';
 
 interface BookmarkButtonProps extends ButtonProps {
   iconFilled?: boolean;

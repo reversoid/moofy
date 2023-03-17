@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { memo, useEffect, useState } from 'react';
 import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
 import { List } from '@/shared/api/types/list.type';
-import ActionsDropdown, { Option } from '@/shared/ui/ActionsDropdown';
-import GearButton from '@/features/list/components/Review/GearButton';
+import _Dropdown, { Option } from '@/shared/ui/Dropdown/Dropdown';
+import GearButton from '@/entities/Review/ui/Review/GearButton';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
 import DeleteModalContent from './DeleteListModalContent';
 import { useStore } from 'effector-react';
@@ -13,7 +13,7 @@ import {
   clearState,
   deleteList,
 } from '@/models/lists/deleteList';
-import BookmarkButton from '@/features/list/components/Review/BookmarkButton';
+import BookmarkButton from '@/entities/Review/ui/Review/BookmarkButton';
 import {
   $addToFavoritesLoading,
   addToFavorites,
@@ -102,7 +102,7 @@ const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           </Text>
 
           {isUserOwner ? (
-            <ActionsDropdown
+            <_Dropdown
               trigger={<GearButton />}
               options={dropdownOptions}
               placement="left"

@@ -3,13 +3,13 @@ import {
   clearState,
   $createListState,
 } from '@/models/lists/createList';
-import { Form } from '@/shared/ui/Form';
-import { Input } from '@/shared/ui/Input';
+import { Form } from '@/shared/ui/Form/Form';
+import { Input } from '@/shared/ui/Input/Input';
 import { Modal } from '@/shared/ui/Modal/Modal';
 import { ModalBody } from '@/shared/ui/Modal/ModalBody';
 import { ModalFooter } from '@/shared/ui/Modal/ModalFooter';
 import { ModalHeader } from '@/shared/ui/Modal/ModalHeader';
-import TextareaCount from '@/shared/ui/TextareaCount';
+import Textarea from '@/shared/ui/Textarea/Textarea';
 import {
   decreasedPaddingMobile,
   increasedPaddingBottom,
@@ -90,7 +90,7 @@ const CreateListModal = ({ isOpen, setIsOpen }: CreateListModalProps) => {
               maxLength: { value: 32, message: 'Слишком длинное название' },
             })}
           />
-          <TextareaCount
+          <Textarea
             maxLength={400}
             bordered
             size="xl"
