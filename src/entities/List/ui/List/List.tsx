@@ -18,7 +18,7 @@ export interface ListProps extends OnProps {
   isPublic?: boolean;
 }
 
-const List: FC<ListProps> = ({ id, text, isPublic, onClick }) => {
+export const List: FC<ListProps> = memo(({ id, text, isPublic, onClick }) => {
   return (
     <Card onClick={onClick} css={{ display: 'flex', flexDirection: 'column' }}>
       <CardBody>
@@ -54,6 +54,4 @@ const List: FC<ListProps> = ({ id, text, isPublic, onClick }) => {
       </CardFooter>
     </Card>
   );
-};
-
-export default memo(List);
+});
