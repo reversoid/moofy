@@ -1,4 +1,4 @@
-import Review from '@/entities/Review/ui/Review/Review';
+import ReviewItem from '@/entities/Review/ui/Review/Review';
 import {
   loadMoreReviews,
   loadMoreReviewsFx,
@@ -25,7 +25,7 @@ const LoadMoreContainer = styled('div', {
 });
 
 interface ReviewListProps {
-  reviews?: IterableResponse<Review>;
+  reviews?: IterableResponse<ReviewItem>;
   isUserOwner: boolean;
   listId: number;
 }
@@ -68,10 +68,9 @@ const ListBody = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
 
           <FilmsContainer>
             {reviews?.items.map((review) => (
-              <Review
+              <ReviewItem
                 key={review.id}
                 review={review}
-                isUserOwner={isUserOwner}
               />
             ))}
           </FilmsContainer>

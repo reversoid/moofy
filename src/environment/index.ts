@@ -1,4 +1,3 @@
-
 import { Environment } from './Environment';
 import { devEnv } from './dev.env';
 import { prodEnv } from './prod.env';
@@ -12,11 +11,11 @@ let environment: Environment;
 if (isDev()) {
   environment = devEnv;
 } else if (isProd()) {
-    environment = prodEnv;
-} else if (isTest()){
-    environment = testEnv;
+  environment = prodEnv;
+} else if (isTest()) {
+  environment = testEnv;
 } else {
-  throw new Error('App mode must be provided with correct --mode option')
+  throw new Error('App mode must be provided with correct --mode option');
 }
 
-export default environment
+export default environment;

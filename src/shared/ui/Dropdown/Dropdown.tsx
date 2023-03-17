@@ -43,4 +43,4 @@ const Dropdown = ({
   );
 };
 
-export default memo(_Dropdown);
+export default memo(Dropdown);

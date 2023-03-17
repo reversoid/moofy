@@ -1,12 +1,14 @@
-import { Button, ButtonProps, styled } from '@nextui-org/react';
+import { Button, ButtonProps, styled, Image } from '@nextui-org/react';
 import { forwardRef } from 'react';
 
-const ButtonStyled = styled(Button);
+export interface IconButtonProps extends ButtonProps {
+  iconUrl?: string;
+}
 
-export const IconButton = forwardRef<HTMLButtonElement, ButtonProps>(
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   (props, ref) => {
     return (
-      <ButtonStyled
+      <Button
         {...{
           ...props,
           css: {
@@ -21,7 +23,11 @@ export const IconButton = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         light
         ripple={false}
-      ></ButtonStyled>
+      >
+        {props.iconUrl && (
+          <Image src={props.iconUrl} width={'1.75rem'} height={'1.75rem'} />
+        )}
+      </Button>
     );
   },
 );

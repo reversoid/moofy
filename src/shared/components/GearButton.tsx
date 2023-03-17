@@ -1,6 +1,6 @@
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { Image, ButtonProps } from '@nextui-org/react';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import gear from '@/assets/img/gear.svg';
 
 const GearButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
