@@ -7,7 +7,6 @@ import { routes as welcomeRoutes } from './welcome/routes';
 
 import Layout from '../app/ui/Layout/Layout';
 import ErrorPage from './ErrorPage/ErrorPage';
-import AuthOnly from '@/shared/guards/AuthOnly';
 
 const MainPage = lazy(() => import('./main/MainPage'));
 const SupportPage = lazy(() => import('./Support/SupportPage'));

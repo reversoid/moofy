@@ -16,6 +16,8 @@ getMoreReviewsFx.use(({ listId, lowerBound }) =>
   listService.getMyListWithContent(listId, lowerBound).then((r) => r.reviews),
 );
 
+export const $getMoreReviewsLoading = getMoreReviewsFx.pending;
+
 sample({
   clock: getMoreReviews,
   target: getMoreReviewsFx,

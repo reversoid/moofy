@@ -33,7 +33,7 @@ $listError.on(getList, () => null);
 
 const $listLoading = getListFx.pending;
 
-export const $listState = combine({
+export const $getListState = combine({
   error: $listError,
   loading: $listLoading,
 });

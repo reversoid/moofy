@@ -1,28 +1,22 @@
-import { styled, Row, Text, Image, Button } from '@nextui-org/react';
+import { styled, Text } from '@nextui-org/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { memo, useEffect, useState } from 'react';
-import UpdateListModal from '@/features/list/update-list/ui/UpdateListModal';
+import { useEffect, useState } from 'react';
 import { List } from '@/shared/api/types/list.type';
-import Dropdown, { Option } from '@/shared/ui/Dropdown/Dropdown';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
-import DeleteModalContent from '../../../../features/delete-list/ui/DeleteListModalContent';
 import { useStore } from 'effector-react';
+import { formatDate } from '@/shared/lib/formatDate/formatDate';
 import {
   $deleteListState,
   clearState,
   deleteList,
-} from '@/models/lists/deleteList';
+} from '@/features/list/delete-list';
 import {
   $addToFavoritesLoading,
-  addToFavorites,
-} from '@/models/favoriteLists/addToFavorites';
-import {
   $removeFromFavoritesLoading,
-  removeFromFavorites,
-  removeFromFavoritesFx,
-} from '@/models/favoriteLists/removeFromFavorites';
-import GearButton from '@/shared/components/GearButton';
-
+} from '@/features/list/favorite-lists';
+import { UpdateListModal } from '@/features/list/update-list';
+import DeleteModalContent from '@/features/list/delete-list/ui/DeleteListModalContent';
+import { ListHeader } from './ListHeader';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -34,31 +28,9 @@ interface ListInfoProps {
   isFavorite?: boolean;
 }
 
-const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
-  const getUpdatedAt = () => {
-    const date = new Date(list.updated_at);
-    const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
-  };
-
+export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-  const dropdownOptions: Option[] = [
-    {
-      label: 'Изменить',
-      key: 'update',
-      callback: () => setIsUpdateDialogOpen(true),
-    },
-    {
-      label: 'Удалить',
-      key: 'delete',
-      callback: () => setIsDeleteDialogOpen(true),
-      color: 'error',
-    },
-  ];
 
   const { loading, success: deleteSuccess } = useStore($deleteListState);
   const navigate = useNavigate();
@@ -78,47 +50,15 @@ const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
   return (
     <>
       <ListInfoContainer>
-        <Row
-          align="center"
-          css={{
-            gap: '$10',
-            justifyContent: 'space-between',
-            mb: '$12',
-            '@xsMax': { mb: '$10' },
-          }}
-        >
-          <Text
-            h1
-            css={{
-              flexShrink: 1,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              pr: '0.25rem',
-              mb: '0 !important',
-            }}
-          >
-            {list.name}
-          </Text>
-
-          {isUserOwner ? (
-            <Dropdown
-              trigger={<GearButton />}
-              options={dropdownOptions}
-              placement="left"
-            />
-          ) : (
-            <BookmarkButton
-              onClick={() =>
-                isFavorite
-                  ? removeFromFavorites({ listId: list.id })
-                  : addToFavorites({ listId: list.id })
-              }
-              disabled={addToFavsLoading || removeFromFavsLoading}
-              iconFilled={isFavorite}
-            />
-          )}
-        </Row>
+        <ListHeader
+          bookmarkButtonDisabled={addToFavsLoading || removeFromFavsLoading}
+          isFavorite={Boolean(isFavorite)}
+          isUserOwner={isUserOwner}
+          listId={list.id}
+          listName={list.name}
+          onClickDelete={() => setIsDeleteDialogOpen(true)}
+          onClickUpdate={() => setIsUpdateDialogOpen(true)}
+        />
 
         {list.description && (
           <Text
@@ -148,7 +88,7 @@ const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
         )}
 
         <Text as={'p'} color="$neutral">
-          Обновлен <Text as="span">{getUpdatedAt()}</Text>
+          Обновлен <Text as="span">{formatDate(list.updated_at)}</Text>
         </Text>
       </ListInfoContainer>
 
@@ -174,5 +114,3 @@ const ListHeader = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
     </>
   );
 };
-
-export default memo(ListHeader);
