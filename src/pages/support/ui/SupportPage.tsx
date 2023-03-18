@@ -1,5 +1,4 @@
 import { Link, Text } from '@nextui-org/react';
-import React from 'react';
 
 const SupportPage = () => {
   return (

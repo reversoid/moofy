@@ -1,8 +1,8 @@
-import { logout } from '@/models/app/auth/logout';
+import { logout } from '@/features/auth/model/logout';
 import { $getProfileState, getProfile } from '@/features/get-profile/model';
 import { Button, Row, Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface ProfilePageProps {
