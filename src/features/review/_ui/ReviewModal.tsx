@@ -2,7 +2,7 @@ import { Form } from '@/shared/ui/Form/Form';
 import { Button, Checkbox, Loading, Text, styled } from '@nextui-org/react';
 import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Counter from '../Counter/Counter';
+import Counter from './Counter';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 

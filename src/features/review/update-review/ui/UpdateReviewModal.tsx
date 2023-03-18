@@ -1,5 +1,4 @@
-import React from 'react';
-import ReviewModal, { ReviewFormData } from '../ReviewModal/ReviewModal';
+import ReviewModal, { ReviewFormData } from '../../_ui/ReviewModal';
 import { useStore } from 'effector-react';
 import {
   $updateReviewState,

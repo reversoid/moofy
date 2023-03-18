@@ -14,7 +14,7 @@ import useAutocomplete from '@mui/material/useAutocomplete';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import AddReviewModal from '@/features/review/components/AddReviewModal/AddReviewModal';
+import CreateReviewModal from '@/features/review/create-review/ui/CreateReviewModal';
 import debounce from 'lodash.debounce';
 import { $films, $getFilmsState, getFilmsByName } from '@/models/films';
 import { Film } from '@/shared/api/types/film.type';
@@ -172,7 +172,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         </Row>
       </Wrapper>
 
-      <AddReviewModal
+      <CreateReviewModal
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         film={selectedFilm!}

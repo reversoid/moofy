@@ -6,22 +6,22 @@ import {
 import { Film } from '@/shared/api/types/film.type';
 import { useEvent, useStore } from 'effector-react';
 import { useNavigate } from 'react-router-dom';
-import ReviewModal from '../ReviewModal/ReviewModal';
+import ReviewModal from '../../_ui/ReviewModal';
 import { memo } from 'react';
 
-interface AddReviewModalProps {
+export interface CreateReviewModalProps {
   isOpen: boolean;
   setIsOpen: (newState: boolean) => void;
   film?: Film;
   listId: number;
 }
 
-const AddReviewModal = ({
+const CreateReviewModal = ({
   isOpen,
   setIsOpen,
   film,
   listId,
-}: AddReviewModalProps) => {
+}: CreateReviewModalProps) => {
   const navigate = useNavigate();
   const onSubmit = useEvent(createReview);
 
@@ -51,4 +51,4 @@ const AddReviewModal = ({
   );
 };
 
-export default memo(AddReviewModal);
+export default memo(CreateReviewModal);
