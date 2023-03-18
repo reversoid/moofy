@@ -1,4 +1,4 @@
-import { checkEmailFx, checkEmail } from '@/models/auth/register/checkEmail';
+import { checkEmailFx, checkEmail } from '@/features/auth/model/checkEmail';
 import {
   checkUsernameFx,
   checkUsername,

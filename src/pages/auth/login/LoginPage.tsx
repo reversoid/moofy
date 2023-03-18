@@ -2,7 +2,7 @@ import { Text, Button, Loading } from '@nextui-org/react';
 import React, { memo, useMemo } from 'react';
 import { useEvent, useStore } from 'effector-react';
 import Heading from '@/features/auth/components/Title';
-import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
+import { useDefaultScrollbarGutter } from '@/app/styles/useDefaultScrollbarGutter';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import { Form, SubmitContainer } from '@/features/auth/components/Form';
 import {

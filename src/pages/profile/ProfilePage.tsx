@@ -1,5 +1,5 @@
 import { logout } from '@/models/app/auth/logout';
-import { $getProfileState, getProfile } from '@/models/profile';
+import { $getProfileState, getProfile } from '@/features/get-profile/model';
 import { Button, Row, Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import React, { memo, useEffect } from 'react';

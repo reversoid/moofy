@@ -4,7 +4,7 @@ import { useEvent, useStore } from 'effector-react';
 import { memo, useCallback, useEffect } from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Title';
-import { useDefaultScrollbarGutter } from '@/styles/useDefaultScrollbarGutter';
+import { useDefaultScrollbarGutter } from '@/app/styles/useDefaultScrollbarGutter';
 import {
   register as registerEvent,
   $registerStatus,
