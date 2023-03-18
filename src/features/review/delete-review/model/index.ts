@@ -17,11 +17,11 @@ export const clearState = createEvent();
 
 export const deleteReviewFx = createEffect<
   DeleteReviewDTO,
-  { reviewId: number, list: List }
+  { reviewId: number; list: List }
 >();
 deleteReviewFx.use(({ reviewId }) => reviewService.deleteReview(reviewId));
 
-export const $deleteReviewSuccess = createStore<boolean>(false);
+const $deleteReviewSuccess = createStore<boolean>(false);
 $deleteReviewSuccess.on(clearState, () => false);
 $deleteReviewSuccess.on(deleteReviewFx.doneData, () => true);
 $deleteReviewSuccess.on(deleteReviewFx.failData, () => false);

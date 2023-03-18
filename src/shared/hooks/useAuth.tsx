@@ -1,4 +1,4 @@
-import { $userLoggedIn, checkoutUserFx } from '@/models/app/auth/checkout';
+import { $userLoggedIn, checkoutUserFx } from '@/features/app/model/checkout';
 import { useStore } from 'effector-react';
 
 /** Provides info about authorization status */

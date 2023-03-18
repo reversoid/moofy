@@ -10,7 +10,7 @@ import {
   PASSWORD_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
 import TooltipIcon from '@/shared/ui/TooltipIcon/InfoIconWithTooltip';
-import { login, $loginStatus } from '@/models/auth/login';
+import { login, $loginStatus } from '@/features/auth/model/login';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { USERNAME_VALIDATORS } from '@/features/auth/utils/register/formUtils';

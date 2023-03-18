@@ -3,21 +3,21 @@ import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
 import { createEffect, createEvent, sample } from 'effector';
 import { listService } from '../../_api/list.service';
 
-export const loadMoreFavorites = createEvent<{
+export const getMoreFavorites = createEvent<{
   lowerBound: DateAsString;
 }>();
 
-export const loadMoreFavoritesFx = createEffect<
+export const getMoreFavoritesFx = createEffect<
   { lowerBound: DateAsString },
   IterableResponse<FavoriteList>
 >();
-loadMoreFavoritesFx.use(({ lowerBound }) =>
+getMoreFavoritesFx.use(({ lowerBound }) =>
   listService.getFavoritesLists(lowerBound),
 );
 
-export const $loadMoreFavoritesLoading = loadMoreFavoritesFx.pending;
+export const $getMoreFavoritesLoading = getMoreFavoritesFx.pending;
 
 sample({
-  clock: loadMoreFavorites,
-  target: loadMoreFavoritesFx,
+  clock: getMoreFavorites,
+  target: getMoreFavoritesFx,
 });

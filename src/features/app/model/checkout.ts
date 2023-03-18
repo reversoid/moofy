@@ -1,9 +1,9 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { appStarted } from '../app';
-import { authService } from '@/features/auth/services/auth.service';
-import { registerFx } from '../../auth/register';
-import { loginFx } from '../../auth/login';
-import { logoutFx } from './logout';
+import { appStarted } from './app';
+import { loginFx } from '../../auth/model';
+import { logoutFx } from '../../auth/model/logout';
+import { registerFx } from '../../auth/model';
+import { appService } from '../api/app.service';
 
 interface UserLoggedInState {
   loggedIn?: boolean;
@@ -13,7 +13,7 @@ interface UserLoggedInState {
 export const checkoutUser = createEvent();
 export const checkoutUserFx = createEffect<void, UserLoggedInState>();
 checkoutUserFx.use(() =>
-  authService
+  appService
     .checkout()
     .then(({ userId }) => ({ userId, loggedIn: true }))
     .catch((error) => {

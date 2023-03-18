@@ -2,13 +2,13 @@ import { FavoriteList } from "@/shared/api/types/favoriteList.type";
 import { IterableResponse } from "@/shared/api/types/shared";
 import { createStore } from "effector";
 import { getFavoriteListsFx } from "../favorite-lists/model/getFavoriteLists";
-import { loadMoreFavoritesFx, addToFavoritesFx, removeFromFavoritesFx } from "../favorite-lists/model";
+import { getMoreFavoritesFx, addToFavoritesFx, removeFromFavoritesFx } from "../favorite-lists/model";
 
 export const $favoriteLists =
   createStore<IterableResponse<FavoriteList> | null>(null);
 
 $favoriteLists.on(getFavoriteListsFx.doneData, (state, payload) => payload);
-$favoriteLists.on(loadMoreFavoritesFx.doneData, (state, payload) => {
+$favoriteLists.on(getMoreFavoritesFx.doneData, (state, payload) => {
   if (!state) {
     return state;
   }

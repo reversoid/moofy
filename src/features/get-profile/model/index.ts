@@ -1,4 +1,4 @@
-import { profileService } from '@/features/profile/profile.service';
+import { profileService } from '@/features/get-profile/api/profile.service';
 import { User } from '@/shared/api/types/user.type';
 import {
     combine,

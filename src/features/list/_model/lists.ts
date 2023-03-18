@@ -4,8 +4,8 @@ import { createStore } from "effector";
 import { getListsFx, loadMoreListsFx } from "../get-lists";
 import { createListFx } from "../create-list";
 import { updateListFx } from "../update-list";
-import { updateReviewFx } from "@/models/reviews/updateReview";
 import { deleteListFx } from "../delete-list";
+import { updateReviewFx } from "@/features/review/update-review";
 
 export const $lists = createStore<IterableResponse<List>>({
   nextKey: null,

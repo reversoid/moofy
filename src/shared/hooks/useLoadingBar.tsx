@@ -1,4 +1,4 @@
-import { setLoading as setGlobalLoading } from '@/models/app/loading';
+import { setLoading as setGlobalLoading } from '@/features/app';
 import { useEffect, useState } from 'react';
 
 /** Truthy values given will envoke loader appear */

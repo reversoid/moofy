@@ -57,15 +57,6 @@ class AuthService extends ApiService {
     }).then(({ userExists }) => userExists);
   }
 
-  public async checkout(): Promise<{ userId: number }> {
-    return this.get<AuthResponse>('/auth/protected/checkout').then(
-      ({ access_token, userId }) => {
-        tokenService.setAccessToken(access_token);
-        return { userId };
-      },
-    );
-  }
-
   public async logout(): Promise<void> {
     return this.get<void>('/auth/protected/logout');
   }

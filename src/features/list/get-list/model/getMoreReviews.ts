@@ -1,22 +1,22 @@
-import { listService } from '@/features/list/services/list.service';
 import { Review } from '@/shared/api/types/review.type';
 import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
 import { createEffect, createEvent, sample } from 'effector';
+import { listService } from '../../_api/list.service';
 
-export const loadMoreReviews = createEvent<{
+export const getMoreReviews = createEvent<{
   lowerBound: DateAsString;
   listId: number;
 }>();
 
-export const loadMoreReviewsFx = createEffect<
+export const getMoreReviewsFx = createEffect<
   { lowerBound: DateAsString; listId: number },
   IterableResponse<Review>
 >();
-loadMoreReviewsFx.use(({ listId, lowerBound }) =>
+getMoreReviewsFx.use(({ listId, lowerBound }) =>
   listService.getMyListWithContent(listId, lowerBound).then((r) => r.reviews),
 );
 
 sample({
-  clock: loadMoreReviews,
-  target: loadMoreReviewsFx,
+  clock: getMoreReviews,
+  target: getMoreReviewsFx,
 });

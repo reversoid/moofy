@@ -2,15 +2,13 @@ import { List } from "@/shared/api/types/list.type";
 import { Review } from "@/shared/api/types/review.type";
 import { IterableResponse } from "@/shared/api/types/shared";
 import { createStore } from "effector";
-import { getListFx } from "../get-list";
+import { getListFx, getMoreReviewsFx } from "../get-list";
 import { updateListFx } from "../update-list";
-import { loadMoreReviewsFx } from "@/models/lists/singleList/loadMoreReviews";
-import { updateReviewFx } from "@/models/reviews/updateReview";
+import { updateReviewFx } from "@/features/review/update-review";
 import { deleteReviewById, updateReviewInList } from "../_utils";
-import { deleteReviewFx } from "@/models/reviews/deleteReview";
-import { createReviewFx } from "@/models/reviews/createReview";
-import { addToFavoritesFx } from "@/models/favoriteLists/addToFavorites";
-import { removeFromFavoritesFx } from "@/models/favoriteLists/removeFromFavorites";
+import { deleteReviewFx } from "@/features/review/delete-review";
+import { createReviewFx } from "@/features/review/create-review";
+import { addToFavoritesFx, removeFromFavoritesFx } from "../favorite-lists";
 
 export type SingleListStore = {
   reviews: IterableResponse<Review>;
@@ -29,7 +27,7 @@ $singleList.on(updateListFx.doneData, (state, payload) => {
   }
   return { ...state, list: payload };
 });
-$singleList.on(loadMoreReviewsFx.doneData, (state, payload) => {
+$singleList.on(getMoreReviewsFx.doneData, (state, payload) => {
   if (!state) {
     return state;
   }

@@ -15,10 +15,13 @@ import {
 export const createReview = createEvent<CreateReviewDTO>();
 export const clearState = createEvent();
 
-export const createReviewFx = createEffect<CreateReviewDTO, { review: Review; list: List }>();
+export const createReviewFx = createEffect<
+  CreateReviewDTO,
+  { review: Review; list: List }
+>();
 createReviewFx.use((dto) => reviewService.createReview(dto));
 
-export const $createReviewSuccess = createStore<boolean>(false);
+const $createReviewSuccess = createStore<boolean>(false);
 $createReviewSuccess.on(clearState, () => false);
 $createReviewSuccess.on(createReviewFx.doneData, () => true);
 $createReviewSuccess.on(createReviewFx.failData, () => false);

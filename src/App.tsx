@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { routes } from './pages/routes';
-import { appStarted } from './models/app/app';
+import { appStarted } from './features/app/model/app';
 import { useMount } from './shared/hooks/useMount';
 import UIProvider from './app/providers/UIProvider/UIProvider';
 
