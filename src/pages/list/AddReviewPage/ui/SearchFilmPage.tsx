@@ -1,5 +1,3 @@
-import { $lists } from '@/models/lists';
-import { $list, $listState, getList } from '@/models/lists/singleList';
 import {
   Text,
   Image,
@@ -11,75 +9,28 @@ import {
   InputProps,
 } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
-import { useEvent, useStore } from 'effector-react';
+import { useStore } from 'effector-react';
 import { memo, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import CreateReviewModal from '@/features/review/create-review/ui/CreateReviewModal';
 import debounce from 'lodash.debounce';
-import { $films, $getFilmsState, getFilmsByName } from '@/models/films';
 import { Film } from '@/shared/api/types/film.type';
+import { $getFilmsState, getFilmsByName } from '@/features/search-films';
+import { Li, LiBody, Listbox } from './Listbox';
+import { useParams } from 'react-router-dom';
 
-const Listbox = styled('ul', {
-  width: '100%',
-  margin: 0,
-  padding: 0,
-  zIndex: 201,
-  position: 'absolute',
-  left: '0rem',
-  listStyle: 'none',
-  backgroundColor: '$gray50',
-  overflow: 'auto',
-  maxHeight: '15rem',
-  color: '$gray900',
-  '& li.Mui-focused': {
-    cursor: 'pointer',
-    backgroundColor: '$gray100',
-  },
-  '& li:active': {
-    backgroundColor: '$gray100',
-  },
-  borderRadius: '1rem !important',
-  scrollbarWidth: 0,
-  overflowY: 'scroll',
-  '-ms-overflow-style': 'none',
-  '&::-webkit-scrollbar': {
-    display: 'none',
-  },
-});
-
-const Li = styled('li', {
-  height: '5rem',
-  padding: '$3 $5',
-  margin: 0,
-  display: 'flex',
-  justifyContent: 'flex-start',
-  alignItems: 'center',
-  gap: '$5',
-  background: '$gray50',
-});
-
-const LiBody = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  height: '100%',
-});
-
-const ImageContainer = styled('div', {
+export const ImageContainer = styled('div', {
   display: 'flex',
   justifyContent: 'flex-start',
   height: '100%',
   width: '2.86875rem',
 });
 
-const Wrapper = styled('div', { width: '100%', position: 'relative' });
+export const Wrapper = styled('div', { width: '100%', position: 'relative' });
 
-interface PageContentProps {
-  listId: number;
-}
-
-const PageContent = memo(({ listId }: PageContentProps) => {
+export const SearchFilmPage = () => {
   const [options, setOptions] = useState<Film[]>([]);
+
+  const { id } = useParams();
 
   const {
     getRootProps,
@@ -99,8 +50,7 @@ const PageContent = memo(({ listId }: PageContentProps) => {
 
   const { result, loading } = useStore($getFilmsState);
 
-  const _searchFilms = useEvent(getFilmsByName);
-  const searchFilms = useMemo(() => debounce(_searchFilms, 250), []);
+  const searchFilms = useMemo(() => debounce(getFilmsByName, 250), []);
 
   useEffect(() => {
     if (!inputValue) return;
@@ -176,38 +126,10 @@ const PageContent = memo(({ listId }: PageContentProps) => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         film={selectedFilm!}
-        listId={listId}
+        listId={Number(id)}
       />
     </>
   );
-});
-
-const AddReviewPage = () => {
-  const { id } = useParams();
-  const getListWithContent = useEvent(getList);
-
-  useEffect(() => {
-    getListWithContent(Number(id));
-  }, []);
-
-  const lists = useStore($lists);
-
-  const { list } = useStore($listState);
-
-  const listAlreadyLoaded = useMemo(
-    () => lists.items.find((list) => list.id === Number(id)),
-    [],
-  );
-
-  if (list || listAlreadyLoaded) {
-    return (
-      <PageContent
-        listId={listAlreadyLoaded?.id || (list?.list.id as number)}
-      />
-    );
-  }
-
-  return null;
 };
 
-export default memo(AddReviewPage);
+export default SearchFilmPage;
