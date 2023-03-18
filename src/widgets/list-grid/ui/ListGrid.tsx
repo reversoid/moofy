@@ -1,9 +1,9 @@
-import { Button, Grid, Loading, styled } from '@nextui-org/react';
+import { Grid, styled } from '@nextui-org/react';
 import { FC, memo } from 'react';
 import { List as IList } from '@/shared/api/types/list.type';
 import { Link } from '@/shared/ui/Link/Link';
 import { List } from '@/entities/List';
-import { LoadMoreContainer } from './LoadMoreContainer';
+import LoadMore from '@/shared/components/LoadMore';
 
 const GridStyled = styled(Grid, { '@xsMax': { padding: '$3' } });
 
@@ -21,7 +21,7 @@ const ListGrid: FC<ListGridProps> = ({
   firstItem,
   canLoadMore,
   loadMore,
-  loadingMore
+  loadingMore,
 }) => {
   return (
     <>
@@ -53,17 +53,7 @@ const ListGrid: FC<ListGridProps> = ({
         ))}
       </Grid.Container>
 
-      {canLoadMore && (
-        <LoadMoreContainer>
-          <Button color={'gradient'} onClick={loadMore}>
-            {loadingMore ? (
-              <Loading type="points" color="white" />
-            ) : (
-              'Загрузить больше'
-            )}
-          </Button>
-        </LoadMoreContainer>
-      )}
+      {canLoadMore && <LoadMore loadMore={loadMore} loading={loadingMore} />}
     </>
   );
 };
