@@ -1,1 +1,2 @@
-export * from './model'
+export * from './model';
+export type { AuthResponse } from './services/auth.service';

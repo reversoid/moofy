@@ -1,4 +1,4 @@
-import { AuthResponse } from '@/features/auth/services/auth.service';
+import { AuthResponse } from '@/features/auth';
 import ApiService from '@/shared/api/api.service';
 import { tokenService } from '@/shared/services/token.service';
 
