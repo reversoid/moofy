@@ -6,6 +6,7 @@ import { routes as profileRoutes } from './profile/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
 
 import ErrorPage from './error';
+import Layout from '@/app/ui/Layout/Layout';
 
 const MainPage = lazy(() => import('./main'));
 const SupportPage = lazy(() => import('./support'));
