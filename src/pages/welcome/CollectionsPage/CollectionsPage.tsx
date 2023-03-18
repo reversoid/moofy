@@ -1,51 +1,42 @@
-import CreateListModal from '@/features/list/create-list/ui/CreateListModal';
-import List from '@/entities/List/ui/List/List';
-import { $listsState, getLists } from '@/models/lists';
-import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
-import { Button, Loading } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
-import { LoadMoreContainer } from '../Layout';
-import ListGrid from '@/widgets/grid-list/_ui/ListGrid';
+import { $getListsLoading, $getMoreListsLoading, getLists, getMoreLists } from '@/features/list/get-lists';
+import { $lists } from '@/features/list/_model';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
+import { List } from '@/entities/List';
+import { CreateListModal } from '@/features/list/create-list';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 const CollectionsPage = () => {
   useEffect(getLists, []);
-  const { lists, loading: listsLoading } = useStore($listsState);
-  const [isCreateListModalOpen, setCreateListModalOpen] = useState(false);
+  const [createListModal, setCreateListModal] = useState(false);
 
-  const loadMoreLoading = useStore(loadMoreListsFx.pending);
+  const { items, nextKey } = useStore($lists);
+  const listsLoading = useStore($getListsLoading);
+  const moreListsLoading = useStore($getMoreListsLoading);
 
-  const handleLoadMore = () => {
-    if (loadMoreLoading || !lists.nextKey) {
-      return;
-    }
-    loadMoreLists({ lowerBound: lists.nextKey });
-  };
-
-  useLoadingBar(listsLoading)
+  useLoadingBar(listsLoading, moreListsLoading)
 
   return (
     <>
       <ListGrid
-        items={lists.items}
+        items={items}
+        canLoadMore={Boolean(nextKey)}
+        loadMore={
+          nextKey ? () => getMoreLists({ lowerBound: nextKey }) : undefined
+        }
+        loadingMore={moreListsLoading}
         firstItem={
-          <List onClick={() => setCreateListModalOpen(true)} text="Создать коллекцию" />
+          <List
+            onClick={() => setCreateListModal(true)}
+            text="Создать коллекцию"
+          />
         }
       />
-
-      {lists.nextKey && (
-        <LoadMoreContainer>
-          <Button color="gradient" onPress={handleLoadMore}>
-            {loadMoreLoading ? (
-              <Loading type="points" color="white" />
-            ) : (
-              'Загрузить больше'
-            )}
-          </Button>
-        </LoadMoreContainer>
-      )}
-      <CreateListModal isOpen={isCreateListModalOpen} setIsOpen={setCreateListModalOpen} />
+      <CreateListModal
+        isOpen={createListModal}
+        setIsOpen={setCreateListModal}
+      />
     </>
   );
 };

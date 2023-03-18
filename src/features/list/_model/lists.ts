@@ -1,7 +1,7 @@
 import { List } from "@/shared/api/types/list.type";
 import { IterableResponse } from "@/shared/api/types/shared";
 import { createStore } from "effector";
-import { getListsFx, loadMoreListsFx } from "../get-lists";
+import { getListsFx, getMoreListsFx } from "../get-lists";
 import { createListFx } from "../create-list";
 import { updateListFx } from "../update-list";
 import { deleteListFx } from "../delete-list";
@@ -41,7 +41,7 @@ $lists.on(updateReviewFx.doneData, (state, { list }) => {
     items: [list, ...updatedItems],
   };
 });
-$lists.on(loadMoreListsFx.doneData, (state, payload) => {
+$lists.on(getMoreListsFx.doneData, (state, payload) => {
   return {
     nextKey: payload.nextKey,
     items: [...state.items, ...payload.items],

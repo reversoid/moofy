@@ -1,62 +1,30 @@
-import ListGrid from '@/widgets/grid-list/_ui/ListGrid';
-import {
-  $favoriteLists,
-  $favoriteListsLoading,
-  loadFavoriteLists,
-} from '@/models/favoriteLists';
-import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { Button, Loading, Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
-import React, { memo, useEffect, useMemo } from 'react';
-import { LoadMoreContainer } from '../Layout';
+import { memo, useEffect } from 'react';
 import {
-  $loadMoreFavoritesLoading,
-  loadMoreFavorites,
-} from '@/models/favoriteLists/loadMoreFavorites';
+  $getMoreFavoritesLoading,
+  getFavoriteLists,
+  getMoreFavorites,
+} from '@/features/list/favorite-lists';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
+import { $favoriteLists } from '@/features/list/_model/favoriteLists';
 
 const FavoritePage = () => {
-  useEffect(() => {
-    loadFavoriteLists();
-  }, []);
+  useEffect(getFavoriteLists, []);
   const favLists = useStore($favoriteLists);
-  const listsLoading = useStore($favoriteListsLoading);
-
-  const lists = useMemo(() => {
-    if (!favLists) return [];
-    return [...favLists.items]
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-      .map((f) => f.list);
-  }, [favLists]);
-
-  const loadMoreLoading = useStore($loadMoreFavoritesLoading);
-
-  useLoadingBar(listsLoading, loadMoreLoading);
-
-  const handleLoadMore = () => {
-    if (loadMoreLoading || !favLists?.nextKey) {
-      return;
-    }
-    loadMoreFavorites({ lowerBound: favLists.nextKey });
-  };
+  const loadingMore = useStore($getMoreFavoritesLoading);
 
   return (
     <>
-      <ListGrid items={lists} />
-      {favLists?.nextKey && (
-        // TODO maybe use component with pagination?
-        <LoadMoreContainer>
-          <Button color="gradient" onPress={handleLoadMore}>
-            {loadMoreLoading ? (
-              <Loading type="points" color="white" />
-            ) : (
-              'Загрузить больше'
-            )}
-          </Button>
-        </LoadMoreContainer>
-      )}
+      <ListGrid
+        items={(favLists?.items ?? []).map((f) => f.list)}
+        canLoadMore={Boolean(favLists?.nextKey)}
+        loadMore={
+          favLists?.nextKey
+            ? () => getMoreFavorites({ lowerBound: favLists.nextKey! })
+            : undefined
+        }
+        loadingMore={loadingMore}
+      />
     </>
   );
 };

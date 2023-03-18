@@ -7,6 +7,8 @@ export const getLists = createEvent<void>();
 export const getListsFx = createEffect<void, IterableResponse<List>>();
 getListsFx.use(() => listService.getMyLists(undefined, 19));
 
+export const $getListsLoading = getListsFx.pending
+
 sample({
   clock: getLists,
   target: getListsFx,
