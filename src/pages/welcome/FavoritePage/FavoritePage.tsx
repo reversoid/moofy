@@ -1,4 +1,4 @@
-import ListGrid from '@/features/list/components/ListGrid/ListGrid';
+import ListGrid from '@/widgets/grid-list/_ui/ListGrid';
 import {
   $favoriteLists,
   $favoriteListsLoading,

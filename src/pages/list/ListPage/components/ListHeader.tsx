@@ -1,18 +1,17 @@
 import { styled, Row, Text, Image, Button } from '@nextui-org/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { memo, useEffect, useState } from 'react';
-import UpdateListModal from '@/features/list/components/UpdateListModal/UpdateListModal';
+import UpdateListModal from '@/features/list/update-list/ui/UpdateListModal';
 import { List } from '@/shared/api/types/list.type';
 import Dropdown, { Option } from '@/shared/ui/Dropdown/Dropdown';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
-import DeleteModalContent from './DeleteListModalContent';
+import DeleteModalContent from '../../../../features/delete-list/ui/DeleteListModalContent';
 import { useStore } from 'effector-react';
 import {
   $deleteListState,
   clearState,
   deleteList,
 } from '@/models/lists/deleteList';
-import BookmarkButton from '@/features/add-list-to-favorites/ui/BookmarkButton';
 import {
   $addToFavoritesLoading,
   addToFavorites,

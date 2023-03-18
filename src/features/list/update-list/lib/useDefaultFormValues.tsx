@@ -1,5 +1,5 @@
 import { UseFormSetValue } from 'react-hook-form';
-import { FormData } from './UpdateListModal';
+import { FormData } from '../ui/UpdateListModal';
 import { useEffect } from 'react';
 
 /** When the modal is openned, there must be preset values for current list */

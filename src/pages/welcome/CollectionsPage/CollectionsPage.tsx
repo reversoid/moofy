@@ -1,4 +1,4 @@
-import CreateListModal from '@/features/list/components/CreateListModal/CreateListModal';
+import CreateListModal from '@/features/list/create-list/ui/CreateListModal';
 import List from '@/entities/List/ui/List/List';
 import { $listsState, getLists } from '@/models/lists';
 import { loadMoreLists, loadMoreListsFx } from '@/models/lists/loadMoreLists';
@@ -6,7 +6,7 @@ import { Button, Loading } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
 import { LoadMoreContainer } from '../Layout';
-import ListGrid from '@/features/list/components/ListGrid/ListGrid';
+import ListGrid from '@/widgets/grid-list/_ui/ListGrid';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 const CollectionsPage = () => {

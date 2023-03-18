@@ -1,4 +1,3 @@
-import React from 'react';
 import crossRound from '@/assets/img/cross-round.svg';
 import { Row, Image, Text } from '@nextui-org/react';
 

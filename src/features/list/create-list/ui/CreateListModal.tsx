@@ -1,57 +1,50 @@
 import {
-  updateList,
+  createList,
   clearState,
-  $updateListState,
-} from '@/models/lists/updateList';
+  $createListState,
+} from '@/models/lists/createList';
+import { Form } from '@/shared/ui/Form/Form';
 import { Input } from '@/shared/ui/Input/Input';
+import { ModalFooter, Modal, ModalBody, ModalHeader } from '@/shared/ui/Modal';
+import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDefaultFormValues } from './useDefaultFormValues';
-import { Form } from '@/shared/ui/Form/Form';
-import Textarea from '@/shared/ui/Textarea/Textarea';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 
-export interface FormData {
+interface FormData {
   name: string;
   description: string;
   isPrivate: boolean;
 }
 
-interface UpdateListModalProps {
+interface CreateListModalProps {
   isOpen: boolean;
   setIsOpen: (newValue: boolean) => void;
-  listData: FormData;
-  listId: number;
 }
 
-const UpdateListModal = ({
-  isOpen,
-  setIsOpen,
-  listData,
-  listId,
-}: UpdateListModalProps) => {
+export const CreateListModal = memo(({ isOpen, setIsOpen }: CreateListModalProps) => {
   const {
     register,
     formState: { isValid: isFormValid, errors },
+    getValues,
     setValue,
     handleSubmit,
-    getValues,
+    reset,
   } = useForm<FormData>({
+    defaultValues: { isPrivate: false },
     mode: 'onChange',
   });
 
-  useDefaultFormValues(isOpen, setValue, listData);
-
-  const onSubmit = useEvent(updateList);
+  const onSubmit = useEvent(createList);
   const onClose = useEvent(clearState);
 
-  const { loading, success } = useStore($updateListState);
+  const { loading, success } = useStore($createListState);
 
   const handleClose = () => {
-    onClose();
+    reset();
     setIsOpen(false);
+    onClose();
   };
 
   useEffect(() => {
@@ -69,12 +62,12 @@ const UpdateListModal = ({
       onClose={() => setIsOpen(false)}
     >
       <ModalHeader>
-        <Text h3>Изменить коллекцию</Text>
+        <Text h3>Создать коллекцию</Text>
       </ModalHeader>
       <ModalBody>
         <Form
           onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-            onSubmit({ isPublic: !isPrivate, name, description, listId }),
+            onSubmit({ isPublic: !isPrivate, name, description }),
           )}
           id="create-list-modal-form"
         >
@@ -111,7 +104,7 @@ const UpdateListModal = ({
             }}
             size="lg"
             {...register('isPrivate')}
-            defaultSelected={listData.isPrivate}
+            defaultSelected={getValues().isPrivate}
             onChange={(newValue) => setValue('isPrivate', newValue)}
           />
         </Form>
@@ -135,20 +128,10 @@ const UpdateListModal = ({
           {loading ? (
             <Loading size="lg" type="points" color="white" />
           ) : (
-            'Обновить'
+            'Добавить'
           )}
         </Button>
       </ModalFooter>
     </Modal>
-  );
-};
-
-export default memo(UpdateListModal, (prev, next) => {
-  const formEqual =
-    (prev.listData.description === next.listData.description &&
-      prev.listData.isPrivate === next.listData.isPrivate) ??
-    prev.listData.name === next.listData.name;
-  return (
-    formEqual && prev.isOpen === next.isOpen && prev.listId === next.listId
   );
 });
