@@ -9,7 +9,7 @@ export interface OwnerActionsProps {
   buttonProps?: ButtonProps;
 }
 
-const OwnerActions: FC<OwnerActionsProps> = ({
+export const ReviewOwnerActions: FC<OwnerActionsProps> = memo(({
   onClickDelete,
   onClickUpdate,
   buttonProps,
@@ -37,6 +37,4 @@ const OwnerActions: FC<OwnerActionsProps> = ({
       placement="left"
     />
   );
-};
-
-export default memo(OwnerActions);
+});

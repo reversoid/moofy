@@ -1,14 +1,15 @@
-import { Review } from '@/shared/api/types/review.type';
+import { Review as IReview } from '@/shared/api/types/review.type';
 import _Dropdown from '@/shared/ui/Dropdown/Dropdown';
 import { ReviewWrapper } from './ReviewWrapper';
 import ReviewImageWithScore from './ReviewImageWithScore';
 import ReviewContent from './ReviewContent';
+import { PropsWithChildren, memo } from 'react';
 
-export interface ReviewItemProps {
-  review: Review;
+export interface ReviewItemProps extends PropsWithChildren {
+  review: IReview;
 }
 
-const Review = ({ review }: ReviewItemProps) => {
+export const ReviewItem = memo(({ review, children }: ReviewItemProps) => {
   return (
     <>
       <ReviewWrapper>
@@ -23,9 +24,8 @@ const Review = ({ review }: ReviewItemProps) => {
           filmName={review.film.name}
           filmYear={review.film.year}
         />
+        {children}
       </ReviewWrapper>
     </>
   );
-};
-
-export default Review;
+});

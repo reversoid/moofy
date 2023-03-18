@@ -1,4 +1,4 @@
-import ReviewItem from '@/entities/Review/ui/Review/Review';
+import ReviewItem from '@/entities/Review/ui/Review/ReviewItem';
 import {
   loadMoreReviews,
   loadMoreReviewsFx,
