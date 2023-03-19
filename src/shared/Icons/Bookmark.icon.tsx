@@ -10,8 +10,8 @@ const Icon: FC<BookmarkIconProps> = ({ iconFilled, height, width }) => {
   const fillColor = iconFilled ? '#ECEDEE' : 'none';
   return (
     <svg
-      width="800"
-      height="800"
+      width={width ?? 800}
+      height={height ?? 800}
       viewBox="0 0 800 800"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
