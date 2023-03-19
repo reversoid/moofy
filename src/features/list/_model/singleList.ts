@@ -9,6 +9,7 @@ import { deleteReviewById, updateReviewInList } from "../_utils";
 import { deleteReviewFx } from "@/features/review/delete-review";
 import { createReviewFx } from "@/features/review/create-review";
 import { addToFavoritesFx, removeFromFavoritesFx } from "../favorite-lists";
+import { logoutFx } from "@/features/auth/model/logout";
 
 export type SingleListStore = {
   reviews: IterableResponse<Review>;
@@ -110,3 +111,5 @@ $singleList.on(removeFromFavoritesFx.doneData, (state) => {
     },
   };
 });
+
+$singleList.on(logoutFx.doneData, () => null)

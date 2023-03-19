@@ -3,6 +3,7 @@ import { IterableResponse } from "@/shared/api/types/shared";
 import { createStore } from "effector";
 import { getFavoriteListsFx } from "../favorite-lists/model/getFavoriteLists";
 import { getMoreFavoritesFx, addToFavoritesFx, removeFromFavoritesFx } from "../favorite-lists/model";
+import { logoutFx } from "@/features/auth/model/logout";
 
 export const $favoriteLists =
   createStore<IterableResponse<FavoriteList> | null>(null);
@@ -36,3 +37,5 @@ $favoriteLists.on(removeFromFavoritesFx.doneData, (state, { listId }) => {
     items: state.items.splice(listIndex, 1),
   };
 });
+
+$favoriteLists.on(logoutFx.doneData, () => null)
