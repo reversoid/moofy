@@ -11,7 +11,7 @@ export const getFavoriteListsFx = createEffect<
 >();
 getFavoriteListsFx.use(() => listService.getFavoritesLists());
 
-export const $favoriteListsLoading = getFavoriteListsFx.pending;
+export const $getFavoriteListsLoading = getFavoriteListsFx.pending;
 
 sample({
   clock: getFavoriteLists,
