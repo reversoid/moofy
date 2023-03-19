@@ -33,12 +33,14 @@ $favoriteLists.on(removeFromFavoritesFx.doneData, (state, { listId }) => {
     return state;
   }
   const listIndex = state.items.findIndex((l) => l.list.id === listId);
+  
   if (listIndex === -1) {
     return state;
   }
+  state.items.splice(listIndex, 1)
+
   return {
     ...state,
-    items: state.items.splice(listIndex, 1),
   };
 });
 

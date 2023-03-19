@@ -4,7 +4,6 @@ import { List as IList } from '@/shared/api/types/list.type';
 import { Link } from '@/shared/ui/Link/Link';
 import { List } from '@/entities/List';
 import LoadMore from '@/shared/components/LoadMore';
-import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 
 const GridStyled = styled(Grid, { '@xsMax': { padding: '$3' } });
 

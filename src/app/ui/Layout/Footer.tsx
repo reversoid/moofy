@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Wrapper } from './Layout';
 import { Text, styled, Link } from '@nextui-org/react';
 import { Link as MyLink } from '@/shared/ui/Link/Link';
@@ -75,4 +74,4 @@ function Footer() {
   );
 }
 
-export default memo(Footer);
+export default Footer;

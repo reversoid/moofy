@@ -131,4 +131,4 @@ const RegisterPage = () => {
   );
 };
 
-export default memo(RegisterPage);
+export default RegisterPage;

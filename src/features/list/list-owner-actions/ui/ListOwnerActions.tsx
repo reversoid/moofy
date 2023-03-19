@@ -35,4 +35,4 @@ const ListOwnerActions: FC<ListOwnerActionsProps> = ({
   );
 };
 
-export default memo(ListOwnerActions);
+export default ListOwnerActions;

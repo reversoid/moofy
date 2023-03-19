@@ -1,4 +1,4 @@
-import { Suspense, memo, useEffect, useMemo } from 'react';
+import { Suspense, memo, useEffect } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';
@@ -17,7 +17,7 @@ export const Wrapper = styled(Container, {
   },
 });
 
-export const ScrollToTop = memo(() => {
+export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -25,17 +25,12 @@ export const ScrollToTop = memo(() => {
   }, [pathname]);
 
   return null;
-});
+};
 
 export const Layout = ({ disableMaxWidth }: LayoutProps) => {
   const { errorMessage, handleSnackbarClose, isSnackBarOpen } = useSnackbar();
 
-  const maxWidthStyles = useMemo(() => {
-    if (disableMaxWidth) {
-      return { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' };
-    }
-    return {};
-  }, [disableMaxWidth]);
+  const maxWidthStyles = disableMaxWidth ? { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' } : {}
 
   return (
     <>
@@ -64,4 +59,4 @@ export const Layout = ({ disableMaxWidth }: LayoutProps) => {
   );
 };
 
-export default memo(Layout);
+export default Layout;

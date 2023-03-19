@@ -41,4 +41,4 @@ const CollectionsPage = () => {
   );
 };
 
-export default memo(CollectionsPage);
+export default CollectionsPage;

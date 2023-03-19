@@ -1,5 +1,5 @@
 import { useStore } from 'effector-react';
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   $getFavoriteListsLoading,
   $getMoreFavoritesLoading,
@@ -41,4 +41,4 @@ const FavoritePage = () => {
   );
 };
 
-export default memo(FavoritePage);
+export default FavoritePage;
