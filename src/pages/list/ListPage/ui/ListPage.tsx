@@ -20,7 +20,7 @@ export const ListPage = () => {
   const listWithContent = useStore($singleList);
 
   const listAlreadyLoaded = useMemo(
-    () => lists.items.find((list) => list.id === Number(id)),
+    () => lists?.items.find((list) => list.id === Number(id)),
     [],
   );
 

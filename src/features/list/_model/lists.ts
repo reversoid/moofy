@@ -8,48 +8,49 @@ import { deleteListFx } from '../delete-list';
 import { updateReviewFx } from '@/features/review/update-review';
 import { logoutFx } from '@/features/auth/model/logout';
 
-export const $lists = createStore<IterableResponse<List>>({
-  nextKey: null,
-  items: [],
-});
+const defaultState = { items: [], nextKey: null };
+
+export const $lists = createStore<IterableResponse<List> | null>(null);
 
 $lists.on(getListsFx.doneData, (state, payload) => payload);
+
 $lists.on(createListFx.doneData, (state, payload) => ({
-  ...state,
-  items: [payload, ...state.items],
+  ...(state ?? defaultState),
+  items: [payload, ...(state?.items ?? defaultState.items)],
 }));
+
 $lists.on(updateListFx.doneData, (state, payload) => {
-  const listIndex = state.items.findIndex((l) => l.id === payload.id);
+  const listIndex = (state ?? defaultState).items.findIndex((l) => l.id === payload.id);
   if (listIndex === -1) return state;
 
-  const updatedItems = [...state.items];
+  const updatedItems = [...(state ?? defaultState).items];
   updatedItems.splice(listIndex, 1);
 
   return {
-    ...state,
+    ...(state ?? defaultState),
     items: [payload, ...updatedItems],
   };
 });
 $lists.on(updateReviewFx.doneData, (state, { list }) => {
-  const listIndex = state.items.findIndex((l) => l.id === list.id);
+  const listIndex = (state ?? defaultState).items.findIndex((l) => l.id === list.id);
   if (listIndex === -1) return state;
 
-  const updatedItems = [...state.items];
+  const updatedItems = [...(state ?? defaultState).items];
   updatedItems.splice(listIndex, 1);
 
   return {
-    ...state,
+    ...(state ?? defaultState),
     items: [list, ...updatedItems],
   };
 });
 $lists.on(getMoreListsFx.doneData, (state, payload) => {
   return {
     nextKey: payload.nextKey,
-    items: [...state.items, ...payload.items],
+    items: [...(state ?? defaultState).items, ...payload.items],
   };
 });
 $lists.on(deleteListFx.doneData, (state, { listId }) => {
-  return { ...state, items: state.items.filter((item) => item.id !== listId) };
+  return { ...(state ?? defaultState), items: (state ?? defaultState).items.filter((item) => item.id !== listId) };
 });
 
 $lists.on(logoutFx.doneData, () => ({

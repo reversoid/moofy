@@ -11,7 +11,7 @@ const CollectionsPage = () => {
   useEffect(getLists, []);
   const [createListModal, setCreateListModal] = useState(false);
 
-  const { items, nextKey } = useStore($lists);
+  const lists = useStore($lists);
   const listsLoading = useStore($getListsLoading);
   const moreListsLoading = useStore($getMoreListsLoading);
 
@@ -20,10 +20,10 @@ const CollectionsPage = () => {
   return (
     <>
       <ListGrid
-        items={items}
-        canLoadMore={Boolean(nextKey)}
+        items={lists?.items ?? []}
+        canLoadMore={Boolean(lists?.nextKey ?? null)}
         loadMore={
-          nextKey ? () => getMoreLists({ lowerBound: nextKey }) : undefined
+          lists?.nextKey ? () => getMoreLists({ lowerBound: lists?.nextKey! }) : undefined
         }
         loadingMore={moreListsLoading}
         firstItem={

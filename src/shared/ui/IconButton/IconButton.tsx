@@ -24,9 +24,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         light
         ripple={false}
       >
-        {props.iconUrl && (
+        {props.iconUrl ? (
           <Image src={props.iconUrl} width={'1.75rem'} height={'1.75rem'} />
-        )}
+        ) : props.children}
       </Button>
     );
   },
