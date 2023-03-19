@@ -49,5 +49,5 @@ export const COLORS: { [key: number]: ColorItem } = {
 };
 
 export const getColorsByScore = (score: number | null): ColorItem | undefined =>
-  COLORS[(score ?? -1) - 1];
+  COLORS[(score ?? -1)];
 

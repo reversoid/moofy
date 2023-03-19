@@ -83,10 +83,10 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
     changeColor();
   };
 
-  const [color, setColor] = useState(getColorsByScore(getValue() - 1));
+  const [color, setColor] = useState(getColorsByScore(getValue()));
 
   const changeColor = () => {
-    setColor(getColorsByScore(getValue() - 1));
+    setColor(getColorsByScore(getValue()));
   };
 
   return (

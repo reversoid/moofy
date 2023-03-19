@@ -1,5 +1,5 @@
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
-import { Image, ButtonProps } from '@nextui-org/react';
+import { ButtonProps } from '@nextui-org/react';
 import { forwardRef } from 'react';
 import gear from '@/shared/assets/img/gear.svg';
 
