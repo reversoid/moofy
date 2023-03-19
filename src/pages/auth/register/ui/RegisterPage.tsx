@@ -1,26 +1,26 @@
 import { useForm } from 'react-hook-form';
-import { Text, Button, Loading } from '@nextui-org/react';
+import { Text, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useCallback, useEffect } from 'react';
 import AuthContainer from '@/features/auth/components/AuthContainer';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/app/styles/useDefaultScrollbarGutter';
 import {
-  register as registerEvent,
-  $registerStatus,
-} from '@/models/auth/register';
-import { Form, SubmitContainer } from '@/features/auth/components/Form';
-import {
   RegisterFormData,
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
-import TooltipIcon from '@/shared/ui/TooltipIcon/InfoIconWithTooltip';
 import { Link } from 'react-router-dom';
-import { $checkUsernameResult } from '@/models/auth/register/checkUsername';
-import { useFieldsChecks } from './useFieldsChecks';
+import { useFieldsChecks } from '../lib/useFieldsChecks';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip/InfoIconWithTooltip';
+import {
+  register as registerEvent,
+  $registerStatus,
+  $checkUsernameResult,
+} from '@/features/auth';
+import { SubmitContainer } from '../../_ui/SubmitContainer';
+import { Form } from '../../_ui/Form';
 
 const RegisterPage = () => {
   useDefaultScrollbarGutter();
@@ -114,26 +114,18 @@ const RegisterPage = () => {
           }
         />
       </Form>
-      <SubmitContainer>
-        <Button
-          color={'gradient'}
-          type="submit"
-          form="register-form"
-          css={{ '@xsMin': { width: 'max-content !important' } }}
-          size="lg"
-          disabled={submitButtonDisabled}
-        >
-          {loading ? (
-            <Loading size="lg" type="points" color="white" />
-          ) : (
-            'Зарегистрироваться'
-          )}
-        </Button>
-        <Text as="p">
-          Уже есть аккаунт?{'  '}
-          <Link to="/auth/login">Войти</Link>
-        </Text>
-      </SubmitContainer>
+
+      <SubmitContainer
+        additionalElement={
+          <Text as="p">
+            Уже есть аккаунт?{'  '}
+            <Link to="/auth/login">Войти</Link>
+          </Text>
+        }
+        buttonDisabled={submitButtonDisabled}
+        buttonLoading={loading}
+        buttonText='Зарегистрироваться'
+      />
     </AuthContainer>
   );
 };

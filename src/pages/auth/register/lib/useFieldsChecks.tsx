@@ -1,8 +1,5 @@
+import { checkUsername, checkUsernameFx } from '@/features/auth';
 import { checkEmailFx, checkEmail } from '@/features/auth/model/checkEmail';
-import {
-  checkUsernameFx,
-  checkUsername,
-} from '@/models/auth/register/checkUsername';
 import { useEvent, useStore } from 'effector-react';
 import debounce from 'lodash.debounce';
 
