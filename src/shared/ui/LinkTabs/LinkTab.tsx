@@ -12,6 +12,9 @@ const StyledTab = styled(Tab, {
   fontFamily: '$sans !important',
   fontWeight: '700 !important',
   fontSize: '$4xl !important',
+  '@xsMax': {
+    fontSize: '$3xl !important',
+  },
   color: '$text !important',
   textTransform: 'none !important',
   display: 'block !important',
