@@ -1,4 +1,4 @@
-import GearButton from '@/shared/components/GearButton';
+import { GearButton } from '@/shared/components/GearButton';
 import Dropdown, { Option } from '@/shared/ui/Dropdown/Dropdown';
 import { ButtonProps } from '@nextui-org/react';
 import { FC, memo } from 'react';
@@ -6,13 +6,11 @@ import { FC, memo } from 'react';
 export interface ListOwnerActionsProps {
   onClickUpdate: () => void;
   onClickDelete: () => void;
-  buttonProps?: ButtonProps;
 }
 
 const ListOwnerActions: FC<ListOwnerActionsProps> = ({
   onClickDelete,
   onClickUpdate,
-  buttonProps,
 }) => {
   const dropdownOptions: Option[] = [
     {
@@ -30,7 +28,7 @@ const ListOwnerActions: FC<ListOwnerActionsProps> = ({
 
   return (
     <Dropdown
-      trigger={<GearButton {...buttonProps} />}
+      trigger={<GearButton />}
       options={dropdownOptions}
       placement="left"
     />

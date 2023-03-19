@@ -45,7 +45,7 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
   }, [deleteSuccess]);
 
   const addToFavsLoading = useStore($addToFavoritesLoading);
-  const removeFromFavsLoading = useStore($removeFromFavoritesLoading);
+  const removeFromFavsLoading = useStore($removeFromFavoritesLoading);  
 
   return (
     <>
