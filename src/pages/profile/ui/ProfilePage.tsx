@@ -53,4 +53,4 @@ function ProfilePage({ userOwner }: ProfilePageProps) {
   return null;
 }
 
-export default memo(ProfilePage);
+export default ProfilePage;

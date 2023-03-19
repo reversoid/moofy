@@ -1,6 +1,6 @@
 import { getColorsByScore } from '@/shared/lib/scoreColors';
 import { styled, Image } from '@nextui-org/react';
-import { FC, memo, useMemo } from 'react';
+import { FC, memo } from 'react';
 
 const ImageContainer = styled('div', {
   display: 'flex',
@@ -27,7 +27,7 @@ const ReviewImageWithScore: FC<{
   imgSrc: string;
   score: number | null;
 }> = ({ imgSrc, score }) => {
-  const colors = useMemo(() => getColorsByScore(score), [score]);
+  const colors = getColorsByScore(score)
 
   return (
     <ImageContainer>

@@ -16,7 +16,7 @@ const SnackBarStyled = styled(Snackbar, {
   zIndex: '10000 !important'
 });
 
-export const ErrorSnackBar = memo(({
+export const ErrorSnackBar = ({
   open,
   message,
   closeSnackBar,
@@ -33,4 +33,4 @@ export const ErrorSnackBar = memo(({
       </Alert>
     </SnackBarStyled>
   );
-});
+};

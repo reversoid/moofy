@@ -35,4 +35,4 @@ const UIProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default memo(UIProvider);
+export default UIProvider;

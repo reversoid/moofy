@@ -1,7 +1,7 @@
 import GearButton from '@/shared/components/GearButton';
 import Dropdown, { Option } from '@/shared/ui/Dropdown/Dropdown';
 import { ButtonProps } from '@nextui-org/react';
-import { FC, memo, useMemo } from 'react';
+import { FC, memo } from 'react';
 
 export interface OwnerActionsProps {
   onClickUpdate: () => void;
@@ -9,26 +9,24 @@ export interface OwnerActionsProps {
   buttonProps?: ButtonProps;
 }
 
-export const ReviewOwnerActions: FC<OwnerActionsProps> = memo(({
+export const ReviewOwnerActions: FC<OwnerActionsProps> = ({
   onClickDelete,
   onClickUpdate,
   buttonProps,
 }) => {
-  const dropdownOptions: Option[] = useMemo(() => {
-    return [
-      {
-        key: 'update',
-        callback: onClickUpdate,
-        label: 'Изменить',
-      },
-      {
-        key: 'delete',
-        callback: onClickDelete,
-        label: 'Удалить',
-        color: 'error',
-      },
-    ];
-  }, []);
+  const dropdownOptions: Option[] = [
+    {
+      key: 'update',
+      callback: onClickUpdate,
+      label: 'Изменить',
+    },
+    {
+      key: 'delete',
+      callback: onClickDelete,
+      label: 'Удалить',
+      color: 'error',
+    },
+  ];
 
   return (
     <Dropdown
@@ -37,4 +35,4 @@ export const ReviewOwnerActions: FC<OwnerActionsProps> = memo(({
       placement="left"
     />
   );
-});
+};
