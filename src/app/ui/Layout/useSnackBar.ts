@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
-import { $appErrorStore } from '@/models/app/errors';
+import { $appErrorStore } from '@/features/app';
 
 export const useSnackbar = () => {
   const error = useStore($appErrorStore);

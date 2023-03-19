@@ -1,5 +1,5 @@
-import down from '@/assets/img/down.svg';
-import up from '@/assets/img/up.svg';
+import down from '@/shared/assets/img/down.svg';
+import up from '@/shared/assets/img/up.svg';
 import { getColorsByScore } from '@/shared/lib/scoreColors';
 import { Button, styled } from '@nextui-org/react';
 import { memo, useState } from 'react';

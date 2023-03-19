@@ -1,5 +1,5 @@
-import { AuthResponse } from '@/features/auth';
 import ApiService from '@/shared/api/api.service';
+import { AuthResponse } from '@/shared/api/types/authResponse.type';
 import { tokenService } from '@/shared/services/token.service';
 
 class AppService extends ApiService {

@@ -1,8 +1,8 @@
 import ky, { Options } from 'ky';
-import { setAppError } from '@/models/app/errors';
-import { AuthResponse } from '@/features/auth/services/auth.service';
+import { setAppError } from '@/features/app';
 import { tokenService } from '../services/token.service';
-import environment from '@/environment';
+import environment from '@/app/environment';
+import { AuthResponse } from './types/authResponse.type';
 
 interface CustomOptions extends Options {
   /** With this option all logic about JWT tokens on client is proceeded automatically */

@@ -1,7 +1,6 @@
 import { RouteObject, Navigate } from 'react-router-dom';
-import { lazy } from 'react';
 import NotAuthOnly from '@/shared/guards/NotAuthOnly';
-import LoginPage from './login/LoginPage';
+import LoginPage from './login/ui/LoginPage';
 import RegisterPage from './register/ui/RegisterPage';
 
 export const routes: RouteObject[] = [

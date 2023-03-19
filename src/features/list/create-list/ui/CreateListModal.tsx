@@ -1,8 +1,3 @@
-import {
-  createList,
-  clearState,
-  $createListState,
-} from '@/models/lists/createList';
 import { Form } from '@/shared/ui/Form/Form';
 import { Input } from '@/shared/ui/Input/Input';
 import { ModalFooter, Modal, ModalBody, ModalHeader } from '@/shared/ui/Modal';
@@ -11,6 +6,7 @@ import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { $createListState, clearState, createList } from '../model';
 
 interface FormData {
   name: string;

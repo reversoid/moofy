@@ -1,8 +1,3 @@
-import {
-  updateList,
-  clearState,
-  $updateListState,
-} from '@/models/lists/updateList';
 import { Input } from '@/shared/ui/Input/Input';
 import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
@@ -12,6 +7,7 @@ import { useDefaultFormValues } from '../lib/useDefaultFormValues';
 import { Form } from '@/shared/ui/Form/Form';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
+import { $updateListState, clearState, updateList } from '../model';
 
 export interface FormData {
   name: string;

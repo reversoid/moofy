@@ -1,6 +1,7 @@
 import { RetryOptions } from 'ky';
 import ApiService from '@/shared/api/api.service';
 import { tokenService } from '@/shared/services/token.service';
+import { AuthResponse } from '@/shared/api/types/authResponse.type';
 
 export interface RegisterDTO {
   username: string;
@@ -10,11 +11,6 @@ export interface RegisterDTO {
 export interface LoginDTO {
   username: string;
   password: string;
-}
-
-export interface AuthResponse {
-  access_token: string;
-  userId: number;
 }
 
 const LONG_RETRY_STRATEGY: RetryOptions = {

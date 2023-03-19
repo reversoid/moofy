@@ -1,4 +1,4 @@
-import '@/styles/global.scss';
+import '@/app/styles/global.scss';
 import React, { PropsWithChildren, memo } from 'react';
 import { NextUIProvider, createTheme, styled } from '@nextui-org/react';
 

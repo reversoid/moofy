@@ -1,13 +1,13 @@
-import logo from '@/assets/img/Logo.svg';
-import profile from '@/assets/img/user-round.svg';
+import logo from '@/shared/assets/img/Logo.svg';
+import profile from '@/shared/assets/img/user-round.svg';
 import { useAuth } from '@/shared/hooks/useAuth';
-import { Link } from '@/shared/ui/Link';
 import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LinearProgress from './LinearProgress';
 import { useStore } from 'effector-react';
-import { $loading } from '@/models/app/loading';
+import { $loading } from '@/features/app';
+import { Link } from '@/shared/ui/Link/Link';
 
 export const HEADER_HEIGHT = '4.75rem';
 

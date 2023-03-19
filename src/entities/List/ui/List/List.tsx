@@ -1,5 +1,5 @@
-import add from '@/assets/img/add.svg';
-import lock from '@/assets/img/lock.svg';
+import add from '@/shared/assets/img/add.svg';
+import lock from '@/shared/assets/img/lock.svg';
 import { CardBody, CardFooter } from '@/shared/ui/Card';
 import { Card } from '@/shared/ui/Card/Card';
 import { Card as _Card, Image, Row, Text } from '@nextui-org/react';

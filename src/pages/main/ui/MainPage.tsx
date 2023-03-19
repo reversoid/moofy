@@ -1,6 +1,6 @@
 import { Button, Text, styled } from '@nextui-org/react';
 import { memo } from 'react';
-import waves from './img/waves.svg';
+import waves from '../img/waves.svg';
 import { useNavigate } from 'react-router-dom';
 
 const WelcomeContainer = styled('div', {

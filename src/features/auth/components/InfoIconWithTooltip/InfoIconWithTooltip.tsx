@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import infoIcon from '@/assets/img/info.svg';
+import infoIcon from '@/shared/assets/img/info.svg';
 import TooltipIcon from '@/shared/ui/TooltipIcon/InfoIconWithTooltip';
 
 const InfoIconWithTooltip = ({ message }: { message: string }) => {

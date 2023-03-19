@@ -1,5 +1,5 @@
 import { useAuth } from '@/shared/hooks/useAuth';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
 export interface NotAuthOnlyProps {

@@ -1,10 +1,6 @@
 import ReviewModal, { ReviewFormData } from '../../_ui/ReviewModal';
 import { useStore } from 'effector-react';
-import {
-  $updateReviewState,
-  clearState,
-  updateReview,
-} from '@/models/reviews/updateReview';
+import { $updateReviewState, clearState, updateReview } from '../model';
 
 interface UpdateReviewModalProps {
   isOpen: boolean;

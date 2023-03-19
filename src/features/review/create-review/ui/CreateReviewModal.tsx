@@ -1,13 +1,9 @@
-import {
-  $createReviewState,
-  clearState,
-  createReview,
-} from '@/models/reviews/createReview';
 import { Film } from '@/shared/api/types/film.type';
 import { useEvent, useStore } from 'effector-react';
 import { useNavigate } from 'react-router-dom';
 import ReviewModal from '../../_ui/ReviewModal';
 import { memo } from 'react';
+import { $createReviewState, clearState, createReview } from '../model';
 
 export interface CreateReviewModalProps {
   isOpen: boolean;

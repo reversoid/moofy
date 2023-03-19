@@ -1,4 +1,4 @@
-import crossRound from '@/assets/img/cross-round.svg';
+import crossRound from '@/shared/assets/img/cross-round.svg';
 import { Row, Image, Text } from '@nextui-org/react';
 
 const DeleteModalContent = () => {
