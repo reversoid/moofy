@@ -2,8 +2,8 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import AuthOnly from '@/shared/guards/AuthOnly';
 
-const ListPage = lazy(() => import('./ListPage/ListPage'));
-const SearchFilmPage = lazy(() => import('./AddReviewPage/SearchFilmPage'));
+const ListPage = lazy(() => import('./ListPage'));
+const SearchFilmPage = lazy(() => import('./AddReviewPage'));
 
 export const routes: RouteObject[] = [
   {

@@ -1,6 +1,6 @@
 import AuthOnly from '@/shared/guards/AuthOnly';
 import { lazy } from 'react';
-import { Navigate, Outlet, RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import Layout from './Layout';
 
 const Collections = lazy(() => import('./CollectionsPage/CollectionsPage'));

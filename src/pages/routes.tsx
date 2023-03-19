@@ -5,13 +5,12 @@ import { routes as listRoutes } from './list/routes';
 import { routes as profileRoutes } from './profile/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
 
-import Layout from '../features/app/Layout/Layout';
-import ErrorPage from './ErrorPage/ErrorPage';
-import AuthOnly from '@/shared/guards/AuthOnly';
+import ErrorPage from './error';
+import Layout from '@/app/ui/Layout/Layout';
 
-const MainPage = lazy(() => import('./main/MainPage'));
-const SupportPage = lazy(() => import('./Support/SupportPage'));
-const HelpPage = lazy(() => import('./Help/HelpPage'));
+const MainPage = lazy(() => import('./main'));
+const SupportPage = lazy(() => import('./support'));
+const HelpPage = lazy(() => import('./help'));
 
 export const routes: RouteObject[] = [
   {

@@ -1,61 +1,41 @@
-import ListGrid from '@/features/list/components/ListGrid/ListGrid';
-import {
-  $favoriteLists,
-  $favoriteListsLoading,
-  loadFavoriteLists,
-} from '@/models/favoriteLists';
-import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { Button, Loading, Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
-import React, { memo, useEffect, useMemo } from 'react';
-import { LoadMoreContainer } from '../Layout';
+import { memo, useEffect } from 'react';
 import {
-  $loadMoreFavoritesLoading,
-  loadMoreFavorites,
-} from '@/models/favoriteLists/loadMoreFavorites';
+  $getFavoriteListsLoading,
+  $getMoreFavoritesLoading,
+  getFavoriteLists,
+  getMoreFavorites,
+} from '@/features/list/favorite-lists';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
+import { $favoriteLists } from '@/features/list/_model/favoriteLists';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { Text } from '@nextui-org/react';
 
 const FavoritePage = () => {
-  useEffect(() => {
-    loadFavoriteLists();
-  }, []);
+  useEffect(getFavoriteLists, []);
   const favLists = useStore($favoriteLists);
-  const listsLoading = useStore($favoriteListsLoading);
+  const loadingMore = useStore($getMoreFavoritesLoading);
+  const loading = useStore($getFavoriteListsLoading);
 
-  const lists = useMemo(() => {
-    if (!favLists) return [];
-    return [...favLists.items]
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-      .map((f) => f.list);
-  }, [favLists]);
-
-  const loadMoreLoading = useStore($loadMoreFavoritesLoading);
-
-  useLoadingBar(listsLoading, loadMoreLoading);
-
-  const handleLoadMore = () => {
-    if (loadMoreLoading || !favLists?.nextKey) {
-      return;
-    }
-    loadMoreFavorites({ lowerBound: favLists.nextKey });
-  };
+  useLoadingBar(loading, loadingMore);
 
   return (
     <>
-      <ListGrid items={lists} />
-      {favLists?.nextKey && (
-        // TODO maybe use component with pagination?
-        <LoadMoreContainer>
-          <Button color="gradient" onPress={handleLoadMore}>
-            {loadMoreLoading ? (
-              <Loading type="points" color="white" />
-            ) : (
-              'Загрузить больше'
-            )}
-          </Button>
-        </LoadMoreContainer>
+      {favLists?.items.length === 0 ? (
+        <Text size={'$lg'} color="$neutral">
+          Нет избранных коллекций
+        </Text>
+      ) : (
+        <ListGrid
+          items={(favLists?.items ?? []).map((f) => f.list)}
+          canLoadMore={Boolean(favLists?.nextKey)}
+          loadMore={
+            favLists?.nextKey
+              ? () => getMoreFavorites({ lowerBound: favLists.nextKey! })
+              : undefined
+          }
+          loadingMore={loadingMore}
+        />
       )}
     </>
   );

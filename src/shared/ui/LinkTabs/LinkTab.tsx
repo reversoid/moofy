@@ -1,7 +1,7 @@
 import { ExtendButtonBase } from '@mui/material';
 import Tab, { TabTypeMap } from '@mui/material/Tab';
 import { styled } from '@nextui-org/react';
-import { Link } from '../Link';
+import { Link } from '../Link/Link';
 
 export interface LinkTabProps {
   label?: string;

@@ -2,7 +2,7 @@ import AuthOnly from '@/shared/guards/AuthOnly';
 import { RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 
-const ProfilePage = lazy(() => import('./ProfilePage'));
+const ProfilePage = lazy(() => import('./ui/ProfilePage'));
 
 export const routes: RouteObject[] = [
   {

@@ -3,26 +3,20 @@ import { Row, Text, styled } from '@nextui-org/react';
 import { Suspense, memo, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-/** Is used for containing button to load more collections */
-export const LoadMoreContainer = styled('div', {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  mt: '$10',
-});
-
 enum Tabs {
   'collections',
   'favorite',
 }
 
+const getTabNumericValueFromPath = (path: string) => {
+  const currentPath = path.split('/').at(-1) ?? '';
+  return Number(Tabs[currentPath as keyof typeof Tabs] ?? 0);
+};
+
 const Layout = () => {
   const { pathname } = useLocation();
 
-  const tabValue = useMemo(() => {
-    const currentPath = pathname.split('/').at(-1) ?? '';
-    return Number(Tabs[currentPath as keyof typeof Tabs] ?? 0);
-  }, [pathname]);
+  const tabValue = useMemo(() => getTabNumericValueFromPath(pathname), [pathname]);
 
   return (
     <>
