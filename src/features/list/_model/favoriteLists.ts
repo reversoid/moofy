@@ -1,9 +1,13 @@
-import { FavoriteList } from "@/shared/api/types/favoriteList.type";
-import { IterableResponse } from "@/shared/api/types/shared";
-import { createStore } from "effector";
-import { getFavoriteListsFx } from "../favorite-lists/model/getFavoriteLists";
-import { getMoreFavoritesFx, addToFavoritesFx, removeFromFavoritesFx } from "../favorite-lists/model";
-import { logoutFx } from "@/features/auth/model/logout";
+import { FavoriteList } from '@/shared/api/types/favoriteList.type';
+import { IterableResponse } from '@/shared/api/types/shared';
+import { createStore } from 'effector';
+import { getFavoriteListsFx } from '../favorite-lists/model/getFavoriteLists';
+import {
+  getMoreFavoritesFx,
+  addToFavoritesFx,
+  removeFromFavoritesFx,
+} from '../favorite-lists/model';
+import { logoutFx } from '@/features/auth/model/logout';
 
 export const $favoriteLists =
   createStore<IterableResponse<FavoriteList> | null>(null);
@@ -38,4 +42,4 @@ $favoriteLists.on(removeFromFavoritesFx.doneData, (state, { listId }) => {
   };
 });
 
-$favoriteLists.on(logoutFx.doneData, () => null)
+$favoriteLists.on(logoutFx.doneData, () => null);
