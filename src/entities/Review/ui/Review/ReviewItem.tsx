@@ -3,29 +3,40 @@ import _Dropdown from '@/shared/ui/Dropdown/Dropdown';
 import { ReviewWrapper } from './ReviewWrapper';
 import ReviewImageWithScore from './ReviewImageWithScore';
 import ReviewContent from './ReviewContent';
-import { PropsWithChildren, memo } from 'react';
+import { memo } from 'react';
+import { styled } from '@nextui-org/react';
 
-export interface ReviewItemProps extends PropsWithChildren {
+const ButtonContainer = styled('div', {
+  position: 'absolute',
+  top: '$sm',
+  right: '$sm',
+});
+
+
+export interface ReviewItemProps {
   review: IReview;
+  topRightButton?: JSX.Element;
 }
 
-export const ReviewItem = memo(({ review, children }: ReviewItemProps) => {
-  return (
-    <>
-      <ReviewWrapper>
-        <ReviewImageWithScore
-          imgSrc={review.film.posterPreviewUrl}
-          score={review.score}
-        />
+export const ReviewItem = memo(
+  ({ review, topRightButton }: ReviewItemProps) => {
+    return (
+      <>
+        <ReviewWrapper>
+          <ReviewImageWithScore
+            imgSrc={review.film.posterPreviewUrl}
+            score={review.score}
+          />
 
-        <ReviewContent
-          description={review.description}
-          filmId={review.film.id}
-          filmName={review.film.name}
-          filmYear={review.film.year}
-        />
-        {children}
-      </ReviewWrapper>
-    </>
-  );
-});
+          <ReviewContent
+            description={review.description}
+            filmId={review.film.id}
+            filmName={review.film.name}
+            filmYear={review.film.year}
+          />
+          <ButtonContainer>{topRightButton}</ButtonContainer>
+        </ReviewWrapper>
+      </>
+    );
+  },
+);

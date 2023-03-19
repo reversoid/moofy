@@ -24,13 +24,13 @@ export const Review: FC<ReviewProps> = memo(({ review, isUserOwner }) => {
 
       <ReviewItem
         review={review}
-        children={
+        topRightButton={
           isUserOwner ? (
             <ReviewOwnerActions
               onClickDelete={() => deleteReview({ reviewId: review.id })}
               onClickUpdate={() => setUpdateModalOpen(true)}
             />
-          ) : null
+          ) : undefined
         }
       />
     </>
