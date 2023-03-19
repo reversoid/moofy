@@ -10,13 +10,15 @@ import {
 } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useStore } from 'effector-react';
-import { memo, useEffect, useMemo, useState } from 'react';
-import CreateReviewModal from '@/features/review/create-review/ui/CreateReviewModal';
+import { useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash.debounce';
 import { Film } from '@/shared/api/types/film.type';
 import { $getFilmsState, getFilmsByName } from '@/features/search-films';
 import { Li, LiBody, Listbox } from './Listbox';
 import { useParams } from 'react-router-dom';
+import React from 'react';
+
+const CreateReviewModal = React.lazy(() => import('@/features/review/create-review/ui/CreateReviewModal'))
 
 export const ImageContainer = styled('div', {
   display: 'flex',

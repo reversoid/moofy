@@ -1,10 +1,4 @@
-import React, {
-  PropsWithChildren,
-  Suspense,
-  memo,
-  useEffect,
-  useMemo,
-} from 'react';
+import { Suspense, memo, useEffect, useMemo } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackBar } from './SnackBar';

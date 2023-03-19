@@ -1,6 +1,6 @@
 import { styled, Text } from '@nextui-org/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import { List } from '@/shared/api/types/list.type';
 import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { useStore } from 'effector-react';
@@ -14,9 +14,9 @@ import {
   $addToFavoritesLoading,
   $removeFromFavoritesLoading,
 } from '@/features/list/favorite-lists';
-import { UpdateListModal } from '@/features/list/update-list';
 import DeleteModalContent from '@/features/list/delete-list/ui/DeleteListModalContent';
 import { ListHeader } from './ListHeader';
+import { UpdateListModal } from '@/features/list/update-list';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
