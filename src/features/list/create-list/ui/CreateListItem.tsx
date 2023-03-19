@@ -5,6 +5,6 @@ export interface CreateListItemProps {
   onClick: () => void;
 }
 
-export const CreateListItem: FC<CreateListItemProps> = memo(({ onClick }) => {
+export const CreateListItem: FC<CreateListItemProps> = ({ onClick }) => {
   return <List text="Создать коллекцию" onClick={onClick} />;
-});
+};

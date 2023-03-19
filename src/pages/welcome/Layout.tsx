@@ -1,6 +1,6 @@
 import LinkTabs from '@/shared/ui/LinkTabs/LinkTabs';
-import { Row, Text, styled } from '@nextui-org/react';
-import { Suspense, memo, useMemo } from 'react';
+import { Row, Text } from '@nextui-org/react';
+import { Suspense, memo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 enum Tabs {
@@ -16,7 +16,7 @@ const getTabNumericValueFromPath = (path: string) => {
 const Layout = () => {
   const { pathname } = useLocation();
 
-  const tabValue = useMemo(() => getTabNumericValueFromPath(pathname), [pathname]);
+  const tabValue = getTabNumericValueFromPath(pathname)
 
   return (
     <>
@@ -42,4 +42,4 @@ const Layout = () => {
   );
 };
 
-export default memo(Layout);
+export default Layout;

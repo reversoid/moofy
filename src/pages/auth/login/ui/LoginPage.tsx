@@ -1,5 +1,4 @@
 import { Text } from '@nextui-org/react';
-import { memo } from 'react';
 import { useEvent, useStore } from 'effector-react';
 import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/app/styles/useDefaultScrollbarGutter';
@@ -76,4 +75,4 @@ const LoginPage = () => {
   );
 };
 
-export default memo(LoginPage);
+export default LoginPage;

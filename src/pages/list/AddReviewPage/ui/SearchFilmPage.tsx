@@ -10,7 +10,7 @@ import {
 } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
 import { useStore } from 'effector-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 import { Film } from '@/shared/api/types/film.type';
 import { $getFilmsState, getFilmsByName } from '@/features/search-films';
@@ -52,7 +52,7 @@ export const SearchFilmPage = () => {
 
   const { result, loading } = useStore($getFilmsState);
 
-  const searchFilms = useMemo(() => debounce(getFilmsByName, 250), []);
+  const searchFilms = debounce(getFilmsByName, 250)
 
   useEffect(() => {
     if (!inputValue) return;
