@@ -1,6 +1,6 @@
-import { Modal, Text, Button, Loading } from '@nextui-org/react';
+import { Text, Button, Loading } from '@nextui-org/react';
 import React, { memo } from 'react';
-import { decreasedPaddingMobile, increasedPaddingBottom } from './modalStyles';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from './Modal';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -29,17 +29,12 @@ const ConfirmModal = ({
   buttonColor,
 }: ConfirmModalProps) => {
   return (
-    <Modal
-      closeButton
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
-      width="45rem"
-    >
-      <Modal.Header>
+    <Modal closeButton open={isOpen} onClose={() => setIsOpen(false)}>
+      <ModalHeader>
         <Text h3>Подтверждение</Text>
-      </Modal.Header>
-      <Modal.Body css={decreasedPaddingMobile}>{content}</Modal.Body>
-      <Modal.Footer css={{...decreasedPaddingMobile, ...increasedPaddingBottom}}>
+      </ModalHeader>
+      <ModalBody>{content}</ModalBody>
+      <ModalFooter>
         <Button
           size="md"
           color={buttonColor}
@@ -59,7 +54,7 @@ const ConfirmModal = ({
             submitText
           )}
         </Button>
-      </Modal.Footer>
+      </ModalFooter>
     </Modal>
   );
 };

@@ -1,6 +1,7 @@
 import { RetryOptions } from 'ky';
 import ApiService from '@/shared/api/api.service';
 import { tokenService } from '@/shared/services/token.service';
+import { AuthResponse } from '@/shared/api/types/authResponse.type';
 
 export interface RegisterDTO {
   username: string;
@@ -10,11 +11,6 @@ export interface RegisterDTO {
 export interface LoginDTO {
   username: string;
   password: string;
-}
-
-export interface AuthResponse {
-  access_token: string;
-  userId: number;
 }
 
 const LONG_RETRY_STRATEGY: RetryOptions = {
@@ -55,15 +51,6 @@ class AuthService extends ApiService {
       searchParams: { email },
       retry: LONG_RETRY_STRATEGY,
     }).then(({ userExists }) => userExists);
-  }
-
-  public async checkout(): Promise<{ userId: number }> {
-    return this.get<AuthResponse>('/auth/protected/checkout').then(
-      ({ access_token, userId }) => {
-        tokenService.setAccessToken(access_token);
-        return { userId };
-      },
-    );
   }
 
   public async logout(): Promise<void> {

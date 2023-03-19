@@ -3,15 +3,14 @@ import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
 import { routes as profileRoutes } from './profile/routes';
+import { routes as welcomeRoutes } from './welcome/routes';
 
-import Layout from '../features/app/Layout/Layout';
-import ErrorPage from './ErrorPage/ErrorPage';
-import AuthOnly from '@/shared/guards/AuthOnly';
+import ErrorPage from './error';
+import Layout from '@/app/ui/Layout/Layout';
 
-const MainPage = lazy(() => import('./main/MainPage'));
-const WelcomePage = lazy(() => import('./welcome/WelcomePage'));
-const SupportPage = lazy(() => import('./Support/SupportPage'));
-const HelpPage = lazy(() => import('./Help/HelpPage'));
+const MainPage = lazy(() => import('./main'));
+const SupportPage = lazy(() => import('./support'));
+const HelpPage = lazy(() => import('./help'));
 
 export const routes: RouteObject[] = [
   {
@@ -35,11 +34,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'welcome',
-        element: (
-          <AuthOnly redirect="/auth">
-            <WelcomePage />
-          </AuthOnly>
-        ),
+        children: welcomeRoutes,
       },
       {
         path: 'list',

@@ -1,5 +1,5 @@
 import { useAuth } from '@/shared/hooks/useAuth';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
 export interface NotAuthOnlyProps {
@@ -13,7 +13,7 @@ const NotAuthOnly = ({
 }: PropsWithChildren<NotAuthOnlyProps>) => {
   const { isLoading, isLoggedIn } = useAuth();
 
-  if (isLoading) {
+  if (isLoading || isLoggedIn === undefined) {
     return null
   }
 

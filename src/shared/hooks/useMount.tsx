@@ -1,4 +1,4 @@
-import environment from '@/environment';
+import environment from '@/app/environment';
 import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
 
 const RERENDERS_AMOUNT = environment.RERENDER_AMOUNT;
