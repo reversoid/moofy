@@ -124,7 +124,8 @@ const RegisterPage = () => {
         }
         buttonDisabled={submitButtonDisabled}
         buttonLoading={loading}
-        buttonText='Зарегистрироваться'
+        buttonText="Зарегистрироваться"
+        formId="register-form"
       />
     </AuthContainer>
   );

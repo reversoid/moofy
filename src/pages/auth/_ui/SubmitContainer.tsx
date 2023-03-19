@@ -13,6 +13,7 @@ interface SubmitContainerProps {
   buttonDisabled: boolean;
   buttonText: string;
   additionalElement?: JSX.Element;
+  formId: string;
 }
 
 export const SubmitContainer: FC<SubmitContainerProps> = ({
@@ -20,13 +21,14 @@ export const SubmitContainer: FC<SubmitContainerProps> = ({
   buttonLoading,
   buttonText,
   additionalElement,
+  formId
 }) => {
   return (
     <Container>
       <Button
         color={'gradient'}
         type="submit"
-        form="register-form"
+        form={formId}
         css={{ '@xsMin': { width: 'max-content !important' } }}
         size="lg"
         disabled={buttonDisabled}

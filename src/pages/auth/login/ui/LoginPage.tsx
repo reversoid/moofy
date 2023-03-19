@@ -70,6 +70,7 @@ const LoginPage = () => {
             <Link to="/auth/register">Зарегистрироваться</Link>
           </Text>
         }
+        formId={"login-form"}
       />
     </AuthContainer>
   );
