@@ -12,9 +12,9 @@ export const StyledTabs = forwardRef<MuiTabsRef, MuiTabsProps>((props, ref) => {
   return (
     <Tabs
       {...{
-        ...props,
         variant: 'scrollable',
         scrollButtons: false,
+        ...props,
         sx: {
           width: '100%',
           '& .MuiTabs-indicator': {
