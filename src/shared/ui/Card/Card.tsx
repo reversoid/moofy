@@ -6,12 +6,12 @@ export const Card = styled('div', {
   overflow: 'hidden',
   backgroundColor: '$gray50',
   transition: 'all 0.1s ease-in-out',
-  cursor: 'pointer',
   position: 'relative',
 
   variants: {
     isHoverable: {
       true: {
+        cursor: 'pointer',
         '&:hover': {
           transform: 'translateY(-0.2rem)',
         },

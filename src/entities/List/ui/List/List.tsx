@@ -20,7 +20,11 @@ export interface ListProps extends OnProps {
 
 export const List: FC<ListProps> = memo(({ id, text, isPublic, onClick }) => {
   return (
-    <Card onClick={onClick} css={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <Card
+      isHoverable
+      onClick={onClick}
+      css={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+    >
       <CardBody>
         {id === undefined ? (
           <Background
