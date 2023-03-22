@@ -4,8 +4,14 @@ import {
 } from '@/features/list/favorite-lists';
 import BookmarkButton from '@/features/list/favorite-lists/ui/BookmarkButton';
 import ListOwnerActions from '@/features/list/list-owner-actions/ui/ListOwnerActions';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { Row, Text } from '@nextui-org/react';
 import React, { FC } from 'react';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 interface ListHeaderProps {
   listName: string;
@@ -26,6 +32,9 @@ export const ListHeader: FC<ListHeaderProps> = ({
   onClickUpdate,
   listId,
 }) => {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+
   return (
     <Row
       align="center"
@@ -57,11 +66,20 @@ export const ListHeader: FC<ListHeaderProps> = ({
         />
       ) : (
         <BookmarkButton
-          onClick={() =>
-            isFavorite
+          onClick={() => {
+            if (isLoggedIn === undefined) {
+              return;
+            }
+            if (isLoggedIn === false) {
+              return navigate({
+                pathname: '/auth/login',
+                search: `?${createSearchParams({ from: `/list/${listId}` })}`,
+              });
+            }
+            return isFavorite
               ? removeFromFavorites({ listId })
-              : addToFavorites({ listId })
-          }
+              : addToFavorites({ listId });
+          }}
           disabled={bookmarkButtonDisabled}
           iconFilled={isFavorite}
         />
