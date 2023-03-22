@@ -34,7 +34,7 @@ const RegisterPage = () => {
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
-  const { loadingEmailCheck, loadingUsernameCheck, onChangeUsernameDebounced } =
+  const { loadingEmailCheck, loadingUsernameCheck, onChangeUsernameDebounced, usernameExists } =
     useFieldsChecks();
 
   let submitButtonDisabled =
@@ -46,8 +46,6 @@ const RegisterPage = () => {
   const onSubmit = useEvent(registerEvent);
 
   const { loading } = useStore($registerStatus);
-
-  const usernameExists = useStore($checkUsernameResult);
 
   useEffect(() => {
     if (usernameExists === null) {
