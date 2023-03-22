@@ -1,6 +1,7 @@
 import { SxProps, Tabs, Theme } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { LinkTab, LinkTabProps } from './LinkTab';
+import { StyledTabs } from '../_base/StyledTabs';
 
 export interface LinkTabsProps {
   tabs: LinkTabProps[];
@@ -17,27 +18,15 @@ const LinkTabs: FC<LinkTabsProps> = ({ tabValue, tabs, css }) => {
   }, [tabValue]);
 
   return (
-    <Tabs
+    <StyledTabs
       value={selectedTab}
       onChange={(e, newValue) => setSelectedTab(newValue)}
-      variant="scrollable"
-      scrollButtons={false}
-      sx={{
-        width: '100%',
-        '& .MuiTabs-indicator': {
-          backgroundColor: '#ffd131',
-          height: '3px',
-        },
-        '& .MuiTabs-flexContainer': {
-          gap: '2rem !important',
-        },
-        ...(css ?? {})
-      }}
+      sx={css ?? {}}
     >
       {tabs.map((t) => (
         <LinkTab to={t.to} label={t.label} key={t.label} />
       ))}
-    </Tabs>
+    </StyledTabs>
   );
 };
 
