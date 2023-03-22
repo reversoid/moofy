@@ -29,7 +29,6 @@ const NotAuthOnly = ({
   if (Object.keys(useQuery ?? {}).some(Boolean))  {
     // TODO abstract this logic 
     const fromUrl = searchParams.get('from')
-    console.log(fromUrl);
     
     if (fromUrl) {
       return <Navigate to={fromUrl} />;
