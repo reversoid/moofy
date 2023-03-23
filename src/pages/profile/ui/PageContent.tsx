@@ -13,21 +13,25 @@ import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
 interface PageContentProps {
   profile: Profile;
   userOwner?: boolean;
-  lists: IterableResponse<List> | null;
 }
 
 const ownerTabs = [{ label: 'Мои коллекции' }, { label: 'Избранное' }];
 const userTabs = [{ label: 'Все коллекции' }];
-const FIRST_TAB = 0
+const FIRST_TAB = 0;
 
-const PageContent: FC<PageContentProps> = ({ profile, userOwner, lists }) => {
+const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
   const tabs: TabProps[] = userOwner ? ownerTabs : userTabs;
 
   const [tab, setTab] = useState<number>(FIRST_TAB);
 
+  const [lists, setLists] = useState<{
+    lists: IterableResponse<List>;
+    count: number;
+  }>(profile.allLists);
+
   useEffect(() => {
     console.log(tab);
-    // fetch profile lists
+    // fetch profile lists of fav lists
   }, [tab]);
 
   return (
@@ -45,7 +49,7 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner, lists }) => {
         onChange={(newValue) => setTab(newValue)}
         css={{ mb: '0.75rem', pt: '1rem' }}
       />
-      <ListGrid items={lists?.items ?? []} />
+      <ListGrid items={profile.allLists.lists.items} />
 
       {userOwner && (
         <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>

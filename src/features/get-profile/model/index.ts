@@ -15,8 +15,8 @@ export const clearState = createEvent<void>();
 export const getProfileFx = createEffect<number | undefined, Profile>();
 getProfileFx.use((id) => profileService.getProfile(id));
 
-const $getProfileSuccess = restore(getProfileFx, null);
-$getProfileSuccess.on(clearState, () => null);
+const $getProfileResult = restore(getProfileFx, null);
+$getProfileResult.on(clearState, () => null);
 
 const $getProfileError = createStore<string | null>(null);
 $getProfileError.on(
@@ -27,7 +27,7 @@ $getProfileError.on(clearState, () => null);
 
 export const $getProfileState = combine({
   isLoading: getProfileFx.pending,
-  success: $getProfileSuccess,
+  result: $getProfileResult,
   error: $getProfileError,
 });
 
