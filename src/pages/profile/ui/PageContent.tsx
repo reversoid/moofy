@@ -4,8 +4,6 @@ import ProfileHeader from './ProfileHeader';
 import ProfileInfo from './ProfileInfo';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import Tabs from '@/shared/ui/Tabs/Tabs/Tabs';
-import { IterableResponse } from '@/shared/api/types/shared';
-import { List } from '@/shared/api/types/list.type';
 import { Button } from '@nextui-org/react';
 import { logout } from '@/features/auth/model/logout';
 import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
@@ -24,15 +22,21 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
 
   const [tab, setTab] = useState<number>(FIRST_TAB);
 
-  const [lists, setLists] = useState<{
-    lists: IterableResponse<List>;
-    count: number;
-  }>(profile.allLists);
+  const [lists, setLists] = useState(profile.allLists);
+  const [favLists, setFavLists] = useState(profile.favLists);
 
   useEffect(() => {
     console.log(tab);
     // fetch profile lists of fav lists
   }, [tab]);
+
+//   useEffect(() => {
+//     setLists()
+//   }, [listsResult]);
+
+//   useEffect(() => {
+//     setFavLists()
+//   }, [favListsResult]);
 
   return (
     <>
@@ -49,7 +53,14 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
         onChange={(newValue) => setTab(newValue)}
         css={{ mb: '0.75rem', pt: '1rem' }}
       />
-      <ListGrid items={profile.allLists.lists.items} />
+
+      {tab === 0 ? (
+        <ListGrid items={profile.allLists.lists.items} />
+      ) : (
+        <ListGrid
+          items={profile.favLists?.lists?.items.map((f) => f.list) ?? []}
+        />
+      )}
 
       {userOwner && (
         <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>
