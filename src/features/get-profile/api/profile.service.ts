@@ -1,5 +1,5 @@
 import ApiService from '@/shared/api/api.service';
-import { User } from '@/shared/api/types/user.type';
+import { Profile } from '@/shared/api/types/profile.type';
 
 export class ProfileService extends ApiService {
   public async getProfile(id?: number) {
@@ -8,7 +8,7 @@ export class ProfileService extends ApiService {
       url += `/${id}`;
     }
 
-    return this.get<User>(url as `/${string}`, {
+    return this.get<Profile>(url as `/${string}`, {
       useJWT: true,
     });
   }

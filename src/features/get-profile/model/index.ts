@@ -1,5 +1,5 @@
 import { profileService } from '@/features/get-profile/api/profile.service';
-import { User } from '@/shared/api/types/user.type';
+import { Profile } from '@/shared/api/types/profile.type';
 import {
     combine,
   createEffect,
@@ -12,7 +12,7 @@ import {
 export const getProfile = createEvent<number | undefined>();
 export const clearState = createEvent<void>();
 
-export const getProfileFx = createEffect<number | undefined, User>();
+export const getProfileFx = createEffect<number | undefined, Profile>();
 getProfileFx.use((id) => profileService.getProfile(id));
 
 const $getProfileSuccess = restore(getProfileFx, null);
