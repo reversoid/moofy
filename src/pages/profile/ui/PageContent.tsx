@@ -8,13 +8,19 @@ import { Button } from '@nextui-org/react';
 import { logout } from '@/features/auth/model/logout';
 import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
 
-import { $getMoreProfileFavListsLoading, getMoreProfileFavLists } from '../model/getProfileFavLists';
-import { $getMoreProfileListsLoading, getMoreProfileLists } from '../model/getProfileLists';
+import {
+  $getMoreProfileFavListsLoading,
+  getMoreProfileFavLists,
+} from '../model/getProfileFavLists';
+import {
+  $getMoreProfileListsLoading,
+  getMoreProfileLists,
+} from '../model/getProfileLists';
 import { useStore } from 'effector-react';
 
 interface PageContentProps {
   profile: Profile;
-  userOwner?: boolean;
+  userOwner: boolean;
 }
 
 const ownerTabs = [{ label: 'Мои коллекции' }, { label: 'Избранное' }];
@@ -62,6 +68,7 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
             getMoreProfileLists({
               userId: profile.id,
               lowerBound: profile.allLists.lists.nextKey!,
+              isOwner: userOwner,
             })
           }
           loadingMore={moreListsLoading}

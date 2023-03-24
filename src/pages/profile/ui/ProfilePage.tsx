@@ -21,7 +21,7 @@ function ProfilePage({ userOwner }: ProfilePageProps) {
   const ownerPage = !id;
 
   if (result && (matchingId || ownerPage)) {
-    return <PageContent profile={result} userOwner={userOwner} />;
+    return <PageContent profile={result} userOwner={Boolean(userOwner)} />;
   }
 
   if (isLoading) {
