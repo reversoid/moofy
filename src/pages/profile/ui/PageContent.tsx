@@ -54,6 +54,11 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
           'Всем привет! Меня зовут Гоша, добро пожаловать на наш сайт!'
         }
       />
+      {/* {userOwner && (
+        <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>
+          Выйти
+        </Button>
+      )} */}
       <Tabs
         tabs={tabs}
         tabValue={tab}
@@ -85,12 +90,6 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
           loadingMore={moreFavListsLoading}
           canLoadMore={Boolean(profile.favLists?.lists.nextKey)}
         />
-      )}
-
-      {userOwner && (
-        <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>
-          Выйти
-        </Button>
       )}
     </>
   );
