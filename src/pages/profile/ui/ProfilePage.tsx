@@ -1,4 +1,4 @@
-import { $getProfileState, getProfile } from '../model';
+import { $getProfileState, clearState, getProfile } from '../model';
 import { Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { useEffect } from 'react';
@@ -17,13 +17,13 @@ function ProfilePage({ userOwner }: ProfilePageProps) {
   }, []);
   const { error, isLoading, result } = useStore($getProfileState);
 
-  
-  if (result) {
-    return (
-      <PageContent profile={result} userOwner={userOwner} />
-    );
+  const matchingId = Number(id) === result?.id;
+  const ownerPage = !id;
+
+  if (result && (matchingId || ownerPage)) {
+    return <PageContent profile={result} userOwner={userOwner} />;
   }
-  
+
   if (isLoading) {
     return null;
   }

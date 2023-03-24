@@ -7,6 +7,10 @@ import Tabs from '@/shared/ui/Tabs/Tabs/Tabs';
 import { Button } from '@nextui-org/react';
 import { logout } from '@/features/auth/model/logout';
 import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
+import { useStore } from 'effector-react';
+import { $getListState } from '@/features/list/get-list';
+import { $lists } from '@/features/list/_model';
+import { getLists, getMoreLists } from '@/features/list/get-lists';
 
 interface PageContentProps {
   profile: Profile;
@@ -22,12 +26,8 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
 
   const [tab, setTab] = useState<number>(FIRST_TAB);
 
-  const [lists, setLists] = useState(profile.allLists);
-  const [favLists, setFavLists] = useState(profile.favLists);
-
   useEffect(() => {
     console.log(tab);
-    // fetch profile lists of fav lists
   }, [tab]);
 
 //   useEffect(() => {
