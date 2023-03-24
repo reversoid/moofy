@@ -1,4 +1,3 @@
-import { profileService } from '@/features/get-profile/api/profile.service';
 import { Profile } from '@/shared/api/types/profile.type';
 import {
     combine,
@@ -8,6 +7,7 @@ import {
   restore,
   sample,
 } from 'effector';
+import { profileService } from '../api/profile.service';
 
 export const getProfile = createEvent<number | undefined>();
 export const clearState = createEvent<void>();

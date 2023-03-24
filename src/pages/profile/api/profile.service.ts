@@ -3,7 +3,7 @@ import { Profile } from '@/shared/api/types/profile.type';
 
 export class ProfileService extends ApiService {
   public async getProfile(id?: number) {
-    let url = '/user';
+    let url = '/profile';
     if (id) {
       url += `/${id}`;
     }

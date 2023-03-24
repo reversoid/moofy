@@ -1,4 +1,4 @@
-import { $getProfileState, getProfile } from '@/features/get-profile/model';
+import { $getProfileState, getProfile } from '../model';
 import { Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { useEffect } from 'react';
