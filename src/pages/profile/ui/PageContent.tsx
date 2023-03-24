@@ -7,10 +7,10 @@ import Tabs from '@/shared/ui/Tabs/Tabs/Tabs';
 import { Button } from '@nextui-org/react';
 import { logout } from '@/features/auth/model/logout';
 import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
+
+import { $getMoreProfileFavListsLoading, getMoreProfileFavLists } from '../model/getProfileFavLists';
+import { $getMoreProfileListsLoading, getMoreProfileLists } from '../model/getProfileLists';
 import { useStore } from 'effector-react';
-import { $getListState } from '@/features/list/get-list';
-import { $lists } from '@/features/list/_model';
-import { getLists, getMoreLists } from '@/features/list/get-lists';
 
 interface PageContentProps {
   profile: Profile;
@@ -19,24 +19,25 @@ interface PageContentProps {
 
 const ownerTabs = [{ label: 'Мои коллекции' }, { label: 'Избранное' }];
 const userTabs = [{ label: 'Все коллекции' }];
-const FIRST_TAB = 0;
+
+enum PageTabs {
+  collections,
+  favorites,
+}
 
 const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
   const tabs: TabProps[] = userOwner ? ownerTabs : userTabs;
 
-  const [tab, setTab] = useState<number>(FIRST_TAB);
+  const [tab, setTab] = useState<number>(PageTabs.collections);
+
+  const moreListsLoading = useStore($getMoreProfileListsLoading);
+  const moreFavListsLoading = useStore($getMoreProfileFavListsLoading);
 
   useEffect(() => {
-    console.log(tab);
+    if (tab === PageTabs.favorites) {
+    } else if (tab === PageTabs.collections) {
+    }
   }, [tab]);
-
-//   useEffect(() => {
-//     setLists()
-//   }, [listsResult]);
-
-//   useEffect(() => {
-//     setFavLists()
-//   }, [favListsResult]);
 
   return (
     <>
@@ -55,10 +56,27 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
       />
 
       {tab === 0 ? (
-        <ListGrid items={profile.allLists.lists.items} />
+        <ListGrid
+          items={profile.allLists.lists.items}
+          loadMore={() =>
+            getMoreProfileLists({
+              userId: profile.id,
+              lowerBound: profile.allLists.lists.nextKey!,
+            })
+          }
+          loadingMore={moreListsLoading}
+          canLoadMore={Boolean(profile.allLists.lists.nextKey)}
+        />
       ) : (
         <ListGrid
           items={profile.favLists?.lists?.items.map((f) => f.list) ?? []}
+          loadMore={() =>
+            getMoreProfileFavLists({
+              lowerBound: profile.favLists!.lists.nextKey!,
+            })
+          }
+          loadingMore={moreFavListsLoading}
+          canLoadMore={Boolean(profile.favLists?.lists.nextKey)}
         />
       )}
 
