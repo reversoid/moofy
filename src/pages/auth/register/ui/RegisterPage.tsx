@@ -10,7 +10,7 @@ import {
   PASSWORD_VALIDATORS,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useFieldsChecks } from '../lib/useFieldsChecks';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
 import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip/InfoIconWithTooltip';
@@ -34,8 +34,12 @@ const RegisterPage = () => {
     formState: { errors, isValid: isFormValid },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
-  const { loadingEmailCheck, loadingUsernameCheck, onChangeUsernameDebounced, usernameExists } =
-    useFieldsChecks();
+  const {
+    loadingEmailCheck,
+    loadingUsernameCheck,
+    onChangeUsernameDebounced,
+    usernameExists,
+  } = useFieldsChecks();
 
   let submitButtonDisabled =
     !isFormValid ||
@@ -70,6 +74,8 @@ const RegisterPage = () => {
       }),
     [],
   );
+
+  const { search } = useLocation();
 
   return (
     <AuthContainer xs>
@@ -117,7 +123,7 @@ const RegisterPage = () => {
         additionalElement={
           <Text as="p">
             Уже есть аккаунт?{'  '}
-            <Link to="/auth/login">Войти</Link>
+            <Link to={`/auth/login${search}`}>Войти</Link>
           </Text>
         }
         buttonDisabled={submitButtonDisabled}
