@@ -30,7 +30,7 @@ const HeaderContainer = styled(Container, {
 });
 
 function Header() {
-  const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
+  const { isLoggedIn, isLoading: isAuthLoading, userId } = useAuth();
   const navigate = useNavigate();
   const loading = useStore($loading);
 
@@ -57,7 +57,7 @@ function Header() {
           <Loading />
         ) : isLoggedIn === true ? (
           <Link
-            to={'/profile'}
+            to={`/profile/${userId}`}
             css={{
               display: 'flex',
               width: 'fit-content',
