@@ -57,12 +57,18 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
         description={
           'Всем привет! Меня зовут Гоша, добро пожаловать на наш сайт!'
         }
+        isOwner={userOwner}
       />
-      {/* {userOwner && (
-        <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>
+      {userOwner && (
+        <Button
+          size="sm"
+          css={{ mt: '$9' }}
+          color="gradient"
+          onPress={() => logout()}
+        >
           Выйти
         </Button>
-      )} */}
+      )}
       <Tabs
         tabs={tabs}
         tabValue={tab}
