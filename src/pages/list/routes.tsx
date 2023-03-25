@@ -2,8 +2,8 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import AuthOnly from '@/shared/guards/AuthOnly';
 
-const ListPage = lazy(() => import('./ListPage/ListPage'));
-const SearchFilmPage = lazy(() => import('./AddReviewPage/SearchFilmPage'));
+const ListPage = lazy(() => import('./ListPage'));
+const SearchFilmPage = lazy(() => import('./AddReviewPage'));
 
 export const routes: RouteObject[] = [
   {
@@ -19,6 +19,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'add',
+        // TODO shoul create authOnly with mathing id guard
         element: <AuthOnly redirect='/auth'><SearchFilmPage /></AuthOnly>,
       },
     ],
