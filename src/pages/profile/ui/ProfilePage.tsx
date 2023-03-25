@@ -1,9 +1,9 @@
-import { logout } from '@/features/auth/model/logout';
-import { $getProfileState, getProfile } from '@/features/get-profile/model';
-import { Button, Row, Text } from '@nextui-org/react';
+import { $getProfileState, clearState, getProfile } from '../model';
+import { Text } from '@nextui-org/react';
 import { useStore } from 'effector-react';
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import PageContent from './PageContent';
 
 interface ProfilePageProps {
   userOwner?: boolean;
@@ -15,39 +15,21 @@ function ProfilePage({ userOwner }: ProfilePageProps) {
   useEffect(() => {
     getProfile(id ? Number(id) : undefined);
   }, []);
-  const { error, isLoading, success } = useStore($getProfileState);
+  const { error, isLoading, result } = useStore($getProfileState);
+
+  const matchingId = Number(id) === result?.id;
+  const ownerPage = !id;
+
+  if (result && (matchingId || ownerPage)) {
+    return <PageContent profile={result} userOwner={Boolean(userOwner)} />;
+  }
 
   if (isLoading) {
     return null;
   }
 
-  if (success) {
-    return (
-      <>
-        <Row css={{ gap: '$3' }}>
-          <Text size="lg" color="$neutral">
-            Имя пользователя
-          </Text>
-          <Text size="lg">{success.username}</Text>
-        </Row>
-        <Row css={{ gap: '$3' }}>
-          <Text size="lg" color="$neutral">
-            Дата регистрации
-          </Text>
-          <Text size="lg">{new Date(success.created_at).toString()}</Text>
-        </Row>
-
-        {userOwner && (
-          <Button css={{ mt: '$5' }} color="gradient" onPress={() => logout()}>
-            Выйти
-          </Button>
-        )}
-      </>
-    );
-  }
-
   if (error === 'WRONG_USER_ID') {
-    return <Text>Пользователя не существует</Text>
+    return <Text>Пользователя не существует</Text>;
   }
 
   return null;

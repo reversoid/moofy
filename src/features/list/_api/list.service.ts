@@ -41,6 +41,25 @@ export class ListService extends ApiService {
     });
   }
 
+  /** Gets public lists for user */
+  public async getUserLists(
+    userId: number,
+    lowerBound?: DateAsString,
+    limit = 20,
+  ) {
+    const searchParams: SearchParamsOption = {
+      limit,
+      user: userId,
+    };
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+    return this.get<IterableResponse<List>>('/list/public', {
+      useJWT: true,
+      searchParams,
+    });
+  }
+
   public async getMyListWithContent(listId: number, lowerBound?: DateAsString) {
     const searchParams: SearchParamsOption = {
       listId,
