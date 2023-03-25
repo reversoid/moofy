@@ -57,21 +57,6 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
         description={profile.description}
         isOwner={userOwner}
       />
-      {userOwner && (
-        <Button
-          size="sm"
-          css={{
-            mt: '$9',
-            '@xsMax': {
-              width: '100%',
-            },
-          }}
-          color="gradient"
-          onPress={() => logout()}
-        >
-          Выйти
-        </Button>
-      )}
       <Tabs
         tabs={tabs}
         tabValue={tab}
@@ -114,6 +99,21 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
         <Text size="$lg" color="$neutral">
           Нет избранных коллекций
         </Text>
+      )}
+      {userOwner && (
+        <Button
+          size="sm"
+          css={{
+            mt: '$20',
+            '@xsMax': {
+              width: '100%',
+            },
+          }}
+          color="gradient"
+          onPress={() => logout()}
+        >
+          Выйти
+        </Button>
       )}
     </>
   );
