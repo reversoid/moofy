@@ -37,7 +37,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
       </Text>
       <Text
         as={'p'}
-        css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$lg' }}
+        css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$md' }}
         dangerouslySetInnerHTML={{ __html: description }}
       ></Text>
     </FilmInfo>
