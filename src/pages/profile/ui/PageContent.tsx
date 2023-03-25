@@ -4,7 +4,7 @@ import ProfileHeader from './ProfileHeader';
 import ProfileInfo from './ProfileInfo';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import Tabs from '@/shared/ui/Tabs/Tabs/Tabs';
-import { Button } from '@nextui-org/react';
+import { Button, Text } from '@nextui-org/react';
 import { logout } from '@/features/auth/model/logout';
 import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
 
@@ -67,19 +67,24 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
       />
 
       {tab === 0 ? (
-        <ListGrid
-          items={profile.allLists.lists.items}
-          loadMore={() =>
-            getMoreProfileLists({
-              userId: profile.id,
-              lowerBound: profile.allLists.lists.nextKey!,
-              isOwner: userOwner,
-            })
-          }
-          loadingMore={moreListsLoading}
-          canLoadMore={Boolean(profile.allLists.lists.nextKey)}
-        />
-      ) : (
+        profile.allLists.lists.items.length > 0 ? (
+          <ListGrid
+            items={profile.allLists.lists.items}
+            loadMore={() =>
+              getMoreProfileLists({
+                userId: profile.id,
+                lowerBound: profile.allLists.lists.nextKey!,
+                isOwner: userOwner,
+              })
+            }
+            loadingMore={moreListsLoading}
+            canLoadMore={Boolean(profile.allLists.lists.nextKey)}
+          />
+        ) : (
+          <Text size="$lg" color='$neutral'>Нет коллекций</Text>
+        )
+      ) : (profile.favLists?.lists?.items.map((f) => f.list) ?? []).length >
+        0 ? (
         <ListGrid
           items={profile.favLists?.lists?.items.map((f) => f.list) ?? []}
           loadMore={() =>
@@ -90,6 +95,8 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
           loadingMore={moreFavListsLoading}
           canLoadMore={Boolean(profile.favLists?.lists.nextKey)}
         />
+      ) : (
+        <Text size="$lg" color='$neutral'>Нет избранных коллекций</Text>
       )}
     </>
   );
