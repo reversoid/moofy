@@ -60,7 +60,12 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
       {userOwner && (
         <Button
           size="sm"
-          css={{ mt: '$9' }}
+          css={{
+            mt: '$9',
+            '@xsMax': {
+              width: '100%',
+            },
+          }}
           color="gradient"
           onPress={() => logout()}
         >

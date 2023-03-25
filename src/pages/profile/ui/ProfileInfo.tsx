@@ -1,6 +1,5 @@
 import DoneButton from '@/shared/components/DoneButton';
 import EditButton from '@/shared/components/EditButton';
-import GearButton from '@/shared/components/GearButton';
 import { formatDate } from '@/shared/lib/formatDate/formatDate';
 import {
   Loading,
