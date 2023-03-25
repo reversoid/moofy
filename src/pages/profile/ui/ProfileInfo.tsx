@@ -24,24 +24,43 @@ interface ProfileInfoProps {
 
 const Description = styled('div', { mb: '$4' });
 
+const AnimatedTextarea = styled(Textarea, {
+  '*': { transition: '0.12s all ease-in-out' },
+
+  variants: {
+    read: {
+      true: {
+        label: {
+          background: 'transparent',
+          borderRadius: 0,
+        },
+        textarea: {
+          margin: '0 !important',
+          cursor: 'default',
+        },
+      },
+    },
+  },
+});
+
 const ProfileInfo: FC<ProfileInfoProps> = ({
   createdAt,
   description,
   isOwner,
 }) => {
   const [editMode, setEditMode] = useState(false);
-  const { bindings, setValue, value } = useInput(description ?? '');
+  const { bindings, setValue: setInputValue, value: inputValue } = useInput(description ?? '');
 
-  const { loading, result } = useStore($editProfileState);
+  const { loading: editLoading, result } = useStore($editProfileState);
 
   useEffect(() => {
-    setValue(description ?? '');
+    setInputValue(description ?? '');
   }, [description]);
 
   useEffect(() => {
     if (!result) return;
 
-    setValue(result?.description ?? '');
+    setInputValue(result?.description ?? '');
     setEditMode(false);
   }, [result]);
 
@@ -56,12 +75,12 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             <>
               {editMode ? (
                 <>
-                  {loading ? (
+                  {editLoading ? (
                     <Loading size="sm" />
                   ) : (
                     <DoneButton
                       onClick={() =>
-                        editProfileDescription({ newValue: value })
+                        editProfileDescription({ newValue: inputValue })
                       }
                     />
                   )}
@@ -72,21 +91,17 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             </>
           )}
         </Row>
-        {editMode ? (
-          <Textarea
-            width="100%"
-            size="lg"
-            placeholder="Ваше описание"
-            minRows={2}
-            maxRows={10}
-            {...bindings}
-            readOnly={loading}
-          />
-        ) : description ? (
-          <Text dangerouslySetInnerHTML={{ __html: description ?? '' }}></Text>
-        ) : (
-          <Text color="$neutral">Описание отсутствует</Text>
-        )}
+
+        <AnimatedTextarea
+          width="100%"
+          size="lg"
+          placeholder="Ваше описание"
+          minRows={2}
+          maxRows={10}
+          read={!editMode}
+          readOnly={!editMode || editLoading}
+          {...bindings}
+        />
       </Description>
 
       <Row css={{ gap: '$3', mb: '$5' }}>
