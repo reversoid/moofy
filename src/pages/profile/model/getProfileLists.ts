@@ -1,28 +1,27 @@
 import { createEffect, createEvent, sample } from 'effector';
-import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
+import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
 import { listService } from '@/features/list/_api/list.service';
 
-export const getMoreProfileLists = createEvent<{
+export const getProfileLists = createEvent<{
   userId: number;
-  lowerBound?: DateAsString;
   isOwner: boolean;
 }>();
 
-export const getMoreProfileListsFx = createEffect<
-  { userId: number; lowerBound?: DateAsString; isOwner: boolean },
+export const getProfileListsFx = createEffect<
+  { userId: number; isOwner: boolean },
   IterableResponse<List>
 >();
 
-export const $getMoreProfileListsLoading = getMoreProfileListsFx.pending;
+export const $getProfileListsLoading = getProfileListsFx.pending;
 
-getMoreProfileListsFx.use(({ lowerBound, userId, isOwner }) => {
+getProfileListsFx.use(({ userId, isOwner }) => {
   return isOwner
-    ? listService.getMyLists(lowerBound)
-    : listService.getUserLists(userId, lowerBound);
+    ? listService.getMyLists()
+    : listService.getUserLists(userId);
 });
 
 sample({
-  clock: getMoreProfileLists,
-  target: getMoreProfileListsFx,
+  clock: getProfileLists,
+  target: getProfileListsFx,
 });

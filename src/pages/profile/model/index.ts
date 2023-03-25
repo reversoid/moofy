@@ -1,9 +1,9 @@
 export {
   $getMoreProfileListsLoading,
   getMoreProfileLists,
-} from './getProfileLists';
+} from './getMoreProfileLists';
 export {
   $getMoreProfileFavListsLoading,
   getMoreProfileFavLists,
-} from './getProfileFavLists';
+} from './getMoreProfileFavLists';
 export { $getProfileState, clearState, getProfile } from './getProfile';

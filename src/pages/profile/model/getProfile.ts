@@ -8,8 +8,10 @@ import {
   sample,
 } from 'effector';
 import { profileService } from '../api/profile.service';
-import { getMoreProfileFavListsFx } from './getProfileFavLists';
-import { getMoreProfileListsFx } from './getProfileLists';
+import { getMoreProfileFavListsFx } from './getMoreProfileFavLists';
+import { getMoreProfileListsFx } from './getMoreProfileLists';
+import { getProfileListsFx } from './getProfileLists';
+import { getProfileFavListsFx } from './getProfileFavLists';
 
 export const getProfile = createEvent<number | undefined>();
 export const clearState = createEvent<void>();
@@ -41,6 +43,32 @@ $profile.on(getMoreProfileListsFx.doneData, (state, payload) => {
       lists: {
         nextKey: payload.nextKey,
         items: [...state.allLists.lists.items, ...payload.items],
+      },
+    },
+  };
+});
+$profile.on(getProfileListsFx.doneData, (state, payload) => {
+  if (!state) return state;
+  return {
+    ...state,
+    allLists: {
+      count: state.allLists.count,
+      lists: {
+        nextKey: payload.nextKey,
+        items: payload.items,
+      },
+    },
+  };
+});
+$profile.on(getProfileFavListsFx.doneData, (state, payload) => {
+  if (!state) return state;
+  return {
+    ...state,
+    favLists: {
+      count: state.favLists!.count,
+      lists: {
+        nextKey: payload.nextKey,
+        items: payload.items,
       },
     },
   };

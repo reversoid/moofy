@@ -11,12 +11,14 @@ import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
 import {
   $getMoreProfileFavListsLoading,
   getMoreProfileFavLists,
-} from '../model/getProfileFavLists';
+} from '../model/getMoreProfileFavLists';
 import {
   $getMoreProfileListsLoading,
   getMoreProfileLists,
-} from '../model/getProfileLists';
+} from '../model/getMoreProfileLists';
 import { useStore } from 'effector-react';
+import { getProfileLists } from '../model/getProfileLists';
+import { getProfileFavLists } from '../model/getProfileFavLists';
 
 interface PageContentProps {
   profile: Profile;
@@ -41,7 +43,9 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
 
   useEffect(() => {
     if (tab === PageTabs.favorites) {
+      getProfileLists({ isOwner: userOwner, userId: profile.id });
     } else if (tab === PageTabs.collections) {
+      getProfileFavLists();
     }
   }, [tab]);
 
@@ -81,7 +85,9 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
             canLoadMore={Boolean(profile.allLists.lists.nextKey)}
           />
         ) : (
-          <Text size="$lg" color='$neutral'>Нет коллекций</Text>
+          <Text size="$lg" color="$neutral">
+            Нет коллекций
+          </Text>
         )
       ) : (profile.favLists?.lists?.items.map((f) => f.list) ?? []).length >
         0 ? (
@@ -96,7 +102,9 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
           canLoadMore={Boolean(profile.favLists?.lists.nextKey)}
         />
       ) : (
-        <Text size="$lg" color='$neutral'>Нет избранных коллекций</Text>
+        <Text size="$lg" color="$neutral">
+          Нет избранных коллекций
+        </Text>
       )}
     </>
   );
