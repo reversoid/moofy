@@ -31,7 +31,7 @@ const AnimatedTextarea = styled(Textarea, {
     cursor: 'default !important',
   },
 
-  '& *': {
+  '& textarea:read-only, & textarea:disabled, & textarea': {
     color: '$text !important'
   },
 
