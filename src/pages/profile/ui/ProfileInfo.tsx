@@ -101,7 +101,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           )}
         </Row>
 
-        {isOwner ? <AnimatedTextarea
+        {isOwner || description ? <AnimatedTextarea
           width="100%"
           size="lg"
           placeholder="Ваше описание"
