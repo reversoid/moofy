@@ -43,9 +43,9 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
 
   useEffect(() => {
     if (tab === PageTabs.favorites) {
-      getProfileLists({ isOwner: userOwner, userId: profile.id });
-    } else if (tab === PageTabs.collections) {
       getProfileFavLists();
+    } else if (tab === PageTabs.collections) {
+      getProfileLists({ isOwner: userOwner, userId: profile.id });
     }
   }, [tab]);
 
