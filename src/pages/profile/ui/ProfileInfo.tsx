@@ -36,6 +36,7 @@ const AnimatedTextarea = styled(Textarea, {
         },
         textarea: {
           margin: '0 !important',
+          mb: '$2 !important',
           cursor: 'default',
         },
       },
@@ -96,8 +97,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           width="100%"
           size="lg"
           placeholder="Ваше описание"
-          minRows={2}
-          maxRows={10}
+          minRows={editMode ? 2 : 1}
           read={!editMode}
           readOnly={!editMode || editLoading}
           {...bindings}
