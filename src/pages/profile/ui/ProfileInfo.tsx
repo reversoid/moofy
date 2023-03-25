@@ -27,6 +27,14 @@ const Description = styled('div', { mb: '$4' });
 const AnimatedTextarea = styled(Textarea, {
   '*': { transition: '0.12s all ease-in-out' },
 
+  '& label': {
+    cursor: 'default !important',
+  },
+
+  '& textarea:disabled': {
+    color: '$text !important'
+  },
+
   variants: {
     read: {
       true: {
@@ -93,15 +101,17 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           )}
         </Row>
 
-        <AnimatedTextarea
+        {isOwner ? <AnimatedTextarea
           width="100%"
           size="lg"
           placeholder="Ваше описание"
           minRows={editMode ? 2 : 1}
           read={!editMode}
           readOnly={!editMode || editLoading}
+          disabled={!editMode}
           {...bindings}
-        />
+        /> : <Text color='$neutral'>Описание отсутствует</Text>}
+        
       </Description>
 
       <Row css={{ gap: '$3', mb: '$5' }}>
