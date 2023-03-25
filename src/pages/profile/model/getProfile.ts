@@ -12,6 +12,7 @@ import { getMoreProfileFavListsFx } from './getMoreProfileFavLists';
 import { getMoreProfileListsFx } from './getMoreProfileLists';
 import { getProfileListsFx } from './getProfileLists';
 import { getProfileFavListsFx } from './getProfileFavLists';
+import { editProfileDescriptionFx } from './editProfileDescription';
 
 export const getProfile = createEvent<number | undefined>();
 export const clearState = createEvent<void>();
@@ -71,6 +72,13 @@ $profile.on(getProfileFavListsFx.doneData, (state, payload) => {
         items: payload.items,
       },
     },
+  };
+});
+$profile.on(editProfileDescriptionFx.doneData, (state, payload) => {
+  if (!state) return state;
+  return {
+    ...state,
+    description: payload.description,
   };
 });
 

@@ -2,8 +2,20 @@ import DoneButton from '@/shared/components/DoneButton';
 import EditButton from '@/shared/components/EditButton';
 import GearButton from '@/shared/components/GearButton';
 import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import { Row, Text, Textarea, styled, useInput } from '@nextui-org/react';
-import { FC, useState } from 'react';
+import {
+  Loading,
+  Row,
+  Text,
+  Textarea,
+  styled,
+  useInput,
+} from '@nextui-org/react';
+import { useStore } from 'effector-react';
+import { FC, useEffect, useState } from 'react';
+import {
+  $editProfileState,
+  editProfileDescription,
+} from '../model/editProfileDescription';
 
 interface ProfileInfoProps {
   description: string | null;
@@ -19,7 +31,18 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
   isOwner,
 }) => {
   const [editMode, setEditMode] = useState(false);
-  const { bindings } = useInput(description ?? '');
+  const { bindings, setValue, value } = useInput(description ?? '');
+
+  const { loading, result } = useStore($editProfileState);
+
+  useEffect(() => {
+    setValue(description ?? '');
+  }, [description]);
+
+  useEffect(() => {
+    setValue(result?.description ?? '');
+    setEditMode(false);
+  }, [result]);
 
   return (
     <>
@@ -31,7 +54,17 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           {isOwner && (
             <>
               {editMode ? (
-                <DoneButton onClick={() => setEditMode(false)} />
+                <>
+                  {loading ? (
+                    <Loading size="sm" />
+                  ) : (
+                    <DoneButton
+                      onClick={() =>
+                        editProfileDescription({ newValue: value })
+                      }
+                    />
+                  )}
+                </>
               ) : (
                 <EditButton onClick={() => setEditMode(true)} />
               )}
@@ -46,6 +79,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             minRows={2}
             maxRows={10}
             {...bindings}
+            readOnly={loading}
           />
         ) : (
           <Text dangerouslySetInnerHTML={{ __html: description ?? '' }}></Text>

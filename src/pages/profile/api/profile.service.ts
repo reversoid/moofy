@@ -12,6 +12,15 @@ export class ProfileService extends ApiService {
       useJWT: true,
     });
   }
+
+  public async editProfileDescription(newValue: string) {
+    return this.patch<Profile>('/profile', {
+      useJWT: true,
+      json: {
+        description: newValue,
+      },
+    });
+  }
 }
 
 export const profileService = new ProfileService();
