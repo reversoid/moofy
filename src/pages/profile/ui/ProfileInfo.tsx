@@ -114,7 +114,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
         
       </Description>
 
-      <Row css={{ gap: '$3', mb: '$5' }}>
+      <Row css={{ gap: '$3' }}>
         <Text size="lg" color="$neutral">
           Дата регистрации
         </Text>

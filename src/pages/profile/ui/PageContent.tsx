@@ -61,7 +61,7 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
         tabs={tabs}
         tabValue={tab}
         onChange={(newValue) => setTab(newValue)}
-        css={{ mb: '0.75rem', pt: '2rem' }}
+        css={{ mb: '0.75rem', pt: '1rem' }}
       />
 
       {tab === 0 ? (
