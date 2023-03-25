@@ -81,8 +81,10 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             {...bindings}
             readOnly={loading}
           />
-        ) : (
+        ) : description ? (
           <Text dangerouslySetInnerHTML={{ __html: description ?? '' }}></Text>
+        ) : (
+          <Text color="$neutral">Описание отсутствует</Text>
         )}
       </Description>
 

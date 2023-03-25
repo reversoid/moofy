@@ -54,9 +54,7 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
       <ProfileHeader username={profile.username} />
       <ProfileInfo
         createdAt={new Date(profile.created_at)}
-        description={
-          'Всем привет! Меня зовут Гоша, добро пожаловать на наш сайт!'
-        }
+        description={profile.description}
         isOwner={userOwner}
       />
       {userOwner && (
