@@ -39,6 +39,8 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
   }, [description]);
 
   useEffect(() => {
+    if (!result) return;
+
     setValue(result?.description ?? '');
     setEditMode(false);
   }, [result]);
