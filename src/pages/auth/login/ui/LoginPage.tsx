@@ -8,7 +8,7 @@ import {
   PASSWORD_VALIDATORS,
 } from '@/features/auth/utils/login/formUtils';
 import { login, $loginStatus } from '@/features/auth/model/login';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { USERNAME_VALIDATORS } from '@/features/auth/utils/register/formUtils';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
@@ -27,6 +27,7 @@ const LoginPage = () => {
 
   const onSubmit = useEvent(login);
   const { loading } = useStore($loginStatus);
+  const { search } = useLocation();
 
   return (
     <AuthContainer xs>
@@ -66,7 +67,7 @@ const LoginPage = () => {
         additionalElement={
           <Text as="p">
             Еще нет аккаунта?{'  '}
-            <Link to="/auth/register">Зарегистрироваться</Link>
+            <Link to={`/auth/register${search}`}>Зарегистрироваться</Link>
           </Text>
         }
         formId={"login-form"}
