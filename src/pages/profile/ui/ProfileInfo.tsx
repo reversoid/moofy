@@ -5,7 +5,6 @@ import {
   Loading,
   Row,
   Text,
-  Textarea,
   styled,
   useInput,
 } from '@nextui-org/react';
@@ -22,6 +21,7 @@ import {
   $editProfileState,
   editProfileDescription,
 } from '../model/editProfileDescription';
+import Textarea from '@/shared/ui/Textarea/Textarea';
 
 interface ProfileInfoProps {
   description: string | null;
@@ -69,12 +69,14 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
 }) => {
   const [editMode, setEditMode] = useState(false);
 
+  // we use ref because useState with textarea works very strange. Autosize doesnt work properly
   const inputRef = createRef<ComponentRef<typeof AnimatedTextarea>>();
 
   const { loading: editLoading, result } = useStore($editProfileState);
 
   useEffect(() => {
     // TODO can use hook for that?
+    if (!inputRef.current) return;
     inputRef.current.value = description ?? '';
   }, [description]);
 
@@ -120,12 +122,13 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             width="100%"
             size="lg"
             placeholder="Ваше описание"
-            minRows={2}
+            minRows={1}
             read={!editMode}
             readOnly={!editMode || editLoading}
             disabled={!editMode}
             maxRows={Infinity}
             ref={inputRef}
+            maxLength={400}
           />
         ) : (
           <Text color="$neutral">Описание отсутствует</Text>
