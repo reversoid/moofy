@@ -42,7 +42,6 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextAreaCountProps>(
           {...{
             ...props,
             css: {
-              wordBreak: 'break-all',
               width: '100%',
               ...props.css,
             },

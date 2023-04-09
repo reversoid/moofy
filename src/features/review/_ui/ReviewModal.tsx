@@ -104,6 +104,7 @@ const ReviewModal = ({
               maxLength: { value: 400, message: 'Слишком длинное описание' },
             })}
             initialValue={getValues('description')}
+            maxRows={Infinity}
           />
           <Checkbox
             color="gradient"
