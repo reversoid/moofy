@@ -5,7 +5,7 @@ import {
   createStore,
   sample,
 } from 'effector';
-import { listService } from '../../_api/list.service';
+import { listService } from '../_api/list.service';
 
 export const uploadImage = createEvent<{ file: File }>();
 export const clearImageUploadState = createEvent();

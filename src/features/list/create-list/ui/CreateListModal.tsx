@@ -6,16 +6,11 @@ import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  $createListState,
-  clearImageUploadState,
-  clearState,
-  createList,
-} from '../model';
+import { $createListState, clearState, createList } from '../model';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { ImageUpload } from '../../../../shared/components/ImageUpload';
 import { listService } from '../../_api/list.service';
-import { $uploadImageListState, uploadImage } from '../model/uploadImage';
+import { $uploadImageListState, clearImageUploadState, uploadImage } from '../../_model/uploadImage';
 
 interface FormData {
   name: string;

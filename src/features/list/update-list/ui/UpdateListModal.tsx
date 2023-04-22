@@ -8,6 +8,12 @@ import { Form } from '@/shared/ui/Form/Form';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import { $updateListState, clearState, updateList } from '../model';
+import {
+  $uploadImageListState,
+  clearImageUploadState,
+  uploadImage,
+} from '../../_model/uploadImage';
+import { ImageUpload } from '@/shared/components/ImageUpload';
 
 export interface FormData {
   name: string;
@@ -37,12 +43,12 @@ export const UpdateListModal = memo(
     useDefaultFormValues(isOpen, setValue, listData);
 
     const onSubmit = useEvent(updateList);
-    const onClose = useEvent(clearState);
 
     const { loading, success } = useStore($updateListState);
 
     const handleClose = () => {
-      onClose();
+      clearState();
+      clearImageUploadState();
       setIsOpen(false);
     };
 
@@ -52,6 +58,10 @@ export const UpdateListModal = memo(
       }
       handleClose();
     }, [success]);
+
+    const { loading: loadingImage, success: successImage } = useStore(
+      $uploadImageListState,
+    );
 
     return (
       <Modal
@@ -66,9 +76,16 @@ export const UpdateListModal = memo(
         <ModalBody>
           <Form
             onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-              onSubmit({ isPublic: !isPrivate, name, description, listId }),
+              onSubmit({
+                isPublic: !isPrivate,
+                name,
+                description,
+                listId,
+                imageUrl: successImage?.link ?? undefined,
+              }),
             )}
-            id="create-list-modal-form"
+            css={{ mb: '$10' }}
+            id="update-list-modal-form"
           >
             <Input
               bordered
@@ -111,13 +128,19 @@ export const UpdateListModal = memo(
               onChange={(newValue) => setValue('isPrivate', newValue)}
             />
           </Form>
+          <ImageUpload
+            text="Загрузить обложку"
+            loading={loadingImage}
+            loadedImageSrc={successImage?.link ?? undefined}
+            onChange={(file) => uploadImage({ file })}
+          />
         </ModalBody>
         <ModalFooter>
           <Button
-            form="create-list-modal-form"
+            form="update-list-modal-form"
             type="submit"
             size="lg"
-            disabled={!isFormValid}
+            disabled={!isFormValid || loadingImage}
             color={'gradient'}
             auto
             css={{
