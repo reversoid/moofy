@@ -16,9 +16,10 @@ export interface ListProps extends OnProps {
   id?: number;
   text: string;
   isPublic?: boolean;
+  imageUrl?: string
 }
 
-export const List: FC<ListProps> = memo(({ id, text, isPublic, onClick }) => {
+export const List: FC<ListProps> = memo(({ id, text, isPublic, onClick, imageUrl }) => {
   return (
     <Card
       isHoverable
@@ -34,7 +35,7 @@ export const List: FC<ListProps> = memo(({ id, text, isPublic, onClick }) => {
             }}
           />
         ) : (
-          <ListBackground strToHash={String(id)} />
+          <ListBackground id={String(id)} imageUrl={imageUrl} />
         )}
       </CardBody>
       <CardFooter css={{ justifyItems: 'flex-start' }}>

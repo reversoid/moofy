@@ -11,4 +11,5 @@ export interface List {
     id: number;
     username: string;
   };
+  image_url?: string
 }

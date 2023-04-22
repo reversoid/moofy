@@ -10,8 +10,7 @@ interface BookmarkButtonProps extends ButtonProps {
 const BookmarkButton: FC<BookmarkButtonProps> = ({ iconFilled, ...props }) => (
   <IconButton {...props}>
     <BookmarkIcon
-      width="1.75rem"
-      height="1.75rem"
+      size="1.75rem"
       iconFilled={iconFilled}
     />
   </IconButton>
