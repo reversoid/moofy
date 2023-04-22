@@ -1,5 +1,5 @@
-import { styled } from "@nextui-org/react";
-import ColorHash from "color-hash";
+import { styled } from '@nextui-org/react';
+import ColorHash from 'color-hash';
 
 const colorHash = new ColorHash();
 
@@ -14,6 +14,15 @@ export const Background = styled('div', {
   },
 });
 
-export const ListBackground = ({ strToHash }: { strToHash: string }) => {
-  return <Background css={{ bgColor: colorHash.hex(strToHash) }} />;
+export const ListBackground = ({
+  id,
+  imageUrl,
+}: {
+  id: string;
+  imageUrl?: string;
+}) => {
+  if (imageUrl) {
+    return <Background css={{ backgroundSize: 'cover', backgroundImage: `url(${imageUrl})` }} />;
+  }
+  return <Background css={{ bgColor: colorHash.hex(id) }} />;
 };

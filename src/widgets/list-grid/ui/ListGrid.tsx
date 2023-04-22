@@ -47,7 +47,7 @@ const ListGrid: FC<ListGridProps> = ({
         {items.map((item) => (
           <GridStyled xs={6} sm={3} key={item.id}>
             <Link to={'/list/' + item.id}>
-              <List text={item.name} id={item.id} isPublic={item.is_public} />
+              <List text={item.name} id={item.id} isPublic={item.is_public} imageUrl={item.image_url} />
             </Link>
           </GridStyled>
         ))}
