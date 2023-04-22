@@ -10,7 +10,14 @@ import {
   useInput,
 } from '@nextui-org/react';
 import { useStore } from 'effector-react';
-import { FC, useEffect, useState } from 'react';
+import {
+  ComponentRef,
+  FC,
+  createRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   $editProfileState,
   editProfileDescription,
@@ -25,14 +32,17 @@ interface ProfileInfoProps {
 const Description = styled('div', { mb: '$4' });
 
 const AnimatedTextarea = styled(Textarea, {
-  '*': { transition: '0.12s all ease-in-out' },
+  '& textarea': {
+    transition:
+      '0.12s margin ease-in-out, 0.12s background-color ease-in-out, 0.12s border-radius ease-in-out',
+  },
 
   '& label': {
     cursor: 'default !important',
   },
 
   '& textarea:read-only, & textarea:disabled, & textarea': {
-    color: '$text !important'
+    color: '$text !important',
   },
 
   variants: {
@@ -43,8 +53,8 @@ const AnimatedTextarea = styled(Textarea, {
           borderRadius: 0,
         },
         textarea: {
-          margin: '0 !important',
-          mb: '$2 !important',
+          marginLeft: '0 !important',
+          marginRight: '0 !important',
           cursor: 'default',
         },
       },
@@ -58,18 +68,20 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
   isOwner,
 }) => {
   const [editMode, setEditMode] = useState(false);
-  const { bindings, setValue: setInputValue, value: inputValue } = useInput(description ?? '');
+
+  const inputRef = createRef<ComponentRef<typeof AnimatedTextarea>>();
 
   const { loading: editLoading, result } = useStore($editProfileState);
 
   useEffect(() => {
-    setInputValue(description ?? '');
+    // TODO can use hook for that?
+    inputRef.current.value = description ?? '';
   }, [description]);
 
   useEffect(() => {
     if (!result) return;
 
-    setInputValue(result?.description ?? '');
+    inputRef.current.value = result.description ?? '';
     setEditMode(false);
   }, [result]);
 
@@ -88,9 +100,11 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
                     <Loading size="sm" />
                   ) : (
                     <DoneButton
-                      onClick={() =>
-                        editProfileDescription({ newValue: inputValue })
-                      }
+                      onClick={() => {
+                        editProfileDescription({
+                          newValue: inputRef.current.value,
+                        });
+                      }}
                     />
                   )}
                 </>
@@ -101,17 +115,21 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           )}
         </Row>
 
-        {isOwner || description ? <AnimatedTextarea
-          width="100%"
-          size="lg"
-          placeholder="Ваше описание"
-          minRows={1}
-          read={!editMode}
-          readOnly={!editMode || editLoading}
-          disabled={!editMode}
-          {...bindings}
-        /> : <Text color='$neutral'>Описание отсутствует</Text>}
-        
+        {isOwner || description ? (
+          <AnimatedTextarea
+            width="100%"
+            size="lg"
+            placeholder="Ваше описание"
+            minRows={2}
+            read={!editMode}
+            readOnly={!editMode || editLoading}
+            disabled={!editMode}
+            maxRows={Infinity}
+            ref={inputRef}
+          />
+        ) : (
+          <Text color="$neutral">Описание отсутствует</Text>
+        )}
       </Description>
 
       <Row css={{ gap: '$3' }}>
