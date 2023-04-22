@@ -69,19 +69,20 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
 }) => {
   const [editMode, setEditMode] = useState(false);
 
-  const inputRef = createRef<ComponentRef<typeof AnimatedTextarea>>();
+  const inputRef = createRef<unknown>();
 
   const { loading: editLoading, result } = useStore($editProfileState);
 
   useEffect(() => {
     // TODO can use hook for that?
-    inputRef.current.value = description ?? '';
+    // if (!inputRef.current) return
+    (inputRef.current as any).value = description ?? '';
   }, [description]);
 
   useEffect(() => {
     if (!result) return;
-
-    inputRef.current.value = result.description ?? '';
+    // if (!inputRef.current) return
+    (inputRef.current as any).value = result.description ?? '';
     setEditMode(false);
   }, [result]);
 
@@ -102,7 +103,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
                     <DoneButton
                       onClick={() => {
                         editProfileDescription({
-                          newValue: inputRef.current.value,
+                          newValue: (inputRef.current as any).value,
                         });
                       }}
                     />
@@ -125,7 +126,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             readOnly={!editMode || editLoading}
             disabled={!editMode}
             maxRows={Infinity}
-            ref={inputRef}
+            ref={inputRef as any}
           />
         ) : (
           <Text color="$neutral">Описание отсутствует</Text>
