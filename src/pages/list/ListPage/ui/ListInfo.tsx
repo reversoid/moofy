@@ -45,7 +45,7 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
   }, [deleteSuccess]);
 
   const addToFavsLoading = useStore($addToFavoritesLoading);
-  const removeFromFavsLoading = useStore($removeFromFavoritesLoading);  
+  const removeFromFavsLoading = useStore($removeFromFavoritesLoading);
 
   return (
     <>
@@ -101,6 +101,7 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           isPrivate: !list.is_public,
           name: list.name,
         }}
+        listImageUrl={list.image_url}
       />
       <ConfirmModal
         content={<DeleteModalContent />}

@@ -26,10 +26,17 @@ export interface UpdateListModalProps {
   setIsOpen: (newValue: boolean) => void;
   listData: FormData;
   listId: number;
+  listImageUrl?: string;
 }
 
 export const UpdateListModal = memo(
-  ({ isOpen, setIsOpen, listData, listId }: UpdateListModalProps) => {
+  ({
+    isOpen,
+    setIsOpen,
+    listData,
+    listId,
+    listImageUrl,
+  }: UpdateListModalProps) => {
     const {
       register,
       formState: { isValid: isFormValid, errors },
@@ -131,7 +138,7 @@ export const UpdateListModal = memo(
           <ImageUpload
             text="Загрузить обложку"
             loading={loadingImage}
-            loadedImageSrc={successImage?.link ?? undefined}
+            loadedImageSrc={successImage?.link ?? listImageUrl ?? undefined}
             onChange={(file) => uploadImage({ file })}
           />
         </ModalBody>
