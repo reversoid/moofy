@@ -6,10 +6,16 @@ import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
 import { useEvent, useStore } from 'effector-react';
 import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { $createListState, clearState, createList } from '../model';
+import {
+  $createListState,
+  clearImageUploadState,
+  clearState,
+  createList,
+} from '../model';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { ImageUpload } from '../../../../shared/components/ImageUpload';
 import { listService } from '../../_api/list.service';
+import { $uploadImageListState, uploadImage } from '../model/uploadImage';
 
 interface FormData {
   name: string;
@@ -37,14 +43,18 @@ export const CreateListModal = memo(
     });
 
     const onSubmit = useEvent(createList);
-    const onClose = useEvent(clearState);
 
     const { loading, success } = useStore($createListState);
+
+    const { loading: loadingImage, success: successImage } = useStore(
+      $uploadImageListState,
+    );
 
     const handleClose = () => {
       reset();
       setIsOpen(false);
-      onClose();
+      clearImageUploadState();
+      clearState();
     };
 
     useEffect(() => {
@@ -67,7 +77,12 @@ export const CreateListModal = memo(
         <ModalBody>
           <Form
             onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-              onSubmit({ isPublic: !isPrivate, name, description }),
+              onSubmit({
+                isPublic: !isPrivate,
+                name,
+                description,
+                imageUrl: successImage?.link ?? undefined,
+              }),
             )}
             css={{ mb: '$10' }}
             id="create-list-modal-form"
@@ -115,8 +130,9 @@ export const CreateListModal = memo(
           </Form>
           <ImageUpload
             text="Загрузить обложку"
-            loadedImageSrc="https://c4.wallpaperflare.com/wallpaper/990/683/818/terrain-images-ranging-from-600x800-1200x1600-need-some-pictures-of8230-1600x1200-nature-forests-hd-art-wallpaper-preview.jpg"
-            onChange={(file) => listService.uploadImage(file!)}
+            loading={loadingImage}
+            loadedImageSrc={successImage?.link ?? undefined}
+            onChange={(file) => uploadImage({ file })}
           />
         </ModalBody>
         <ModalFooter>
@@ -124,7 +140,7 @@ export const CreateListModal = memo(
             form="create-list-modal-form"
             type="submit"
             size="lg"
-            disabled={!isFormValid}
+            disabled={!isFormValid || loadingImage}
             color={'gradient'}
             auto
             css={{

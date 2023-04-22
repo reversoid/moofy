@@ -50,7 +50,7 @@ const LabelContent = styled('div', {
 });
 
 export interface ImageUploadProps {
-  onChange?: (file: File | null) => void;
+  onChange?: (file: File) => void;
   loading?: boolean;
   loadedImageSrc?: string;
   text: string;
@@ -70,7 +70,9 @@ export const ImageUpload: FC<ImageUploadProps> = ({
         id="fileInput"
         accept=".png, .jpeg, .jpg, .webp, .heif"
         onChange={(e) => {
-          onChange && onChange(e.target.files?.[0] ?? null);
+          const file = e.target.files?.[0] ?? null;
+          if (!file) return;
+          onChange && onChange(file);
         }}
       />
 
