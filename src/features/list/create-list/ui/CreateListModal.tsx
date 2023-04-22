@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { $createListState, clearState, createList } from '../model';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { ImageUpload } from '../../../../shared/components/ImageUpload';
+import { listService } from '../../_api/list.service';
 
 interface FormData {
   name: string;
@@ -115,6 +116,7 @@ export const CreateListModal = memo(
           <ImageUpload
             text="Загрузить обложку"
             loadedImageSrc="https://c4.wallpaperflare.com/wallpaper/990/683/818/terrain-images-ranging-from-600x800-1200x1600-need-some-pictures-of8230-1600x1200-nature-forests-hd-art-wallpaper-preview.jpg"
+            onChange={(file) => listService.uploadImage(file!)}
           />
         </ModalBody>
         <ModalFooter>

@@ -21,6 +21,16 @@ export class ProfileService extends ApiService {
       },
     });
   }
+
+  public async uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    return this.post<{ link: string }>('/list/image-upload', {
+      useJWT: true,
+      body: formData,
+    });
+  }
 }
 
 export const profileService = new ProfileService();

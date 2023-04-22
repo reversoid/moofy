@@ -9,6 +9,7 @@ export interface CreateListDTO {
   name: string;
   description: string;
   isPublic: boolean;
+  imageUrl?: string;
 }
 
 export interface UpdateListDTO extends Partial<CreateListDTO> {
@@ -90,6 +91,16 @@ export class ListService extends ApiService {
     return this.delete<{ listId: number }>('/list', {
       useJWT: true,
       json: { listId },
+    });
+  }
+
+  public async uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    return this.post<{ link: string }>('/list/image-upload', {
+      useJWT: true,
+      body: formData,
     });
   }
 
