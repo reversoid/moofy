@@ -2,16 +2,15 @@ import React, { FC } from 'react';
 
 interface BookmarkIconProps {
   iconFilled?: boolean;
-  width?: string;
-  height?: string;
+  size?: string;
 }
 
-const Icon: FC<BookmarkIconProps> = ({ iconFilled, height, width }) => {
+const BookmarkIcon: FC<BookmarkIconProps> = ({ iconFilled, size }) => {
   const fillColor = iconFilled ? '#ECEDEE' : 'none';
   return (
     <svg
-      width={width ?? 800}
-      height={height ?? 800}
+      width={size ?? 800}
+      height={size ?? 800}
       viewBox="0 0 800 800"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -50,4 +49,4 @@ const Icon: FC<BookmarkIconProps> = ({ iconFilled, height, width }) => {
   );
 };
 
-export default Icon;
+export default BookmarkIcon;
