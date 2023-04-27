@@ -51,7 +51,7 @@ const LabelContent = styled('div', {
 
 export const SUPPORTED_EXTENSIONS = ['png', 'jpeg', 'jpg', 'webp', 'heif'];
 
-export const getFileExtension = (file: File) => file.name.split('.').at(-1) ?? '';
+export const getFileExtension = (file: File) => file.name.toLowerCase().split('.').at(-1) ?? '';
 
 export interface ImageUploadProps {
   onChange?: (file: File) => void;
