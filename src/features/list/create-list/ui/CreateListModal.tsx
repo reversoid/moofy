@@ -8,9 +8,18 @@ import { memo, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { $createListState, clearState, createList } from '../model';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
-import { ImageUpload } from '../../../../shared/components/ImageUpload';
+import {
+  ImageUpload,
+  SUPPORTED_EXTENSIONS,
+  getFileExtension,
+} from '../../../../shared/components/ImageUpload';
 import { listService } from '../../_api/list.service';
-import { $uploadImageListState, clearImageUploadState, uploadImage } from '../../_model/uploadImage';
+import {
+  $uploadImageListState,
+  clearImageUploadState,
+  uploadImage,
+} from '../../_model/uploadImage';
+import { setAppError } from '@/features/app';
 
 interface FormData {
   name: string;
@@ -58,6 +67,20 @@ export const CreateListModal = memo(
       }
       handleClose();
     }, [success]);
+
+    const handleUploadImage = (file: File) => {
+      const extension = getFileExtension(file);
+
+      if (!SUPPORTED_EXTENSIONS.includes(extension)) {
+        return setAppError('IMAGE_WRONG_FORMAT');
+      }
+      
+      if (file.size > 10 * 1024 * 1024) {
+        return setAppError('IMAGE_TOO_LARGE');
+      }
+
+      uploadImage({ file });
+    };
 
     return (
       <Modal
@@ -127,7 +150,7 @@ export const CreateListModal = memo(
             text="Загрузить обложку"
             loading={loadingImage}
             loadedImageSrc={successImage?.link ?? undefined}
-            onChange={(file) => uploadImage({ file })}
+            onChange={handleUploadImage}
           />
         </ModalBody>
         <ModalFooter>

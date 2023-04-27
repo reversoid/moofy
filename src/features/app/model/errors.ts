@@ -9,6 +9,9 @@ const errorsTranlations = {
   USERNAME_ALREADY_TAKEN: 'Имя пользователя уже занято',
 
   REVIEW_FOR_FILM_ALREADY_EXISTS: 'Обзор на фильм уже существует',
+
+  IMAGE_TOO_LARGE: 'Слишком большой размер файла',
+  IMAGE_WRONG_FORMAT: 'Неподдерживаемый формат файла',
 };
 
 export const setAppError = createEvent<string>();

@@ -49,6 +49,10 @@ const LabelContent = styled('div', {
   flexDirection: 'column',
 });
 
+export const SUPPORTED_EXTENSIONS = ['png', 'jpeg', 'jpg', 'webp', 'heif'];
+
+export const getFileExtension = (file: File) => file.name.split('.').at(-1) ?? '';
+
 export interface ImageUploadProps {
   onChange?: (file: File) => void;
   loading?: boolean;
@@ -68,7 +72,7 @@ export const ImageUpload: FC<ImageUploadProps> = ({
         type="file"
         hidden
         id="fileInput"
-        accept=".png, .jpeg, .jpg, .webp, .heif"
+        accept={SUPPORTED_EXTENSIONS.map((ext) => `.${ext}`).join(',')}
         onChange={(e) => {
           const file = e.target.files?.[0] ?? null;
           if (!file) return;

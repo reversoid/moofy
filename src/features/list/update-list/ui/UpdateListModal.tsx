@@ -13,7 +13,8 @@ import {
   clearImageUploadState,
   uploadImage,
 } from '../../_model/uploadImage';
-import { ImageUpload } from '@/shared/components/ImageUpload';
+import { ImageUpload, SUPPORTED_EXTENSIONS, getFileExtension } from '@/shared/components/ImageUpload';
+import { setAppError } from '@/features/app';
 
 export interface FormData {
   name: string;
@@ -69,6 +70,20 @@ export const UpdateListModal = memo(
     const { loading: loadingImage, success: successImage } = useStore(
       $uploadImageListState,
     );
+
+    const handleUploadImage = (file: File) => {
+      const extension = getFileExtension(file);
+
+      if (!SUPPORTED_EXTENSIONS.includes(extension)) {
+        return setAppError('IMAGE_WRONG_FORMAT');
+      }
+      
+      if (file.size > 10 * 1024 * 1024) {
+        return setAppError('IMAGE_TOO_LARGE');
+      }
+
+      uploadImage({ file });
+    };
 
     return (
       <Modal
@@ -139,7 +154,7 @@ export const UpdateListModal = memo(
             text="Загрузить обложку"
             loading={loadingImage}
             loadedImageSrc={successImage?.link ?? listImageUrl ?? undefined}
-            onChange={(file) => uploadImage({ file })}
+            onChange={handleUploadImage}
           />
         </ModalBody>
         <ModalFooter>
