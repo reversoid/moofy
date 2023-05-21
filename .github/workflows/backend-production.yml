@@ -1,0 +1,54 @@
+name: moofy-backend
+run-name: Deploy
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  deploy:
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Create production .env file and replace dev .env config
+        run: |
+          touch .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
+          echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
+          echo KP_API_KEY=${{ secrets.KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEY=${{ secrets.UNOFFICIAL_KP_API_KEY }} >> .env
+          echo PG_ADMIN_EMAIL=${{ secrets.PG_ADMIN_EMAIL }} >> .env
+          echo PG_ADMIN_PASSWORD=${{ secrets.PG_ADMIN_PASSWORD }} >> .env
+          echo S3_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env
+          echo S3_KEY_SECRET=${{ secrets.S3_KEY_SECRET }} >> .env
+          echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+          echo POSTGRES_KNOWN_HOST=postgres-db >> .env
+          echo REDIS_KNOWN_HOST=redis-db >> .env
+          echo NODE_ENV=prod >> .env
+          mv .env ./config
+
+      - name: Build and compose docker
+        run: docker compose --env-file ./config/.env -f docker-compose.prod.yml up --build -d
+
+      - name: Copy frontend and backend conf to nginx folder
+        run: |
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S mv ./nginx/backend.prod.conf /etc/nginx/
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S mv ./nginx/frontend.prod.conf /etc/nginx/
+
+      - name: Update nginx configuration and reload
+        run: |
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S mv ./nginx/nginx.conf /etc/nginx/
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S sudo nginx -t 
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo certbot --nginx -d moofy.ru -d www.moofy.ru -d api.moofy.ru -d test.moofy.ru -d www.test.moofy.ru -d api.test.moofy.ru -n --keep --agree-tos --expand
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S systemctl reload nginx
+  

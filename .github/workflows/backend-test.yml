@@ -1,0 +1,53 @@
+name: moofy-backend
+run-name: Deploy test application
+on:
+  push:
+    branches:
+      - "dev"
+jobs:
+  deploy:
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Create test .env file and replace dev .env config
+        run: |
+          touch .env
+          echo JWT_SECRET=${{ secrets.TEST_JWT_SECRET }} >> .env
+          echo COOKIE_SECRET=${{ secrets.TEST_COOKIE_SECRET }} >> .env
+          echo REDIS_PASSWORD=${{ secrets.TEST_REDIS_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.TEST_REDIS_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.TEST_REDIS_PORT }} >> .env
+          echo POSTGRES_USER=${{ secrets.TEST_POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.TEST_POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.TEST_POSTGRES_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.TEST_POSTGRES_PORT }} >> .env
+          echo KP_API_KEY=${{ secrets.TEST_KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEY=${{ secrets.TEST_UNOFFICIAL_KP_API_KEY }} >> .env
+          echo PG_ADMIN_EMAIL=${{ secrets.TEST_PG_ADMIN_EMAIL }} >> .env
+          echo PG_ADMIN_PASSWORD=${{ secrets.TEST_PG_ADMIN_PASSWORD }} >> .env
+          echo S3_KEY_ID=${{ secrets.TEST_S3_KEY_ID }} >> .env
+          echo S3_KEY_SECRET=${{ secrets.TEST_S3_KEY_SECRET }} >> .env
+          echo S3_BUCKET_NAME=${{ secrets.TEST_S3_BUCKET_NAME }} >> .env
+          echo POSTGRES_KNOWN_HOST=test-postgres-db >> .env
+          echo REDIS_KNOWN_HOST=test-redis-db >> .env
+          echo NODE_ENV=test >> .env
+          mv .env ./config
+
+      - name: Build and compose docker
+        run: docker compose -p test-moofy-backend --env-file ./config/.env -f docker-compose.test.yml up --build -d
+
+      - name: Copy frontend and backend conf to nginx folder
+        run: |
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S mv ./nginx/backend.test.conf /etc/nginx/
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S mv ./nginx/frontend.test.conf /etc/nginx/
+
+      - name: Update nginx configuration and reload
+        run: |
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S mv ./nginx/nginx.conf /etc/nginx/
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S sudo nginx -t 
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo certbot --nginx -d moofy.ru -d www.moofy.ru -d api.moofy.ru -d test.moofy.ru -d www.test.moofy.ru -d api.test.moofy.ru -n --keep --agree-tos --expand
+          echo ${{ secrets.VPS_USER_PASSWORD }} | sudo -S systemctl reload nginx
