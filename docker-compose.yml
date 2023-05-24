@@ -38,8 +38,6 @@ services:
       dockerfile: Dockerfile.prod
     container_name: frontend-prod
     restart: unless-stopped
-    expose:
-      - 80
     volumes:
       - ./frontend/html:/usr/share/nginx/html
     environment:
