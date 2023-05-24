@@ -1,0 +1,31 @@
+_id: req_f7c31e904ac44a7596d4816cd346c62b
+type: Request
+parentId: fld_e42d5e4b35c34347ab5eb24af3565151
+modified: 1669294245172
+created: 1668542473701
+url: "{{url}}/api/auth/register"
+name: Register
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"username": "reversoid",
+    	"email": "gosha@mail.ru",
+    	"password": "123"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_cde08df23c9042adb33630c2ed132817
+authentication: {}
+metaSortKey: -1668542044535
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

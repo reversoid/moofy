@@ -1,0 +1,33 @@
+_id: req_cdbf1ede4e0040ce862e594c2221d3f8
+type: Request
+parentId: wrk_5a146606147a4252b1690360f5b95910
+modified: 1668805936303
+created: 1668722707672
+url: https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword
+name: Unofficial kinopoisk request
+description: ""
+method: GET
+body: {}
+parameters:
+  - id: pair_1b50355771e149b68ccaabab2ef36125
+    name: keyword
+    value: синий бархат
+    description: ""
+  - id: pair_7fc79d6467a244c9b748c1ae7a08ec3d
+    name: ""
+    value: ""
+    description: ""
+headers:
+  - id: pair_a8aedd70ead24e64a0ef4fd2df8ba9d8
+    name: X-API-KEY
+    value: a997dc40-de47-4fb3-a40e-965626ec67d7
+    description: ""
+authentication: {}
+metaSortKey: -1668722707672
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

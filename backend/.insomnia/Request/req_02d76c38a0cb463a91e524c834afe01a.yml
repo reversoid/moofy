@@ -1,0 +1,49 @@
+_id: req_02d76c38a0cb463a91e524c834afe01a
+type: Request
+parentId: fld_7179c3448036469e90e05ad6a080fac8
+modified: 1669245108525
+created: 1668544647143
+url: "{{url}}/api/review"
+name: Get my reviews
+description: ""
+method: GET
+body:
+  mimeType: application/json
+  text: ""
+parameters:
+  - id: pair_c8ee97d0fdd04dcd921f7aedd94dc5c8
+    name: limit
+    value: "1"
+    description: ""
+    disabled: true
+  - id: pair_a62668f67c0046b69d5949a4d70548b6
+    name: lowerBound
+    value: 2022-11-15T23:09:57.277Z
+    description: ""
+    disabled: true
+  - id: pair_c68258ac549747fe9aa95c63ae7268af
+    name: includeFilms
+    value: "true"
+    description: ""
+    disabled: false
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_e722ca3e377f416c92f07dc36c4691ba
+  - id: pair_43156bb25ce04e7cbd142c9b4db14f1f
+    name: Authorization
+    value: Bearer {{token}}
+    description: ""
+  - id: pair_1eba90bee1e3413d9a6ca7a4b2c24f25
+    name: ""
+    value: ""
+    description: ""
+authentication: {}
+metaSortKey: -1668543644559.5
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

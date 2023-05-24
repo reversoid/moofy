@@ -1,0 +1,26 @@
+_id: req_414d872c92eb45d8ad5b69a556fd333f
+type: Request
+parentId: fld_e42d5e4b35c34347ab5eb24af3565151
+modified: 1668545391928
+created: 1668545382221
+url: "{{url}}/api/auth/refresh"
+name: Refresh
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: ""
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_cde08df23c9042adb33630c2ed132817
+authentication: {}
+metaSortKey: -1668542044510
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

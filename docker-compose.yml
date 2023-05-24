@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  ######################### Nginx proxy #########################
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/certs
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: acme-companion
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+
+  ######################### Frontend #########################
+  frontend-prod:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: frontend-prod
+    restart: unless-stopped
+    volumes:
+      - ./frontend/html:/usr/share/nginx/html
+    environment:
+      - VIRTUAL_HOST=prod.moofy.ru
+      - LETSENCRYPT_HOST=prod.moofy.ru
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    container_name: frontend-test
+    restart: unless-stopped
+    volumes:
+      - ./frontend/html:/usr/share/nginx/html
+    environment:
+      - VIRTUAL_HOST=test1.moofy.ru
+      - LETSENCRYPT_HOST=test1.moofy.ru
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+
+  ######################### Backend #########################
+  backend-prod: 
+    image: moofy-backend
+    restart: unless-stopped
+    container_name: backend-prod
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.prod
+    depends_on:
+      - redis-db
+    environment:
+      - VIRTUAL_HOST=api.prod.moofy.ru
+      - LETSENCRYPT_HOST=api.prod.moofy.ru
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    networks:
+      - moofy-network
+
+  backend-test: 
+    image: moofy-backend-test
+    restart: unless-stopped
+    container_name: backend-test
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.test
+    depends_on:
+      - redis-test-db
+    environment:
+      - VIRTUAL_HOST=api.test1.moofy.ru
+      - LETSENCRYPT_HOST=api.test1.moofy.ru
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    networks:
+      - moofy-test-network
+
+  ######################### For backend #########################
+  redis-db:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}"
+    volumes:
+      - redis-db:/data
+    networks:
+      - moofy-network
+
+  redis-test-db:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_TEST_PASSWORD}"
+    volumes:
+      - redis-db:/data
+    networks:
+      - moofy-test-network
+
+  postgres-test-db:
+    image: postgres
+    restart: unless-stopped
+    container_name: postgres-test-db
+
+    environment:
+      POSTGRES_USER: "${POSTGRES_TEST_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_TEST_PASSWORD}"
+    networks:
+      - moofy-test-network
+
+volumes:
+  redis-db:
+    driver: local
+  test-redis-db:
+    driver: local
+
+networks:
+  moofy-network:
+    driver: bridge
+  moofy-test-network:
+    driver: bridge

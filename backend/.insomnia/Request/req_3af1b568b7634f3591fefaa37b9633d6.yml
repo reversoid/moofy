@@ -1,0 +1,39 @@
+_id: req_3af1b568b7634f3591fefaa37b9633d6
+type: Request
+parentId: fld_b7546ba04bae45f78f0b47ab214a69b9
+modified: 1669294294424
+created: 1668542529044
+url: "{{url}}/api/list"
+name: Create list
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"name": "my list",
+    	"description": "welcome guys!",
+    	"isPublic": true
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_e722ca3e377f416c92f07dc36c4691ba
+  - id: pair_43156bb25ce04e7cbd142c9b4db14f1f
+    name: Authorization
+    value: Bearer {{token}}
+    description: ""
+  - id: pair_1eba90bee1e3413d9a6ca7a4b2c24f25
+    name: ""
+    value: ""
+    description: ""
+authentication: {}
+metaSortKey: -1668542044485
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
