@@ -1,6 +1,6 @@
 name: moofy-production
 run-name: Deploy
-on: 
+on:
   push:
     branches:
       - "production"
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Setup .env file
         run: |
@@ -58,9 +58,11 @@ jobs:
           rm ./backend/config/.env
           cp .env ./backend/config
 
-      - name: Build and compose docker
-        run: docker compose --env-file .env -f docker-compose.yml up --build -d
+      - uses: arwynfr/actions-docker-context@v2
+        with:
+          docker_host: "ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
+          context_name: "moofy-server"
+          ssh_cert: ${{ secrets.VPS_SSH_PUB }}
+          ssh_key: ${{ secrets.VPS_SSH_KEY }}
 
-
-      
-
+      - run: docker --context moofy-server compose --env-file .env -f docker-compose.yml up --build -d
