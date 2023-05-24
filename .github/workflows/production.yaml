@@ -58,13 +58,17 @@ jobs:
           rm ./backend/config/.env
           cp .env ./backend/config
 
-      - uses: arwynfr/actions-docker-context@v2
-        with:
-          docker_host: "ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
-          context_name: "moofy-server"
-          ssh_cert: ${{ secrets.VPS_SSH_PUB }}
-          ssh_key: ${{ secrets.VPS_SSH_KEY }}
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo ${{ secrets.VPS_SSH_KEY}} > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
 
-      - run: docker --context moofy-server container ls
-      - run: docker --context moofy-server compose --env-file .env -f docker-compose.yml up --build -d --quiet-pull
+      - name: Set up Docker context
+        run: |
+          docker context create moofy-server --docker "host=ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
+          docker context use moofy-server
       
+      - name: Compose docker
+        run: docker --context moofy-server compose --env-file .env -f docker-compose.yml up --build -d --quiet-pull
