@@ -1,9 +1,9 @@
-name: moofy-frontend
+name: moofy-production
 run-name: Deploy
 on: 
   push:
     branches:
-      - "main"
+      - "production"
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -13,19 +13,54 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: yarn
+      - name: Setup .env file
+        run: |
+          rm .env
+          touch .env
 
-      - name: Build project
-        run: yarn build:prod
+          echo NODE_ENV=prod >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
 
-      - name: Deploy via rsync
-        uses: burnett01/rsync-deployments@5.2.1
-        with:
-          switches: -avzr --delete
-          path: dist/
-          remote_path: ${{ secrets.FRONTEND_DESTINATION }}
-          remote_host: ${{ secrets.VPS_IP }}
-          remote_user: ${{ secrets.VPS_USERNAME }}
-          remote_key: ${{ secrets.VPS_SSH_KEY }}
+          echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+
+          echo REDIS_TEST_PASSWORD=${{ secrets.REDIS_TEST_PASSWORD }} >> .env
+          echo REDIS_TEST_HOST=${{ secrets.REDIS_TEST_HOST }} >> .env
+          echo REDIS_TEST_PORT=${{ secrets.REDIS_TEST_PORT }} >> .env
+
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
+
+          echo POSTGRES_TEST_USER=${{ secrets.POSTGRES_TEST_USER }} >> .env
+          echo POSTGRES_TEST_PASSWORD=${{ secrets.POSTGRES_TEST_PASSWORD }} >> .env
+          echo POSTGRES_TEST_HOST=${{ secrets.POSTGRES_TEST_HOST }} >> .env
+          echo POSTGRES_TEST_PORT=${{ secrets.POSTGRES_TEST_PORT }} >> .env
+
+          echo KP_API_KEY=${{ secrets.KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEY=${{ secrets.UNOFFICIAL_KP_API_KEY }} >> .env
+          echo PG_ADMIN_TEST_EMAIL=${{ secrets.PG_ADMIN_TEST_EMAIL }} >> .env
+          echo PG_ADMIN_TEST_PASSWORD=${{ secrets.PG_ADMIN_TEST_PASSWORD }} >> .env
+          echo S3_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env
+          echo S3_KEY_SECRET=${{ secrets.S3_KEY_SECRET }} >> .env
+          echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+          echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
+
+          echo POSTGRES_KNOWN_HOST=${{ secrets.POSTGRES_HOST }} >> .env
+          echo POSTGRES_TEST_KNOWN_HOST=postgres-db >> .env
+
+          echo REDIS_KNOWN_HOST=redis-db >> .env
+          echo REDIS_TEST_KNOWN_HOST=redis-test-db >> .env
+
+          rm ./backend/config/.env
+          cp .env ./backend/config
+
+      - name: Build and compose docker
+        run: docker compose --env-file .env -f docker-compose.yml up --build -d
+
+
+      
 
