@@ -65,6 +65,6 @@ jobs:
           ssh_cert: ${{ secrets.VPS_SSH_PUB }}
           ssh_key: ${{ secrets.VPS_SSH_KEY }}
 
-      - run: docker container ls
-      - run: docker --context moofy-server compose --env-file .env -f docker-compose.yml up --build -d
+      - run: docker --context moofy-server container ls
+      - run: docker --context moofy-server compose --env-file .env -f docker-compose.yml up --build -d --quiet-pull
       
