@@ -17,7 +17,7 @@ FROM nginx:1.23.4
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Копируем конфигурацию nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx
 
 # Указываем порт, на котором будет работать nginx
 EXPOSE 80
