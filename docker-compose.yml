@@ -7,6 +7,7 @@ services:
     container_name: nginx-proxy
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
@@ -32,12 +33,11 @@ services:
     restart: unless-stopped
     environment:
       - VIRTUAL_HOST=prod.moofy.ru
+      - LETSENCRYPT_HOST=prod.moofy.ru
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     expose:
       - 80
-    # environment:
-    #   - VIRTUAL_HOST=prod.moofy.ru
-    #   - LETSENCRYPT_HOST=prod.moofy.ru
-    #   - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+
     networks:
       - moofy-network
       #   # frontend-test:
