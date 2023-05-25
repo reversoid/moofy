@@ -78,6 +78,8 @@ services:
     environment:
       - VIRTUAL_HOST=api.prod.moofy.ru
       - LETSENCRYPT_HOST=api.prod.moofy.ru
+    depends_on:
+      - backend-prod
     networks:
       - moofy-network
 
