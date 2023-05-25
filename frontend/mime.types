@@ -1,0 +1,19 @@
+types {
+  text/html                             html htm shtml;
+  text/css                              css;
+  text/xml                              xml;
+  image/gif                             gif;
+  image/jpeg                            jpeg jpg;
+  application/java-archive              jar war ear;
+  application/json                      json;
+  application/pdf                       pdf;
+  text/plain                            txt;
+  image/png                             png;
+  image/svg+xml                         svg svgz;
+  application/xhtml+xml                 xhtml;
+  application/x-xpinstall               xpi;
+  application/x-tar                     tar;
+  application/x-rar-compressed          rar;
+  application/zip                       zip;
+  application/octet-stream              bin exe dll;
+}

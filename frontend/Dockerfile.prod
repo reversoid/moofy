@@ -16,6 +16,8 @@ FROM nginx:1.23.4
 # Копируем статические файлы приложения из предыдущего этапа
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Копируем MIME-типы
+COPY mime.types /etc/nginx/mime.types
 # Копируем конфигурацию nginx
 COPY nginx.conf /etc/nginx
 
