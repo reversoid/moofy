@@ -9,9 +9,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - vhost:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - certs:/etc/nginx/certs
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
       - moofy-network
@@ -23,7 +23,7 @@ services:
       - "nginx-proxy"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - acme:/etc/acme.sh
+      - /etc/acme.sh
     environment:
       - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
       - NGINX_PROXY_CONTAINER=nginx-proxy
