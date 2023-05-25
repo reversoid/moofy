@@ -9,7 +9,7 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/
+      - ./nginx/proxy.conf:/etc/nginx/proxy.conf
     networks:
       - moofy-network
 
