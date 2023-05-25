@@ -9,7 +9,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/certs
     networks:
       - moofy-network
 
@@ -18,6 +21,9 @@ services:
     container_name: acme-companion
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/nginx/certs
+      - /etc/acme.sh
+
     environment:
       - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
       - NGINX_PROXY_CONTAINER=nginx-proxy
@@ -35,8 +41,6 @@ services:
       - VIRTUAL_HOST=prod.moofy.ru
       - LETSENCRYPT_HOST=prod.moofy.ru
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-    expose:
-      - 80
 
     networks:
       - moofy-network
