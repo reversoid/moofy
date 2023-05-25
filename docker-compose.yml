@@ -66,9 +66,17 @@ services:
       dockerfile: ./Dockerfile.prod
     depends_on:
       - redis-db
+    networks:
+      - moofy-network
+
+  nginx-backend:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx-backend
+    restart: unless-stopped
     environment:
       - VIRTUAL_HOST=api.prod.moofy.ru
-      - VIRTUAL_PORT=3333
       - LETSENCRYPT_HOST=api.prod.moofy.ru
     networks:
       - moofy-network
