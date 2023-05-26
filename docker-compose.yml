@@ -13,7 +13,7 @@ services:
       - /usr/share/nginx/html
       - /etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx-proxy/my_max_size.conf:/etc/nginx/conf.d/my_max_size.conf:ro
+      - ./nginx-proxy/my_max_size.conf:/etc/nginx/conf.d/my_max_size.conf:rw
     networks:
       - moofy-network
 
