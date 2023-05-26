@@ -72,7 +72,7 @@ services:
 
   nginx-backend:
     build:
-      context: ./nginx
+      context: ./nginx-backend
       dockerfile: Dockerfile
     container_name: nginx-backend
     restart: unless-stopped
