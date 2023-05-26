@@ -13,7 +13,7 @@ services:
       - /usr/share/nginx/html
       - /etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx-proxy/custom_proxy_settings.conf:/etc/nginx/conf.d
+      - ./nginx-proxy/custom_proxy_settings.conf:/etc/nginx/conf.d:ro
     networks:
       - moofy-network
 
