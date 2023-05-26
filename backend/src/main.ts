@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupS3 } from './shared/libs/S3/s3';
 import { AppEnvironments } from './config/global.config';
+import { urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -45,6 +46,7 @@ async function bootstrap() {
     ],
     credentials: true,
   });
+  app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   await app.listen(3333);
 }
