@@ -42,10 +42,6 @@ async function bootstrap() {
       'https://www.test.moofy.ru',
       'https://test.moofy.ru',
       'http://localhost:3000',
-      'https://prod.moofy.ru',
-      'https://www.prod.moofy.ru',
-      'https://test1.moofy.ru',
-      'https://www.test1.moofy.ru',
     ],
     credentials: true,
   });

@@ -38,8 +38,8 @@ services:
     container_name: frontend-prod
     restart: unless-stopped
     environment:
-      - VIRTUAL_HOST=prod.moofy.ru
-      - LETSENCRYPT_HOST=prod.moofy.ru
+      - VIRTUAL_HOST=moofy.ru
+      - LETSENCRYPT_HOST=moofy.ru
     networks:
       - moofy-network
 
@@ -76,9 +76,9 @@ services:
     container_name: nginx-backend
     restart: unless-stopped
     environment:
-      - VIRTUAL_HOST=api.prod.moofy.ru
+      - VIRTUAL_HOST=api.moofy.ru
       - VIRTUAL_PORT=4444
-      - LETSENCRYPT_HOST=api.prod.moofy.ru
+      - LETSENCRYPT_HOST=api.moofy.ru
     depends_on:
       - backend-prod
     networks:
