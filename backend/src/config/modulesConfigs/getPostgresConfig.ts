@@ -17,6 +17,7 @@ export const getPostgresConfig = (): TypeOrmModule => {
         username: pgConfig.user,
         port: pgConfig.port,
         password: pgConfig.password,
+        database: pgConfig.dbName,
 
         synchronize: false,
         logging:

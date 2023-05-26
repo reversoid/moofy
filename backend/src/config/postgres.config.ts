@@ -17,4 +17,5 @@ export default registerAs('postgres', () => ({
   password: process.env.POSTGRES_PASSWORD?.trim(),
   host: getPostgresHost(),
   port: parseInt(process.env.POSTGRES_PORT?.trim()),
+  dbName: process.env.POSTGRES_DB_NAME?.trim(),
 }));

@@ -34,6 +34,7 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
+          echo POSTGRES_DB_NAME=${{ secrets.POSTGRES_DB_NAME }} >> .env
 
           echo POSTGRES_TEST_USER=${{ secrets.POSTGRES_TEST_USER }} >> .env
           echo POSTGRES_TEST_PASSWORD=${{ secrets.POSTGRES_TEST_PASSWORD }} >> .env
