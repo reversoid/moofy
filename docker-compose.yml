@@ -77,6 +77,7 @@ services:
     restart: unless-stopped
     environment:
       - VIRTUAL_HOST=api.prod.moofy.ru
+      - VIRTUAL_PORT=4444
       - LETSENCRYPT_HOST=api.prod.moofy.ru
     depends_on:
       - backend-prod
