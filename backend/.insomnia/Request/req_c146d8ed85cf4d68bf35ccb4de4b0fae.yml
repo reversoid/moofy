@@ -1,0 +1,49 @@
+_id: req_c146d8ed85cf4d68bf35ccb4de4b0fae
+type: Request
+parentId: fld_7179c3448036469e90e05ad6a080fac8
+modified: 1669244758709
+created: 1668544062716
+url: "{{url}}/api/review"
+name: Create review
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: >-
+    {
+    	"film": {
+    		"id": "1",
+    		"name": "Шрэк1",
+    		"year": 1986,
+    		"type": "FILM",
+    		"filmLength": "00:58",
+    		"posterPreviewUrl": "https://stackoverflow.com/questions/61581755/returning-id-of-inserted-query-in-typeorm-and-mysql",
+    		"posterUrl": "https://stackoverflow.com/questions/61581755/returning-id-of-inserted-query-in-typeorm-and-mysql",
+    		"genres": ["horror", "фантастика"]
+    	},
+    	"score": 10,
+    	"listId": 1,
+    	"description": "123"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_e722ca3e377f416c92f07dc36c4691ba
+  - id: pair_43156bb25ce04e7cbd142c9b4db14f1f
+    name: Authorization
+    value: Bearer {{token}}
+    description: ""
+  - id: pair_1eba90bee1e3413d9a6ca7a4b2c24f25
+    name: ""
+    value: ""
+    description: ""
+authentication: {}
+metaSortKey: -1668543644572
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

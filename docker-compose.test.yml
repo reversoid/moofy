@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  ######################### Nginx proxy #########################
+  nginx-proxy:
+    build: 
+      context: ./nginx-proxy
+      dockerfile: Dockerfile
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /etc/nginx/certs
+
+    networks:
+      - moofy-network
+      - moofy-test-network
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: acme-companion
+    restart: unless-stopped
+    volumes_from:
+      - "nginx-proxy"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    depends_on:
+      - nginx-proxy
+
+  ######################## Frontend #########################
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    container_name: frontend-test
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=test.moofy.ru
+      - LETSENCRYPT_HOST=test.moofy.ru
+    networks:
+      - moofy-test-network
+
+  ######################### Backend #########################
+  nginx-test-backend:
+    build:
+      context: ./nginx-backend/test
+      dockerfile: Dockerfile
+    container_name: nginx-test-backend
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=api.test.moofy.ru
+      - VIRTUAL_PORT=5555
+      - LETSENCRYPT_HOST=api.test.moofy.ru
+    depends_on:
+      - backend-test
+    networks:
+      - moofy-test-network
+
+  backend-test:
+    image: moofy-backend-test
+    restart: unless-stopped
+    container_name: backend-test
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.test
+    depends_on:
+      - redis-test-db
+      - postgres-test-db
+    networks:
+      - moofy-test-network
+
+  ######################### For backend #########################
+  redis-test-db:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_TEST_PASSWORD}"
+    volumes:
+      - redis-db:/data
+    networks:
+      - moofy-test-network
+
+  postgres-test-db:
+    image: postgres
+    restart: unless-stopped
+    container_name: postgres-test-db
+    environment:
+      POSTGRES_USER: "${POSTGRES_TEST_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_TEST_PASSWORD}"
+    networks:
+      - moofy-test-network
+
+volumes:
+  redis-db:
+    driver: local
+  test-redis-db:
+    driver: local
+
+networks:
+  moofy-network:
+    driver: bridge
+  moofy-test-network:
+    driver: bridge
