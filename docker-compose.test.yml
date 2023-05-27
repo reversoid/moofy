@@ -95,6 +95,7 @@ services:
     environment:
       POSTGRES_USER: "${POSTGRES_TEST_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_TEST_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_TEST_DB_NAME}"
     networks:
       - moofy-test-network
 

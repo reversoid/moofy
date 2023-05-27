@@ -1,5 +1,5 @@
 name: moofy-test
-run-name: Deploy
+run-name: Deploy test application
 on:
   push:
     branches:
@@ -22,24 +22,15 @@ jobs:
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
           echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
 
-          echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
-          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
-          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+          echo REDIS_PASSWORD=${{ secrets.REDIS_TEST_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_TEST_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_TEST_PORT }} >> .env
 
-          echo REDIS_TEST_PASSWORD=${{ secrets.REDIS_TEST_PASSWORD }} >> .env
-          echo REDIS_TEST_HOST=${{ secrets.REDIS_TEST_HOST }} >> .env
-          echo REDIS_TEST_PORT=${{ secrets.REDIS_TEST_PORT }} >> .env
-
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
-          echo POSTGRES_DB_NAME=${{ secrets.POSTGRES_DB_NAME }} >> .env
-
-          echo POSTGRES_TEST_USER=${{ secrets.POSTGRES_TEST_USER }} >> .env
-          echo POSTGRES_TEST_PASSWORD=${{ secrets.POSTGRES_TEST_PASSWORD }} >> .env
-          echo POSTGRES_TEST_HOST=${{ secrets.POSTGRES_TEST_HOST }} >> .env
-          echo POSTGRES_TEST_PORT=${{ secrets.POSTGRES_TEST_PORT }} >> .env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_TEST_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_TEST_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_TEST_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_TEST_PORT }} >> .env
+          echo POSTGRES_DB_NAME=${{ secrets.POSTGRES_TEST_DB_NAME }} >> .env
 
           echo KP_API_KEY=${{ secrets.KP_API_KEY }} >> .env
           echo UNOFFICIAL_KP_API_KEY=${{ secrets.UNOFFICIAL_KP_API_KEY }} >> .env
@@ -50,11 +41,9 @@ jobs:
           echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
           echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
-          echo POSTGRES_KNOWN_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-          echo POSTGRES_TEST_KNOWN_HOST=postgres-test-db >> .env
+          echo POSTGRES_KNOWN_HOST=postgres-test-db >> .env
 
-          echo REDIS_KNOWN_HOST=redis-db >> .env
-          echo REDIS_TEST_KNOWN_HOST=redis-test-db >> .env
+          echo REDIS_KNOWN_HOST=redis-test-db >> .env
 
           rm ./backend/config/.env
           cp .env ./backend/config
@@ -71,5 +60,5 @@ jobs:
           docker context create moofy-server --docker "host=ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
           docker context use moofy-server
       
-      - name: Compose docker
+      - name: Compose test docker
         run: docker --context moofy-server compose --env-file .env -f docker-compose.test.yml up --build -d
