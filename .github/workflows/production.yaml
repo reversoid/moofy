@@ -72,4 +72,4 @@ jobs:
           docker context use moofy-server
       
       - name: Compose docker
-        run: docker --context moofy-server compose --env-file .env -f docker-compose.yml up --build -d
+        run: docker --context moofy-server compose --env-file .env -f docker-compose.prod.yml up --build -d
