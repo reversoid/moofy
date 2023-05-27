@@ -19,6 +19,7 @@ services:
 
     networks:
       - moofy-network
+      - moofy-test-network
 
   acme-companion:
     image: nginxproxy/acme-companion
@@ -48,17 +49,17 @@ services:
     networks:
       - moofy-network
 
-  # frontend-test:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile.test
-  #   container_name: frontend-test
-  #   restart: unless-stopped
-  #   environment:
-  #     - VIRTUAL_HOST=test1.moofy.ru
-  #     - LETSENCRYPT_HOST=test1.moofy.ru
-  #   networks:
-  #     - moofy-test-network
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    container_name: frontend-test
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=test.moofy.ru
+      - LETSENCRYPT_HOST=test.moofy.ru
+    networks:
+      - moofy-test-network
 
   ######################### Backend #########################
 
@@ -89,21 +90,22 @@ services:
     networks:
       - moofy-network
 
-  # backend-test:
-  #   image: moofy-backend-test
-  #   restart: unless-stopped
-  #   container_name: backend-test
-  #   build:
-  #     context: ./backend
-  #     dockerfile: ./Dockerfile.test
-  #   depends_on:
-  #     - redis-test-db
-  #     - postgres-test-db
-  #   environment:
-  #     - VIRTUAL_HOST=api.test1.moofy.ru
-  #     - LETSENCRYPT_HOST=api.test1.moofy.ru
-  #   networks:
-  #     - moofy-test-network
+  backend-test:
+    image: moofy-backend-test
+    restart: unless-stopped
+    container_name: backend-test
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.test
+    depends_on:
+      - redis-test-db
+      - postgres-test-db
+    environment:
+      - VIRTUAL_HOST=api.test.moofy.ru
+      - VIRTUAL_PORT=4444
+      - LETSENCRYPT_HOST=api.test.moofy.ru
+    networks:
+      - moofy-test-network
 
   ######################### For backend #########################
 
@@ -116,24 +118,24 @@ services:
     networks:
       - moofy-network
 
-  # redis-test-db:
-  #   image: redis:7.0.5-alpine
-  #   restart: unless-stopped
-  #   command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_TEST_PASSWORD}"
-  #   volumes:
-  #     - redis-db:/data
-  #   networks:
-  #     - moofy-test-network
+  redis-test-db:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_TEST_PASSWORD}"
+    volumes:
+      - redis-db:/data
+    networks:
+      - moofy-test-network
 
-  # postgres-test-db:
-  #   image: postgres
-  #   restart: unless-stopped
-  #   container_name: postgres-test-db
-  #   environment:
-  #     POSTGRES_USER: "${POSTGRES_TEST_USER}"
-  #     POSTGRES_PASSWORD: "${POSTGRES_TEST_PASSWORD}"
-  #   networks:
-  #     - moofy-test-network
+  postgres-test-db:
+    image: postgres
+    restart: unless-stopped
+    container_name: postgres-test-db
+    environment:
+      POSTGRES_USER: "${POSTGRES_TEST_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_TEST_PASSWORD}"
+    networks:
+      - moofy-test-network
 
 volumes:
   redis-db:
