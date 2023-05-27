@@ -3,19 +3,17 @@ version: '3.8'
 services:
   ######################### Nginx proxy #########################
   nginx-proxy:
-    build:
-      context: ./nginx-proxy
-      dockerfile: Dockerfile
+    image: jwilder/nginx-proxy
     container_name: nginx-proxy
-    restart: unless-stopped
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./data/certs:/etc/nginx/certs:rw
-      - ./data/vhost:/etc/nginx/vhost.d:rw
-      - ./data/html:/usr/share/nginx/html:rw
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /etc/nginx/certs
+
     networks:
       - moofy-network
 
@@ -138,10 +136,6 @@ volumes:
     driver: local
   test-redis-db:
     driver: local
-  certs:
-  vhost:
-  html:
-
 
 networks:
   moofy-network:
