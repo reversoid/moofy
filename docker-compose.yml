@@ -3,7 +3,9 @@ version: '3.8'
 services:
   ######################### Nginx proxy #########################
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    build: 
+      context: ./nginx-proxy
+      dockerfile: Dockerfile
     container_name: nginx-proxy
     restart: unless-stopped
     ports:
