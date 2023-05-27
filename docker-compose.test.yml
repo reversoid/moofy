@@ -84,7 +84,7 @@ services:
     restart: unless-stopped
     command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_TEST_PASSWORD}"
     volumes:
-      - redis-db:/data
+      - test-redis-db:/data
     networks:
       - moofy-test-network
 
