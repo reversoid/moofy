@@ -51,7 +51,7 @@ jobs:
           echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
           echo POSTGRES_KNOWN_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-          echo POSTGRES_TEST_KNOWN_HOST=postgres-db >> .env
+          echo POSTGRES_TEST_KNOWN_HOST=postgres-test-db >> .env
 
           echo REDIS_KNOWN_HOST=redis-db >> .env
           echo REDIS_TEST_KNOWN_HOST=redis-test-db >> .env
