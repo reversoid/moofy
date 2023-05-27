@@ -82,7 +82,7 @@ services:
   redis-test-db:
     image: redis:7.0.5-alpine
     restart: unless-stopped
-    command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_TEST_PASSWORD}"
+    command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}"
     volumes:
       - test-redis-db:/data
     networks:
@@ -93,9 +93,9 @@ services:
     restart: unless-stopped
     container_name: postgres-test-db
     environment:
-      POSTGRES_USER: "${POSTGRES_TEST_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_TEST_PASSWORD}"
-      POSTGRES_DB: "${POSTGRES_TEST_DB_NAME}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB_NAME}"
     networks:
       - moofy-test-network
 
