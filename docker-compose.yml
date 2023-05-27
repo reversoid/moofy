@@ -144,10 +144,6 @@ volumes:
 
 
 networks:
-  default: 
-    external: 
-      name: nginx-proxy
-
   moofy-network:
     driver: bridge
   moofy-test-network:
