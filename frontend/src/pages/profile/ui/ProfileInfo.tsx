@@ -75,13 +75,13 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
 
   useEffect(() => {
     // TODO can use hook for that?
-    // if (!inputRef.current) return
+    if (!inputRef.current) return
     (inputRef.current as any).value = description ?? '';
   }, [description]);
 
   useEffect(() => {
     if (!result) return;
-    // if (!inputRef.current) return
+    if (!inputRef.current) return
     (inputRef.current as any).value = result.description ?? '';
     setEditMode(false);
   }, [result]);
