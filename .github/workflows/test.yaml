@@ -45,7 +45,6 @@ jobs:
 
           echo REDIS_KNOWN_HOST=redis-test-db >> .env
 
-          rm ./backend/config/.env
           cp .env ./backend/config
 
       - name: Configure SSH
