@@ -1,4 +1,10 @@
 # moofy-backend
 ## Миграции
-- Перед запуском любой команды `yarn migration:create, generate, run, down` необходимо выполнить `yarn build`
+- Перед запуском команд `yarn migration:create, generate, run, down` необходимо выполнить `yarn build`
 - Для создания или генерации миграции необходимо написать путь *src/db/migrations/migration-name*
+
+## WSL
+Если используется WSL, то необходимо
+- Установить Docker на WSL
+- Запустить Docker `sudo service docker start`
+- Если возникает ошибка с *Permission Denied*, нужно ввести `sudo chmod 666 /var/run/docker.sock`
