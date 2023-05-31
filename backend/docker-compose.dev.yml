@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres-db:
     image: postgres
-    restart: always
+    restart: no
     environment:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
@@ -14,7 +14,7 @@ services:
     image: dpage/pgadmin4
     depends_on:
       - postgres-db
-    restart: always
+    restart: no
     environment:
       PGADMIN_DEFAULT_EMAIL: "${PG_ADMIN_EMAIL}"
       PGADMIN_DEFAULT_PASSWORD: "${PG_ADMIN_PASSWORD}"
@@ -23,7 +23,7 @@ services:
 
   redis-db:
     image: redis:7.0.5-alpine
-    restart: always
+    restart: no
     ports:
       - '6379:6379'
     command: "redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}"
