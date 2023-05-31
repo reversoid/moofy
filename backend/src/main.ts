@@ -40,7 +40,7 @@ async function bootstrap() {
     origin:
       configService.get<AppEnvironments>('global.environment') ===
       AppEnvironments.test
-        ? ['*']
+        ? '*'
         : [
             'https://moofy.ru',
             'https://www.moofy.ru',
