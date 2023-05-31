@@ -37,13 +37,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.use(cookieParser(configService.get<string>('secrets.cookie')));
   app.enableCors({
-    origin: [
-      'https://moofy.ru',
-      'https://www.moofy.ru',
-      'https://www.test.moofy.ru',
-      'https://test.moofy.ru',
-      'http://localhost:3000',
-    ],
+    origin:
+      configService.get<AppEnvironments>('global.environment') ===
+      AppEnvironments.test
+        ? ['*']
+        : [
+            'https://moofy.ru',
+            'https://www.moofy.ru',
+            'https://www.test.moofy.ru',
+            'https://test.moofy.ru',
+            'http://localhost:3000',
+          ],
     credentials: true,
   });
   app.use(urlencoded({ extended: true, limit: '10mb' }));
