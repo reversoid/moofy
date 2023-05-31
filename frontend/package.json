@@ -4,7 +4,8 @@
   "version": "1.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development",
+    "dev-remote": "vite --mode development-remote",
+    "dev-local": "vite --mode development-local",
     "build:prod": "tsc && vite build --mode production",
     "build:test": "tsc && vite build --mode test",
     "preview": "vite preview"
