@@ -11,6 +11,7 @@ const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   signed: true,
   path: '/auth/protected',
+  sameSite: 'none',
 };
 
 @ApiTags('Authorization')
