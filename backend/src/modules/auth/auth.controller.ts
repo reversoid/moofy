@@ -2,15 +2,16 @@ import { Body, Controller, Get, Inject, Post, Req, Res } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CookieOptions, Request, Response } from 'express';
-import globalConfig from 'src/config/global.config';
+import globalConfig, { AppEnvironments } from 'src/config/global.config';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
 
-const DEFAULT_REFRESH_COOKIE_OPTIONS = {
+const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   signed: true,
   path: '/auth/protected',
+  sameSite: false,
 };
 
 @ApiTags('Authorization')
@@ -105,7 +106,7 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: false, // TODO switch to === prod when ssl is ready
+      secure: this.config.environment !== AppEnvironments.dev,
       expires: dateInFuture,
     };
   }
