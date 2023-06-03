@@ -63,7 +63,6 @@ export class AuthController {
   ) {
     try {
       const oldToken: string = request.signedCookies['refresh_token'];
-      console.log(oldToken);
 
       const { access, refresh, userId } = await this.authService.refresh(
         oldToken,
@@ -106,7 +105,9 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: ![AppEnvironments.dev].includes(this.config.environment),
+      secure: ![AppEnvironments.dev, AppEnvironments.test].includes(
+        this.config.environment,
+      ),
       httpOnly: ![AppEnvironments.dev].includes(this.config.environment),
       sameSite: 'strict',
       expires: dateInFuture,
