@@ -106,13 +106,9 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: ![AppEnvironments.dev, AppEnvironments.test].includes(
-        this.config.environment,
-      ),
-      httpOnly: ![AppEnvironments.dev, AppEnvironments.test].includes(
-        this.config.environment,
-      ),
-      sameSite: 'none',
+      secure: ![AppEnvironments.dev].includes(this.config.environment),
+      httpOnly: ![AppEnvironments.dev].includes(this.config.environment),
+      sameSite: 'strict',
       expires: dateInFuture,
     };
   }
