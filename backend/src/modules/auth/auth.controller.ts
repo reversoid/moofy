@@ -10,6 +10,7 @@ import { RegisterDTO } from './dtos/register.dto';
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   signed: true,
   path: '/auth/protected',
+  sameSite: 'lax',
 };
 
 @ApiTags('Authorization')
@@ -105,11 +106,8 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: ![AppEnvironments.dev, AppEnvironments.test].includes(
-        this.config.environment,
-      ),
+      secure: ![AppEnvironments.dev].includes(this.config.environment),
       httpOnly: ![AppEnvironments.dev].includes(this.config.environment),
-      sameSite: 'strict',
       expires: dateInFuture,
     };
   }
