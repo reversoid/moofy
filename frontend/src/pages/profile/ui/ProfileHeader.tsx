@@ -8,7 +8,7 @@ export interface ProfileHeaderProps {
   username: string;
 }
 
-const UserImageContainer = styled(IconButton, {
+const UserImageContainer = styled('div', {
   borderRadius: '50%',
   backgroundColor: '$gray100 !important',
   width: '6rem !important',
@@ -16,7 +16,6 @@ const UserImageContainer = styled(IconButton, {
   display: 'flex',
   ai: 'center',
   jc: 'center',
-  overflow: 'hidden',
 });
 
 const UserImg = styled('img', {
@@ -30,10 +29,9 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ username }) => {
     <Row css={{ flexDirection: 'column', gap: '$5', alignItems: 'center' }}>
       <UserImageContainer>
         <BasicImageUpload
-          css={{ width: '6rem', height: '6rem' }}
-          wrapperProps={{
-            css: { display: 'flex', ai: 'center', jc: 'center' },
-          }}
+          color={'primary'}
+          onFileSelect={(file) => console.log(file)}
+          css={{ width: '6rem', height: '6rem', borderRadius: '50%' }}
         >
           <UserImg src={profileIcon} />
         </BasicImageUpload>

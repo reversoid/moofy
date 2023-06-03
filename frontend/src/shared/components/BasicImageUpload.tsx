@@ -1,46 +1,44 @@
-import { DividerProps, styled } from '@nextui-org/react';
-import React, {
-  ComponentProps,
-  FC,
-  PropsWithChildren,
-  PropsWithRef,
-  PropsWithoutRef,
-  Ref,
-  forwardRef,
-  useState,
-} from 'react';
-import { SUPPORTED_EXTENSIONS } from './ImageUpload';
+import { Button, ButtonProps, styled } from '@nextui-org/react';
 import { nanoid } from 'nanoid';
+import { PropsWithChildren, forwardRef, useState } from 'react';
+import { SUPPORTED_EXTENSIONS } from './ImageUpload';
 
 const Input = styled('input', {
   display: 'none',
 });
 
-const Wrapper = styled('div', {
-  position: 'relative',
-});
-
-const Label = styled('label', {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-});
-
 interface BasicImageUploadProps {
-  onChange?: (file: File) => void;
-  wrapperProps?: ComponentProps<typeof Label>
+  onFileSelect?: (file: File) => void;
 }
 
 export const BasicImageUpload = forwardRef<
-  HTMLDivElement,
-  PropsWithChildren<BasicImageUploadProps> & ComponentProps<typeof Wrapper>
->(({ onChange, children, wrapperProps, ...props }, ref) => {
+  HTMLButtonElement,
+  PropsWithChildren<BasicImageUploadProps & ButtonProps>
+>(({ onFileSelect, children, ...props }, ref) => {
   const [id] = useState(nanoid());
 
+  const handleClick = () => {
+    document.getElementById(id)?.click();
+  };
+
   return (
-    <Wrapper ref={ref} {...props}>
+    <Button
+      {...{
+        ...props,
+        css: {
+          width: 'auto',
+          height: 'auto',
+          p: '0',
+          minWidth: 'auto',
+          flexShrink: '0',
+          ...props.css,
+        },
+      }}
+      ref={ref}
+      light
+      ripple={false}
+      onClick={handleClick}
+    >
       <Input
         type="file"
         hidden
@@ -49,10 +47,10 @@ export const BasicImageUpload = forwardRef<
         onChange={(e) => {
           const file = e.target.files?.[0] ?? null;
           if (!file) return;
-          onChange && onChange(file);
+          onFileSelect && onFileSelect(file);
         }}
       />
-      <Label htmlFor={id} {...wrapperProps}>{children}</Label>
-    </Wrapper>
+      {children}
+    </Button>
   );
 });
