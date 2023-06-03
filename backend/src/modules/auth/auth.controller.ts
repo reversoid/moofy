@@ -112,6 +112,7 @@ export class AuthController {
       httpOnly: ![AppEnvironments.dev, AppEnvironments.test].includes(
         this.config.environment,
       ),
+      sameSite: 'none',
       expires: dateInFuture,
     };
   }
