@@ -8,10 +8,8 @@ import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
-  httpOnly: true,
   signed: true,
   path: '/auth/protected',
-  sameSite: 'none',
 };
 
 @ApiTags('Authorization')
@@ -65,6 +63,8 @@ export class AuthController {
   ) {
     try {
       const oldToken: string = request.signedCookies['refresh_token'];
+      console.log(oldToken);
+
       const { access, refresh, userId } = await this.authService.refresh(
         oldToken,
       );
