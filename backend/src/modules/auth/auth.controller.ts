@@ -11,7 +11,6 @@ const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   signed: true,
   path: '/auth/protected',
-  sameSite: false,
 };
 
 @ApiTags('Authorization')
@@ -106,7 +105,12 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: this.config.environment !== AppEnvironments.dev,
+      secure: ![AppEnvironments.dev, AppEnvironments.test].includes(
+        this.config.environment,
+      ),
+      httpOnly: ![AppEnvironments.dev, AppEnvironments.test].includes(
+        this.config.environment,
+      ),
       expires: dateInFuture,
     };
   }
