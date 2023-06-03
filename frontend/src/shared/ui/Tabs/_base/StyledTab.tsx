@@ -5,6 +5,9 @@ export const StyledTab = styled(Tab, {
   fontFamily: '$sans !important',
   fontWeight: '700 !important',
   fontSize: '$4xl !important',
+  '@mdMax': {
+    fontSize: '$3xl !important',
+  },
   '@xsMax': {
     fontSize: '$3xl !important',
   },

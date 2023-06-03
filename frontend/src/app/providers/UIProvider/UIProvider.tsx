@@ -13,16 +13,28 @@ const darkTheme = createTheme({
 });
 
 const UiWrapper = styled('div', {
-  '@xsMax': {
+  '@mdMax': {
     '& h1': {
       fontSize: '$4xl',
-      mb: '$10',
+      mb: '$9',
     },
     '& h2': {
       fontSize: '$3xl',
     },
     '& h3': {
       fontSize: '$2xl',
+    }
+  },
+  '@xsMax': {
+    '& h1': {
+      fontSize: '$3xl',
+      mb: '$8',
+    },
+    '& h2': {
+      fontSize: '$2xl',
+    },
+    '& h3': {
+      fontSize: '$xl',
     }
   },
 });
