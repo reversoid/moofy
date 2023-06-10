@@ -54,7 +54,7 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({ imageUrl }) => {
           >
             <Button
               tabIndex={-1}
-              color={'gradient'}
+              color={'default'}
               css={{ flexGrow: 1, '@xsMax': { width: '100%' } }}
             >
               Загрузить
