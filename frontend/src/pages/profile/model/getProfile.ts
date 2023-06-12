@@ -13,6 +13,8 @@ import { getMoreProfileListsFx } from './getMoreProfileLists';
 import { getProfileListsFx } from './getProfileLists';
 import { getProfileFavListsFx } from './getProfileFavLists';
 import { editProfileDescriptionFx } from './editProfileDescription';
+import { saveProfileImageFx } from '@/widgets/profile-image-modal/model/upload-image-workflow';
+import { deleteProfileImageFx } from '@/widgets/profile-image-modal/model/delete-image';
 
 export const getProfile = createEvent<number | undefined>();
 export const clearState = createEvent<void>();
@@ -81,6 +83,14 @@ $profile.on(editProfileDescriptionFx.doneData, (state, payload) => {
     description: payload.description,
   };
 });
+$profile.on(saveProfileImageFx.doneData, (state, payload) => ({
+  ...(state ?? {}),
+  ...payload,
+}));
+$profile.on(deleteProfileImageFx.doneData, (state, payload) => ({
+  ...(state ?? {}),
+  ...payload,
+}));
 
 const $getProfileError = createStore<string | null>(null);
 $getProfileError.on(

@@ -26,7 +26,7 @@ export class ProfileService extends ApiService {
     const formData = new FormData();
     formData.append('image', file);
 
-    return this.post<{ link: string }>('/list/image-upload', {
+    return this.post<{ link: string }>('/profile/image-upload', {
       useJWT: true,
       body: formData,
     });
