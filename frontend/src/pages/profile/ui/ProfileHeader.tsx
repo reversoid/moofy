@@ -9,9 +9,11 @@ import {
 } from '../model/uploadProfileImage';
 import { useStore } from 'effector-react';
 import { ProfileImageModal } from '@/widgets/profile-image-modal';
+import { PictureIcon } from '@/shared/Icons/Picture.icon';
 
 export interface ProfileHeaderProps {
   username: string;
+  imageUrl: string | null;
 }
 
 const UserImageContainer = styled('div', {
@@ -25,33 +27,26 @@ const UserImageContainer = styled('div', {
 });
 
 const UserImg = styled('img', {
-  width: '5rem',
-  height: '5rem',
+  width: '6rem',
+  height: '6rem',
   objectFit: 'contain',
+  borderRadius: '50%'
 });
 
-const ProfileHeader: FC<ProfileHeaderProps> = ({ username }) => {
-  const { loading } = useStore($uploadImageProfileState);
-
+const ProfileHeader: FC<ProfileHeaderProps> = ({ username, imageUrl }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
   return (
     <>
-      <ProfileImageModal
-        imageUrl={
-          'https://shapka-youtube.ru/wp-content/uploads/2021/03/patsanskaya-kartinka-na-avu.jpg'
-        }
-        opened={true}
-      />
+      <ProfileImageModal imageUrl={imageUrl} opened={imageModalOpen} setOpened={setImageModalOpen}/>
       <Row css={{ flexDirection: 'column', gap: '$5', alignItems: 'center' }}>
         <UserImageContainer onClick={() => setImageModalOpen(true)}>
-          <BasicImageUpload
-            onFileSelect={(file) => uploadImage({ file })}
-            css={{ width: '6rem', height: '6rem', borderRadius: '50%' }}
-          >
-            {loading ? <Loading size="lg" /> : <UserImg src={profileIcon} />}
-          </BasicImageUpload>
-          {/* <PictureIcon color='#ecedee' size='3.5rem' /> */}
+          {imageUrl ? (
+            <UserImg src={imageUrl} />
+          ) : (
+            <PictureIcon color="#ecedee" size="3.5rem" />
+          )}
+          
         </UserImageContainer>
         <Text h1 css={{ textAlign: 'center' }}>
           {username}

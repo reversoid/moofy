@@ -51,7 +51,7 @@ const PageContent: FC<PageContentProps> = ({ profile, userOwner }) => {
 
   return (
     <>
-      <ProfileHeader username={profile.username} />
+      <ProfileHeader username={profile.username} imageUrl={profile.image_url} />
       <ProfileInfo
         createdAt={new Date(profile.created_at)}
         description={profile.description}

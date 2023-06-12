@@ -1,11 +1,23 @@
-import { Button, ButtonProps, styled } from '@nextui-org/react';
+import {
+  Button,
+  ButtonProps,
+  styled,
+  cssFocusVisible,
+} from '@nextui-org/react';
 import { nanoid } from 'nanoid';
-import { PropsWithChildren, forwardRef, useState } from 'react';
+import { PropsWithChildren, createRef, forwardRef, useState } from 'react';
 import { SUPPORTED_EXTENSIONS } from './ImageUpload';
 
 const Input = styled('input', {
-  display: 'none',
+  width: '0.1px',
+  height: '0.1px',
+  opacity: 0,
+  overflow: 'hidden',
+  position: 'absolute',
+  zIndex: -1,
 });
+
+const Label = styled('label', cssFocusVisible);
 
 interface BasicImageUploadProps {
   onFileSelect?: (file: File) => void;
@@ -16,32 +28,20 @@ export const BasicImageUpload = forwardRef<
   PropsWithChildren<BasicImageUploadProps & ButtonProps>
 >(({ onFileSelect, children, ...props }, ref) => {
   const [id] = useState(nanoid());
+  const [labelFocused, setLabelFocused] = useState(false);
 
-  const handleClick = () => {
-    document.getElementById(id)?.click();
+  const handleFocus = () => {
+    setLabelFocused(true);
+  };
+
+  const handleBlur = () => {
+    setLabelFocused(false);
   };
 
   return (
-    <Button
-      {...{
-        ...props,
-        css: {
-          width: 'auto',
-          height: 'auto',
-          p: '0',
-          minWidth: 'auto',
-          flexShrink: '0',
-          ...props.css,
-        },
-      }}
-      ref={ref}
-      light
-      ripple={false}
-      onClick={handleClick}
-    >
+    <>
       <Input
         type="file"
-        hidden
         id={id}
         accept={SUPPORTED_EXTENSIONS.map((ext) => `.${ext}`).join(',')}
         onChange={(e) => {
@@ -49,8 +49,16 @@ export const BasicImageUpload = forwardRef<
           if (!file) return;
           onFileSelect && onFileSelect(file);
         }}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
-      {children}
-    </Button>
+      <Label
+        htmlFor={id}
+        isFocusVisible={labelFocused}
+        css={{ borderRadius: '$md', width: '100%' }}
+      >
+        {children}
+      </Label>
+    </>
   );
 });

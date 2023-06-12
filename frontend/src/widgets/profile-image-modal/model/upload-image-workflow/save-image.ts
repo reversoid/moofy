@@ -8,7 +8,7 @@ import {
   createStore,
   sample,
 } from 'effector';
-import { profileImageService } from '../api/profile-image.service';
+import { profileImageService } from '../../api/profile-image.service';
 import { Profile } from '@/shared/api/types/profile.type';
 
 export const saveProfileImage = createEvent<{ link: string }>();
@@ -23,7 +23,6 @@ $saveImageSuccess.on(clearState, () => null);
 
 export const $profileImageSaveState = combine({
   success: $saveImageSuccess,
-  loading: saveProfileImageFx.pending,
 });
 
 sample({
