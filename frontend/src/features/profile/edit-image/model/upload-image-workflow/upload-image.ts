@@ -1,6 +1,3 @@
-// TODO move to actions
-// TODO move api to actions
-
 import {
   combine,
   createEffect,

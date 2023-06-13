@@ -6,13 +6,9 @@ import { FC } from 'react';
 import {
   deleteProfileImage,
   $profileImageDeleteState,
-} from '../model/delete-image';
-import {
   $uploadAndSaveState,
-  $uploadProfileImageState,
   uploadAndSaveProfileImage,
-  uploadProfileImage,
-} from '../model/upload-image-workflow';
+} from '@/features/profile/edit-image';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 
 const ImageContainer = styled('div', {
@@ -104,10 +100,7 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
             <Image src={imageUrl ?? ''} loading={uploading || deleting}></Image>
           ) : (
             <EmptyImagePlaceholderWrapper>
-              <PictureIcon
-                color={'#3A3F42'}
-                size="12rem"
-              />
+              <PictureIcon color={'#3A3F42'} size="12rem" />
             </EmptyImagePlaceholderWrapper>
           )}
 

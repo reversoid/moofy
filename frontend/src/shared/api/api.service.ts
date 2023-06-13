@@ -5,7 +5,7 @@ import environment from '@/app/environment';
 import { AuthResponse } from './types/authResponse.type';
 
 interface CustomOptions extends Options {
-  /** With this option all logic about JWT tokens on client is proceeded automatically */
+  /** With this option enabled all logic about JWT tokens on client is proceeded automatically */
   useJWT?: boolean;
 }
 

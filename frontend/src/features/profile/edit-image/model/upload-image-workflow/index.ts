@@ -1,10 +1,6 @@
 import { combine, createEvent, createStore, sample } from 'effector';
 import { uploadProfileImage, uploadProfileImageFx } from './upload-image';
-import {
-  $profileImageSaveState,
-  saveProfileImage,
-  saveProfileImageFx,
-} from './save-image';
+import { saveProfileImage, saveProfileImageFx } from './save-image';
 import { Profile } from '@/shared/api/types/profile.type';
 
 export * from './save-image';

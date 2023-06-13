@@ -13,8 +13,7 @@ import { getMoreProfileListsFx } from './getMoreProfileLists';
 import { getProfileListsFx } from './getProfileLists';
 import { getProfileFavListsFx } from './getProfileFavLists';
 import { editProfileDescriptionFx } from './editProfileDescription';
-import { saveProfileImageFx } from '@/widgets/profile-image-modal/model/upload-image-workflow';
-import { deleteProfileImageFx } from '@/widgets/profile-image-modal/model/delete-image';
+import { saveProfileImageFx, deleteProfileImageFx } from '@/features/profile/edit-image';
 
 export const getProfile = createEvent<number | undefined>();
 export const clearState = createEvent<void>();
