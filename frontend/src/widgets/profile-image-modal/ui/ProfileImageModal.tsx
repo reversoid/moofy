@@ -102,6 +102,14 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
     notify({ message: 'Изображение загружено' });
   }, [uploadAndSaveSuccess]);
 
+  useEffect(() => {
+    if (!deleteSuccess) {
+      return;
+    }
+    setOpened(false);
+    notify({ message: 'Изображение удалено' });
+  }, [deleteSuccess]);
+
   return (
     <Modal open={opened} closeButton={true} onClose={() => setOpened(false)}>
       <ModalBody
