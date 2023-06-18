@@ -16,13 +16,20 @@ export const Wrapper = styled(Container, {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
-  flexGrow: 1
+  flexGrow: 1,
 });
 
 const AppWrapper = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-  minHeight: '100%'
+  minHeight: '100%',
+  variants: {
+    notFullHeight: {
+      true: {
+        minHeight: 'auto',
+      },
+    },
+  },
 });
 
 export const Layout = ({ disableMaxWidth }: LayoutProps) => {
@@ -34,7 +41,7 @@ export const Layout = ({ disableMaxWidth }: LayoutProps) => {
     <>
       <ScrollToTop />
       <Header />
-      <AppWrapper>
+      <AppWrapper notFullHeight={disableMaxWidth}>
         <Wrapper
           lg
           css={{
@@ -50,6 +57,7 @@ export const Layout = ({ disableMaxWidth }: LayoutProps) => {
         </Wrapper>
         <Footer />
       </AppWrapper>
+
       <ErrorSnackbar />
       <NotifySnackbar />
     </>
