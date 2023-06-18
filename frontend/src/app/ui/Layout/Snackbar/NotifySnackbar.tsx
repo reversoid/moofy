@@ -1,12 +1,6 @@
-import React, { memo } from 'react';
+import { useNotifySnackbar } from '@/app/utils/useNotifySnackbar';
 import { Alert, Snackbar } from '@mui/material';
 import { styled } from '@nextui-org/react';
-
-export interface ErrorSnackBarprops {
-  open: boolean;
-  message: string;
-  closeSnackBar: () => void;
-}
 
 const SnackBarStyled = styled(Snackbar, {
   '& .MuiAlert-filledSuccess': {
@@ -16,20 +10,19 @@ const SnackBarStyled = styled(Snackbar, {
   zIndex: '10000 !important',
 });
 
-export const NotifySnackbar = ({
-  open,
-  message,
-  closeSnackBar,
-}: ErrorSnackBarprops) => {
+export const NotifySnackbar = () => {
+  const { handleSnackbarClose, isSnackbarOpen, notifyMessage } =
+    useNotifySnackbar();
+
   return (
     <SnackBarStyled
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      open={open}
+      open={isSnackbarOpen}
       autoHideDuration={4000}
-      onClose={closeSnackBar}
+      onClose={handleSnackbarClose}
     >
-      <Alert severity="success" onClose={closeSnackBar} variant="filled">
-        {message}
+      <Alert severity="success" onClose={handleSnackbarClose} variant="filled">
+        {notifyMessage}
       </Alert>
     </SnackBarStyled>
   );

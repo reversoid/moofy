@@ -2,10 +2,8 @@ import { Suspense, memo, useEffect } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
 import { ErrorSnackbar } from './Snackbar/ErrorSnackbar';
-import { useErrorSnackbar } from './useErrorSnackbar';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
-import { useNotifySnackbar } from './useNotifySnackbar';
 import { NotifySnackbar } from './Snackbar/NotifySnackbar';
 
 interface LayoutProps {
@@ -30,19 +28,6 @@ export const ScrollToTop = () => {
 };
 
 export const Layout = ({ disableMaxWidth }: LayoutProps) => {
-  // TODO use components to encapsulate logic about snackbars
-  const {
-    errorMessage,
-    handleSnackbarClose: handleErrorSnackbarClose,
-    isSnackbarOpen: isErrorSnackbarOpen,
-  } = useErrorSnackbar();
-
-  const {
-    handleSnackbarClose: handleNotifySnackbarClose,
-    isSnackbarOpen: isNotifySnackbarOpen,
-    notifyMessage,
-  } = useNotifySnackbar();
-
   const maxWidthStyles = disableMaxWidth
     ? { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' }
     : {};
@@ -65,16 +50,8 @@ export const Layout = ({ disableMaxWidth }: LayoutProps) => {
         </Suspense>
       </Wrapper>
       <Footer />
-      <ErrorSnackbar
-        open={isErrorSnackbarOpen}
-        message={errorMessage!}
-        closeSnackBar={handleErrorSnackbarClose}
-      />
-      <NotifySnackbar
-        closeSnackBar={handleNotifySnackbarClose}
-        message={notifyMessage!}
-        open={isNotifySnackbarOpen}
-      />
+      <ErrorSnackbar />
+      <NotifySnackbar />
     </>
   );
 };
