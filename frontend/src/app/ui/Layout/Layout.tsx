@@ -5,6 +5,7 @@ import { ErrorSnackbar } from './Snackbar/ErrorSnackbar';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
 import { NotifySnackbar } from './Snackbar/NotifySnackbar';
+import { ScrollToTop } from '@/app/utils/scrollToTop';
 
 interface LayoutProps {
   disableMaxWidth?: boolean;
@@ -15,17 +16,14 @@ export const Wrapper = styled(Container, {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
+  flexGrow: 1
 });
 
-export const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-};
+const AppWrapper = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: '100%'
+});
 
 export const Layout = ({ disableMaxWidth }: LayoutProps) => {
   const maxWidthStyles = disableMaxWidth
@@ -36,20 +34,22 @@ export const Layout = ({ disableMaxWidth }: LayoutProps) => {
     <>
       <ScrollToTop />
       <Header />
-      <Wrapper
-        lg
-        css={{
-          paddingBottom: '$12',
-          paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
-          minHeight: '100%',
-          ...maxWidthStyles,
-        }}
-      >
-        <Suspense>
-          <Outlet />
-        </Suspense>
-      </Wrapper>
-      <Footer />
+      <AppWrapper>
+        <Wrapper
+          lg
+          css={{
+            paddingBottom: '$12',
+            paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
+            minHeight: '100%',
+            ...maxWidthStyles,
+          }}
+        >
+          <Suspense>
+            <Outlet />
+          </Suspense>
+        </Wrapper>
+        <Footer />
+      </AppWrapper>
       <ErrorSnackbar />
       <NotifySnackbar />
     </>
