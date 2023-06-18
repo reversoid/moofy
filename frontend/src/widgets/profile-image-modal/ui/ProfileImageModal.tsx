@@ -8,9 +8,12 @@ import {
   $profileImageDeleteState,
   $uploadAndSaveState,
   uploadAndSaveProfileImage,
+  clearDeleteProfileImageState,
+  clearUploadAndSaveProfileImageState,
 } from '@/features/profile/edit-image';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { notify } from '@/features/app/model/notify';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 
 const ImageContainer = styled('div', {
   width: 'min(100%, 25rem)',
@@ -99,7 +102,7 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
       return;
     }
     setOpened(false);
-    notify({ message: 'Изображение загружено' });
+    notify('Изображение загружено');
   }, [uploadAndSaveSuccess]);
 
   useEffect(() => {
@@ -107,8 +110,13 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
       return;
     }
     setOpened(false);
-    notify({ message: 'Изображение удалено' });
+    notify('Изображение удалено');
   }, [deleteSuccess]);
+
+  useUnmount(() => {
+    clearDeleteProfileImageState()
+    clearUploadAndSaveProfileImageState()
+  })
 
   return (
     <Modal open={opened} closeButton={true} onClose={() => setOpened(false)}>
