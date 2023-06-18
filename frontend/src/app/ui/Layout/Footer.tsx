@@ -27,6 +27,8 @@ function Footer() {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        flexGrow: 0,
+        flexShrink: 0,
         width: '100%',
         pt: '$10',
         pb: '$8',

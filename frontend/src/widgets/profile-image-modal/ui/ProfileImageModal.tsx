@@ -2,14 +2,18 @@ import { BasicImageUpload } from '@/shared/components/BasicImageUpload';
 import { Modal, ModalBody, ModalFooter } from '@/shared/ui/Modal';
 import { Button, Loading, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   deleteProfileImage,
   $profileImageDeleteState,
   $uploadAndSaveState,
   uploadAndSaveProfileImage,
+  clearDeleteProfileImageState,
+  clearUploadAndSaveProfileImageState,
 } from '@/features/profile/edit-image';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
+import { notify } from '@/features/app/model/notify';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 
 const ImageContainer = styled('div', {
   width: 'min(100%, 25rem)',
@@ -87,8 +91,32 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
 }) => {
   const onFileSelected = (file: File) => uploadAndSaveProfileImage({ file });
   const onDeleteClicked = () => deleteProfileImage();
-  const { loading: uploading } = useStore($uploadAndSaveState);
-  const { loading: deleting } = useStore($profileImageDeleteState);
+  const { loading: uploading, success: uploadAndSaveSuccess } =
+    useStore($uploadAndSaveState);
+  const { loading: deleting, success: deleteSuccess } = useStore(
+    $profileImageDeleteState,
+  );
+
+  useEffect(() => {
+    if (!uploadAndSaveSuccess) {
+      return;
+    }
+    setOpened(false);
+    notify('Изображение загружено');
+  }, [uploadAndSaveSuccess]);
+
+  useEffect(() => {
+    if (!deleteSuccess) {
+      return;
+    }
+    setOpened(false);
+    notify('Изображение удалено');
+  }, [deleteSuccess]);
+
+  useUnmount(() => {
+    clearDeleteProfileImageState()
+    clearUploadAndSaveProfileImageState()
+  })
 
   return (
     <Modal open={opened} closeButton={true} onClose={() => setOpened(false)}>
