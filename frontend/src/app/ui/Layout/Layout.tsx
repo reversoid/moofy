@@ -1,10 +1,12 @@
 import { Suspense, memo, useEffect } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
-import { ErrorSnackBar } from './SnackBar';
-import { useSnackbar } from './useSnackBar';
+import { ErrorSnackbar } from './Snackbar/ErrorSnackbar';
+import { useErrorSnackbar } from './useErrorSnackbar';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
+import { useNotifySnackbar } from './useNotifySnackbar';
+import { NotifySnackbar } from './Snackbar/NotifySnackbar';
 
 interface LayoutProps {
   disableMaxWidth?: boolean;
@@ -28,9 +30,22 @@ export const ScrollToTop = () => {
 };
 
 export const Layout = ({ disableMaxWidth }: LayoutProps) => {
-  const { errorMessage, handleSnackbarClose, isSnackBarOpen } = useSnackbar();
+  // TODO use components to encapsulate logic about snackbars
+  const {
+    errorMessage,
+    handleSnackbarClose: handleErrorSnackbarClose,
+    isSnackbarOpen: isErrorSnackbarOpen,
+  } = useErrorSnackbar();
 
-  const maxWidthStyles = disableMaxWidth ? { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' } : {}
+  const {
+    handleSnackbarClose: handleNotifySnackbarClose,
+    isSnackbarOpen: isNotifySnackbarOpen,
+    notifyMessage,
+  } = useNotifySnackbar();
+
+  const maxWidthStyles = disableMaxWidth
+    ? { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' }
+    : {};
 
   return (
     <>
@@ -50,10 +65,15 @@ export const Layout = ({ disableMaxWidth }: LayoutProps) => {
         </Suspense>
       </Wrapper>
       <Footer />
-      <ErrorSnackBar
-        open={isSnackBarOpen}
+      <ErrorSnackbar
+        open={isErrorSnackbarOpen}
         message={errorMessage!}
-        closeSnackBar={handleSnackbarClose}
+        closeSnackBar={handleErrorSnackbarClose}
+      />
+      <NotifySnackbar
+        closeSnackBar={handleNotifySnackbarClose}
+        message={notifyMessage!}
+        open={isNotifySnackbarOpen}
       />
     </>
   );

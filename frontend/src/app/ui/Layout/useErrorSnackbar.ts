@@ -2,18 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
 import { $appErrorStore } from '@/features/app';
 
-export const useSnackbar = () => {
+export const useErrorSnackbar = () => {
   const error = useStore($appErrorStore);
 
-  const [isSnackBarOpen, setIsSnackBarOpen] = useState(Boolean(error.error));
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(Boolean(error.error));
 
   useEffect(() => {
-    setIsSnackBarOpen(Boolean(error.error));
+    setIsSnackbarOpen(Boolean(error.error));
   }, [error]);
 
   const handleSnackbarClose = useCallback(() => {
-    setIsSnackBarOpen(false);
+    setIsSnackbarOpen(false);
   }, []);
 
-  return { isSnackBarOpen, errorMessage: error.error, handleSnackbarClose };
+  return { isSnackbarOpen, errorMessage: error.error, handleSnackbarClose };
 };

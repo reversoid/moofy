@@ -9,14 +9,14 @@ export interface ErrorSnackBarprops {
 }
 
 const SnackBarStyled = styled(Snackbar, {
-  '& .MuiAlert-filledError': {
-    background: '$error',
+  '& .MuiAlert-filledSuccess': {
+    background: '$primary',
     fontFamily: 'inherit',
   },
-  zIndex: '10000 !important'
+  zIndex: '10000 !important',
 });
 
-export const ErrorSnackBar = ({
+export const NotifySnackbar = ({
   open,
   message,
   closeSnackBar,
@@ -28,7 +28,7 @@ export const ErrorSnackBar = ({
       autoHideDuration={4000}
       onClose={closeSnackBar}
     >
-      <Alert severity="error" onClose={closeSnackBar} variant="filled">
+      <Alert severity="success" onClose={closeSnackBar} variant="filled">
         {message}
       </Alert>
     </SnackBarStyled>
