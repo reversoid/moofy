@@ -1,15 +1,7 @@
-import { Button, Loading, Row, Text, styled } from '@nextui-org/react';
-import React, { FC, useState } from 'react';
-import profileIcon from '@/shared/assets/img/user-round.svg';
-import { IconButton } from '@/shared/ui/IconButton/IconButton';
-import { BasicImageUpload } from '@/shared/components/BasicImageUpload';
-import {
-  $uploadImageProfileState,
-  uploadImage,
-} from '../model/uploadProfileImage';
-import { useStore } from 'effector-react';
-import { ProfileImageModal } from '@/widgets/profile-image-modal';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
+import { ProfileImageModal } from '@/widgets/profile-image-modal';
+import { Row, Text, styled, cssFocusVisible } from '@nextui-org/react';
+import { FC, useState } from 'react';
 
 export interface ProfileHeaderProps {
   username: string;
@@ -24,13 +16,14 @@ const UserImageContainer = styled('div', {
   display: 'flex',
   ai: 'center',
   jc: 'center',
+  cursor: 'pointer',
 });
 
 const UserImg = styled('img', {
   width: '6rem',
   height: '6rem',
   objectFit: 'contain',
-  borderRadius: '50%'
+  borderRadius: '50%',
 });
 
 const ProfileHeader: FC<ProfileHeaderProps> = ({ username, imageUrl }) => {
@@ -38,7 +31,11 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ username, imageUrl }) => {
 
   return (
     <>
-      <ProfileImageModal imageUrl={imageUrl} opened={imageModalOpen} setOpened={setImageModalOpen}/>
+      <ProfileImageModal
+        imageUrl={imageUrl}
+        opened={imageModalOpen}
+        setOpened={setImageModalOpen}
+      />
       <Row css={{ flexDirection: 'column', gap: '$5', alignItems: 'center' }}>
         <UserImageContainer onClick={() => setImageModalOpen(true)}>
           {imageUrl ? (
@@ -46,7 +43,6 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ username, imageUrl }) => {
           ) : (
             <PictureIcon color="#ecedee" size="3.5rem" />
           )}
-          
         </UserImageContainer>
         <Text h1 css={{ textAlign: 'center' }}>
           {username}
