@@ -15,7 +15,7 @@ const HelpPage = lazy(() => import('./help'));
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Layout disableMaxWidth={true} />,
+    element: <Layout fullWidth={true} />,
     children: [
       {
         index: true,

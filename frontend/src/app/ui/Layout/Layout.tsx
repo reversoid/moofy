@@ -8,7 +8,7 @@ import { NotifySnackbar } from './Snackbar/NotifySnackbar';
 import { ScrollToTop } from '@/app/utils/scrollToTop';
 
 interface LayoutProps {
-  disableMaxWidth?: boolean;
+  fullWidth?: boolean;
 }
 
 export const Wrapper = styled(Container, {
@@ -17,6 +17,20 @@ export const Wrapper = styled(Container, {
     paddingRight: '0.5rem !important',
   },
   flexGrow: 1,
+  paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
+  paddingBottom: '$12',
+  minHeight: '100%',
+
+  variants: {
+    fullWidth: {
+      true: {
+        maxWidth: '100% !important',
+        px: '0 !important',
+        pb: '0 !important',
+        minHeight: 'auto !important',
+      },
+    },
+  },
 });
 
 const AppWrapper = styled('div', {
@@ -32,25 +46,13 @@ const AppWrapper = styled('div', {
   },
 });
 
-export const Layout = ({ disableMaxWidth }: LayoutProps) => {
-  const maxWidthStyles = disableMaxWidth
-    ? { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' }
-    : {};
-
+export const Layout = ({ fullWidth }: LayoutProps) => {
   return (
     <>
       <ScrollToTop />
       <Header />
-      <AppWrapper notFullHeight={disableMaxWidth}>
-        <Wrapper
-          lg
-          css={{
-            paddingBottom: '$12',
-            paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
-            minHeight: '100%',
-            ...maxWidthStyles,
-          }}
-        >
+      <AppWrapper notFullHeight={fullWidth}>
+        <Wrapper lg fullWidth={fullWidth}>
           <Suspense>
             <Outlet />
           </Suspense>
