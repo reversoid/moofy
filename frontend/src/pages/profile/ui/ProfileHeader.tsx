@@ -1,6 +1,7 @@
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
+import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { ProfileImageModal } from '@/widgets/profile-image-modal';
-import { Row, Text, styled, cssFocusVisible } from '@nextui-org/react';
+import { Row, Text, styled } from '@nextui-org/react';
 import { FC, useState } from 'react';
 
 export interface ProfileHeaderProps {
@@ -8,7 +9,7 @@ export interface ProfileHeaderProps {
   imageUrl: string | null;
 }
 
-const UserImageContainer = styled('div', {
+const UserImageContainer = styled(IconButton, {
   borderRadius: '50%',
   backgroundColor: '$gray100 !important',
   width: '6rem !important',
