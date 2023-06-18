@@ -3,22 +3,13 @@ import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { ProfileImageModal } from '@/widgets/profile-image-modal';
 import { Row, Text, styled } from '@nextui-org/react';
 import { FC, useState } from 'react';
+import { UserImageContainer } from './UserImageContainer';
 
 export interface ProfileHeaderProps {
   username: string;
   imageUrl: string | null;
+  isOwner: boolean;
 }
-
-const UserImageContainer = styled(IconButton, {
-  borderRadius: '50%',
-  backgroundColor: '$gray100 !important',
-  width: '6rem !important',
-  height: '6rem !important',
-  display: 'flex',
-  ai: 'center',
-  jc: 'center',
-  cursor: 'pointer',
-});
 
 const UserImg = styled('img', {
   width: '6rem',
@@ -27,7 +18,11 @@ const UserImg = styled('img', {
   borderRadius: '50%',
 });
 
-const ProfileHeader: FC<ProfileHeaderProps> = ({ username, imageUrl }) => {
+const ProfileHeader: FC<ProfileHeaderProps> = ({
+  username,
+  imageUrl,
+  isOwner,
+}) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
   return (
@@ -38,7 +33,10 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ username, imageUrl }) => {
         setOpened={setImageModalOpen}
       />
       <Row css={{ flexDirection: 'column', gap: '$5', alignItems: 'center' }}>
-        <UserImageContainer onClick={() => setImageModalOpen(true)}>
+        <UserImageContainer
+          onClick={() => setImageModalOpen(true)}
+          isOwner={isOwner}
+        >
           {imageUrl ? (
             <UserImg src={imageUrl} />
           ) : (
