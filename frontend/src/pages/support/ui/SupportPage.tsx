@@ -16,27 +16,24 @@ const SupportPage = () => {
       <Text>
         Если вы столкнулись с проблемой или у вас есть предложение по улучшению
         сервиса — пишите:
-        <Ul>
-          <Li>
-            <Link
-              css={{ fontSize: '$xl' }}
-              href="mailto:grenka7777777@gmail.com"
-            >
-              grenka7777777@gmail.com
-            </Link>
-          </Li>
-          <Li>
-            <Link
-              css={{ fontSize: '$xl' }}
-              href="https://t.me/xoxo_gosha"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @xoxo_gosha
-            </Link>
-          </Li>
-        </Ul>
       </Text>
+      <Ul>
+        <Li>
+          <Link css={{ fontSize: '$xl' }} href="mailto:grenka7777777@gmail.com">
+            grenka7777777@gmail.com
+          </Link>
+        </Li>
+        <Li>
+          <Link
+            css={{ fontSize: '$xl' }}
+            href="https://t.me/xoxo_gosha"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @xoxo_gosha
+          </Link>
+        </Li>
+      </Ul>
     </>
   );
 };
