@@ -1,15 +1,19 @@
 import { Environment } from './Environment';
-import { devEnv } from './dev.env';
+import { devEnvLocal } from './dev.local.env';
+import { devEnvRemote } from './dev.remote.env';
 import { prodEnv } from './prod.env';
 import { testEnv } from './test.env';
-import { isDev } from './utils/isDev';
+import { isDevLocal } from './utils/isDevLocal';
+import { isDevRemote } from './utils/isDevRemote';
 import { isProd } from './utils/isProd';
 import { isTest } from './utils/isTest';
 
 let environment: Environment;
 
-if (isDev()) {
-  environment = devEnv;
+if (isDevRemote()) {
+  environment = devEnvRemote;
+} else if (isDevLocal()) {
+  environment = devEnvLocal;
 } else if (isProd()) {
   environment = prodEnv;
 } else if (isTest()) {

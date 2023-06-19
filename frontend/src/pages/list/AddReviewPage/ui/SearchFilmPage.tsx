@@ -29,6 +29,8 @@ export const ImageContainer = styled('div', {
 
 export const Wrapper = styled('div', { width: '100%', position: 'relative' });
 
+const searchFilms = debounce(getFilmsByName, 250)
+
 export const SearchFilmPage = () => {
   const [options, setOptions] = useState<Film[]>([]);
 
@@ -52,10 +54,9 @@ export const SearchFilmPage = () => {
 
   const { result, loading } = useStore($getFilmsState);
 
-  const searchFilms = debounce(getFilmsByName, 250)
-
   useEffect(() => {
     if (!inputValue) return;
+    searchFilms.cancel()
     searchFilms(inputValue);
   }, [inputValue]);
 

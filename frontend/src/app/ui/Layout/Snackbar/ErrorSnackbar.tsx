@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { useErrorSnackbar } from '@/app/utils/useErrorSnackbar';
 import { Alert, Snackbar } from '@mui/material';
 import { styled } from '@nextui-org/react';
 
@@ -13,23 +13,22 @@ const SnackBarStyled = styled(Snackbar, {
     background: '$error',
     fontFamily: 'inherit',
   },
-  zIndex: '10000 !important'
+  zIndex: '10000 !important',
 });
 
-export const ErrorSnackBar = ({
-  open,
-  message,
-  closeSnackBar,
-}: ErrorSnackBarprops) => {
+export const ErrorSnackbar = () => {
+  const { errorMessage, handleSnackbarClose, isSnackbarOpen } =
+    useErrorSnackbar();
+
   return (
     <SnackBarStyled
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      open={open}
+      open={isSnackbarOpen}
       autoHideDuration={4000}
-      onClose={closeSnackBar}
+      onClose={handleSnackbarClose}
     >
-      <Alert severity="error" onClose={closeSnackBar} variant="filled">
-        {message}
+      <Alert severity="error" onClose={handleSnackbarClose} variant="filled">
+        {errorMessage}
       </Alert>
     </SnackBarStyled>
   );

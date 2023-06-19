@@ -1,13 +1,14 @@
 import { Suspense, memo, useEffect } from 'react';
 import { Container, styled } from '@nextui-org/react';
 import Header, { HEADER_HEIGHT } from './Header';
-import { ErrorSnackBar } from './SnackBar';
-import { useSnackbar } from './useSnackBar';
+import { ErrorSnackbar } from './Snackbar/ErrorSnackbar';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
+import { NotifySnackbar } from './Snackbar/NotifySnackbar';
+import { ScrollToTop } from '@/app/utils/scrollToTop';
 
 interface LayoutProps {
-  disableMaxWidth?: boolean;
+  fullWidth?: boolean;
 }
 
 export const Wrapper = styled(Container, {
@@ -15,46 +16,52 @@ export const Wrapper = styled(Container, {
     paddingLeft: '0.5rem !important',
     paddingRight: '0.5rem !important',
   },
+  flexGrow: 1,
+  paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
+  paddingBottom: '$12',
+  minHeight: '100%',
+
+  variants: {
+    fullWidth: {
+      true: {
+        maxWidth: '100% !important',
+        px: '0 !important',
+        pb: '0 !important',
+        minHeight: 'auto !important',
+      },
+    },
+  },
 });
 
-export const ScrollToTop = () => {
-  const { pathname } = useLocation();
+const AppWrapper = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: '100%',
+  variants: {
+    notFullHeight: {
+      true: {
+        minHeight: 'auto',
+      },
+    },
+  },
+});
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-};
-
-export const Layout = ({ disableMaxWidth }: LayoutProps) => {
-  const { errorMessage, handleSnackbarClose, isSnackBarOpen } = useSnackbar();
-
-  const maxWidthStyles = disableMaxWidth ? { maxWidth: '100%', px: 0, pb: 0, minHeight: 'auto' } : {}
-
+export const Layout = ({ fullWidth }: LayoutProps) => {
   return (
     <>
       <ScrollToTop />
       <Header />
-      <Wrapper
-        lg
-        css={{
-          paddingBottom: '$12',
-          paddingTop: `calc(${HEADER_HEIGHT} + $2)`,
-          minHeight: '100%',
-          ...maxWidthStyles,
-        }}
-      >
-        <Suspense>
-          <Outlet />
-        </Suspense>
-      </Wrapper>
-      <Footer />
-      <ErrorSnackBar
-        open={isSnackBarOpen}
-        message={errorMessage!}
-        closeSnackBar={handleSnackbarClose}
-      />
+      <AppWrapper notFullHeight={fullWidth}>
+        <Wrapper lg fullWidth={fullWidth}>
+          <Suspense>
+            <Outlet />
+          </Suspense>
+        </Wrapper>
+        <Footer />
+      </AppWrapper>
+
+      <ErrorSnackbar />
+      <NotifySnackbar />
     </>
   );
 };

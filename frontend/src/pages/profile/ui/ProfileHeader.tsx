@@ -1,25 +1,53 @@
+import { PictureIcon } from '@/shared/Icons/Picture.icon';
+import { IconButton } from '@/shared/ui/IconButton/IconButton';
+import { ProfileImageModal } from '@/widgets/profile-image-modal';
 import { Row, Text, styled } from '@nextui-org/react';
-import React, { FC } from 'react';
+import { FC, useState } from 'react';
+import { UserImageContainer } from './UserImageContainer';
 
 export interface ProfileHeaderProps {
   username: string;
+  imageUrl: string | null;
+  isOwner: boolean;
 }
 
-const UserImg = styled('div', {
-  borderRadius: '50%',
-  backgroundColor: '$neutral',
+const UserImg = styled('img', {
   width: '6rem',
-  height: '6rem'
+  height: '6rem',
+  objectFit: 'contain',
+  borderRadius: '50%',
 });
 
-const ProfileHeader: FC<ProfileHeaderProps> = ({ username }) => {
+const ProfileHeader: FC<ProfileHeaderProps> = ({
+  username,
+  imageUrl,
+  isOwner,
+}) => {
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+
   return (
-    <Row css={{ flexDirection: 'column', gap: '$5', alignItems: 'center' }}>
-      <UserImg />
-      <Text h1 css={{ textAlign: 'center' }}>
-        {username}
-      </Text>
-    </Row>
+    <>
+      <ProfileImageModal
+        imageUrl={imageUrl}
+        opened={imageModalOpen}
+        setOpened={setImageModalOpen}
+      />
+      <Row css={{ flexDirection: 'column', gap: '$5', alignItems: 'center' }}>
+        <UserImageContainer
+          onClick={() => setImageModalOpen(true)}
+          isOwner={isOwner}
+        >
+          {imageUrl ? (
+            <UserImg src={imageUrl} />
+          ) : (
+            <PictureIcon color="#ecedee" size="3.5rem" />
+          )}
+        </UserImageContainer>
+        <Text h1 css={{ textAlign: 'center' }}>
+          {username}
+        </Text>
+      </Row>
+    </>
   );
 };
 

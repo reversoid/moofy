@@ -29,11 +29,11 @@ const ListGrid: FC<ListGridProps> = ({
         gap={2}
         justify="flex-start"
         css={{
+          paddingLeft: 0,
+          paddingRight: 0,
           '@xsMax': {
-            paddingLeft: 0,
             width: '100% !important',
             margin: '0 !important',
-            paddingRight: 0,
             pt: 0,
           },
         }}

@@ -2,13 +2,12 @@ import { Body, Controller, Get, Inject, Post, Req, Res } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CookieOptions, Request, Response } from 'express';
-import globalConfig from 'src/config/global.config';
+import globalConfig, { AppEnvironments } from 'src/config/global.config';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
 
-const DEFAULT_REFRESH_COOKIE_OPTIONS = {
-  httpOnly: true,
+const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   signed: true,
   path: '/auth/protected',
 };
@@ -64,6 +63,7 @@ export class AuthController {
   ) {
     try {
       const oldToken: string = request.signedCookies['refresh_token'];
+
       const { access, refresh, userId } = await this.authService.refresh(
         oldToken,
       );
@@ -105,7 +105,11 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: false, // TODO switch to === prod when ssl is ready
+      secure: ![AppEnvironments.dev].includes(this.config.environment),
+      httpOnly: ![AppEnvironments.dev, AppEnvironments.test].includes(
+        this.config.environment,
+      ),
+      sameSite: AppEnvironments.test ? 'none' : 'lax',
       expires: dateInFuture,
     };
   }

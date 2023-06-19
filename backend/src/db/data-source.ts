@@ -9,6 +9,7 @@ const pgConfig = {
   password: process.env.POSTGRES_PASSWORD?.trim(),
   host: process.env.POSTGRES_KNOWN_HOST?.trim(),
   port: parseInt(process.env.POSTGRES_PORT?.trim() ?? '-1'),
+  database: process.env.POSTGRES_DB_NAME?.trim(),
 };
 
 const dataSourceOptions: DataSourceOptions = {

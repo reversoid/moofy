@@ -17,6 +17,7 @@ import {
 import DeleteModalContent from '@/features/list/delete-list/ui/DeleteListModalContent';
 import { ListHeader } from './ListHeader';
 import { UpdateListModal } from '@/features/list/update-list';
+import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -64,11 +65,8 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           <Text
             as={'p'}
             css={{
-              mb: '$12',
-              '@xsMax': {
-                marginBottom: '$10',
-              },
-              fontSize: '$xl',
+              ...HEADING_STYLES.h1,
+              fontSize: '$xl !important',
               wordBreak: 'break-word',
             }}
           >

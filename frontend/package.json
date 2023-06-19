@@ -4,7 +4,8 @@
   "version": "1.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development",
+    "dev-remote": "vite --mode development-remote",
+    "dev-local": "vite --mode development-local",
     "build:prod": "tsc && vite build --mode production",
     "build:test": "tsc && vite build --mode test",
     "preview": "vite preview"
@@ -25,6 +26,7 @@
     "effector-react": "^22.4.0",
     "ky": "^0.33.2",
     "lodash.debounce": "^4.0.8",
+    "nanoid": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.0",
@@ -37,6 +39,7 @@
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "^8.6.0",
