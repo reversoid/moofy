@@ -20,7 +20,7 @@ const Layout = () => {
 
   return (
     <>
-      <Text h1 css={{ mb: '$12' }}>
+      <Text h1>
         Добро пожаловать!
       </Text>
 
