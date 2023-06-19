@@ -8,8 +8,11 @@ export const Background = styled('div', {
   backgroundSize: '5rem',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
+  '@smMax': {
+    height: 120,
+  },
   '@xsMax': {
-    height: 105,
+    height: 85,
     backgroundSize: '4rem',
   },
 });
@@ -22,7 +25,11 @@ export const ListBackground = ({
   imageUrl?: string;
 }) => {
   if (imageUrl) {
-    return <Background css={{ backgroundSize: 'cover', backgroundImage: `url(${imageUrl})` }} />;
+    return (
+      <Background
+        css={{ backgroundSize: 'cover', backgroundImage: `url(${imageUrl})` }}
+      />
+    );
   }
   return <Background css={{ bgColor: colorHash.hex(id) }} />;
 };

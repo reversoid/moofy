@@ -1,3 +1,4 @@
+import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
 import {
   addToFavorites,
   removeFromFavorites,
@@ -41,8 +42,7 @@ export const ListHeader: FC<ListHeaderProps> = ({
       css={{
         gap: '$10',
         justifyContent: 'space-between',
-        mb: '$12',
-        '@xsMax': { mb: '$10' },
+        ...HEADING_STYLES.h1
       }}
     >
       <Text
