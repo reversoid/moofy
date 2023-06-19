@@ -12,7 +12,7 @@ export const Background = styled('div', {
     height: 120,
   },
   '@xsMax': {
-    height: 85,
+    height: 90,
     backgroundSize: '4rem',
   },
 });
