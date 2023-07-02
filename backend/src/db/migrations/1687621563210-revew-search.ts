@@ -17,8 +17,7 @@ export class revewSearch1687621563210 implements MigrationInterface {
     await queryRunner.query(`
           CREATE FUNCTION to_review_tsvector() RETURNS trigger as $$
             begin
-              new.search_document :=
-                setweight(to_tsvector('simple', coalesce(new.description, '')), A);
+              new.search_document := to_tsvector('simple', coalesce(new.description, ''));
             return new;
           end
           $$ LANGUAGE plpgsql;

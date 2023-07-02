@@ -1,12 +1,14 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
-    name = 'filmFullTextNameSearch1687626263358'
+  name = 'filmFullTextNameSearch1687626263358';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "film" ADD "search_document" tsvector NOT NULL`);
-        
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "film" ADD "search_document" tsvector NOT NULL`,
+    );
+
+    await queryRunner.query(`
           CREATE INDEX search_film_document_idx
           ON film
           USING GIN (search_document)
@@ -15,8 +17,7 @@ export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
     await queryRunner.query(`
           CREATE FUNCTION to_film_tsvector() RETURNS trigger as $$
             begin
-              new.search_document :=
-                setweight(to_tsvector('simple', coalesce(new.name, '')), A);
+              new.search_document := to_tsvector('simple', coalesce(new.name, ''));
             return new;
           end
           $$ LANGUAGE plpgsql;
@@ -26,10 +27,10 @@ export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
         CREATE TRIGGER film_tsvector_update BEFORE INSERT OR UPDATE ON film
         FOR EACH ROW EXECUTE PROCEDURE to_film_tsvector(); 
       `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
         DROP INDEX "search_film_document_idx"
       `);
 
@@ -38,7 +39,6 @@ export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
     await queryRunner.query(`
         DROP FUNCTION "to_film_tsvector"`);
 
-        await queryRunner.query(`ALTER TABLE "film" DROP COLUMN "search_document"`);
-    }
-
+    await queryRunner.query(`ALTER TABLE "film" DROP COLUMN "search_document"`);
+  }
 }
