@@ -24,7 +24,7 @@ export class revewSearch1687621563210 implements MigrationInterface {
         `);
 
     await queryRunner.query(`
-      UPDATE "review" SET search_document = to_tsvector('simple', coalesce(new.description, ''));
+      UPDATE "review" SET search_document = to_tsvector('simple', coalesce(description, ''));
     `);
 
     await queryRunner.query(`

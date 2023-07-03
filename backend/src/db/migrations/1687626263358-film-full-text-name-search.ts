@@ -24,7 +24,7 @@ export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
         `);
 
     await queryRunner.query(`
-      UPDATE "film" SET search_document = to_tsvector('simple', coalesce(new.name, ''));
+      UPDATE "film" SET search_document = to_tsvector('simple', coalesce(name, ''));
     `);
 
     await queryRunner.query(`
