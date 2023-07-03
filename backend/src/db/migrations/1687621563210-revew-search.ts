@@ -5,7 +5,7 @@ export class revewSearch1687621563210 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "review" ADD "search_document" tsvector NOT NULL`,
+      `ALTER TABLE "review" ADD "search_document" tsvector`,
     );
 
     await queryRunner.query(`
@@ -24,9 +24,17 @@ export class revewSearch1687621563210 implements MigrationInterface {
         `);
 
     await queryRunner.query(`
+      UPDATE "review" SET search_document = to_tsvector('simple', coalesce(new.description, ''));
+    `);
+
+    await queryRunner.query(`
         CREATE TRIGGER review_tsvector_update BEFORE INSERT OR UPDATE ON review
         FOR EACH ROW EXECUTE PROCEDURE to_review_tsvector(); 
       `);
+
+    await queryRunner.query(`
+      ALTER TABLE "review" ALTER COLUMN "search_document" SET NOT NULL;
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

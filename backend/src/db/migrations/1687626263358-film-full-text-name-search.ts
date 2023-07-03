@@ -5,7 +5,7 @@ export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "film" ADD "search_document" tsvector NOT NULL`,
+      `ALTER TABLE "film" ADD "search_document" tsvector`,
     );
 
     await queryRunner.query(`
@@ -24,9 +24,17 @@ export class filmFullTextNameSearch1687626263358 implements MigrationInterface {
         `);
 
     await queryRunner.query(`
+      UPDATE "film" SET search_document = to_tsvector('simple', coalesce(new.name, ''));
+    `);
+
+    await queryRunner.query(`
         CREATE TRIGGER film_tsvector_update BEFORE INSERT OR UPDATE ON film
         FOR EACH ROW EXECUTE PROCEDURE to_film_tsvector(); 
       `);
+
+    await queryRunner.query(`
+      ALTER TABLE "film" ALTER COLUMN "search_document" SET NOT NULL;
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
