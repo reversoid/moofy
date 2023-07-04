@@ -1,5 +1,5 @@
 import { IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
-import { Profile } from '../profile.service';
+import { Profile } from '../types/profile.type';
 
 export class EditProfileDTO
   implements

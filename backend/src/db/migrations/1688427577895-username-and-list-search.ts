@@ -64,7 +64,7 @@ export class usernameAndListSearch1688427577895 implements MigrationInterface {
     `);
 
     await queryRunner.query(`
-        CREATE TRIGGER username_tsvector_update BEFORE INSERT OR UPDATE ON film
+        CREATE TRIGGER username_tsvector_update BEFORE INSERT OR UPDATE ON "public"."user"
         FOR EACH ROW EXECUTE PROCEDURE to_username_tsvector(); 
       `);
 

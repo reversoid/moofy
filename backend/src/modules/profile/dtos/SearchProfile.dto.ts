@@ -1,10 +1,14 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 
-export class SearchProfileDTO extends PaginationQueryDTO {
+export class SearchProfileDTO {
   @IsOptional()
   @IsString()
   @Type(() => String)
   username?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  limit?: number;
 }
