@@ -5,7 +5,7 @@ import { FavoriteList } from '../entities/favoriteList.entity';
 
 @Injectable()
 export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
-  constructor(private dataSource: DataSource) {
+  constructor(dataSource: DataSource) {
     super(FavoriteList, dataSource.createEntityManager());
   }
 
@@ -32,6 +32,7 @@ export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
         user: {
           id: true,
           username: true,
+          image_url: true,
         },
         list: {
           created_at: true,

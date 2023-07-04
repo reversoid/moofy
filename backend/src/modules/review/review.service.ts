@@ -34,6 +34,7 @@ export class ReviewService {
     { listId, score, filmId, description, tags }: CreateReviewDTO,
   ): Promise<{ list: List; review: Review }> {
     const list = await this.listRepository.getUserList(listId, user.id);
+
     if (!list) {
       throw new HttpException(ReviewErrors.INVALID_LIST_ID, 400);
     }

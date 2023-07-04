@@ -60,21 +60,19 @@ export class ListRepository extends PaginatedRepository<List> {
 
   /**Returns list if user owns it, else returns undefined */
   async getUserList(listId: number, userId: number): Promise<List | undefined> {
-    return (
-      await this.createQueryBuilder('list')
-        .select([
-          'id',
-          'name',
-          'description',
-          'is_public',
-          'created_at',
-          'updated_at',
-        ])
-        .where('"list"."userId" = :userId', { userId })
-        .andWhere('"list"."id" = :listId', { listId })
-        .take(1)
-        .execute()
-    )[0];
+    return await this.createQueryBuilder('list')
+      .select([
+        'list.id',
+        'list.name',
+        'list.description',
+        'list.is_public',
+        'list.created_at',
+        'list.updated_at',
+      ])
+      .where('"list"."userId" = :userId', { userId })
+      .andWhere('"list"."id" = :listId', { listId })
+      .take(1)
+      .getOne();
   }
 
   async getListById(listId: number): Promise<List | undefined> {
@@ -95,6 +93,7 @@ export class ListRepository extends PaginatedRepository<List> {
         user: {
           id: true,
           username: true,
+          image_url: true,
         },
         updated_at: true,
       },
