@@ -177,7 +177,7 @@ export class ProfileService {
     username: string,
     limit: number,
     lowerBound: Date,
-  ): Promise<{ nextKey: Date; items: Profile[] }> {
+  ): Promise<IterableResponse<Profile>> {
     throw new NotImplementedException();
   }
 }

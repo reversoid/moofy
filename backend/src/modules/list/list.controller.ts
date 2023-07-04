@@ -30,6 +30,7 @@ import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 import { GetPublicListsDTO } from './dtos/getPublicLists.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 @ApiTags('List')
 @Controller('list')
@@ -64,10 +65,7 @@ export class ListController {
       }),
     )
     { limit = 20, lowerBound, search }: GetUserListsDTO,
-  ): Promise<{
-    nextKey: Date;
-    items: List[];
-  }> {
+  ): Promise<IterableResponse<List>> {
     return this.listService.getLists(user.id, limit, GetListsStrategy.ALL, {
       lowerBound,
       search,
@@ -89,10 +87,7 @@ export class ListController {
       }),
     )
     { limit = 20, lowerBound }: PaginationQueryDTO,
-  ): Promise<{
-    nextKey: Date;
-    items: FavoriteList[];
-  }> {
+  ): Promise<IterableResponse<FavoriteList>> {
     return this.listService.getFavoriteLists(user, limit, lowerBound);
   }
 

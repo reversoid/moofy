@@ -24,6 +24,7 @@ import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
 import { SearchProfileDTO } from './dtos/SearchProfile.dto';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 const LISTS_LIMIT = 20;
 
@@ -92,20 +93,19 @@ export class ProfileController {
   }
 
   @ApiOperation({
-    description: 'Get user profile for owner',
+    description: 'Search users',
   })
   @ApiHeader(SwaggerAuthHeader)
   @UseGuards(JwtAuthGuard)
   @Get('search')
   async searchUserProfile(
-    @Request() { user: { id } }: { user: User },
     @Query(
       new ValidationPipe({
         transform: true,
       }),
     )
     { username, limit = 20, lowerBound }: SearchProfileDTO,
-  ): Promise<{ nextKey: Date | null; items: Profile[] }> {
+  ): Promise<IterableResponse<Profile>> {
     return this.profileService.searchUserProfiles(username, limit, lowerBound);
   }
 }
