@@ -13,22 +13,51 @@ export class ListRepository extends PaginatedRepository<List> {
   async getUserLists(
     userId: number,
     limit: number,
-    isPublic?: boolean,
-    lowerBound?: Date,
+    options?: {
+      isPublic?: boolean;
+      lowerBound?: Date;
+      search?: string;
+    },
   ) {
-    const lists = await this.find({
-      where: {
-        user: {
-          id: userId,
-        },
-        is_public: isPublic,
-        updated_at: super.getCompareOperator(lowerBound),
-      },
-      take: limit + 1,
-      order: {
-        updated_at: 'DESC',
-      },
-    });
+    const { date, operator } = super.getRAWUpdatedAtCompareString(
+      options?.lowerBound,
+    );
+    const plainQb = this.createQueryBuilder('list')
+      .where('list.user = :userId', { userId })
+      .andWhere(`list.updated_at ${operator} :date`, { date })
+      .take(limit + 1);
+
+    if (options?.isPublic !== undefined) {
+      plainQb.andWhere('is_public = :isPublic', {
+        isPublic: options?.isPublic,
+      });
+    }
+
+    if (options?.search) {
+      const words = options.search
+        .split(' ')
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .map((word) => `${word}:*`)
+        .join(' & ');
+
+      plainQb
+        .addSelect(
+          `ts_rank(list.search_document, to_tsquery('simple', :search_string))`,
+          'rank',
+        )
+        .andWhere(
+          `(list.search_document) @@ to_tsquery('simple', :search_string)`,
+          {
+            search_string: words,
+          },
+        )
+        .orderBy('rank', 'DESC');
+    }
+
+    plainQb.addOrderBy('updated_at', 'DESC');
+
+    const lists = await plainQb.getMany();
 
     return super.processPagination(lists, limit, 'updated_at');
   }

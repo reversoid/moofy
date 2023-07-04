@@ -75,7 +75,7 @@ export class ProfileService {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
     const [lists, listsCount] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit, true),
+      this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
       this.listRepository.getAmountOfUserLists(id, true),
     ]);
 
