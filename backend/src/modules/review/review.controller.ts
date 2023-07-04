@@ -77,7 +77,7 @@ export class ReviewController {
         forbidNonWhitelisted: true,
       }),
     )
-    { listId, limit = 20, lowerBound }: GetReviewsDTO,
+    { listId, limit = 20, lowerBound, search }: GetReviewsDTO,
   ): Promise<{
     list: List;
     reviews: {
@@ -88,12 +88,11 @@ export class ReviewController {
       isFavorite: boolean;
     };
   }> {
-    return this.reviewService.getReviewsFromListWithFilms(
-      user,
-      listId,
+    return this.reviewService.getReviewsFromListWithFilms(user, listId, {
       limit,
       lowerBound,
-    );
+      search,
+    });
   }
 
   @ApiOperation({
