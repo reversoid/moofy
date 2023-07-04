@@ -3,6 +3,7 @@ import { DataSource, Raw } from 'typeorm';
 import { Review } from '../entities/review.entity';
 import { Film } from 'src/modules/film/entities/film.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
+import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 
 export function SearchMatch(search: string) {
   return Raw(
@@ -175,12 +176,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
       .take(options.limit + 1);
 
     if (options.search) {
-      const words = options.search
-        .split(' ')
-        .map((c) => c.trim())
-        .filter(Boolean)
-        .map((word) => `${word}:*`)
-        .join(' & ');
+      const words = getTsQueryFromString(options.search);
 
       plainQb
         .addSelect(

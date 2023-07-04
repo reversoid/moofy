@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { List } from '../entities/list.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
+import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
@@ -34,12 +35,7 @@ export class ListRepository extends PaginatedRepository<List> {
     }
 
     if (options?.search) {
-      const words = options.search
-        .split(' ')
-        .map((c) => c.trim())
-        .filter(Boolean)
-        .map((word) => `${word}:*`)
-        .join(' & ');
+      const words = getTsQueryFromString(options.search);
 
       plainQb
         .addSelect(
