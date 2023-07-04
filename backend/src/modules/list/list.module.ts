@@ -4,7 +4,7 @@ import { UserModule } from '../user/user.module';
 import { List } from './entities/list.entity';
 import { ListController } from './list.controller';
 import { ListService } from './list.service';
-import { RevealUserMiddleware } from '../user/middlewares/revealUser.middleware';
+import { RevealOptionalUserMiddleware } from '../user/middlewares/revealUser.middleware';
 import { ListRepository } from './repositories/list.repository';
 import { FavoriteListRepository } from './repositories/favoriteList.repository';
 
@@ -16,6 +16,6 @@ import { FavoriteListRepository } from './repositories/favoriteList.repository';
 })
 export class ListModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RevealUserMiddleware).forRoutes('list/public');
+    consumer.apply(RevealOptionalUserMiddleware).forRoutes('list/public');
   }
 }

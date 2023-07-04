@@ -111,4 +111,38 @@ export class ListRepository extends PaginatedRepository<List> {
       },
     });
   }
+
+  async getPublicLists(search: string, limit: number, lowerBound: Date) {
+    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+
+    const plainQb = this.createQueryBuilder('list')
+      .where('is_public = :isPublic', {
+        isPublic: true,
+      })
+      .andWhere(`list.updated_at ${operator} :date`, { date })
+      .take(limit + 1);
+
+    if (search) {
+      const words = getTsQueryFromString(search);
+
+      plainQb
+        .addSelect(
+          `ts_rank(list.search_document, to_tsquery('simple', :search_string))`,
+          'rank',
+        )
+        .andWhere(
+          `(list.search_document) @@ to_tsquery('simple', :search_string)`,
+          {
+            search_string: words,
+          },
+        )
+        .orderBy('rank', 'DESC');
+    }
+
+    plainQb.addOrderBy('updated_at', 'DESC');
+
+    const lists = await plainQb.getMany();
+
+    return super.processPagination(lists, limit, 'updated_at');
+  }
 }

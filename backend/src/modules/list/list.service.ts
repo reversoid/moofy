@@ -82,7 +82,7 @@ export class ListService {
   }
 
   async getPublicLists(search: string, limit: number, lowerBound?: Date) {
-    throw new NotImplementedException();
+    return this.listRepository.getPublicLists(search, limit, lowerBound);
   }
 
   async getUserList(user: User, listId: number): Promise<List> {
