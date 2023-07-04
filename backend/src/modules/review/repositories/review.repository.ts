@@ -177,11 +177,11 @@ export class ReviewRepository extends PaginatedRepository<Review> {
     if (options.search) {
       plainQb
         .addSelect(
-          `ts_rank(film.search_document || review.search_document, plainto_tsquery(:search_string))`,
+          `ts_rank(film.search_document || review.search_document, plainto_tsquery('simple', :search_string))`,
           'rank',
         )
         .andWhere(
-          `(film.search_document || review.search_document) @@ plainto_tsquery(:search_string)`,
+          `(film.search_document || review.search_document) @@ plainto_tsquery('simple', :search_string)`,
           { search_string: options.search },
         )
         .orderBy('rank', 'DESC');
