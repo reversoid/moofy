@@ -6,10 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiHeader, ApiOperation } from '@nestjs/swagger';
 import { UserErrors } from 'src/errors/user.errors';
@@ -21,6 +23,7 @@ import { EditProfileDTO } from './dtos/EditProfile.dto';
 import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
+import { SearchProfileDTO } from './dtos/SearchProfile.dto';
 
 const LISTS_LIMIT = 20;
 
@@ -86,5 +89,23 @@ export class ProfileController {
       throw new HttpException(ImageErrors.NO_IMAGE, 400);
     }
     return this.profileService.uploadImage(file);
+  }
+
+  @ApiOperation({
+    description: 'Get user profile for owner',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  async searchUserProfile(
+    @Request() { user: { id } }: { user: User },
+    @Query(
+      new ValidationPipe({
+        transform: true,
+      }),
+    )
+    { username, limit = 20, lowerBound }: SearchProfileDTO,
+  ): Promise<{ nextKey: Date | null; items: Profile[] }> {
+    return this.profileService.searchUserProfiles(username, limit, lowerBound);
   }
 }

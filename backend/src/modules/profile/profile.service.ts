@@ -1,4 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserErrors } from 'src/errors/user.errors';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
@@ -167,5 +171,13 @@ export class ProfileService {
     }
 
     return { link: response.Location };
+  }
+
+  async searchUserProfiles(
+    username: string,
+    limit: number,
+    lowerBound: Date,
+  ): Promise<{ nextKey: Date; items: Profile[] }> {
+    throw new NotImplementedException();
   }
 }
