@@ -136,8 +136,11 @@ export class ReviewService {
   async getReviewsFromListWithFilms(
     user: User | undefined,
     listId: number,
-    limit?: number,
-    lowerBound?: Date,
+    options?: {
+      search?: string;
+      limit?: number;
+      lowerBound?: Date;
+    },
   ) {
     const list = await this.listService.getListById(listId);
 
@@ -158,11 +161,11 @@ export class ReviewService {
     }
 
     const reviews =
-      await this.reviewRepository.getReviewsFromListWithFilmsForUser(
-        listId,
-        limit,
-        lowerBound,
-      );
+      await this.reviewRepository.getReviewsFromListWithFilmsForUser(listId, {
+        ...options,
+        search: options.search,
+      });
+
     const isFaved =
       user &&
       (await this.favListRepository.findOneBy({

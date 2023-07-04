@@ -1,3 +1,5 @@
+const prettierConfig = require('./.prettierrc.js')
+
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -26,6 +28,7 @@ module.exports = {
       {
         "endOfLine": "auto"
       },
+      prettierConfig
     ],
     '@typescript-eslint/no-namespace': 'off'
   },
