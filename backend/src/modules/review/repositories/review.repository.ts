@@ -175,14 +175,21 @@ export class ReviewRepository extends PaginatedRepository<Review> {
       .take(options.limit + 1);
 
     if (options.search) {
+      const words = options.search
+        .split(' ')
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .map((word) => `${word}:*`)
+        .join(' & ');
+
       plainQb
         .addSelect(
-          `ts_rank(film.search_document || review.search_document, plainto_tsquery('simple', :search_string))`,
+          `ts_rank(film.search_document || review.search_document, to_tsquery('simple', :search_string))`,
           'rank',
         )
         .andWhere(
-          `(film.search_document || review.search_document) @@ plainto_tsquery('simple', :search_string)`,
-          { search_string: options.search },
+          `(film.search_document || review.search_document) @@ to_tsquery('simple', :search_string)`,
+          { search_string: words },
         )
         .orderBy('rank', 'DESC');
     }
