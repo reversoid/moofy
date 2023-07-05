@@ -106,10 +106,20 @@ export class UserRepository extends Repository<User> {
       .from(User, 'user')
       .select(['user.id', 'user.username', 'user.image_url'])
       .addSelect(
-        `ts_rank(user.username_search_document, to_tsquery('simple', :search_string))`,
+        `
+         ts_rank(user.username_search_document, plainto_tsquery('simple', :initial_search_string)) +
+         ts_rank(user.username_search_document, to_tsquery('simple', :search_string))
+        `,
         'rank',
       )
-      .andWhere(
+      .where(
+        `(user.username_search_document) @@ plainto_tsquery('simple', :initial_search_string)
+        `,
+        {
+          initial_search_string: username,
+        },
+      )
+      .orWhere(
         `(user.username_search_document) @@ to_tsquery('simple', :search_string)`,
         {
           search_string: words,
