@@ -5,7 +5,6 @@ import {
   Row,
   Button,
   Loading,
-  Input,
   InputProps,
 } from '@nextui-org/react';
 import useAutocomplete from '@mui/material/useAutocomplete';
@@ -17,8 +16,11 @@ import { $getFilmsState, getFilmsByName } from '@/features/search-films';
 import { Li, LiBody, Listbox } from './Listbox';
 import { useParams } from 'react-router-dom';
 import React from 'react';
+import { Input } from '@/shared/ui/Input/Input';
 
-const CreateReviewModal = React.lazy(() => import('@/features/review/create-review/ui/CreateReviewModal'))
+const CreateReviewModal = React.lazy(
+  () => import('@/features/review/create-review/ui/CreateReviewModal'),
+);
 
 export const ImageContainer = styled('div', {
   display: 'flex',
@@ -29,7 +31,7 @@ export const ImageContainer = styled('div', {
 
 export const Wrapper = styled('div', { width: '100%', position: 'relative' });
 
-const searchFilms = debounce(getFilmsByName, 250)
+const searchFilms = debounce(getFilmsByName, 250);
 
 export const SearchFilmPage = () => {
   const [options, setOptions] = useState<Film[]>([]);
@@ -56,7 +58,7 @@ export const SearchFilmPage = () => {
 
   useEffect(() => {
     if (!inputValue) return;
-    searchFilms.cancel()
+    searchFilms.cancel();
     searchFilms(inputValue);
   }, [inputValue]);
 

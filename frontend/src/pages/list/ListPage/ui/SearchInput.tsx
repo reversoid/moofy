@@ -16,7 +16,7 @@ export const SearchInput: FC<SearchInputProps> = ({ onChange }) => {
     <Input
       size="lg"
       placeholder="Поиск"
-      css={{ width: '100%' }}
+      fullWidth={true}
       contentLeft={<Icon iconUrl={searchIcon} size={'3rem'} />}
       onChange={(e) => onChangeDebounced(e.target.value)}
     />
