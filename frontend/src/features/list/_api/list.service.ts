@@ -2,7 +2,11 @@ import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
-import { DateAsString, IterableResponse, SearchResponse } from '@/shared/api/types/shared';
+import {
+  DateAsString,
+  IterableResponse,
+  SearchResponse,
+} from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
 
 export interface CreateListDTO {
@@ -26,6 +30,12 @@ export interface AddToFavoritesDTO {
 
 export interface RemoveFromFavoritesDTO {
   listId: number;
+}
+
+export interface ListWithContentResponse {
+  reviews: IterableResponse<Review>;
+  list: List;
+  additionalInfo: { isFavorite: boolean };
 }
 
 export class ListService extends ApiService {
@@ -69,11 +79,7 @@ export class ListService extends ApiService {
       searchParams['lowerBound'] = lowerBound;
     }
 
-    return this.get<{
-      reviews: IterableResponse<Review>;
-      list: List;
-      additionalInfo: { isFavorite: boolean };
-    }>('/review', {
+    return this.get<ListWithContentResponse>('/review', {
       useJWT: true,
       searchParams,
     });

@@ -1,8 +1,12 @@
 export type DateAsString = string;
 
 export interface ApiError {
-  code: number;
+  statusCode: number;
   message: string;
+}
+
+export interface FetchError {
+  cause: ApiError
 }
 
 export interface IterableResponse<T> {
