@@ -2,7 +2,7 @@ import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
-import { DateAsString, IterableResponse } from '@/shared/api/types/shared';
+import { DateAsString, IterableResponse, SearchResponse } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
 
 export interface CreateListDTO {

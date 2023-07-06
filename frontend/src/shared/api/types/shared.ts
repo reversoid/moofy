@@ -10,3 +10,9 @@ export interface IterableResponse<T> {
   nextKey: DateAsString | null;
   items: T[];
 }
+
+export interface SearchResponse<T> {
+  /**Represents a next rank value */
+  nextKey: string;
+  items: T[];
+}

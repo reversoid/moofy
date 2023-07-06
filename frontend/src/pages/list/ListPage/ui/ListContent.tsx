@@ -1,10 +1,16 @@
-import { $getMoreReviewsLoading, getMoreReviews } from '@/features/list/get-list';
+import {
+  $getMoreReviewsLoading,
+  getMoreReviews,
+} from '@/features/list/get-list';
 import { Review } from '@/shared/api/types/review.type';
 import { IterableResponse } from '@/shared/api/types/shared';
+import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { ReviewList } from '@/widgets/review-list';
-import { Button, Row, Text } from '@nextui-org/react';
+import { Button, Input, Row, Text, styled } from '@nextui-org/react';
 import { useStore } from 'effector-react';
 import { useNavigate } from 'react-router-dom';
+import { SearchInput } from './SearchInput';
+import { useCallback } from 'react';
 
 interface ReviewListProps {
   reviews?: IterableResponse<Review>;
@@ -12,9 +18,13 @@ interface ReviewListProps {
   listId: number;
 }
 
-export const ListContent = ({ reviews, isUserOwner, listId }: ReviewListProps) => {
-  const moreReviewsLoading = useStore($getMoreReviewsLoading)
-  const navigate = useNavigate()
+export const ListContent = ({
+  reviews,
+  isUserOwner,
+  listId,
+}: ReviewListProps) => {
+  const moreReviewsLoading = useStore($getMoreReviewsLoading);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -23,6 +33,13 @@ export const ListContent = ({ reviews, isUserOwner, listId }: ReviewListProps) =
           Фильмы
         </Text>
       </Row>
+
+      <Row css={{ mb: '$9' }}>
+        <SearchInput
+          onChange={useCallback((v: string) => console.log(v), [])}
+        />
+      </Row>
+
       {reviews?.items.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Коллекция пуста</Text>
       ) : (

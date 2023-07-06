@@ -112,4 +112,5 @@ $singleList.on(removeFromFavoritesFx.doneData, (state) => {
   };
 });
 
+
 $singleList.on(logoutFx.doneData, () => null)
