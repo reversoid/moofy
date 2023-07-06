@@ -4,9 +4,10 @@ import { useListPage } from '../hooks/useListPage';
 import { PageContent } from './PageContent';
 import { useEarlierLoadedList } from '../hooks/useEarlierLoadedList';
 import { FC } from 'react';
+import { Review } from '@/shared/api/types/review.type';
 
 export const ListPage: FC = () => {
-  const { data, error, isLoading } = useListPage();
+  const { data, error, isLoading, fetchNextPage, hasNextPage } = useListPage();
   const { earlierLoadedList } = useEarlierLoadedList();
 
   useLoadingBar(isLoading);
@@ -17,6 +18,8 @@ export const ListPage: FC = () => {
         list={data.list}
         additionalInfo={data.additionalInfo}
         reviews={data.reviews}
+        loadMoreReviews={fetchNextPage}
+        canLoadMoreReviews={hasNextPage}
       />
     );
   }

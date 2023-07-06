@@ -1,4 +1,4 @@
-import { DateAsString } from "./shared";
+import { DateAsString } from './shared';
 
 export interface List {
   id: number;
@@ -11,5 +11,9 @@ export interface List {
     id: number;
     username: string;
   };
-  image_url?: string
+  image_url?: string;
+}
+
+export interface AdditinalInfo {
+  isFavorite: boolean;
 }

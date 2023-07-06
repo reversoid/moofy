@@ -13,15 +13,17 @@ import { SearchInput } from './SearchInput';
 import { useCallback } from 'react';
 
 interface ReviewListProps {
-  reviews?: IterableResponse<Review>;
+  reviews?: Review[];
+  canLoadMoreReviews?: boolean;
   isUserOwner: boolean;
-  listId: number;
+  loadMoreReviews?: () => void;
 }
 
 export const ListContent = ({
   reviews,
   isUserOwner,
-  listId,
+  canLoadMoreReviews,
+  loadMoreReviews,
 }: ReviewListProps) => {
   const moreReviewsLoading = useStore($getMoreReviewsLoading);
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ export const ListContent = ({
         />
       </Row>
 
-      {reviews?.items.length === 0 && !isUserOwner ? (
+      {reviews?.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Коллекция пуста</Text>
       ) : (
         <>
@@ -57,12 +59,8 @@ export const ListContent = ({
 
           <ReviewList
             isUserOwner={isUserOwner}
-            canLoadMore={Boolean(reviews?.nextKey)}
-            loadMore={
-              reviews?.nextKey
-                ? () => getMoreReviews({ listId, lowerBound: reviews.nextKey! })
-                : undefined
-            }
+            canLoadMore={canLoadMoreReviews}
+            loadMore={loadMoreReviews}
             loadingMore={moreReviewsLoading}
             reviews={reviews}
           />

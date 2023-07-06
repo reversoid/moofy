@@ -6,6 +6,12 @@ import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { List } from '@/entities/List';
 import { CreateListModal } from '@/features/list/create-list';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { useQuery } from '@tanstack/react-query';
+import { listService } from '@/features/list/_api/list.service';
+
+const useCollectionsPage = () => {
+  useQuery({queryKey: ['Collections page'], queryFn: () => listService.getMyLists()})
+}
 
 const CollectionsPage = () => {
   useEffect(getLists, []);
