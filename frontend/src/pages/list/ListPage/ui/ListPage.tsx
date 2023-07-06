@@ -14,23 +14,15 @@ export const ListPage: FC = () => {
   if (data) {
     return (
       <PageContent
-        listWithContent={{
-          list: data.list,
-          additionalInfo: data.additionalInfo,
-          reviews: data.reviews,
-        }}
+        list={data.list}
+        additionalInfo={data.additionalInfo}
+        reviews={data.reviews}
       />
     );
   }
 
   if (earlierLoadedList) {
-    return (
-      <PageContent
-        listWithContent={{
-          list: earlierLoadedList,
-        }}
-      />
-    );
+    return <PageContent list={earlierLoadedList} />;
   }
 
   if (error?.cause.message === 'NOT_ALLOWED') {
@@ -49,7 +41,7 @@ export const ListPage: FC = () => {
     );
   }
 
-  return null
+  return null;
 };
 
 export default ListPage;

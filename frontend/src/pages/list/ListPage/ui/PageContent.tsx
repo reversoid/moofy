@@ -6,17 +6,17 @@ import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
 
 interface ListPageProps {
-  listWithContent: {
-    reviews?: IterableResponse<Review>;
-    list: List;
-    additionalInfo?: {
-      isFavorite?: boolean;
-    };
+  reviews?: IterableResponse<Review>;
+  list: List;
+  additionalInfo?: {
+    isFavorite?: boolean;
   };
 }
 
 export const PageContent = ({
-  listWithContent: { list, reviews, additionalInfo },
+  list,
+  reviews,
+  additionalInfo,
 }: ListPageProps) => {
   const { userId } = useAuth();
 
