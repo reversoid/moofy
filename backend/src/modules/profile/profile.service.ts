@@ -1,33 +1,16 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../user/repositories/user.repository';
-import { UserErrors } from 'src/errors/user.errors';
-import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
-import { List } from '../list/entities/list.entity';
-import { FavoriteList } from '../list/entities/favoriteList.entity';
-import { ListRepository } from '../list/repositories/list.repository';
-import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
-import { EditProfileDTO } from './dtos/EditProfile.dto';
+import { ManagedUpload } from 'aws-sdk/clients/s3';
+import * as sharp from 'sharp';
 import { AuthErrors } from 'src/errors/auth.errors';
 import { ImageErrors } from 'src/errors/image.errors';
-import * as sharp from 'sharp';
+import { UserErrors } from 'src/errors/user.errors';
 import { getS3 } from 'src/shared/libs/S3/s3';
-import { ManagedUpload } from 'aws-sdk/clients/s3';
-
-export interface Profile {
-  id: number;
-  username: string;
-  description: string | null;
-  image_url: string | null;
-  created_at: Date;
-  allLists: {
-    count: number;
-    lists: IterableResponse<List>;
-  };
-  favLists?: {
-    count: number;
-    lists: IterableResponse<FavoriteList>;
-  };
-}
+import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
+import { ListRepository } from '../list/repositories/list.repository';
+import { UserRepository } from '../user/repositories/user.repository';
+import { EditProfileDTO } from './dtos/EditProfile.dto';
+import { ProfileShort } from './types/profile-short.type';
+import { Profile } from './types/profile.type';
 
 @Injectable()
 export class ProfileService {
@@ -75,7 +58,7 @@ export class ProfileService {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
     const [lists, listsCount] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit, true),
+      this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
       this.listRepository.getAmountOfUserLists(id, true),
     ]);
 
@@ -167,5 +150,12 @@ export class ProfileService {
     }
 
     return { link: response.Location };
+  }
+
+  async searchUserProfiles(
+    username: string,
+    limit: number,
+  ): Promise<ProfileShort[]> {
+    return this.userRepository.searchUsersByUsername(username, limit);
   }
 }

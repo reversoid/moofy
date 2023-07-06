@@ -3,20 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request, Response, NextFunction } from 'express';
 import { AuthErrors } from 'src/errors/auth.errors';
 import { User } from 'src/modules/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { UserRepository } from '../repositories/user.repository';
 
 /** Get user entity from query parameter *?user=id* */
 @Injectable()
-export class RevealUserMiddleware implements NestMiddleware {
+export class RevealOptionalUserMiddleware implements NestMiddleware {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: UserRepository,
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const userQuery = req.query.user;
     let userId: number;
     if (!userQuery) {
-      throw new HttpException('NO_USER_QUERY_SPECIFIED', 400);
+      return next();
     }
     if (userQuery instanceof Array) {
       userId = Number(userQuery[0]);

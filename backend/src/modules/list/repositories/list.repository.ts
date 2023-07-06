@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { List } from '../entities/list.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
+import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
@@ -13,43 +14,65 @@ export class ListRepository extends PaginatedRepository<List> {
   async getUserLists(
     userId: number,
     limit: number,
-    isPublic?: boolean,
-    lowerBound?: Date,
+    options?: {
+      isPublic?: boolean;
+      lowerBound?: Date;
+      search?: string;
+    },
   ) {
-    const lists = await this.find({
-      where: {
-        user: {
-          id: userId,
-        },
-        is_public: isPublic,
-        updated_at: super.getCompareOperator(lowerBound),
-      },
-      take: limit + 1,
-      order: {
-        updated_at: 'DESC',
-      },
-    });
+    const { date, operator } = super.getRAWUpdatedAtCompareString(
+      options?.lowerBound,
+    );
+    const plainQb = this.createQueryBuilder('list')
+      .where('list.user = :userId', { userId })
+      .andWhere(`list.updated_at ${operator} :date`, { date })
+      .take(limit + 1);
+
+    if (options?.isPublic !== undefined) {
+      plainQb.andWhere('is_public = :isPublic', {
+        isPublic: options?.isPublic,
+      });
+    }
+
+    if (options?.search) {
+      const words = getTsQueryFromString(options.search);
+
+      plainQb
+        .addSelect(
+          `ts_rank(list.search_document, to_tsquery('simple', :search_string))`,
+          'rank',
+        )
+        .andWhere(
+          `(list.search_document) @@ to_tsquery('simple', :search_string)`,
+          {
+            search_string: words,
+          },
+        )
+        .orderBy('rank', 'DESC');
+    }
+
+    plainQb.addOrderBy('updated_at', 'DESC');
+
+    const lists = await plainQb.getMany();
 
     return super.processPagination(lists, limit, 'updated_at');
   }
 
   /**Returns list if user owns it, else returns undefined */
   async getUserList(listId: number, userId: number): Promise<List | undefined> {
-    return (
-      await this.createQueryBuilder('list')
-        .select([
-          'id',
-          'name',
-          'description',
-          'is_public',
-          'created_at',
-          'updated_at',
-        ])
-        .where('"list"."userId" = :userId', { userId })
-        .andWhere('"list"."id" = :listId', { listId })
-        .take(1)
-        .execute()
-    )[0];
+    return await this.createQueryBuilder('list')
+      .select([
+        'list.id',
+        'list.name',
+        'list.description',
+        'list.is_public',
+        'list.created_at',
+        'list.updated_at',
+      ])
+      .where('"list"."userId" = :userId', { userId })
+      .andWhere('"list"."id" = :listId', { listId })
+      .take(1)
+      .getOne();
   }
 
   async getListById(listId: number): Promise<List | undefined> {
@@ -70,6 +93,7 @@ export class ListRepository extends PaginatedRepository<List> {
         user: {
           id: true,
           username: true,
+          image_url: true,
         },
         updated_at: true,
       },
@@ -85,5 +109,39 @@ export class ListRepository extends PaginatedRepository<List> {
         is_public: isPublic,
       },
     });
+  }
+
+  async getPublicLists(search: string, limit: number, lowerBound: Date) {
+    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+
+    const plainQb = this.createQueryBuilder('list')
+      .where('is_public = :isPublic', {
+        isPublic: true,
+      })
+      .andWhere(`list.updated_at ${operator} :date`, { date })
+      .take(limit + 1);
+
+    if (search) {
+      const words = getTsQueryFromString(search);
+
+      plainQb
+        .addSelect(
+          `ts_rank(list.search_document, to_tsquery('simple', :search_string))`,
+          'rank',
+        )
+        .andWhere(
+          `(list.search_document) @@ to_tsquery('simple', :search_string)`,
+          {
+            search_string: words,
+          },
+        )
+        .orderBy('rank', 'DESC');
+    }
+
+    plainQb.addOrderBy('updated_at', 'DESC');
+
+    const lists = await plainQb.getMany();
+
+    return super.processPagination(lists, limit, 'updated_at');
   }
 }

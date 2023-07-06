@@ -60,4 +60,8 @@ export class List {
   @Index()
   @DeleteDateColumn({ select: false, type: 'timestamptz' })
   deleted_at: Date;
+
+  /** Is used for full text search */
+  @Column({ type: 'tsvector', select: false })
+  search_document: any;
 }

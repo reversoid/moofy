@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common/decorators';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
+import { ProfileShort } from 'src/modules/profile/types/profile-short.type';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -79,5 +81,52 @@ export class UserRepository extends Repository<User> {
         username: true,
       },
     });
+  }
+
+  async searchUsersByUsername(
+    username: string,
+    limit: number,
+  ): Promise<ProfileShort[]> {
+    if (!username) {
+      return this.find({
+        select: {
+          id: true,
+          image_url: true,
+          username: true,
+        },
+        take: limit,
+        order: {
+          created_at: 'ASC',
+        },
+      });
+    }
+    const words = getTsQueryFromString(username);
+
+    return this.createQueryBuilder()
+      .from(User, 'user')
+      .select(['user.id', 'user.username', 'user.image_url'])
+      .addSelect(
+        `
+         ts_rank(user.username_search_document, plainto_tsquery('simple', :initial_search_string)) +
+         ts_rank(user.username_search_document, to_tsquery('simple', :search_string))
+        `,
+        'rank',
+      )
+      .where(
+        `(user.username_search_document) @@ plainto_tsquery('simple', :initial_search_string)
+        `,
+        {
+          initial_search_string: username,
+        },
+      )
+      .orWhere(
+        `(user.username_search_document) @@ to_tsquery('simple', :search_string)`,
+        {
+          search_string: words,
+        },
+      )
+      .orderBy('rank', 'DESC')
+      .take(limit)
+      .getMany();
   }
 }

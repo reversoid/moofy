@@ -6,21 +6,26 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiHeader, ApiOperation } from '@nestjs/swagger';
 import { UserErrors } from 'src/errors/user.errors';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
-import { Profile, ProfileService } from './profile.service';
+import { ProfileService } from './profile.service';
 import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
 import { EditProfileDTO } from './dtos/EditProfile.dto';
 import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
+import { SearchProfileDTO } from './dtos/SearchProfile.dto';
+import { ProfileShort } from './types/profile-short.type';
+import { Profile } from './types/profile.type';
 
 const LISTS_LIMIT = 20;
 
@@ -38,27 +43,6 @@ export class ProfileController {
     @Request() { user: { id } }: { user: User },
   ): Promise<Profile> {
     return this.profileService.getOwnerProfile(id, LISTS_LIMIT);
-  }
-
-  @ApiOperation({
-    description: 'Get user profile',
-  })
-  @UseGuards(OptionalJwtAuthGuard)
-  @Get(':id')
-  async getUserProfile(
-    @Request() { user }: { user: User | undefined },
-    @Param('id') id: string,
-  ): Promise<Profile> {
-    const numericId = Number(id);
-    if (Number.isNaN(numericId)) {
-      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
-    }
-
-    if (numericId === user?.id) {
-      return this.profileService.getOwnerProfile(numericId, LISTS_LIMIT);
-    }
-
-    return this.profileService.getUserProfile(numericId, LISTS_LIMIT);
   }
 
   @ApiOperation({
@@ -86,5 +70,43 @@ export class ProfileController {
       throw new HttpException(ImageErrors.NO_IMAGE, 400);
     }
     return this.profileService.uploadImage(file);
+  }
+
+  @ApiOperation({
+    description: 'Search users',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  async searchUserProfile(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+      }),
+    )
+    { username, limit = 20 }: SearchProfileDTO,
+  ): Promise<ProfileShort[]> {
+    return this.profileService.searchUserProfiles(username, limit);
+  }
+
+  @ApiOperation({
+    description: 'Get user profile',
+  })
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id')
+  async getUserProfile(
+    @Request() { user }: { user: User | undefined },
+    @Param('id') id: string,
+  ): Promise<Profile> {
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    if (numericId === user?.id) {
+      return this.profileService.getOwnerProfile(numericId, LISTS_LIMIT);
+    }
+
+    return this.profileService.getUserProfile(numericId, LISTS_LIMIT);
   }
 }

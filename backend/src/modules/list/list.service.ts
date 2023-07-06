@@ -1,4 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { ListErrors } from 'src/errors/list.errors';
 import { User } from '../user/entities/user.entity';
 import { CreateListDTO } from './dtos/createList.dto';
@@ -55,12 +59,19 @@ export class ListService {
     userId: number,
     limit: number,
     listsToGet: GetListsStrategy,
-    lowerBound?: Date,
+    options: {
+      lowerBound?: Date;
+      search?: string;
+    },
   ) {
     const isPublic = IsPublicByStrategy[listsToGet];
 
     const [processedLists, user] = await Promise.all([
-      this.listRepository.getUserLists(userId, limit, isPublic, lowerBound),
+      this.listRepository.getUserLists(userId, limit, {
+        lowerBound: options.lowerBound,
+        isPublic,
+        search: options.search,
+      }),
       this.userRepository.getUserInfoById(userId),
     ]);
 
@@ -68,6 +79,10 @@ export class ListService {
       (item) => (item.user = { id: userId, username: user.username } as User),
     );
     return processedLists;
+  }
+
+  async getPublicLists(search: string, limit: number, lowerBound?: Date) {
+    return this.listRepository.getPublicLists(search, limit, lowerBound);
   }
 
   async getUserList(user: User, listId: number): Promise<List> {

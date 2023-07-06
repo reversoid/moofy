@@ -56,4 +56,8 @@ export class User {
   @Index()
   @DeleteDateColumn({ select: false, type: 'timestamptz' })
   deleted_at: Date;
+
+  /** Is used for full text search */
+  @Column({ type: 'tsvector', select: false })
+  username_search_document: any;
 }

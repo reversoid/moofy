@@ -27,9 +27,10 @@ import { FavoriteList } from './entities/favoriteList.entity';
 import { AddFavoriteListDTO } from './dtos/addFavoriteList.dto';
 import { DeleteFavoriteListDTO } from './dtos/deleteFavoriteList.dto';
 import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
-import { GetPublicUserListsDTO } from './dtos/getPublicUserLists.dto';
+import { GetPublicListsDTO } from './dtos/getPublicLists.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 @ApiTags('List')
 @Controller('list')
@@ -63,17 +64,12 @@ export class ListController {
         forbidNonWhitelisted: true,
       }),
     )
-    { limit = 20, lowerBound }: GetUserListsDTO,
-  ): Promise<{
-    nextKey: Date;
-    items: List[];
-  }> {
-    return this.listService.getLists(
-      user.id,
-      limit,
-      GetListsStrategy.ALL,
+    { limit = 20, lowerBound, search }: GetUserListsDTO,
+  ): Promise<IterableResponse<List>> {
+    return this.listService.getLists(user.id, limit, GetListsStrategy.ALL, {
       lowerBound,
-    );
+      search,
+    });
   }
 
   @ApiOperation({
@@ -91,10 +87,7 @@ export class ListController {
       }),
     )
     { limit = 20, lowerBound }: PaginationQueryDTO,
-  ): Promise<{
-    nextKey: Date;
-    items: FavoriteList[];
-  }> {
+  ): Promise<IterableResponse<FavoriteList>> {
     return this.listService.getFavoriteLists(user, limit, lowerBound);
   }
 
@@ -151,7 +144,7 @@ export class ListController {
   }
 
   @ApiOperation({
-    description: 'Get all public lists for user',
+    description: 'Get all public lists',
   })
   @Get('public')
   async getPublicLists(
@@ -161,14 +154,16 @@ export class ListController {
         forbidNonWhitelisted: true,
       }),
     )
-    { limit = 20, lowerBound, user }: GetPublicUserListsDTO,
+    { limit = 20, lowerBound, user, search = '' }: GetPublicListsDTO,
   ) {
-    return this.listService.getLists(
-      user,
-      limit,
-      GetListsStrategy.PUBLIC,
+    if (user === undefined) {
+      return this.listService.getPublicLists(search, limit, lowerBound);
+    }
+
+    return this.listService.getLists(user, limit, GetListsStrategy.PUBLIC, {
       lowerBound,
-    );
+      search,
+    });
   }
 
   @ApiOperation({
