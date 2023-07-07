@@ -4,9 +4,9 @@ import { createStore } from 'effector';
 import { getListsFx, getMoreListsFx } from '../get-lists';
 import { createListFx } from '../create-list';
 import { updateListFx } from '../update-list';
-import { deleteListFx } from '../delete-list';
 import { updateReviewFx } from '@/features/review/update-review';
 import { logoutFx } from '@/features/auth/model/logout';
+import { deleteList } from '../delete-list';
 
 const defaultState = { items: [], nextKey: null };
 
@@ -49,7 +49,7 @@ $lists.on(getMoreListsFx.doneData, (state, payload) => {
     items: [...(state ?? defaultState).items, ...payload.items],
   };
 });
-$lists.on(deleteListFx.doneData, (state, { listId }) => {
+$lists.on(deleteList, (state, { listId }) => {
   return { ...(state ?? defaultState), items: (state ?? defaultState).items.filter((item) => item.id !== listId) };
 });
 

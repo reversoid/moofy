@@ -36,12 +36,6 @@ export const ListContent = ({
         </Text>
       </Row>
 
-      <Row css={{ mb: '$9' }}>
-        <SearchInput
-          onChange={useCallback((v: string) => console.log(v), [])}
-        />
-      </Row>
-
       {reviews?.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Коллекция пуста</Text>
       ) : (
@@ -56,6 +50,12 @@ export const ListContent = ({
               Добавить
             </Button>
           )}
+
+          <Row css={{ mb: '$8', mt: '$10' }}>
+            <SearchInput
+              onChange={useCallback((v: string) => console.log(v), [])}
+            />
+          </Row>
 
           <ReviewList
             isUserOwner={isUserOwner}

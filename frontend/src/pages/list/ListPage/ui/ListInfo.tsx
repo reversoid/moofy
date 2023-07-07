@@ -1,23 +1,18 @@
-import { styled, Text } from '@nextui-org/react';
-import { Link, useNavigate } from 'react-router-dom';
-import { lazy, useEffect, useState } from 'react';
-import { List } from '@/shared/api/types/list.type';
-import ConfirmModal from '@/shared/ui/ConfirmModal';
-import { useStore } from 'effector-react';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import {
-  $deleteListState,
-  clearState,
-  deleteList,
-} from '@/features/list/delete-list';
+import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
+import { DeleteListModal } from '@/features/list/delete-list';
 import {
   $addToFavoritesLoading,
   $removeFromFavoritesLoading,
 } from '@/features/list/favorite-lists';
-import DeleteModalContent from '@/features/list/delete-list/ui/DeleteListModalContent';
-import { ListHeader } from './ListHeader';
 import { UpdateListModal } from '@/features/list/update-list';
-import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
+import { List } from '@/shared/api/types/list.type';
+import { formatDate } from '@/shared/lib/formatDate/formatDate';
+import { styled, Text } from '@nextui-org/react';
+import { useStore } from 'effector-react';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDeleteList } from '../hooks/useDeleteList';
+import { ListHeader } from './ListHeader';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -33,17 +28,16 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const { loading, success: deleteSuccess } = useStore($deleteListState);
+  const mutation = useDeleteList();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!deleteSuccess) {
+    if (!mutation.isSuccess) {
       return;
     }
-    clearState();
     setIsDeleteDialogOpen(false);
     navigate('/welcome');
-  }, [deleteSuccess]);
+  }, [mutation.isSuccess]);
 
   const addToFavsLoading = useStore($addToFavoritesLoading);
   const removeFromFavsLoading = useStore($removeFromFavoritesLoading);
@@ -101,14 +95,11 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
         }}
         listImageUrl={list.image_url}
       />
-      <ConfirmModal
-        content={<DeleteModalContent />}
-        isOpen={isDeleteDialogOpen}
-        setIsOpen={setIsDeleteDialogOpen}
-        loading={loading}
-        submitText="Удалить"
-        onSubmit={() => deleteList({ listId: list.id })}
-        buttonColor="error"
+
+      <DeleteListModal
+        isDialogOpen={isDeleteDialogOpen}
+        setIsDialogOpen={setIsDeleteDialogOpen}
+        listId={list.id}
       />
     </>
   );
