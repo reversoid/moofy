@@ -37,7 +37,7 @@ export const useListPage = (id: number) => {
   return {
     data: listPageContent?.list.id === id ? listPageContent : undefined,
     error: result.error,
-    isLoading: result.isLoading,
+    isLoading: result.isLoading || result.isRefetching,
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,
     isFetchingNextPage: result.isFetchingNextPage,
