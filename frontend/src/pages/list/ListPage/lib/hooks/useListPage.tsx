@@ -36,15 +36,13 @@ export const useListPage = (id: number) => {
   });
 
   useEffect(() => {
-    if (!data) {
+    if (!data || isFetchingNextPage || !isFetchedAfterMount) {
       return;
     }
 
     const content = transformResponse(data);
-    if (listPageContent?.list.id !== content.list.id) {
-      setListPageContent({ data: content });
-    }
-  }, [isFetchedAfterMount]);
+    setListPageContent({ data: content });
+  }, [isFetchedAfterMount, isFetchingNextPage]);
 
   return {
     data: listPageContent?.list.id === id ? listPageContent : undefined,

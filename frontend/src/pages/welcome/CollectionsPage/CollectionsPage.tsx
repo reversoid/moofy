@@ -42,7 +42,6 @@ const useCollectionsPage = () => {
 };
 
 const CollectionsPage = () => {
-  useEffect(getLists, []);
   const [createListModal, setCreateListModal] = useState(false);
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
