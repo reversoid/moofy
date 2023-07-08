@@ -59,7 +59,7 @@ export const ListContent = ({
         <Text color="$neutral">Коллекция пуста</Text>
       ) : (
         <>
-          {reviews?.length && (
+          {Boolean(reviews?.length) && (
             <Row css={{ mb: '$8', mt: '$8' }}>
               <SearchInput onChange={handleSearchInput} />
             </Row>
