@@ -1,11 +1,11 @@
+import { $userLists, setUserLists } from '@/entities/user-lists';
 import { listService } from '@/features/list/_api/list.service';
 import { List } from '@/shared/api/types/list.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
+import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
+import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { useStore } from 'effector-react';
-import { $userLists, setUserLists } from '@/entities/user-lists';
-import { transformInfiniteData } from '@/shared/lib/pagination/transformInfiniteData';
 
 export const useCollectionsPage = () => {
   const userLists = useStore($userLists);
@@ -24,15 +24,12 @@ export const useCollectionsPage = () => {
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 
-  useEffect(() => {
-    const isOutdated = !data || isFetchingNextPage || !isFetchedAfterMount;
-    if (isOutdated) {
-      return;
+  useNewInfiniteData(data, isFetchingNextPage, isFetchedAfterMount, () => {
+    if (data) {
+      const content = transformInfiniteIterableData(data);
+      setUserLists(content);
     }
-
-    const content = transformInfiniteData(data);
-    setUserLists(content);
-  }, [isFetchedAfterMount, isFetchingNextPage]);
+  });
 
   return {
     data: userLists,

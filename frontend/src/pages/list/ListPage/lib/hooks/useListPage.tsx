@@ -10,6 +10,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useStore } from 'effector-react';
 import { useEffect } from 'react';
 import { transformResponse } from '../helpers/transformResponse';
+import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 
 export interface ListPageContent {
   list: List;
@@ -35,14 +36,12 @@ export const useListPage = (id: number) => {
     getNextPageParam: (lastPage) => lastPage.reviews.nextKey ?? undefined,
   });
 
-  useEffect(() => {
-    if (!data || isFetchingNextPage || !isFetchedAfterMount) {
-      return;
+  useNewInfiniteData(data, isFetchingNextPage, isFetchedAfterMount, () => {
+    if (data) {
+      const content = transformResponse(data);
+      setListPageContent({ data: content });
     }
-
-    const content = transformResponse(data);
-    setListPageContent({ data: content });
-  }, [isFetchedAfterMount, isFetchingNextPage]);
+  });
 
   return {
     data: listPageContent?.list.id === id ? listPageContent : undefined,
