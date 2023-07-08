@@ -1,12 +1,11 @@
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import { createEvent, createStore, sample } from 'effector';
+import { createStore } from 'effector';
 import {
   addToFavorites,
   clearFavorites,
   removeFromFavorites,
   setFavorites,
 } from './events';
-import { logoutFx } from '@/features/auth/model/logout';
 
 /** Provides user favorite lists on welcome page */
 export const $userFavLists = createStore<FavoriteList[]>([]);

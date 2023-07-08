@@ -1,38 +1,35 @@
-import { useStore } from 'effector-react';
-import { useEffect } from 'react';
-import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { Text } from '@nextui-org/react';
+import { useFavoritePage } from './lib/useFavoritePage';
 
 const FavoritePage = () => {
-  // useEffect(getFavoriteLists, []);
-  // const loadingMore = useStore($getMoreFavoritesLoading);
-  // const loading = useStore($getFavoriteListsLoading);
+  const {
+    data: favLists,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useFavoritePage();
 
-  // useLoadingBar(loading, true);
+  useLoadingBar(isLoading);
 
-  return 'page';
-
-  // return (
-  //   <>
-  //     {favLists?.length === 0 ? (
-  //       <Text size={'$lg'} color="$neutral">
-  //         Нет избранных коллекций
-  //       </Text>
-  //     ) : (
-  //       <ListGrid
-  //         items={(favLists ?? []).map((f) => f.list)}
-  //         canLoadMore={Boolean(false)}
-  //         // loadMore={
-  //         //   favLists?.nextKey
-  //         //     ? () => getMoreFavorites({ lowerBound: favLists.nextKey! })
-  //         //     : undefined
-  //         // }
-  //         loadingMore={loadingMore}
-  //       />
-  //     )}
-  //   </>
-  // );
+  return (
+    <>
+      {favLists?.length === 0 ? (
+        <Text size={'$lg'} color="$neutral">
+          Нет избранных коллекций
+        </Text>
+      ) : (
+        <ListGrid
+          items={(favLists ?? []).map((f) => f.list)}
+          canLoadMore={hasNextPage}
+          loadMore={fetchNextPage}
+          loadingMore={isFetchingNextPage}
+        />
+      )}
+    </>
+  );
 };
 
 export default FavoritePage;
