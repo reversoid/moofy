@@ -25,6 +25,8 @@ export const ListContent = ({
 }: ReviewListProps) => {
   const navigate = useNavigate();
 
+  const handleSearchInput = useCallback((v: string) => console.log(v), []);
+
   return (
     <>
       <Row
@@ -57,11 +59,11 @@ export const ListContent = ({
         <Text color="$neutral">Коллекция пуста</Text>
       ) : (
         <>
-          <Row css={{ mb: '$8', mt: '$8' }}>
-            <SearchInput
-              onChange={useCallback((v: string) => console.log(v), [])}
-            />
-          </Row>
+          {reviews?.length && (
+            <Row css={{ mb: '$8', mt: '$8' }}>
+              <SearchInput onChange={handleSearchInput} />
+            </Row>
+          )}
 
           <ReviewList
             isUserOwner={isUserOwner}
