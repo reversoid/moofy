@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  Injectable,
-  NotImplementedException,
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ListErrors } from 'src/errors/list.errors';
 import { User } from '../user/entities/user.entity';
 import { CreateListDTO } from './dtos/createList.dto';
@@ -154,7 +150,13 @@ export class ListService {
   }
 
   async addFavoriteList(user: User, listId: number) {
-    const userOwnsList = await this.listRepository.getUserList(listId, user.id);
+    const list = await this.listRepository.getListById(listId);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    const userOwnsList = list.user.id === user.id;
     if (userOwnsList) {
       throw new HttpException(ListErrors.FAV_LIST_OWNED_BY_USER, 400);
     }
@@ -167,14 +169,16 @@ export class ListService {
       throw new HttpException(ListErrors.FAV_LIST_ALREADY_EXISTS, 400);
     }
 
-    return this.favListRepository.save({
-      list: {
-        id: listId,
-      },
+    const fav = await this.favListRepository.save({
+      list,
       user: {
         id: user.id,
       },
     });
+
+    delete fav['user'];
+    delete fav['deleted_at'];
+    return fav;
   }
 
   async deleteFavoriteList(user: User, listId: number) {
