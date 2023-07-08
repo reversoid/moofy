@@ -23,18 +23,19 @@ export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
         created_at: 'DESC',
       },
       relations: {
-        user: true,
-        list: true,
+        list: {
+          user: true,
+        },
       },
       select: {
         created_at: true,
         id: true,
-        user: {
-          id: true,
-          username: true,
-          image_url: true,
-        },
         list: {
+          user: {
+            id: true,
+            username: true,
+            image_url: true,
+          },
           created_at: true,
           description: true,
           id: true,
