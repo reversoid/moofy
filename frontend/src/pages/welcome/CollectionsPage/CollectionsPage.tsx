@@ -1,5 +1,4 @@
-import { List } from '@/entities/List';
-import { CreateListModal } from '@/features/list/create-list';
+import { CreateListItem, CreateListModal } from '@/features/list/create-list';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { useState } from 'react';
@@ -20,12 +19,7 @@ const CollectionsPage = () => {
         canLoadMore={hasNextPage}
         loadMore={fetchNextPage}
         loadingMore={isFetchingNextPage}
-        firstItem={
-          <List
-            onClick={() => setCreateListModal(true)}
-            text="Создать коллекцию"
-          />
-        }
+        firstItem={<CreateListItem onClick={() => setCreateListModal(true)} />}
       />
       <CreateListModal
         isOpen={createListModal}

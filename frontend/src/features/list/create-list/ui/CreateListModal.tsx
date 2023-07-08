@@ -1,25 +1,19 @@
+import { setAppError } from '@/features/app';
 import { Form } from '@/shared/ui/Form/Form';
 import { Input } from '@/shared/ui/Input/Input';
-import { ModalFooter, Modal, ModalBody, ModalHeader } from '@/shared/ui/Modal';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import Textarea from '@/shared/ui/Textarea/Textarea';
-import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
-import { useEvent, useStore } from 'effector-react';
-import { memo, useEffect, useState } from 'react';
+import { Button, Checkbox, Loading, Text } from '@nextui-org/react';
+import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { $createListState, clearState, createList } from '../model';
-import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import {
   ImageUpload,
   SUPPORTED_EXTENSIONS,
   getFileExtension,
 } from '../../../../shared/components/ImageUpload';
-import { listService } from '../../_api/list.service';
-import {
-  $uploadImageListState,
-  clearImageUploadState,
-  uploadImage,
-} from '../../_model/uploadImage';
-import { setAppError } from '@/features/app';
+import { uploadImage } from '../../_model/uploadImage';
+import { useUploadImage } from '../../update-list/lib/useUploadImage';
+import { useCreateListModal } from '../lib/useCreateListModal';
 
 interface FormData {
   name: string;
@@ -46,27 +40,22 @@ export const CreateListModal = memo(
       mode: 'onChange',
     });
 
-    const onSubmit = useEvent(createList);
-
-    const { loading, success } = useStore($createListState);
-
-    const { loading: loadingImage, success: successImage } = useStore(
-      $uploadImageListState,
-    );
+    const createListMutation = useCreateListModal();
+    const uploadListImageMutation = useUploadImage();
 
     const handleClose = () => {
       reset();
+      createListMutation.reset();
+      uploadListImageMutation.reset();
       setIsOpen(false);
-      clearImageUploadState();
-      clearState();
     };
 
     useEffect(() => {
-      if (!success) {
+      if (!createListMutation.isSuccess) {
         return;
       }
       handleClose();
-    }, [success]);
+    }, [createListMutation.isSuccess]);
 
     const handleUploadImage = (file: File) => {
       const extension = getFileExtension(file);
@@ -74,7 +63,7 @@ export const CreateListModal = memo(
       if (!SUPPORTED_EXTENSIONS.includes(extension)) {
         return setAppError('IMAGE_WRONG_FORMAT');
       }
-      
+
       if (file.size > 10 * 1024 * 1024) {
         return setAppError('IMAGE_TOO_LARGE');
       }
@@ -95,11 +84,11 @@ export const CreateListModal = memo(
         <ModalBody>
           <Form
             onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-              onSubmit({
+              createListMutation.mutate({
                 isPublic: !isPrivate,
                 name,
                 description,
-                imageUrl: successImage?.link ?? undefined,
+                imageUrl: uploadListImageMutation.data?.link ?? undefined,
               }),
             )}
             css={{ mb: '$10' }}
@@ -148,8 +137,8 @@ export const CreateListModal = memo(
           </Form>
           <ImageUpload
             text="Загрузить обложку"
-            loading={loadingImage}
-            loadedImageSrc={successImage?.link ?? undefined}
+            loading={uploadListImageMutation.isLoading}
+            loadedImageSrc={uploadListImageMutation?.data?.link ?? undefined}
             onChange={handleUploadImage}
           />
         </ModalBody>
@@ -158,7 +147,7 @@ export const CreateListModal = memo(
             form="create-list-modal-form"
             type="submit"
             size="lg"
-            disabled={!isFormValid || loadingImage}
+            disabled={!isFormValid || uploadListImageMutation?.isLoading}
             color={'gradient'}
             auto
             css={{
@@ -169,7 +158,7 @@ export const CreateListModal = memo(
               },
             }}
           >
-            {loading ? (
+            {createListMutation.isLoading ? (
               <Loading size="lg" type="points" color="white" />
             ) : (
               'Добавить'
