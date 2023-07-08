@@ -10,6 +10,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useStore } from 'effector-react';
 import { transformResponse } from '../helpers/transformResponse';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
 
 export interface ListPageContent {
   list: List;
@@ -25,6 +26,13 @@ export const useListPage = (id: number) => {
     queryFn: ({ pageParam }) =>
       listService.getMyListWithContent(Number(id), pageParam),
     getNextPageParam: (lastPage) => lastPage.reviews.nextKey ?? undefined,
+  });
+
+  useCachedInfiniteData(result, () => {
+    if (result.data) {
+      const content = transformResponse(result.data);
+      setListPageContent({ data: content });
+    }
   });
 
   useNewInfiniteData(result, () => {
