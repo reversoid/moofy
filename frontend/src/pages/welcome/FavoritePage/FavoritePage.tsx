@@ -16,7 +16,7 @@ const FavoritePage = () => {
 
   return (
     <>
-      {favLists?.length === 0 ? (
+      {favLists?.length === 0 && !isLoading ? (
         <Text size={'$lg'} color="$neutral">
           Нет избранных коллекций
         </Text>
