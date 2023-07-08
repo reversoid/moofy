@@ -21,34 +21,43 @@ export const ListContent = ({
   isUserOwner,
   canLoadMoreReviews,
   loadMoreReviews,
-  isFetchingMore
+  isFetchingMore,
 }: ReviewListProps) => {
   const navigate = useNavigate();
 
   return (
     <>
-      <Row align="center" justify="flex-start" css={{ gap: '$8' }}>
-        <Text h2 css={{ mb: '$5' }}>
-          Фильмы
+      <Row
+        align="center"
+        justify="space-between"
+        css={{
+          gap: '$8',
+          '@xsMax': {
+            flexDirection: 'column',
+            ai: 'flex-start',
+          },
+        }}
+      >
+        <Text h2 css={{ mb: '$0' }}>
+          Обзоры
         </Text>
+        {isUserOwner && reviews && (
+          <Button
+            color={'gradient'}
+            css={{ '@xsMax': { width: '100%' } }}
+            onPress={() => navigate('add')}
+            size={'md'}
+          >
+            Добавить
+          </Button>
+        )}
       </Row>
 
       {reviews?.length === 0 && !isUserOwner ? (
         <Text color="$neutral">Коллекция пуста</Text>
       ) : (
         <>
-          {isUserOwner && reviews && (
-            <Button
-              color={'gradient'}
-              css={{ mb: '$8', '@xsMax': { width: '100%' } }}
-              onPress={() => navigate('add')}
-              size={'lg'}
-            >
-              Добавить
-            </Button>
-          )}
-
-          <Row css={{ mb: '$8', mt: '$10' }}>
+          <Row css={{ mb: '$8', mt: '$8' }}>
             <SearchInput
               onChange={useCallback((v: string) => console.log(v), [])}
             />
