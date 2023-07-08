@@ -7,11 +7,12 @@ import { List } from '@/shared/api/types/list.type';
 interface ListPageProps {
   list: List;
   reviews?: Review[];
-  canLoadMoreReviews?: boolean
+  canLoadMoreReviews?: boolean;
   loadMoreReviews?: () => void;
   additionalInfo?: {
     isFavorite?: boolean;
   };
+  isFetchingMore?: boolean;
 }
 
 export const PageContent = ({
@@ -19,7 +20,8 @@ export const PageContent = ({
   reviews,
   additionalInfo,
   canLoadMoreReviews,
-  loadMoreReviews
+  loadMoreReviews,
+  isFetchingMore,
 }: ListPageProps) => {
   const { userId } = useAuth();
 
@@ -35,6 +37,7 @@ export const PageContent = ({
         reviews={reviews}
         canLoadMoreReviews={canLoadMoreReviews}
         loadMoreReviews={loadMoreReviews}
+        isFetchingMore={isFetchingMore ?? false}
       />
     </>
   );

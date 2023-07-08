@@ -1,37 +1,62 @@
-import { useStore } from 'effector-react';
-import { memo, useEffect, useState } from 'react';
-import { $getListsLoading, $getMoreListsLoading, getLists, getMoreLists } from '@/features/list/get-lists';
-import { $lists } from '@/features/list/_model';
-import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { List } from '@/entities/List';
-import { CreateListModal } from '@/features/list/create-list';
-import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { useQuery } from '@tanstack/react-query';
 import { listService } from '@/features/list/_api/list.service';
+import { CreateListModal } from '@/features/list/create-list';
+import { getLists } from '@/features/list/get-lists';
+import { List as IList } from '@/shared/api/types/list.type';
+import { FetchError, IterableResponse } from '@/shared/api/types/shared';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
+import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+
+const transformResponse = (
+  data: InfiniteData<IterableResponse<IList>>,
+): IList[] => {
+  return data.pages.reduce(
+    (acc, value) => [...acc, ...value.items],
+    [] as IList[],
+  );
+};
 
 const useCollectionsPage = () => {
-  useQuery({queryKey: ['Collections page'], queryFn: () => listService.getMyLists()})
-}
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchedAfterMount,
+    isFetchingNextPage,
+  } = useInfiniteQuery<IterableResponse<IList>, FetchError>({
+    queryKey: ['Collections page'],
+    queryFn: ({ pageParam }) => listService.getMyLists(pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
+  });
+
+  return {
+    data: data && transformResponse(data),
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  };
+};
 
 const CollectionsPage = () => {
   useEffect(getLists, []);
   const [createListModal, setCreateListModal] = useState(false);
 
-  const lists = useStore($lists);
-  const listsLoading = useStore($getListsLoading);
-  const moreListsLoading = useStore($getMoreListsLoading);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useCollectionsPage();
 
-  useLoadingBar(listsLoading, moreListsLoading)
+  useLoadingBar(isLoading);
 
   return (
     <>
       <ListGrid
-        items={lists?.items ?? []}
-        canLoadMore={Boolean(lists?.nextKey ?? null)}
-        loadMore={
-          lists?.nextKey ? () => getMoreLists({ lowerBound: lists?.nextKey! }) : undefined
-        }
-        loadingMore={moreListsLoading}
+        items={data ?? []}
+        canLoadMore={hasNextPage}
+        loadMore={fetchNextPage}
+        loadingMore={isFetchingNextPage}
         firstItem={
           <List
             onClick={() => setCreateListModal(true)}

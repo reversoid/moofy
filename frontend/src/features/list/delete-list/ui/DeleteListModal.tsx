@@ -2,7 +2,7 @@ import ConfirmModal from '@/shared/ui/ConfirmModal';
 import { FC, memo, useEffect } from 'react';
 import DeleteModalContent from './DeleteListModalContent';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteList } from '@/pages/list/ListPage/hooks/useDeleteList';
+import { useDeleteList } from '../lib/useDeleteList';
 
 export interface DeleteListModalProps {
   listId: number;

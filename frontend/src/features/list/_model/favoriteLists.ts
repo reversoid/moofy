@@ -1,47 +1,22 @@
-import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import { IterableResponse } from '@/shared/api/types/shared';
-import { createStore } from 'effector';
-import { getFavoriteListsFx } from '../favorite-lists/model/getFavoriteLists';
-import {
-  getMoreFavoritesFx,
-  addToFavoritesFx,
-  removeFromFavoritesFx,
-} from '../favorite-lists/model';
 import { logoutFx } from '@/features/auth/model/logout';
+import { createStore } from 'effector';
+import { addToFavorites, removeFromFavorites } from '../favorite-lists/model';
+import { Id } from '@/shared/api/types/shared';
 
-export const $favoriteLists =
-  createStore<IterableResponse<FavoriteList> | null>(null);
+export const $favoriteLists = createStore<Record<Id, boolean>>({});
 
-$favoriteLists.on(getFavoriteListsFx.doneData, (state, payload) => payload);
-$favoriteLists.on(getMoreFavoritesFx.doneData, (state, payload) => {
-  if (!state) {
-    return state;
-  }
-  return payload;
-});
-$favoriteLists.on(addToFavoritesFx.doneData, (state, payload) => {
-  if (!state) {
-    return state;
-  }
-  return {
-    ...state,
-    items: [payload, ...state.items],
-  };
-});
-$favoriteLists.on(removeFromFavoritesFx.doneData, (state, { listId }) => {
-  if (!state) {
-    return state;
-  }
-  const listIndex = state.items.findIndex((l) => l.list.id === listId);
-  
-  if (listIndex === -1) {
-    return state;
-  }
-  state.items.splice(listIndex, 1)
-
-  return {
-    ...state,
-  };
+$favoriteLists.on(addToFavorites, (state, { favList }) => {
+  const newState = { ...state };
+  newState[favList.list.id] = true;
+  return newState;
 });
 
-$favoriteLists.on(logoutFx.doneData, () => null);
+$favoriteLists.on(removeFromFavorites, (state, { listId }) => {
+  const newState = { ...state };
+  if (listId in newState) {
+    newState[listId] = false
+  }
+  return newState;
+});
+
+$favoriteLists.on(logoutFx.doneData, () => {});

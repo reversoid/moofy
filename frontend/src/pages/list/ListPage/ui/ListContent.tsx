@@ -1,7 +1,3 @@
-import {
-  $getMoreReviewsLoading,
-  getMoreReviews,
-} from '@/features/list/get-list';
 import { Review } from '@/shared/api/types/review.type';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
@@ -16,6 +12,7 @@ interface ReviewListProps {
   reviews?: Review[];
   canLoadMoreReviews?: boolean;
   isUserOwner: boolean;
+  isFetchingMore: boolean;
   loadMoreReviews?: () => void;
 }
 
@@ -24,8 +21,8 @@ export const ListContent = ({
   isUserOwner,
   canLoadMoreReviews,
   loadMoreReviews,
+  isFetchingMore
 }: ReviewListProps) => {
-  const moreReviewsLoading = useStore($getMoreReviewsLoading);
   const navigate = useNavigate();
 
   return (
@@ -61,7 +58,7 @@ export const ListContent = ({
             isUserOwner={isUserOwner}
             canLoadMore={canLoadMoreReviews}
             loadMore={loadMoreReviews}
-            loadingMore={moreReviewsLoading}
+            loadingMore={isFetchingMore}
             reviews={reviews}
           />
         </>

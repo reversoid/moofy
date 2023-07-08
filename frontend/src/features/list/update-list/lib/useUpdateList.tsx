@@ -1,12 +1,14 @@
 import { UpdateListDTO, listService } from '@/features/list/_api/list.service';
 import { useMutation } from '@tanstack/react-query';
+import { updateList } from '..';
 
-export const useAddToFavorites = () => {
+export const useUpdateList = () => {
   const mutation = useMutation({
-    mutationFn: (listId: number) => listService.addToFavorites({ listId }),
-    onSuccess(data, variables, context) {
-      // TODO update store
+    mutationFn: (dto: UpdateListDTO) => listService.updateList(dto),
+    onSuccess(data) {
+      updateList({ list: data });
     },
   });
+
   return mutation;
 };

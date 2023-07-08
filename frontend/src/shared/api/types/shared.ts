@@ -1,12 +1,14 @@
 export type DateAsString = string;
 
+export type Id = number;
+
 export interface ApiError {
   statusCode: number;
   message: string;
 }
 
 export interface FetchError {
-  cause: ApiError
+  cause: ApiError;
 }
 
 export interface IterableResponse<T> {

@@ -18,27 +18,29 @@ const FavoritePage = () => {
   const loading = useStore($getFavoriteListsLoading);
 
   useLoadingBar(loading, loadingMore);
+  
+  return 'page'
 
-  return (
-    <>
-      {favLists?.items.length === 0 ? (
-        <Text size={'$lg'} color="$neutral">
-          Нет избранных коллекций
-        </Text>
-      ) : (
-        <ListGrid
-          items={(favLists?.items ?? []).map((f) => f.list)}
-          canLoadMore={Boolean(favLists?.nextKey)}
-          loadMore={
-            favLists?.nextKey
-              ? () => getMoreFavorites({ lowerBound: favLists.nextKey! })
-              : undefined
-          }
-          loadingMore={loadingMore}
-        />
-      )}
-    </>
-  );
+  // return (
+  //   <>
+  //     {favLists?.length === 0 ? (
+  //       <Text size={'$lg'} color="$neutral">
+  //         Нет избранных коллекций
+  //       </Text>
+  //     ) : (
+  //       <ListGrid
+  //         items={(favLists ?? []).map((f) => f.list)}
+  //         canLoadMore={Boolean(false)}
+  //         // loadMore={
+  //         //   favLists?.nextKey
+  //         //     ? () => getMoreFavorites({ lowerBound: favLists.nextKey! })
+  //         //     : undefined
+  //         // }
+  //         loadingMore={loadingMore}
+  //       />
+  //     )}
+  //   </>
+  // );
 };
 
 export default FavoritePage;

@@ -6,9 +6,10 @@ export const useDeleteList = () => {
   const mutation = useMutation({
     mutationFn: ({ listId }: { listId: number }) =>
       listService.deleteList(listId),
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       deleteList({ listId: data.listId });
     },
   });
+
   return mutation;
 };

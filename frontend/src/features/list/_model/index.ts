@@ -1,2 +1,2 @@
 export * from './lists';
-export * from './singleList';
+export * from '../../../pages/list/ListPage/model/listPageContent';

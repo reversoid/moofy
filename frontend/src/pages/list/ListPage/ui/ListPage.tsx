@@ -1,14 +1,29 @@
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { Text } from '@nextui-org/react';
-import { useListPage } from '../hooks/useListPage';
+import { useListPage } from '../lib/hooks/useListPage';
 import { PageContent } from './PageContent';
-import { useEarlierLoadedList } from '../hooks/useEarlierLoadedList';
+import { useEarlierLoadedList } from '../lib/hooks/useEarlierLoadedList';
 import { FC } from 'react';
-import { Review } from '@/shared/api/types/review.type';
+import { useParams } from 'react-router-dom';
+
+const useId = () => {
+  const { id } = useParams();
+  return Number(id);
+};
 
 export const ListPage: FC = () => {
-  const { data, error, isLoading, fetchNextPage, hasNextPage } = useListPage();
-  const { earlierLoadedList } = useEarlierLoadedList();
+  const id = useId();
+
+  const {
+    data,
+    error,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useListPage(id);
+
+  const { earlierLoadedList } = useEarlierLoadedList(id);
 
   useLoadingBar(isLoading);
 
@@ -20,6 +35,7 @@ export const ListPage: FC = () => {
         reviews={data.reviews}
         loadMoreReviews={fetchNextPage}
         canLoadMoreReviews={hasNextPage}
+        isFetchingMore={isFetchingNextPage}
       />
     );
   }
