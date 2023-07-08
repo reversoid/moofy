@@ -6,7 +6,7 @@ export const transformResponse = (
   data: InfiniteData<IterableResponse<List>>,
 ): List[] => {
   return data.pages.reduce(
-    (acc, value) => [...value.items, ...acc],
+    (acc, value) => [...acc, ...value.items],
     [] as List[],
   );
 };
