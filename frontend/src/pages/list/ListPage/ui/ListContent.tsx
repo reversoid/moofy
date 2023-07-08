@@ -44,7 +44,7 @@ export const ListContent = ({
         {isUserOwner && reviews && (
           <Button
             color={'gradient'}
-            css={{ '@xsMax': { width: '100%' } }}
+            css={{ '@xsMax': { width: '100%' }, minWidth: '8rem' }}
             onPress={() => navigate('add')}
             size={'md'}
           >
