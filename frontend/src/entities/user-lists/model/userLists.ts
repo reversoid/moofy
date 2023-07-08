@@ -1,6 +1,12 @@
 import { List } from '@/shared/api/types/list.type';
 import { createStore } from 'effector';
-import { addList, clearUserLists, removeList, updateList } from './events';
+import {
+  addList,
+  clearUserLists,
+  removeList,
+  setUserLists,
+  updateList,
+} from './events';
 
 /** Provides user lists on welcome page */
 export const $userLists = createStore<List[]>([]);
@@ -24,3 +30,5 @@ $userLists.on(updateList, (state, payload) => {
 $userLists.on(removeList, (state, payload) =>
   state.filter((l) => l.id !== payload.id),
 );
+
+$userLists.on(setUserLists, (state, payload) => payload);

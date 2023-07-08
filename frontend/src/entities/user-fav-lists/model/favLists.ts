@@ -1,6 +1,11 @@
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { createEvent, createStore, sample } from 'effector';
-import { addToFavorites, clearFavLists, removeFromFavorites } from './events';
+import {
+  addToFavorites,
+  clearFavorites,
+  removeFromFavorites,
+  setFavorites,
+} from './events';
 import { logoutFx } from '@/features/auth/model/logout';
 
 /** Provides user favorite lists on welcome page */
@@ -15,11 +20,10 @@ $userFavLists.on(removeFromFavorites, (state, { listId: id }) => {
   return state.filter((f) => f.list.id !== id);
 });
 
-$userFavLists.on(clearFavLists, (state) => {
+$userFavLists.on(clearFavorites, (state) => {
   return [];
 });
 
-sample({
-    clock: logoutFx.doneData,
-    source: clearFavLists
-})
+$userFavLists.on(setFavorites, (state, payload) => {
+  return payload;
+});

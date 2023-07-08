@@ -6,3 +6,4 @@ export const addList = createEvent<List>();
 export const updateList = createEvent<List>();
 export const removeList = createEvent<{ id: Id }>();
 export const clearUserLists = createEvent<void>();
+export const setUserLists = createEvent<List[]>();
