@@ -10,32 +10,25 @@ import { useStore } from 'effector-react';
 export const useCollectionsPage = () => {
   const userLists = useStore($userLists);
 
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchedAfterMount,
-    isFetchingNextPage,
-  } = useInfiniteQuery<IterableResponse<List>, FetchError>({
+  const result = useInfiniteQuery<IterableResponse<List>, FetchError>({
     queryKey: ['Collections page'],
     queryFn: ({ pageParam }) =>
       listService.getMyLists(pageParam, pageParam == undefined ? 19 : 20),
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 
-  useNewInfiniteData(data, isFetchingNextPage, isFetchedAfterMount, () => {
-    if (data) {
-      const content = transformInfiniteIterableData(data);
+  useNewInfiniteData(result, () => {
+    if (result.data) {
+      const content = transformInfiniteIterableData(result.data);
       setUserLists(content);
     }
   });
 
   return {
     data: userLists,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
+    isLoading: result.isLoading,
+    fetchNextPage: result.fetchNextPage,
+    hasNextPage: result.hasNextPage,
+    isFetchingNextPage: result.isFetchingNextPage,
   };
 };

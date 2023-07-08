@@ -10,31 +10,24 @@ import { useStore } from 'effector-react';
 export const useFavoritePage = () => {
   const favoriteLists = useStore($userFavLists);
 
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchedAfterMount,
-    isFetchingNextPage,
-  } = useInfiniteQuery<IterableResponse<FavoriteList>, FetchError>({
+  const result = useInfiniteQuery<IterableResponse<FavoriteList>, FetchError>({
     queryKey: ['Favorite collections page'],
     queryFn: ({ pageParam }) => listService.getFavoritesLists(pageParam),
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 
-  useNewInfiniteData(data, isFetchingNextPage, isFetchedAfterMount, () => {
-    if (data) {
-      const content = transformInfiniteIterableData(data);
+  useNewInfiniteData(result, () => {
+    if (result.data) {
+      const content = transformInfiniteIterableData(result.data);
       setFavorites(content);
     }
   });
 
   return {
     data: favoriteLists,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
+    isLoading: result.isLoading,
+    fetchNextPage: result.fetchNextPage,
+    hasNextPage: result.hasNextPage,
+    isFetchingNextPage: result.isFetchingNextPage,
   };
 };
