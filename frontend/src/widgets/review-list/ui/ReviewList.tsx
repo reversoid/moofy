@@ -1,5 +1,4 @@
 import { Review as IReview } from '@/shared/api/types/review.type';
-import { IterableResponse } from '@/shared/api/types/shared';
 import LoadMore from '@/shared/components/LoadMore';
 import { Review } from '@/widgets/review-list/ui/Review';
 import { styled } from '@nextui-org/react';
