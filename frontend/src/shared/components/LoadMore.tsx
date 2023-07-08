@@ -5,7 +5,10 @@ const LoadMoreContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  mt: '$8',
+  mt: '$10',
+  '@xsMax': {
+    mt: '$8',
+  },
 });
 
 export interface LoadMoreProps {
@@ -17,7 +20,11 @@ export interface LoadMoreProps {
 const LoadMore: FC<LoadMoreProps> = ({ loadMore, loading, buttonText }) => {
   return (
     <LoadMoreContainer>
-      <Button color={'gradient'} onClick={() => loadMore && loadMore()}>
+      <Button
+        css={{ '@xsMax': { width: '100%' } }}
+        color={'gradient'}
+        onClick={() => loadMore && loadMore()}
+      >
         {loading ? (
           <Loading type="points" color="white" />
         ) : (
