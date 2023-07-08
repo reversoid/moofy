@@ -11,7 +11,6 @@ import {
   SUPPORTED_EXTENSIONS,
   getFileExtension,
 } from '../../../../shared/components/ImageUpload';
-import { uploadImage } from '../../_model/uploadImage';
 import { useUploadImage } from '../../update-list/lib/useUploadImage';
 import { useCreateListModal } from '../lib/useCreateListModal';
 
@@ -68,7 +67,7 @@ export const CreateListModal = memo(
         return setAppError('IMAGE_TOO_LARGE');
       }
 
-      uploadImage({ file });
+      uploadListImageMutation.mutate(file);
     };
 
     return (
