@@ -2,10 +2,10 @@ import { listService } from '@/features/list/_api/list.service';
 import { List } from '@/shared/api/types/list.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { transformResponse } from './transformResponse';
 import { useEffect } from 'react';
 import { useStore } from 'effector-react';
 import { $userLists, setUserLists } from '@/entities/user-lists';
+import { transformInfiniteData } from '@/shared/lib/pagination/transformInfiniteData';
 
 export const useCollectionsPage = () => {
   const userLists = useStore($userLists);
@@ -30,7 +30,7 @@ export const useCollectionsPage = () => {
       return;
     }
 
-    const content = transformResponse(data);
+    const content = transformInfiniteData(data);
     setUserLists(content);
   }, [isFetchedAfterMount, isFetchingNextPage]);
 

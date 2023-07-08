@@ -1,16 +1,11 @@
+import { $userFavLists, setFavorites } from '@/entities/user-fav-lists';
 import { listService } from '@/features/list/_api/list.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import { List } from '@/shared/api/types/list.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { transformResponse } from './transformResponse';
-import {
-  $favoriteListsMap,
-  $userFavLists,
-  setFavorites,
-} from '@/entities/user-fav-lists';
+import { transformInfiniteData } from '@/shared/lib/pagination/transformInfiniteData';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useStore } from 'effector-react';
+import { useEffect } from 'react';
 
 export const useFavoritePage = () => {
   const favoriteLists = useStore($userFavLists);
@@ -35,7 +30,7 @@ export const useFavoritePage = () => {
       return;
     }
 
-    const content = transformResponse(data);
+    const content = transformInfiniteData(data);
     setFavorites(content);
   }, [isFetchedAfterMount, isFetchingNextPage]);
 
@@ -44,6 +39,6 @@ export const useFavoritePage = () => {
     isLoading,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
-  }
+    isFetchingNextPage,
+  };
 };
