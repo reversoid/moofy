@@ -47,7 +47,7 @@ export const useListPage = (id: number) => {
   }, [isFetchedAfterMount]);
 
   return {
-    data: listPageContent,
+    data: listPageContent?.list.id === id ? listPageContent : undefined,
     error,
     isLoading,
     fetchNextPage,
