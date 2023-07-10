@@ -2,7 +2,6 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
-import { routes as profileRoutes } from './profile/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
 
 import ErrorPage from './error';
@@ -11,6 +10,7 @@ import Layout from '@/app/ui/Layout/Layout';
 const MainPage = lazy(() => import('./main'));
 const SupportPage = lazy(() => import('./support'));
 const HelpPage = lazy(() => import('./help'));
+const ProfilePage = lazy(() => import('./profile/ui/ProfilePage'));
 
 export const routes: RouteObject[] = [
   {
@@ -41,8 +41,8 @@ export const routes: RouteObject[] = [
         children: listRoutes,
       },
       {
-        path: 'profile',
-        children: profileRoutes,
+        path: 'profile/:id',
+        element: <ProfilePage />,
       },
       {
         path: 'support',

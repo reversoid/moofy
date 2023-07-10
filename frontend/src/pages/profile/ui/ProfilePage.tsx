@@ -1,34 +1,41 @@
-import { $getProfileState, clearState, getProfile } from '../model';
+import { Profile } from '@/shared/api/types/profile.type';
+import { ApiError } from '@/shared/api/types/shared';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { Text } from '@nextui-org/react';
-import { useStore } from 'effector-react';
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import { profileService } from '../api/profile.service';
 import PageContent from './PageContent';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
-interface ProfilePageProps {
-  userOwner?: boolean;
-}
-
-function ProfilePage({ userOwner }: ProfilePageProps) {
+const useId = () => {
   const { id } = useParams();
+  return Number(id);
+};
 
-  useEffect(() => {
-    getProfile(id ? Number(id) : undefined);
-  }, []);
-  const { error, isLoading, result } = useStore($getProfileState);
+const useProfilePage = (id: number) => {
+  const { isLoading, data, isRefetching, error } = useQuery<Profile, ApiError>({
+    queryKey: ['Profile page', id],
+    queryFn: () => profileService.getProfile(),
+  });
 
-  const matchingId = Number(id) === result?.id;
-  const ownerPage = !id;
+  return { isLoading: isLoading || isRefetching, data, error };
+};
 
-  if (result && (matchingId || ownerPage)) {
-    return <PageContent profile={result} userOwner={Boolean(userOwner)} />;
+function ProfilePage() {
+  const id = useId();
+  const { data, isLoading, error } = useProfilePage(id);
+  const { userId } = useAuth();
+
+  const isOwnerPage = userId !== undefined && userId === data?.id;
+
+  useLoadingBar(isLoading);
+
+  if (data) {
+    return <PageContent profile={data} userOwner={isOwnerPage} />;
   }
 
-  if (isLoading) {
-    return null;
-  }
-
-  if (error === 'WRONG_USER_ID') {
+  if (error?.message === 'WRONG_USER_ID') {
     return <Text>Пользователя не существует</Text>;
   }
 
