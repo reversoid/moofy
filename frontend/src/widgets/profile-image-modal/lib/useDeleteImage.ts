@@ -1,5 +1,5 @@
 import { profileImageService } from '@/features/profile/edit-image/api/profile-image.service';
-import { setProfileWithoutLists } from '@/pages/profile/model/profile';
+import { setProfileWithoutLists } from '@/pages/profile/model';
 import { useMutation } from '@tanstack/react-query';
 
 export const useDeleteImage = () => {
