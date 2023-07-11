@@ -1,5 +1,5 @@
 import { Profile } from '@/shared/api/types/profile.type';
-import { $profileLists, setProfileLists } from '../model/profile';
+import { $profileLists, setProfileLists } from '../model';
 import { useStore } from 'effector-react';
 import {
   QueryFunction,

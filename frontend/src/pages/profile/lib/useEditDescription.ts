@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { profileService } from '../api/profile.service';
-import { setProfileWithoutLists } from '../model/profile';
+import { setProfileWithoutLists } from '../model';
 
 export const useEditDescription = () => {
   const mutation = useMutation({

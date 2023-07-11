@@ -4,7 +4,7 @@ import {
   $profileLists,
   setProfileFavLists,
   setProfileLists,
-} from '../model/profile';
+} from '../model';
 import { useStore } from 'effector-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';

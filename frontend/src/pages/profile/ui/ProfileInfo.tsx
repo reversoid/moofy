@@ -5,7 +5,7 @@ import { Loading, Row, Text, Textarea, styled } from '@nextui-org/react';
 import { useMutation } from '@tanstack/react-query';
 import { FC, createRef, useEffect, useState } from 'react';
 import { profileService } from '../api/profile.service';
-import { setProfile, setProfileWithoutLists } from '../model/profile';
+import { setProfile, setProfileWithoutLists } from '../model';
 import { useEditDescription } from '../lib/useEditDescription';
 
 interface ProfileInfoProps {

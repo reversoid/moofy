@@ -3,7 +3,7 @@ import { ApiError } from '@/shared/api/types/shared';
 import { useQuery } from '@tanstack/react-query';
 import { profileService } from '../api/profile.service';
 import { useStore } from 'effector-react';
-import { $profile, setProfile } from '../model/profile';
+import { $profile, setProfile } from '../model';
 import { useNewData } from '@/shared/lib/reactQueryAddons/useNewData';
 import { useCachedData } from '@/shared/lib/reactQueryAddons/useCachedData';
 
