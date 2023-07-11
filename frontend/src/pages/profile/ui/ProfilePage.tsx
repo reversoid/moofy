@@ -27,12 +27,10 @@ function ProfilePage() {
   const { data, isLoading, error } = useProfilePage(id);
   const { userId } = useAuth();
 
-  const isOwnerPage = userId !== undefined && userId === data?.id;
-
   useLoadingBar(isLoading);
 
   if (data) {
-    return <PageContent profile={data} userOwner={isOwnerPage} />;
+    return <PageContent profile={data} />;
   }
 
   if (error?.message === 'WRONG_USER_ID') {
