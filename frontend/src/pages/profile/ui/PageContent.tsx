@@ -1,13 +1,11 @@
 import { logout } from '@/features/auth/model/logout';
 import { Profile } from '@/shared/api/types/profile.type';
-import { TabProps } from '@/shared/ui/Tabs/Tabs/Tab';
-import Tabs from '@/shared/ui/Tabs/Tabs/Tabs';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { Button } from '@nextui-org/react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
+import { ListsSection } from './ListsSection/ListsSection';
 import ProfileHeader from './ProfileHeader';
 import ProfileInfo from './ProfileInfo';
-import { ListsSection } from './ListsSection';
-import { useAuth } from '@/shared/hooks/useAuth';
 
 interface PageContentProps {
   profile: Profile;
