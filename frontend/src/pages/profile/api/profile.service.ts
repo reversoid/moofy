@@ -1,4 +1,3 @@
-import { profileImageService } from '@/features/profile/edit-image/api/profile-image.service';
 import ApiService from '@/shared/api/api.service';
 import { Profile } from '@/shared/api/types/profile.type';
 
@@ -20,16 +19,6 @@ export class ProfileService extends ApiService {
       json: {
         description: newValue,
       },
-    });
-  }
-
-  public async uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    return this.post<{ link: string }>('/profile/image-upload', {
-      useJWT: true,
-      body: formData,
     });
   }
 }
