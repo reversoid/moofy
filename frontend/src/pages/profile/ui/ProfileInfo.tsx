@@ -1,27 +1,11 @@
 import DoneButton from '@/shared/components/DoneButton';
 import EditButton from '@/shared/components/EditButton';
 import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import {
-  Loading,
-  Row,
-  Text,
-  Textarea,
-  styled,
-  useInput,
-} from '@nextui-org/react';
-import { useStore } from 'effector-react';
-import {
-  ComponentRef,
-  FC,
-  createRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  $editProfileState,
-  editProfileDescription,
-} from '../model/editProfileDescription';
+import { Loading, Row, Text, Textarea, styled } from '@nextui-org/react';
+import { useMutation } from '@tanstack/react-query';
+import { FC, createRef, useEffect, useState } from 'react';
+import { profileService } from '../api/profile.service';
+import { setProfile, setProfileWithoutLists } from '../model/profile';
 
 interface ProfileInfoProps {
   description: string | null;
@@ -62,6 +46,18 @@ const AnimatedTextarea = styled(Textarea, {
   },
 });
 
+const useEditDescription = () => {
+  const mutation = useMutation({
+    mutationFn: (newDescription: string) =>
+      profileService.editProfileDescription(newDescription),
+    onSuccess(data) {
+      setProfileWithoutLists(data);
+    },
+  });
+
+  return mutation;
+};
+
 const ProfileInfo: FC<ProfileInfoProps> = ({
   createdAt,
   description,
@@ -69,22 +65,24 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
 }) => {
   const [editMode, setEditMode] = useState(false);
 
+  // Yeah we use ref because onChange with input makes impossible autosizing rows
   const inputRef = createRef<unknown>();
 
-  const { loading: editLoading, result } = useStore($editProfileState);
+  const editDescriptionMutation = useEditDescription();
 
   useEffect(() => {
     // TODO can use hook for that?
-    if (!inputRef.current) return
+    if (!inputRef.current) return;
     (inputRef.current as any).value = description ?? '';
   }, [description]);
 
   useEffect(() => {
-    if (!result) return;
-    if (!inputRef.current) return
-    (inputRef.current as any).value = result.description ?? '';
+    if (!editDescriptionMutation.isSuccess) return;
+    if (!inputRef.current) return;
+    (inputRef.current as any).value =
+      editDescriptionMutation.data.description ?? '';
     setEditMode(false);
-  }, [result]);
+  }, [editDescriptionMutation.isSuccess]);
 
   return (
     <>
@@ -97,14 +95,14 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             <>
               {editMode ? (
                 <>
-                  {editLoading ? (
+                  {editDescriptionMutation.isLoading ? (
                     <Loading size="sm" />
                   ) : (
                     <DoneButton
                       onClick={() => {
-                        editProfileDescription({
-                          newValue: (inputRef.current as any).value,
-                        });
+                        editDescriptionMutation.mutate(
+                          (inputRef.current as any).value,
+                        );
                       }}
                     />
                   )}
@@ -123,7 +121,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
             placeholder="Ваше описание"
             minRows={2}
             read={!editMode}
-            readOnly={!editMode || editLoading}
+            readOnly={!editMode || editDescriptionMutation.isLoading}
             disabled={!editMode}
             maxRows={Infinity}
             ref={inputRef as any}

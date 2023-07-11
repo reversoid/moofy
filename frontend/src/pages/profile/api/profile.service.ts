@@ -14,7 +14,7 @@ export class ProfileService extends ApiService {
   }
 
   public async editProfileDescription(newValue: string) {
-    return this.patch<Profile>('/profile', {
+    return this.patch<Omit<Profile, 'allLists' | 'favLists'>>('/profile', {
       useJWT: true,
       json: {
         description: newValue,
