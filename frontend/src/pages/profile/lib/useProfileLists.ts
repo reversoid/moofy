@@ -47,6 +47,6 @@ export const useProfileLists = (profile: Profile) => {
     hasNextPage: result.hasNextPage,
     loadNextPage: result.fetchNextPage,
     isLoadingMore: result.isFetchingNextPage,
-    refetch: result.refetch
+    refetch: result.refetch,
   };
 };

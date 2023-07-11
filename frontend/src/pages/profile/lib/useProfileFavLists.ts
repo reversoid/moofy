@@ -1,5 +1,10 @@
 import { Profile } from '@/shared/api/types/profile.type';
-import { $profileFavLists, $profileLists, setProfileFavLists, setProfileLists } from '../model/profile';
+import {
+  $profileFavLists,
+  $profileLists,
+  setProfileFavLists,
+  setProfileLists,
+} from '../model/profile';
 import { useStore } from 'effector-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
@@ -20,12 +25,14 @@ export const useProfileFavLists = (profile: Profile) => {
     enabled: false,
     initialData: {
       pageParams: [],
-      pages: profile.favLists ? [
-        {
-          items: profile.favLists.lists.items,
-          nextKey: profile.favLists.lists.nextKey,
-        },
-      ] : [],
+      pages: profile.favLists
+        ? [
+            {
+              items: profile.favLists.lists.items,
+              nextKey: profile.favLists.lists.nextKey,
+            },
+          ]
+        : [],
     },
   });
 
@@ -48,6 +55,6 @@ export const useProfileFavLists = (profile: Profile) => {
     hasNextPage: result.hasNextPage,
     loadNextPage: result.fetchNextPage,
     isLoadingMore: result.isFetchingNextPage,
-    refetch: result.refetch
+    refetch: result.refetch,
   };
 };
