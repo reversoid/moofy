@@ -13,12 +13,17 @@ class ProfileImageService extends ApiService {
   }
 
   public async saveImage(imageUrl: string) {
-    return this.patch<Profile>('/profile', {
+    return this.patch<Omit<Profile, 'allLists' | 'favLists'>>('/profile', {
       useJWT: true,
       json: {
         imageUrl,
       },
     });
+  }
+
+  public async uploadAndSaveImage(file: File) {
+    const { link } = await this.uploadImage(file);
+    return this.saveImage(link);
   }
 
   public async deleteImage() {
@@ -31,4 +36,4 @@ class ProfileImageService extends ApiService {
   }
 }
 
-export const profileImageService = new ProfileImageService()
+export const profileImageService = new ProfileImageService();

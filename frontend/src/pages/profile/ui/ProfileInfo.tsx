@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { FC, createRef, useEffect, useState } from 'react';
 import { profileService } from '../api/profile.service';
 import { setProfile, setProfileWithoutLists } from '../model/profile';
+import { useEditDescription } from '../lib/useEditDescription';
 
 interface ProfileInfoProps {
   description: string | null;
@@ -45,18 +46,6 @@ const AnimatedTextarea = styled(Textarea, {
     },
   },
 });
-
-const useEditDescription = () => {
-  const mutation = useMutation({
-    mutationFn: (newDescription: string) =>
-      profileService.editProfileDescription(newDescription),
-    onSuccess(data) {
-      setProfileWithoutLists(data);
-    },
-  });
-
-  return mutation;
-};
 
 const ProfileInfo: FC<ProfileInfoProps> = ({
   createdAt,

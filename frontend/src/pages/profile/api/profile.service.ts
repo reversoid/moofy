@@ -1,3 +1,4 @@
+import { profileImageService } from '@/features/profile/edit-image/api/profile-image.service';
 import ApiService from '@/shared/api/api.service';
 import { Profile } from '@/shared/api/types/profile.type';
 

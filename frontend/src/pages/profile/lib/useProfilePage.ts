@@ -25,10 +25,7 @@ export const useProfilePage = (id: number) => {
     if (result.data) {
       setProfile(result.data);
     }
-  });
-
-  console.log(profile);
-  
+  });  
 
   return {
     isLoading: result.isLoading,

@@ -14,6 +14,8 @@ import {
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { notify } from '@/features/app/model/notify';
 import { useUnmount } from '@/shared/hooks/useUnmount';
+import { useUploadAndSaveImage } from '../lib/useUploadImage';
+import { useDeleteImage } from '../lib/useDeleteImage';
 
 const ImageContainer = styled('div', {
   width: 'min(100%, 25rem)',
@@ -89,34 +91,37 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
   opened,
   setOpened,
 }) => {
-  const onFileSelected = (file: File) => uploadAndSaveProfileImage({ file });
-  const onDeleteClicked = () => deleteProfileImage();
-  const { loading: uploading, success: uploadAndSaveSuccess } =
-    useStore($uploadAndSaveState);
-  const { loading: deleting, success: deleteSuccess } = useStore(
-    $profileImageDeleteState,
-  );
+  const uploadAndSaveMutation = useUploadAndSaveImage();
+  const deleteImageMutation = useDeleteImage();
+
+  const onFileSelected = (file: File) => uploadAndSaveMutation.mutate(file);
+  const onDeleteClicked = () => deleteImageMutation.mutate();
 
   useEffect(() => {
-    if (!uploadAndSaveSuccess) {
+    if (!uploadAndSaveMutation.isSuccess) {
       return;
     }
     setOpened(false);
     notify('Изображение загружено');
-  }, [uploadAndSaveSuccess]);
+    uploadAndSaveMutation.reset();
+  }, [uploadAndSaveMutation.isSuccess]);
 
   useEffect(() => {
-    if (!deleteSuccess) {
+    if (!deleteImageMutation.isSuccess) {
       return;
     }
     setOpened(false);
     notify('Изображение удалено');
-  }, [deleteSuccess]);
+    deleteImageMutation.reset();
+  }, [deleteImageMutation.isSuccess]);
 
   useUnmount(() => {
-    clearDeleteProfileImageState()
-    clearUploadAndSaveProfileImageState()
-  })
+    deleteImageMutation.reset();
+    uploadAndSaveMutation.reset();
+  });
+
+  const loading =
+    deleteImageMutation.isLoading || uploadAndSaveMutation.isLoading;
 
   return (
     <Modal open={opened} closeButton={true} onClose={() => setOpened(false)}>
@@ -125,14 +130,14 @@ export const ProfileImageModal: FC<ProfileImageModalProps> = ({
       >
         <ImageContainer>
           {imageUrl ? (
-            <Image src={imageUrl ?? ''} loading={uploading || deleting}></Image>
+            <Image src={imageUrl ?? ''} loading={loading}></Image>
           ) : (
             <EmptyImagePlaceholderWrapper>
               <PictureIcon color={'#3A3F42'} size="12rem" />
             </EmptyImagePlaceholderWrapper>
           )}
 
-          {(uploading || deleting) && (
+          {loading && (
             <LoadingWrapper>
               <Loading size="xl" />
             </LoadingWrapper>
