@@ -1,5 +1,5 @@
 import { $userLists, setUserLists } from '@/entities/user-lists';
-import { listService } from '@/features/list/_api/list.service';
+import { listService } from '@/features/list/api/list.service';
 import { List } from '@/shared/api/types/list.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';

@@ -1,5 +1,5 @@
 import { addToFavorites, removeFromFavorites } from '@/entities/user-fav-lists';
-import { listService } from '@/features/list/_api/list.service';
+import { listService } from '@/features/list/api/list.service';
 import { useMutation } from '@tanstack/react-query';
 
 export const useFavoritesMutations = () => {

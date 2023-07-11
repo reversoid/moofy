@@ -1,8 +1,7 @@
 import {
   ListWithContentResponse,
   listService,
-} from '@/features/list/_api/list.service';
-import { $singleListPage, setListPageContent } from '@/features/list/_model';
+} from '@/features/list/api/list.service';
 import { AdditinalInfo, List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import { FetchError } from '@/shared/api/types/shared';
@@ -11,6 +10,7 @@ import { useStore } from 'effector-react';
 import { transformResponse } from '../helpers/transformResponse';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
+import { $singleListPage, setListPageContent } from '../../model/listPageContent';
 
 export interface ListPageContent {
   list: List;

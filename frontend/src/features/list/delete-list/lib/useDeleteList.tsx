@@ -1,4 +1,4 @@
-import { listService } from '@/features/list/_api/list.service';
+import { listService } from '@/features/list/api/list.service';
 import { deleteList } from '@/features/list/delete-list';
 import { useMutation } from '@tanstack/react-query';
 

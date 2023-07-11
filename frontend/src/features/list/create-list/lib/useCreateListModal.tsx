@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { CreateListDTO, listService } from '../../_api/list.service';
+import { CreateListDTO, listService } from '../../api/list.service';
 import { addList } from '@/entities/user-lists';
 
 export const useCreateListModal = () => {

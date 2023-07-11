@@ -1,4 +1,4 @@
-import { UpdateListDTO, listService } from '@/features/list/_api/list.service';
+import { UpdateListDTO, listService } from '@/features/list/api/list.service';
 import { useMutation } from '@tanstack/react-query';
 import { updateList } from '../../model/updateList';
 

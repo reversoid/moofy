@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query';
 import { FetchError, Id, IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
-import { listService } from '@/features/list/_api/list.service';
+import { listService } from '@/features/list/api/list.service';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';

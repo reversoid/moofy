@@ -1,4 +1,4 @@
-import { ListWithContentResponse } from '@/features/list/_api/list.service';
+import { ListWithContentResponse } from '@/features/list/api/list.service';
 import { InfiniteData } from '@tanstack/react-query';
 import { ListPageContent } from '../hooks/useListPage';
 import { Review } from '@/shared/api/types/review.type';

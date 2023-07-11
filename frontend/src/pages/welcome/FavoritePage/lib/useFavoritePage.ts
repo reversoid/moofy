@@ -1,5 +1,5 @@
 import { $userFavLists, setFavorites } from '@/entities/user-fav-lists';
-import { listService } from '@/features/list/_api/list.service';
+import { listService } from '@/features/list/api/list.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';

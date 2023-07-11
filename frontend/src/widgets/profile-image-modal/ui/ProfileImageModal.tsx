@@ -1,16 +1,7 @@
 import { BasicImageUpload } from '@/shared/components/BasicImageUpload';
 import { Modal, ModalBody, ModalFooter } from '@/shared/ui/Modal';
 import { Button, Loading, styled } from '@nextui-org/react';
-import { useStore } from 'effector-react';
 import { FC, useEffect } from 'react';
-import {
-  deleteProfileImage,
-  $profileImageDeleteState,
-  $uploadAndSaveState,
-  uploadAndSaveProfileImage,
-  clearDeleteProfileImageState,
-  clearUploadAndSaveProfileImageState,
-} from '@/features/profile/edit-image';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { notify } from '@/features/app/model/notify';
 import { useUnmount } from '@/shared/hooks/useUnmount';
