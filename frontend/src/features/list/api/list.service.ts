@@ -78,8 +78,7 @@ export class ListService extends ApiService {
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
     }
-    searchParams['limit'] = 2;
-
+    searchParams['limit'] = 20;
 
     return this.get<ListWithContentResponse>('/review', {
       useJWT: true,
