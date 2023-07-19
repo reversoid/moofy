@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { CreateReviewDTO, reviewService } from '../../_api/review.service';
+import { CreateReviewDTO, reviewService } from '../../api/review.service';
 import { addReview } from '@/pages/list/ListPage/model/addReview';
 
 export const useCreateReview = () => {

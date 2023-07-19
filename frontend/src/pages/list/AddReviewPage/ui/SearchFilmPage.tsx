@@ -1,22 +1,18 @@
-import {
-  Text,
-  Image,
-  styled,
-  Row,
-  Button,
-  Loading,
-  InputProps,
-} from '@nextui-org/react';
-import useAutocomplete from '@mui/material/useAutocomplete';
-import { useStore } from 'effector-react';
-import { useEffect, useState } from 'react';
-import debounce from 'lodash.debounce';
-import { Film } from '@/shared/api/types/film.type';
-import { $getFilmsState, getFilmsByName } from '@/features/search-films';
-import { Li, LiBody, Listbox } from './Listbox';
-import { useParams } from 'react-router-dom';
-import React from 'react';
+import { useSearchFilms } from '@/features/search-films/utils/useSearchFilms';
 import { Input } from '@/shared/ui/Input/Input';
+import useAutocomplete from '@mui/material/useAutocomplete';
+import {
+  Button,
+  Image,
+  InputProps,
+  Loading,
+  Row,
+  Text,
+  styled,
+} from '@nextui-org/react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Li, LiBody, Listbox } from './Listbox';
 
 const CreateReviewModal = React.lazy(
   () => import('@/features/review/create-review/ui/CreateReviewModal'),
@@ -31,12 +27,10 @@ export const ImageContainer = styled('div', {
 
 export const Wrapper = styled('div', { width: '100%', position: 'relative' });
 
-const searchFilms = debounce(getFilmsByName, 250);
-
 export const SearchFilmPage = () => {
-  const [options, setOptions] = useState<Film[]>([]);
-
   const { id } = useParams();
+  const { films, isLoading, searchFilms } = useSearchFilms();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     getRootProps,
@@ -49,26 +43,21 @@ export const SearchFilmPage = () => {
   } = useAutocomplete({
     getOptionLabel: (option) => option.name ?? '',
     filterOptions: (x) => x,
-    options,
+    options: films ?? [],
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { result, loading } = useStore($getFilmsState);
-
   useEffect(() => {
-    if (!inputValue) return;
-    searchFilms.cancel();
+    const isFilmJustSelected = selectedFilm?.name === inputValue;
+    if (isFilmJustSelected) {
+      return;
+    }
+
+    if (!inputValue.trim()) {
+      return;
+    }
+    
     searchFilms(inputValue);
   }, [inputValue]);
-
-  useEffect(() => {
-    if (!result) return;
-
-    if (result.length > 0) {
-      setOptions(result);
-    }
-  }, [result]);
 
   return (
     <>
@@ -80,11 +69,11 @@ export const SearchFilmPage = () => {
           fullWidth
           placeholder="Поиск фильма"
           size="xl"
-          contentRight={loading ? <Loading size="sm" /> : <div></div>}
+          contentRight={isLoading ? <Loading size="sm" /> : <div></div>}
         />
         {groupedOptions.length > 0 ? (
           <Listbox {...getListboxProps()}>
-            {options.map((option, index) => (
+            {films?.map((option, index) => (
               <Li {...{ ...getOptionProps({ option, index }), key: option.id }}>
                 <ImageContainer>
                   <Image

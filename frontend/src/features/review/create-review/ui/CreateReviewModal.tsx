@@ -1,7 +1,7 @@
 import { Film } from '@/shared/api/types/film.type';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReviewModal from '../../_ui/ReviewModal';
+import ReviewModal from '../../ui/ReviewModal';
 import { useCreateReview } from '../lib/useCreateReview';
 import { clearState } from '../model';
 
