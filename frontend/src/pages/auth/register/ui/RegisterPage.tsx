@@ -1,79 +1,45 @@
-import { useForm } from 'react-hook-form';
-import { Text, Loading } from '@nextui-org/react';
-import { useEvent, useStore } from 'effector-react';
-import { memo, useCallback, useEffect } from 'react';
-import AuthContainer from '@/features/auth/components/AuthContainer';
-import Heading from '@/features/auth/components/Title';
 import { useDefaultScrollbarGutter } from '@/app/styles/useDefaultScrollbarGutter';
+import { $registerStatus, register as registerEvent } from '@/features/auth';
+import AuthContainer from '@/features/auth/components/AuthContainer';
+import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip/InfoIconWithTooltip';
+import Heading from '@/features/auth/components/Title';
+import { authService } from '@/features/auth/services/auth.service';
 import {
-  RegisterFormData,
   PASSWORD_VALIDATORS,
+  RegisterFormData,
   USERNAME_VALIDATORS,
 } from '@/features/auth/utils/register/formUtils';
-import { Link, useLocation } from 'react-router-dom';
-import { useFieldsChecks } from '../lib/useFieldsChecks';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
-import InfoIconWithTooltip from '@/features/auth/components/InfoIconWithTooltip/InfoIconWithTooltip';
-import {
-  register as registerEvent,
-  $registerStatus,
-  $checkUsernameResult,
-} from '@/features/auth';
-import { SubmitContainer } from '../../_ui/SubmitContainer';
+import { Loading, Text } from '@nextui-org/react';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
+import { useEvent, useStore } from 'effector-react';
+import { useForm } from 'react-hook-form';
+import { Link, useLocation } from 'react-router-dom';
 import { Form } from '../../_ui/Form';
+import { SubmitContainer } from '../../_ui/SubmitContainer';
+
+const checkUsernameDebounced = AwesomeDebouncePromise(
+  async (username: string) => {
+    const exists = await authService.checkUsernameExistence(username);
+    return exists ? 'Имя пользователя уже занято' : true;
+  },
+  250,
+);
 
 const RegisterPage = () => {
   useDefaultScrollbarGutter();
   const {
     register,
     handleSubmit,
-    setError,
-    clearErrors,
-    trigger,
-    getFieldState,
-    formState: { errors, isValid: isFormValid },
+    formState: { errors, isValid: isFormValid, isValidating },
   } = useForm<RegisterFormData>({ mode: 'onChange' });
 
-  const {
-    loadingEmailCheck,
-    loadingUsernameCheck,
-    onChangeUsernameDebounced,
-    usernameExists,
-  } = useFieldsChecks();
-
-  let submitButtonDisabled =
-    !isFormValid ||
-    loadingEmailCheck ||
-    loadingUsernameCheck ||
-    Boolean(Object.keys(errors).length);
+  let submitButtonDisabled = !isFormValid || isValidating;
+  Boolean(Object.keys(errors).length);
 
   const onSubmit = useEvent(registerEvent);
 
   const { loading } = useStore($registerStatus);
-
-  useEffect(() => {
-    if (usernameExists === null) {
-      return;
-    }
-
-    if (usernameExists) {
-      setError('username', { message: 'Имя пользователя уже занято' });
-    } else {
-      clearErrors('username');
-      trigger('username');
-    }
-  }, [usernameExists]);
-
-  const checkUsername = useCallback(
-    (event: any) =>
-      setTimeout(() => {
-        const { invalid } = getFieldState('username');
-        if (!invalid) {
-          onChangeUsernameDebounced({ username: event.target.value });
-        }
-      }),
-    [],
-  );
 
   const { search } = useLocation();
 
@@ -88,7 +54,7 @@ const RegisterPage = () => {
           size="xl"
           status={errors.username && 'error'}
           contentRight={
-            loadingUsernameCheck ? (
+            isValidating ? (
               <Loading size="sm" />
             ) : (
               errors.username?.message && (
@@ -98,9 +64,8 @@ const RegisterPage = () => {
           }
           {...register('username', {
             ...USERNAME_VALIDATORS,
-            onChange(e) {
-              submitButtonDisabled = true;
-              checkUsername(e);
+            validate: {
+              usernameAvailable: checkUsernameDebounced,
             },
           })}
         />
