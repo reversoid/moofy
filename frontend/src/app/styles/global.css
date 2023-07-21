@@ -1,7 +1,9 @@
 html {
   scrollbar-gutter: stable;
+}
 
-  @media (max-width: 650px) {
+@media (max-width: 650px) {
+  html {
     font-size: 0.9375em;
   }
 }

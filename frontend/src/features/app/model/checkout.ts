@@ -1,8 +1,5 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { appStarted } from './app';
-import { loginFx } from '../../auth/model';
-import { logoutFx } from '../../auth/model/logout';
-import { registerFx } from '../../auth/model';
 import { appService } from '../api/app.service';
 
 interface UserLoggedInState {
@@ -31,15 +28,6 @@ $userLoggedIn.on(
   checkoutUserFx.doneData,
   (state, checkoutResult) => checkoutResult,
 );
-$userLoggedIn.on(registerFx.doneData, (state, { userId }) => ({
-  loggedIn: true,
-  userId,
-}));
-$userLoggedIn.on(loginFx.doneData, (state, { userId }) => ({
-  loggedIn: true,
-  userId,
-}));
-$userLoggedIn.on(logoutFx.doneData, () => ({ loggedIn: false }));
 
 sample({
   clock: appStarted,

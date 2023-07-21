@@ -12,16 +12,17 @@ interface SubmitContainerProps {
   buttonLoading: boolean;
   buttonDisabled: boolean;
   buttonText: string;
-  additionalElement?: JSX.Element;
   formId: string;
+  /** Does not show that button is disabled but it is */
+  buttonSilentlyDisabled?: boolean;
 }
 
 export const SubmitContainer: FC<SubmitContainerProps> = ({
   buttonDisabled,
   buttonLoading,
   buttonText,
-  additionalElement,
-  formId
+  formId,
+  buttonSilentlyDisabled,
 }) => {
   return (
     <Container>
@@ -29,9 +30,13 @@ export const SubmitContainer: FC<SubmitContainerProps> = ({
         color={'gradient'}
         type="submit"
         form={formId}
-        css={{ '@xsMin': { width: 'max-content !important' } }}
+        css={{
+          '@xsMin': { width: 'max-content !important' },
+          pointerEvents: buttonSilentlyDisabled ? 'none' : 'auto',
+        }}
         size="lg"
         disabled={buttonDisabled}
+        tabIndex={buttonDisabled ? -1 : 0}
       >
         {buttonLoading ? (
           <Loading size="lg" type="points" color="white" />
@@ -39,7 +44,6 @@ export const SubmitContainer: FC<SubmitContainerProps> = ({
           buttonText
         )}
       </Button>
-      {additionalElement}
     </Container>
   );
 };

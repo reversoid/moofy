@@ -1,4 +1,3 @@
-import { logout } from '@/features/auth/model/logout';
 import { Profile } from '@/shared/api/types/profile.type';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { Button } from '@nextui-org/react';
@@ -41,7 +40,8 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
             },
           }}
           color="gradient"
-          onPress={() => logout()}
+          // TODO
+          onPress={() => console.log('logout')}
         >
           Выйти
         </Button>
