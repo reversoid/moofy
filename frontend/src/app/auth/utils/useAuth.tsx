@@ -6,5 +6,5 @@ export const useAuth = () => {
   const checking = useStore(checkoutUserFx.pending);
   const { loggedIn, userId } = useStore($userAuth);
 
-  return { isLoading: false, isLoggedIn: loggedIn, userId };
+  return { isLoading: checking, isLoggedIn: loggedIn, userId };
 };

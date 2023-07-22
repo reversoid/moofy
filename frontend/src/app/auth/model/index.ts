@@ -1,5 +1,5 @@
 import { createStore, sample } from 'effector';
-import { logout, authorize, checkoutUser } from './auth';
+import { unAuthorize, authorize, checkoutUser } from './auth';
 import { appStarted } from '@/app/model';
 
 export * from './checkout';
@@ -20,4 +20,4 @@ export const $userAuth = createStore<UserLoggedInState>({
   loggedIn: undefined,
 });
 $userAuth.on(authorize, (state, { userId }) => ({ loggedIn: true, userId }));
-$userAuth.on(logout, (state) => ({ loggedIn: false }));
+$userAuth.on(unAuthorize, (state) => ({ loggedIn: false }));

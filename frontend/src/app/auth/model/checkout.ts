@@ -1,6 +1,6 @@
 import { authService } from '@/features/auth';
 import { createEffect, sample } from 'effector';
-import { authorize, checkoutUser } from './auth';
+import { authorize, checkoutUser, unAuthorize } from './auth';
 
 export const checkoutUserFx = createEffect<
   void,
@@ -25,6 +25,13 @@ sample({
 
 sample({
   clock: checkoutUserFx.doneData,
+  filter: ({ loggedIn }) => loggedIn === true,
   fn: (data) => ({ userId: data.userId! }),
   target: authorize,
+});
+
+sample({
+  clock: checkoutUserFx.doneData,
+  filter: ({ loggedIn }) => loggedIn === false,
+  target: unAuthorize,
 });

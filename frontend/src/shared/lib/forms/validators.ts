@@ -4,13 +4,13 @@ export const required =
     value ? undefined : message;
 
 export const minLength =
-  (minLength: number, message: string) => (value: string) =>
-    value.length < minLength ? message : undefined;
+  (minLength: number, message: string) => (value?: string) =>
+    (value ?? '').length < minLength ? message : undefined;
 
 export const maxLength =
-  (maxLength: number, message: string) => (value: string) =>
-    value.length > maxLength ? message : undefined;
+  (maxLength: number, message: string) => (value?: string) => {
+    return (value ?? '').length > maxLength ? message : undefined;
+  };
 
-export const pattern =
-  (pattern: RegExp, message: string) => (value: string) =>
-    pattern.test(value) ? undefined : message;
+export const pattern = (pattern: RegExp, message: string) => (value: string) =>
+  pattern.test(value) ? undefined : message;
