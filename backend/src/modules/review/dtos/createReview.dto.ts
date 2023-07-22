@@ -11,11 +11,12 @@ export class CreateReviewDTO {
   @IsInt()
   listId: number;
 
+  @IsOptional()
   @IsString()
   @MaxLength(400)
-  description: string;
+  description?: string;
 
   @IsOptional()
   @IsString({ each: true })
-  tags: string[];
+  tags?: string[];
 }
