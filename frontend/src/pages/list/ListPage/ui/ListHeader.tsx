@@ -1,7 +1,7 @@
 import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
 import BookmarkButton from '@/features/list/favorite-lists/ui/BookmarkButton';
 import ListOwnerActions from '@/features/list/list-owner-actions/ui/ListOwnerActions';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuth } from '@/app';
 import { Row, Text } from '@nextui-org/react';
 import { FC } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';

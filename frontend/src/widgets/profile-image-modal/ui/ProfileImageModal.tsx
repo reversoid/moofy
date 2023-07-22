@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalFooter } from '@/shared/ui/Modal';
 import { Button, Loading, styled } from '@nextui-org/react';
 import { FC, useEffect } from 'react';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
-import { notify } from '@/features/app/model/notify';
+import { notify } from '@/app';
 import { useUnmount } from '@/shared/hooks/useUnmount';
 import { useUploadAndSaveImage } from '../lib/useUploadImage';
 import { useDeleteImage } from '../lib/useDeleteImage';

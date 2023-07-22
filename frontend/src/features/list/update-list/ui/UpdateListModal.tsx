@@ -1,4 +1,4 @@
-import { setAppError } from '@/features/app';
+import { setAppError } from '@/app';
 import {
   ImageUpload,
   SUPPORTED_EXTENSIONS,

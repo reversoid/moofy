@@ -1,4 +1,4 @@
-import { setAppError } from '@/features/app';
+import { setAppError } from '@/app';
 import { Form } from '@/shared/ui/Form/Form';
 import { Input } from '@/shared/ui/Input/Input';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';

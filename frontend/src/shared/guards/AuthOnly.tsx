@@ -1,4 +1,4 @@
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuth } from '@/app/auth/utils/useAuth';
 import React, { PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ const AuthOnly = ({
   fallback,
   redirect,
 }: PropsWithChildren<AuthOnlyProps>) => {
-  const { isLoading, isLoggedIn } = useAuth();
+  const { isLoading, isLoggedIn } = useAuth();  
 
   if (isLoading || isLoggedIn === undefined) {
     return null;

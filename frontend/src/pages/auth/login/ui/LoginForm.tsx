@@ -8,8 +8,10 @@ import {
   registerFieldRequired,
   usernameMaxLength,
   usernamePattern,
-} from '../../register/utils/validators';
+} from '../../utils/validators';
 import InfoIconWithTooltip from '../../ui/InfoIconWithTooltip';
+import { useMutation } from '@tanstack/react-query';
+import { useLogin } from '@/features/auth';
 
 export interface LoginFormData {
   username: string;
@@ -17,11 +19,12 @@ export interface LoginFormData {
 }
 
 export const LoginForm = () => {
+  const mutation = useLogin();
+
   return (
     <FinalForm<LoginFormData>
       onSubmit={async (form) => {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        console.log(form);
+        await mutation.mutateAsync(form);
       }}
       render={({ handleSubmit, submitting, validating, invalid }) => (
         <>

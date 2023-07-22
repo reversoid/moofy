@@ -46,15 +46,17 @@ class AuthService extends ApiService {
     }).then(({ userExists }) => userExists);
   }
 
-  public async checkEmailExistence(email: string): Promise<boolean> {
-    return this.get<{ userExists: boolean }>('/user/existence', {
-      searchParams: { email },
-      retry: LONG_RETRY_STRATEGY,
-    }).then(({ userExists }) => userExists);
-  }
-
   public async logout(): Promise<void> {
     return this.get<void>('/auth/protected/logout');
+  }
+
+  public async checkout(): Promise<{ userId: number }> {
+    return this.get<AuthResponse>('/auth/protected/checkout').then(
+      ({ access_token, userId }) => {
+        tokenService.setAccessToken(access_token);
+        return { userId };
+      },
+    );
   }
 }
 

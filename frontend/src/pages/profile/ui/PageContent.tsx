@@ -1,10 +1,11 @@
 import { Profile } from '@/shared/api/types/profile.type';
-import { useAuth } from '@/shared/hooks/useAuth';
 import { Button } from '@nextui-org/react';
 import { FC } from 'react';
 import { ListsSection } from './ListsSection/ListsSection';
 import ProfileHeader from './ProfileHeader';
 import ProfileInfo from './ProfileInfo';
+import { useLogout } from '@/features/auth';
+import { useAuth } from '@/app/auth';
 
 interface PageContentProps {
   profile: Profile;
@@ -13,6 +14,7 @@ interface PageContentProps {
 const PageContent: FC<PageContentProps> = ({ profile }) => {
   const { userId } = useAuth();
   const isOwner = userId === profile.id;
+  const mutation = useLogout()
 
   return (
     <>
@@ -40,8 +42,8 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
             },
           }}
           color="gradient"
-          // TODO
-          onPress={() => console.log('logout')}
+
+          onPress={() => mutation.mutate()}
         >
           Выйти
         </Button>

@@ -1,3 +1,4 @@
 export * from './services/auth.service';
-export * from './utils/constants';
-export * from './utils/patterns';
+export * from './utils/useLogin';
+export * from './utils/useLogout';
+export * from './utils/useRegister';

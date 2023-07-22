@@ -1,11 +1,11 @@
-import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH } from '@/features/auth/utils/constants';
-import { NO_WHITESPACES, USERNAME_PATTERN } from '@/features/auth/utils/patterns';
 import {
   maxLength,
   minLength,
   pattern,
   required,
 } from '@/shared/lib/forms/validators';
+import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH } from './constants';
+import { NO_WHITESPACES, USERNAME_PATTERN } from './patterns';
 
 export const registerFieldRequired = required(
   'Данное поле не должно быть пустым',

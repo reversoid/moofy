@@ -12,7 +12,7 @@ import { listService } from '@/features/list/api/list.service';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuth } from '@/app';
 
 const useFnToFetch = (
   profileId: Id,

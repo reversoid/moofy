@@ -1,4 +1,4 @@
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuth } from '@/app';
 import { Text, styled, Link as NextUiLink } from '@nextui-org/react';
 import React from 'react';
 import { Link } from 'react-router-dom';

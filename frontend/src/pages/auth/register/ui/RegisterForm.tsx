@@ -4,15 +4,16 @@ import { Loading } from '@nextui-org/react';
 import { Field, Form as FinalForm } from 'react-final-form';
 import { Form } from '../../ui/Form';
 import { SubmitContainer } from '../../ui/SubmitContainer';
-import { checkUsernameDebounced } from '../utils/checkUsername';
 import {
   passwordMinLength,
   passwordPattern,
   registerFieldRequired,
   usernameMaxLength,
   usernamePattern,
-} from '../utils/validators';
+} from '../../utils/validators';
 import InfoIconWithTooltip from '../../ui/InfoIconWithTooltip';
+import { checkUsernameDebounced } from '../../utils/checkUsername';
+import { useRegister } from '@/features/auth';
 
 export interface RegisterFormData {
   username: string;
@@ -20,11 +21,11 @@ export interface RegisterFormData {
 }
 
 export const RegisterForm = () => {
+  const mutation = useRegister()
   return (
     <FinalForm<RegisterFormData>
       onSubmit={async (form) => {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        console.log(form);
+        await mutation.mutateAsync(form)
       }}
       render={({ handleSubmit, submitting, validating, invalid }) => (
         <>

@@ -1,8 +1,8 @@
-import { useAuth } from '@/shared/hooks/useAuth';
 import { ListContent } from './ListContent';
 import { ListInfo } from './ListInfo';
 import { Review } from '@/shared/api/types/review.type';
 import { List } from '@/shared/api/types/list.type';
+import { useAuth } from '@/app';
 
 interface ListPageProps {
   list: List;
