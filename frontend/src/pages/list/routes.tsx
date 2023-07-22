@@ -8,7 +8,7 @@ const SearchFilmPage = lazy(() => import('./AddReviewPage'));
 export const routes: RouteObject[] = [
   {
     path: '',
-    element: <Navigate to={'/welcome'} />,
+    element: <Navigate to={'/welcome/collections'} />,
   },
   {
     path: ':id',

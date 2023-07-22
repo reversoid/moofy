@@ -9,7 +9,7 @@ export const routes: RouteObject[] = [
   {
     path: 'login',
     element: (
-      <NotAuthOnly redirectTo="/welcome" useQuery={{ from: true }}>
+      <NotAuthOnly redirectTo="/welcome/collections" useQuery={{ from: true }}>
         <LoginPage />
       </NotAuthOnly>
     ),
@@ -17,7 +17,7 @@ export const routes: RouteObject[] = [
   {
     path: 'register',
     element: (
-      <NotAuthOnly redirectTo="/welcome" useQuery={{ from: true }}>
+      <NotAuthOnly redirectTo="/welcome/collections" useQuery={{ from: true }}>
         <RegisterPage />
       </NotAuthOnly>
     ),

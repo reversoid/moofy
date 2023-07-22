@@ -46,7 +46,7 @@ function Header() {
         }}
       >
         <Link
-          to={isLoggedIn ? '/welcome' : ''}
+          to={isLoggedIn ? '/welcome/collections' : ''}
           css={{ height: '100%', width: 'fit-content', dflex: 'center' }}
         >
           <Image src={logo} height="4rem" objectFit="contain" width="8rem" />

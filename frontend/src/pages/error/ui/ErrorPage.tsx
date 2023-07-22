@@ -43,7 +43,7 @@ const ErrorPage = ({ code = 404 }: { code?: number }) => {
         Если ошибка повторяется, то свяжитесь, пожалуйста, с{' '}
         <Link to={'/support'}>поддержкой</Link>
       </Text>
-      <Link to={isLoggedIn ? '/welcome' : '/'}>
+      <Link to={isLoggedIn ? '/welcome/collections' : '/'}>
         <Text
           css={{
             textAlign: 'center',
