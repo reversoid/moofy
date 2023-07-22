@@ -1,34 +1,25 @@
-import { $getProfileState, clearState, getProfile } from '../model';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { Text } from '@nextui-org/react';
-import { useStore } from 'effector-react';
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useProfilePage } from '../lib/useProfilePage';
 import PageContent from './PageContent';
 
-interface ProfilePageProps {
-  userOwner?: boolean;
-}
-
-function ProfilePage({ userOwner }: ProfilePageProps) {
+export const useId = () => {
   const { id } = useParams();
+  return Number(id);
+};
 
-  useEffect(() => {
-    getProfile(id ? Number(id) : undefined);
-  }, []);
-  const { error, isLoading, result } = useStore($getProfileState);
+function ProfilePage() {
+  const id = useId();
+  const { data, isLoading, error } = useProfilePage(id);
 
-  const matchingId = Number(id) === result?.id;
-  const ownerPage = !id;
+  useLoadingBar(isLoading);
 
-  if (result && (matchingId || ownerPage)) {
-    return <PageContent profile={result} userOwner={Boolean(userOwner)} />;
+  if (data) {
+    return <PageContent profile={data} />;
   }
 
-  if (isLoading) {
-    return null;
-  }
-
-  if (error === 'WRONG_USER_ID') {
+  if (error?.message === 'WRONG_USER_ID') {
     return <Text>Пользователя не существует</Text>;
   }
 

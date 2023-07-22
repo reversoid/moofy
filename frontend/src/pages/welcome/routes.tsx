@@ -25,12 +25,12 @@ export const routes: RouteObject[] = [
       },
       {
         path: '',
-        element: <Navigate to={'/welcome/collections'} />
+        element: <Navigate to={'/welcome/collections'} />,
       },
       {
         path: '*',
-        element: <Navigate to={'/welcome/collections'} />
-      }
+        element: <Navigate to={'/welcome/collections'} />,
+      },
     ],
   },
 ];

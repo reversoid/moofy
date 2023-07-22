@@ -1,12 +1,12 @@
-import '@/app/styles/global.scss';
-import React, { PropsWithChildren, memo } from 'react';
+import '@/app/styles/global.css';
+import { PropsWithChildren } from 'react';
 import { NextUIProvider, createTheme, styled } from '@nextui-org/react';
 import { HEADING_STYLES } from './headingStyles';
 
-const lightTheme = createTheme({
-  type: 'light',
-  theme: {},
-});
+// const lightTheme = createTheme({
+//   type: 'light',
+//   theme: {},
+// });
 
 const darkTheme = createTheme({
   type: 'dark',

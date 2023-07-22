@@ -1,6 +1,6 @@
 import LinkTabs from '@/shared/ui/Tabs/LinkTabs/LinkTabs';
 import { Row, Text } from '@nextui-org/react';
-import { Suspense, memo } from 'react';
+import { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 enum Tabs {

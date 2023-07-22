@@ -88,7 +88,7 @@ const MainPage = () => {
               width: '80%',
             },
           }}
-          onPress={() => navigate('/auth')}
+          onPress={() => navigate('/auth/login')}
         >
           Присоединиться
         </Button>

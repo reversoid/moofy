@@ -1,4 +1,4 @@
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuth } from '@/app/auth/utils/useAuth';
 import { PropsWithChildren } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom';
 
@@ -13,10 +13,10 @@ export interface NotAuthOnlyProps {
 const NotAuthOnly = ({
   redirectTo,
   children,
-  useQuery
+  useQuery,
 }: PropsWithChildren<NotAuthOnlyProps>) => {
   const { isLoading, isLoggedIn } = useAuth();
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
 
   if (isLoading || isLoggedIn === undefined) {
     return null;
@@ -26,10 +26,10 @@ const NotAuthOnly = ({
     return <>{children}</>;
   }
 
-  if (Object.keys(useQuery ?? {}).some(Boolean))  {
-    // TODO abstract this logic 
-    const fromUrl = searchParams.get('from')
-    
+  if (Object.keys(useQuery ?? {}).some(Boolean)) {
+    // TODO abstract this logic
+    const fromUrl = searchParams.get('from');
+
     if (fromUrl) {
       return <Navigate to={fromUrl} />;
     }

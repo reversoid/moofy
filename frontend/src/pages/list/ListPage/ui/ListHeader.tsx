@@ -1,23 +1,15 @@
 import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
-import {
-  addToFavorites,
-  removeFromFavorites,
-} from '@/features/list/favorite-lists';
 import BookmarkButton from '@/features/list/favorite-lists/ui/BookmarkButton';
 import ListOwnerActions from '@/features/list/list-owner-actions/ui/ListOwnerActions';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuth } from '@/app';
 import { Row, Text } from '@nextui-org/react';
-import React, { FC } from 'react';
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { FC } from 'react';
+import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useFavoritesMutations as useFavoritesMutations } from '../utils/hooks/useFavoritesMutations';
 
 interface ListHeaderProps {
   listName: string;
   isUserOwner: boolean;
-  bookmarkButtonDisabled: boolean;
   isFavorite: boolean;
   onClickUpdate: () => void;
   onClickDelete: () => void;
@@ -25,7 +17,6 @@ interface ListHeaderProps {
 }
 
 export const ListHeader: FC<ListHeaderProps> = ({
-  bookmarkButtonDisabled,
   isFavorite,
   isUserOwner,
   listName,
@@ -36,13 +27,15 @@ export const ListHeader: FC<ListHeaderProps> = ({
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
 
+  const {addToFavMutation, removeFromFavMutation} = useFavoritesMutations();
+
   return (
     <Row
       align="center"
       css={{
         gap: '$10',
         justifyContent: 'space-between',
-        ...HEADING_STYLES.h1
+        ...HEADING_STYLES.h1,
       }}
     >
       <Text
@@ -77,10 +70,12 @@ export const ListHeader: FC<ListHeaderProps> = ({
               });
             }
             return isFavorite
-              ? removeFromFavorites({ listId })
-              : addToFavorites({ listId });
+              ? removeFromFavMutation.mutate(listId)
+              : addToFavMutation.mutate(listId);
           }}
-          disabled={bookmarkButtonDisabled}
+          disabled={
+            removeFromFavMutation.isLoading || addToFavMutation.isLoading
+          }
           iconFilled={isFavorite}
         />
       )}

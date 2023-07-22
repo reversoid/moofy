@@ -1,7 +1,7 @@
 import {
   CreateReviewDTO,
   reviewService,
-} from '@/features/review/_api/review.service';
+} from '@/features/review/api/review.service';
 import { List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import {

@@ -1,24 +1,19 @@
-import { Input } from '@/shared/ui/Input/Input';
-import { Text, Button, Checkbox, Loading } from '@nextui-org/react';
-import { useEvent, useStore } from 'effector-react';
-import { memo, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDefaultFormValues } from '../lib/useDefaultFormValues';
-import { Form } from '@/shared/ui/Form/Form';
-import Textarea from '@/shared/ui/Textarea/Textarea';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
-import { $updateListState, clearState, updateList } from '../model';
-import {
-  $uploadImageListState,
-  clearImageUploadState,
-  uploadImage,
-} from '../../_model/uploadImage';
+import { setAppError } from '@/app';
 import {
   ImageUpload,
   SUPPORTED_EXTENSIONS,
   getFileExtension,
 } from '@/shared/components/ImageUpload';
-import { setAppError } from '@/features/app';
+import { Form } from '@/shared/ui/Form/Form';
+import { Input } from '@/shared/ui/Input/Input';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
+import Textarea from '@/shared/ui/Textarea/Textarea';
+import { Button, Checkbox, Loading, Text } from '@nextui-org/react';
+import { memo, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDefaultFormValues } from '../lib/useDefaultFormValues';
+import { useUpdateList } from '../lib/useUpdateList';
+import { useUploadImage } from '../lib/useUploadImage';
 
 export interface FormData {
   name: string;
@@ -54,26 +49,20 @@ export const UpdateListModal = memo(
 
     useDefaultFormValues(isOpen, setValue, listData);
 
-    const onSubmit = useEvent(updateList);
-
-    const { loading, success } = useStore($updateListState);
+    const updateMutation = useUpdateList();
+    const uploadImageMutation = useUploadImage();
 
     const handleClose = () => {
-      clearState();
-      clearImageUploadState();
+      uploadImageMutation.reset();
       setIsOpen(false);
     };
 
     useEffect(() => {
-      if (!success) {
+      if (!updateMutation.isSuccess) {
         return;
       }
       handleClose();
-    }, [success]);
-
-    const { loading: loadingImage, success: successImage } = useStore(
-      $uploadImageListState,
-    );
+    }, [updateMutation.isSuccess]);
 
     const handleUploadImage = (file: File) => {
       const extension = getFileExtension(file);
@@ -86,12 +75,8 @@ export const UpdateListModal = memo(
         return setAppError('IMAGE_TOO_LARGE');
       }
 
-      uploadImage({ file });
+      uploadImageMutation.mutate(file);
     };
-
-    if (!isOpen) {
-      clearImageUploadState();
-    }
 
     return (
       <Modal
@@ -106,12 +91,12 @@ export const UpdateListModal = memo(
         <ModalBody>
           <Form
             onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-              onSubmit({
+              updateMutation.mutate({
                 isPublic: !isPrivate,
                 name,
                 description,
                 listId,
-                imageUrl: successImage?.link ?? undefined,
+                imageUrl: uploadImageMutation.data?.link ?? undefined,
               }),
             )}
             css={{ mb: '$10' }}
@@ -160,8 +145,10 @@ export const UpdateListModal = memo(
           </Form>
           <ImageUpload
             text="Загрузить обложку"
-            loading={loadingImage}
-            loadedImageSrc={successImage?.link ?? listImageUrl ?? undefined}
+            loading={uploadImageMutation.isLoading}
+            loadedImageSrc={
+              uploadImageMutation.data?.link ?? listImageUrl ?? undefined
+            }
             onChange={handleUploadImage}
           />
         </ModalBody>
@@ -170,7 +157,7 @@ export const UpdateListModal = memo(
             form="update-list-modal-form"
             type="submit"
             size="lg"
-            disabled={!isFormValid || loadingImage}
+            disabled={!isFormValid || uploadImageMutation.isLoading}
             color={'gradient'}
             auto
             css={{
@@ -181,7 +168,7 @@ export const UpdateListModal = memo(
               },
             }}
           >
-            {loading ? (
+            {updateMutation.isLoading ? (
               <Loading size="lg" type="points" color="white" />
             ) : (
               'Обновить'

@@ -1,3 +1,4 @@
+/** Represents date as dd.mm.yyyy */
 export const formatDate = (rawDate: string | Date) => {
   const date = new Date(rawDate);
   const day = ('0' + date.getDate()).slice(-2);
