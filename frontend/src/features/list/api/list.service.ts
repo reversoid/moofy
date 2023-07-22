@@ -5,6 +5,7 @@ import { Review } from '@/shared/api/types/review.type';
 import {
   DateAsString,
   IterableResponse,
+  RankValue,
   SearchResponse,
 } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
@@ -71,13 +72,21 @@ export class ListService extends ApiService {
     });
   }
 
-  public async getMyListWithContent(listId: number, lowerBound?: DateAsString) {
+  public async getMyListWithContent(
+    listId: number,
+    lowerBound?: DateAsString | RankValue,
+    search?: string,
+  ) {
     const searchParams: SearchParamsOption = {
       listId,
     };
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
     }
+    if (search) {
+      searchParams['search'] = search;
+    }
+
     searchParams['limit'] = 20;
 
     return this.get<ListWithContentResponse>('/review', {

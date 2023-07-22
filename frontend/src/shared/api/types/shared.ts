@@ -1,3 +1,7 @@
+/** Describes floating point number */
+export type RankValue = string
+
+/** Describes ISO Date */
 export type DateAsString = string;
 
 export type Id = number;

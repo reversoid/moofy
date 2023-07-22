@@ -3,13 +3,17 @@ import { Text } from '@nextui-org/react';
 import { useListPage } from '../utils/hooks/useListPage';
 import { PageContent } from './PageContent';
 import { useEarlierLoadedList } from '../utils/hooks/useEarlierLoadedList';
-import { FC } from 'react';
+import { FC, createContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 const useId = () => {
   const { id } = useParams();
   return Number(id);
 };
+
+export const ListPageContext = createContext<{ id: number | undefined }>({
+  id: undefined,
+});
 
 export const ListPage: FC = () => {
   const id = useId();
@@ -29,14 +33,16 @@ export const ListPage: FC = () => {
 
   if (data) {
     return (
-      <PageContent
-        list={data.list}
-        additionalInfo={data.additionalInfo}
-        reviews={data.reviews}
-        loadMoreReviews={fetchNextPage}
-        canLoadMoreReviews={hasNextPage}
-        isFetchingMore={isFetchingNextPage}
-      />
+      <ListPageContext.Provider value={{ id }}>
+        <PageContent
+          list={data.list}
+          additionalInfo={data.additionalInfo}
+          reviews={data.reviews}
+          loadMoreReviews={fetchNextPage}
+          canLoadMoreReviews={hasNextPage}
+          isFetchingMore={isFetchingNextPage}
+        />
+      </ListPageContext.Provider>
     );
   }
 

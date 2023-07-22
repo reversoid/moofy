@@ -1,12 +1,11 @@
 import { Review } from '@/shared/api/types/review.type';
-import { IterableResponse } from '@/shared/api/types/shared';
-import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { ReviewList } from '@/widgets/review-list';
-import { Button, Input, Row, Text, styled } from '@nextui-org/react';
-import { useStore } from 'effector-react';
+import { Button, Row, Text } from '@nextui-org/react';
+import { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSearchReviews } from '../utils/hooks/useSearchReviews';
+import { ListPageContext } from './ListPage';
 import { SearchInput } from './SearchInput';
-import { useCallback } from 'react';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -24,8 +23,18 @@ export const ListContent = ({
   isFetchingMore,
 }: ReviewListProps) => {
   const navigate = useNavigate();
+  const { id } = useContext(ListPageContext);
+  const {
+    loading: loadingSearch,
+    searchValue,
+    setSearch,
+    data: searchData,
+    loadMore: loadMoreSearch,
+    canLoadMore: canLoadMoreSearch,
+    loadingMore: searchLoadingMore,
+  } = useSearchReviews(id!);
 
-  const handleSearchInput = useCallback((v: string) => console.log(v), []);
+  const handleSearchInput = useCallback((v: string) => setSearch(v), []);  
 
   return (
     <>
@@ -61,17 +70,30 @@ export const ListContent = ({
         <>
           {Boolean(reviews?.length) && (
             <Row css={{ mb: '$8', mt: '$8' }}>
-              <SearchInput onChange={handleSearchInput} />
+              <SearchInput
+                onChange={handleSearchInput}
+                loading={loadingSearch}
+              />
             </Row>
           )}
 
-          <ReviewList
-            isUserOwner={isUserOwner}
-            canLoadMore={canLoadMoreReviews}
-            loadMore={loadMoreReviews}
-            loadingMore={isFetchingMore}
-            reviews={reviews}
-          />
+          {searchValue && searchData ? (
+            <ReviewList
+              isUserOwner={isUserOwner}
+              canLoadMore={canLoadMoreSearch}
+              loadMore={loadMoreSearch}
+              loadingMore={searchLoadingMore}
+              reviews={searchData ?? []}
+            />
+          ) : (
+            <ReviewList
+              isUserOwner={isUserOwner}
+              canLoadMore={canLoadMoreReviews}
+              loadMore={loadMoreReviews}
+              loadingMore={isFetchingMore}
+              reviews={reviews}
+            />
+          )}
         </>
       )}
     </>
