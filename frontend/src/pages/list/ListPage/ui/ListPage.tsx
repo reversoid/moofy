@@ -1,8 +1,8 @@
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { Text } from '@nextui-org/react';
-import { useListPage } from '../lib/hooks/useListPage';
+import { useListPage } from '../utils/hooks/useListPage';
 import { PageContent } from './PageContent';
-import { useEarlierLoadedList } from '../lib/hooks/useEarlierLoadedList';
+import { useEarlierLoadedList } from '../utils/hooks/useEarlierLoadedList';
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import { combine, createEvent, createStore } from 'effector';
 import { updateList } from './updateList';
-import { ListPageContent } from '../lib/hooks/useListPage';
+import { ListPageContent } from '../utils/hooks/useListPage';
 import { addReview } from './addReview';
 import { $favoriteListsMap } from '@/entities/user-fav-lists';
 
