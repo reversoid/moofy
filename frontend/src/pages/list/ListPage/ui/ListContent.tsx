@@ -65,38 +65,33 @@ export const ListContent = ({
         )}
       </Row>
 
-      {reviews?.length === 0 && !isUserOwner ? (
-        <Text color="$neutral">Коллекция пуста</Text>
-      ) : (
-        <>
-          {Boolean(reviews?.length) && (
-            <Row css={{ mb: '$8', mt: '$8' }}>
-              <SearchInput
-                onChange={handleSearchInput}
-                loading={loadingSearch}
-              />
-            </Row>
-          )}
+      <>
+        {Boolean(reviews?.length) && (
+          <Row css={{ mb: '$8', mt: '$8' }}>
+            <SearchInput onChange={handleSearchInput} loading={loadingSearch} />
+          </Row>
+        )}
 
-          {isSearchFinished || (searchValue && searchData) ? (
-            <ReviewList
-              isUserOwner={isUserOwner}
-              canLoadMore={canLoadMoreSearch}
-              loadMore={loadMoreSearch}
-              loadingMore={searchLoadingMore}
-              reviews={searchData ?? []}
-            />
-          ) : (
-            <ReviewList
-              isUserOwner={isUserOwner}
-              canLoadMore={canLoadMoreReviews}
-              loadMore={loadMoreReviews}
-              loadingMore={isFetchingMore}
-              reviews={reviews}
-            />
-          )}
-        </>
-      )}
+        {isSearchFinished || (searchValue && searchData) ? (
+          <ReviewList
+            isUserOwner={isUserOwner}
+            canLoadMore={canLoadMoreSearch}
+            loadMore={loadMoreSearch}
+            loadingMore={searchLoadingMore}
+            reviews={searchData ?? []}
+            noReviewsText="Обзоров не найдено"
+          />
+        ) : (
+          <ReviewList
+            isUserOwner={isUserOwner}
+            canLoadMore={canLoadMoreReviews}
+            loadMore={loadMoreReviews}
+            loadingMore={isFetchingMore}
+            reviews={reviews}
+            noReviewsText="Коллекция пуста"
+          />
+        )}
+      </>
     </>
   );
 };
