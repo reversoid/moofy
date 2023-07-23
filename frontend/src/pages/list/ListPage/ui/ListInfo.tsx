@@ -32,7 +32,7 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
       return;
     }
     setIsDeleteDialogOpen(false);
-    navigate('/welcome');
+    navigate('/welcome/collections');
   }, [deleteListmutation.isSuccess]);
 
   return (
