@@ -58,7 +58,7 @@ export const ListContent = ({
             color={'gradient'}
             css={{ '@xsMax': { width: '100%' }, minWidth: '8rem' }}
             onPress={() => navigate('add')}
-            size={'md'}
+            size={'lg'}
           >
             Добавить
           </Button>

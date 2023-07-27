@@ -16,7 +16,7 @@ export const SearchInput: FC<SearchInputProps> = ({ onChange, loading }) => {
 
   return (
     <Input
-      size="lg"
+      size="xl"
       placeholder="Поиск"
       fullWidth={true}
       contentLeft={<Icon iconUrl={searchIcon} size={'3rem'} />}
