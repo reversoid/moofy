@@ -142,6 +142,20 @@ export class ListRepository extends PaginatedRepository<List> {
 
     const lists = await plainQb.getMany();
 
+    // TODO can just left join users please? I don`t want to do two queries
+
+    const listIds = lists.map((l) => l.id);
+
+    const listsWithUsers = await this.createQueryBuilder('list')
+      .leftJoin('list.user', 'usr')
+      .select(['list.id', 'usr.id', 'usr.username', 'usr.image_url'])
+      .where('list.id = ANY(:ids)', { ids: listIds })
+      .getMany();
+
+    // TODO because of two queries the result may be inconsistent: in that ms of delay the record in db can be changed
+    const idUserMap = new Map(listsWithUsers.map(({ user, id }) => [id, user]));
+    lists.forEach((l) => (l.user = idUserMap.get(l.id)));
+
     return super.processPagination(lists, limit, 'updated_at');
   }
 }
