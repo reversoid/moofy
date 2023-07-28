@@ -18,7 +18,7 @@ const List = styled('ul', {
 const Li = styled('li', {
   backgroundColor: '$accents0',
   padding: '$sm',
-  borderRadius: '$sm',
+  borderRadius: '$base',
   display: 'flex',
   ai: 'center',
   gap: '$8',
