@@ -1,6 +1,6 @@
 import { Button, styled } from '@nextui-org/react';
 import { FC } from 'react';
-import { SearchTarget } from '../SearchPage';
+import { SearchTarget } from '../utils/useSearchPage';
 
 const Container = styled('div', {
   display: 'flex',
