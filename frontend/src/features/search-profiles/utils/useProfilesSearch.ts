@@ -28,7 +28,7 @@ export const useProfilesSearch = () => {
     loading: result.isFetching,
     search,
     setSearch,
-    profiles: result.data?.profiles,
+    result: result.data?.profiles,
     isSearchFinished,
   };
 };

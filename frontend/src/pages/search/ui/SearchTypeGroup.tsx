@@ -1,6 +1,6 @@
 import { Button, styled } from '@nextui-org/react';
 import { FC } from 'react';
-import { SearchType } from '../SearchPage';
+import { SearchTarget } from '../SearchPage';
 
 const Container = styled('div', {
   display: 'flex',
@@ -15,31 +15,31 @@ const GroupButton = styled(Button, {
 });
 
 export interface SearchTypeGroupProps {
-  type?: SearchType;
-  setType?: (type: SearchType) => void;
+  type?: SearchTarget;
+  setType?: (type: SearchTarget) => void;
 }
 
 export const SearchTypeGroup: FC<SearchTypeGroupProps> = ({
   type,
   setType,
 }) => {
-  const handleSelectButton = (type: SearchType) => () => {
+  const handleSelectButton = (type: SearchTarget) => () => {
     setType?.(type);
   };
 
   return (
     <Container>
       <GroupButton
-        onClick={handleSelectButton(SearchType.collections)}
+        onClick={handleSelectButton(SearchTarget.collections)}
         rounded
-        bordered={type !== SearchType.collections}
+        bordered={type !== SearchTarget.collections}
       >
         Коллекции
       </GroupButton>
       <GroupButton
-        onClick={handleSelectButton(SearchType.users)}
+        onClick={handleSelectButton(SearchTarget.users)}
         rounded
-        bordered={type !== SearchType.users}
+        bordered={type !== SearchTarget.users}
       >
         Пользователи
       </GroupButton>

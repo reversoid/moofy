@@ -29,7 +29,7 @@ export const useCollectionsSearch = () => {
     loading: result.isFetching,
     search,
     setSearch,
-    lists: result.data?.items,
+    result: result.data?.items,
     isSearchFinished,
   };
 };

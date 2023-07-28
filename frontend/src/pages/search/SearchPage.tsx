@@ -7,71 +7,57 @@ import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { SearchListItem } from './ui/SearchListItem';
 import { useProfilesSearch } from '@/features/search-profiles';
 import { SearchProfileItem } from './ui/SearchProfileItem';
+import { Stack } from './ui/Stack';
 
-export const enum SearchType {
+export const enum SearchTarget {
   collections,
   users,
 }
 
-const Lists = styled('div', {
-  display: 'flex',
-  gap: '$8',
-  flexDirection: 'column',
-  mt: '$12',
-});
-
 export const SearchPage = () => {
-  const {
-    lists,
-    loading: loadingLists,
-    setSearch: setListsSearch,
-  } = useCollectionsSearch();
-  const {
-    loading: loadingProfiles,
-    profiles,
-    setSearch: setProfileSearch,
-  } = useProfilesSearch();
+  const collections = useCollectionsSearch();
+  const profiles = useProfilesSearch();
 
-  useLoadingBar(loadingLists, loadingProfiles);
+  useLoadingBar(collections.loading, profiles.loading);
 
-  const [searchType, setSearchType] = useState(SearchType.collections);
+  const [searchTarget, setSearchTarget] = useState(SearchTarget.collections);
 
   const handleSearchListsChange = useCallback((search: string) => {
-    setListsSearch(search);
+    collections.setSearch(search);
   }, []);
 
   const handleSearchProfileChange = useCallback((search: string) => {
-    setProfileSearch(search);
+    profiles.setSearch(search);
   }, []);
 
   const searchCallback = useCallback(() => {
-    if (searchType === SearchType.collections) {
+    if (searchTarget === SearchTarget.collections) {
       return handleSearchListsChange;
     }
 
-    if (searchType === SearchType.users) {
+    if (searchTarget === SearchTarget.users) {
       return handleSearchProfileChange;
     }
-  }, [searchType]);
+  }, [searchTarget]);
 
   return (
     <>
       <Text h1>Поиск</Text>
       <SearchInput onChange={searchCallback()} />
-      <SearchTypeGroup type={searchType} setType={setSearchType} />
+      <SearchTypeGroup type={searchTarget} setType={setSearchTarget} />
 
-      {searchType === SearchType.collections ? (
-        <Lists>
-          {lists?.map((list) => (
+      {searchTarget === SearchTarget.collections ? (
+        <Stack>
+          {collections.result?.map((list) => (
             <SearchListItem list={list} key={list.id} />
           ))}
-        </Lists>
+        </Stack>
       ) : (
-        <Lists>
-          {profiles?.map((profile) => (
+        <Stack>
+          {profiles.result?.map((profile) => (
             <SearchProfileItem profile={profile} key={profile.id} />
           ))}
-        </Lists>
+        </Stack>
       )}
     </>
   );
