@@ -18,6 +18,9 @@ export const Sidenav: FC<SidenavProps> = ({ isOpen, setIsOpen }) => {
           background: 'black',
           color: 'white',
         },
+        '@media(min-width: 651px)': {
+          display: 'none'
+        }
       }}
       anchor={'right'}
       open={isOpen}

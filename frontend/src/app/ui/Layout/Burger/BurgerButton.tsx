@@ -10,7 +10,7 @@ interface BurgerButtonProps {
 export const BurgerButton: FC<BurgerButtonProps> = ({ onClick, isOpen }) => {
   return (
     <IconButton
-      css={{ width: '50px', height: '50px', '@xsMin': { display: 'none' } }}
+      css={{ width: '50px', height: '50px', '@media(min-width: 651px)': { display: 'none' } }}
       onClick={onClick}
     >
       <div
