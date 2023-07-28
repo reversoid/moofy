@@ -8,7 +8,13 @@ import { useLogout } from '@/features/auth';
 import { FC } from 'react';
 // TODO create @icon/ shortcut for paths
 
-const List = styled('ul');
+const List = styled('ul', {
+  margin: 0,
+  padding: '$sm',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$5'
+});
 const Li = styled('li', {
   backgroundColor: '$accents0',
   padding: '$sm',
@@ -16,7 +22,9 @@ const Li = styled('li', {
   display: 'flex',
   ai: 'center',
   gap: '$8',
+  margin: 0,
 });
+
 const StyledText = styled(Text, {
   fontSize: '$2xl',
   fontWeight: '$bold',
@@ -45,7 +53,7 @@ export const SidenavContent: FC<SidenavContentProps> = ({ onItemClick }) => {
       <Li
         onClick={() => {
           logoutMutation.mutate();
-          onItemClick()
+          onItemClick();
         }}
       >
         <Icon size={'3rem'} iconUrl={logoutIcon} />
