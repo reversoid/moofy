@@ -1,4 +1,4 @@
-import { Image, Text, styled } from '@nextui-org/react';
+import { Button, Image, Text, styled } from '@nextui-org/react';
 import profile from '@/shared/assets/img/user-round.svg';
 import logoutIcon from '@/shared/assets/img/logout.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
@@ -13,21 +13,32 @@ const List = styled('ul', {
   padding: '$sm',
   display: 'flex',
   flexDirection: 'column',
-  gap: '$5'
+  gap: '$5',
 });
 const Li = styled('li', {
-  backgroundColor: '$accents0',
-  padding: '$sm',
-  borderRadius: '$base',
-  display: 'flex',
-  ai: 'center',
-  gap: '$8',
   margin: 0,
 });
 
 const StyledText = styled(Text, {
   fontSize: '$2xl',
   fontWeight: '$bold',
+});
+
+const LiButton = styled(Button, {
+  background: 'none !important',
+  width: '100% !important',
+  height: '100% !important',
+  maxWidth: 'none !important',
+  padding: '$sm !important',
+  borderRadius: '$base !important',
+  display: 'flex !important',
+  ai: 'center !important',
+  jc: 'flex-start',
+  backgroundColor: '$accents0 !important',
+  minWidth: 'auto !important',
+  '& .nextui-button-text': {
+    gap: '$8 !important',
+  },
 });
 
 interface SidenavContentProps {
@@ -41,23 +52,27 @@ export const SidenavContent: FC<SidenavContentProps> = ({ onItemClick }) => {
 
   return (
     <List>
-      <Li
-        onClick={() => {
-          navigate(`/profile/${userId}`);
-          onItemClick();
-        }}
-      >
-        <Icon size={'3rem'} iconUrl={profile} />
-        <StyledText>Профиль</StyledText>
+      <Li>
+        <LiButton
+          onClick={() => {
+            navigate(`/profile/${userId}`);
+            onItemClick();
+          }}
+        >
+          <Icon size={'3rem'} iconUrl={profile} />
+          <StyledText>Профиль</StyledText>
+        </LiButton>
       </Li>
-      <Li
-        onClick={() => {
-          logoutMutation.mutate();
-          onItemClick();
-        }}
-      >
-        <Icon size={'3rem'} iconUrl={logoutIcon} />
-        <StyledText color="$error">Выйти</StyledText>
+      <Li>
+        <LiButton
+          onClick={() => {
+            logoutMutation.mutate();
+            onItemClick();
+          }}
+        >
+          <Icon size={'3rem'} iconUrl={logoutIcon} />
+          <StyledText color="$error">Выйти</StyledText>
+        </LiButton>
       </Li>
     </List>
   );
