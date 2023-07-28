@@ -24,7 +24,7 @@ export const ErrorSnackbar = () => {
     <SnackBarStyled
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       open={isSnackbarOpen}
-      autoHideDuration={4000}
+      autoHideDuration={4000000}
       onClose={handleSnackbarClose}
     >
       <Alert severity="error" onClose={handleSnackbarClose} variant="filled">
