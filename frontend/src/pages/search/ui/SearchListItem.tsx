@@ -54,9 +54,9 @@ export const SearchListItem: FC<SearchListItemProps> = ({ list }) => {
             Создатель{' '}
             <Link
               css={{ fontWeight: '$medium', display: 'inline' }}
-              to={`/profile/${1}`}
+              to={`/profile/${list.user.id}`}
             >
-              {list.user?.username ?? 'username...'}
+              {list.user.username}
             </Link>
           </Text>
         </MainContent>
