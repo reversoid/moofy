@@ -6,13 +6,11 @@ import debounce from 'lodash.debounce';
 
 export interface SearchInputProps {
   /** Debounced onChange */
-  onChange: (value: string) => void;
-
-  loading: boolean;
+  onChange?: (value: string) => void;
 }
 
-export const SearchInput: FC<SearchInputProps> = ({ onChange, loading }) => {
-  const onChangeDebounced = debounce((str: string) => onChange(str), 300);
+export const SearchInput: FC<SearchInputProps> = ({ onChange }) => {
+  const onChangeDebounced = debounce((str: string) => onChange?.(str), 300);
 
   return (
     <Input
@@ -21,7 +19,6 @@ export const SearchInput: FC<SearchInputProps> = ({ onChange, loading }) => {
       fullWidth={true}
       contentLeft={<Icon iconUrl={searchIcon} size={'3rem'} />}
       onChange={(e) => onChangeDebounced(e.target.value)}
-      contentRight={loading ? <Loading size="sm" /> : <></>}
     />
   );
 };
