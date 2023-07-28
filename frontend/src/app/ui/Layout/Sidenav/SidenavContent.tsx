@@ -1,5 +1,6 @@
 import { Button, Image, Text, styled } from '@nextui-org/react';
 import profile from '@/shared/assets/img/user-round.svg';
+import search from '@/shared/assets/img/search.svg';
 import logoutIcon from '@/shared/assets/img/logout.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
 import { useNavigate } from 'react-router-dom';
@@ -63,6 +64,19 @@ export const SidenavContent: FC<SidenavContentProps> = ({ onItemClick }) => {
           <StyledText>Профиль</StyledText>
         </LiButton>
       </Li>
+
+      <Li>
+        <LiButton
+          onClick={() => {
+            navigate(`/search`);
+            onItemClick();
+          }}
+        >
+          <Icon size={'3rem'} iconUrl={search} />
+          <StyledText>Поиск</StyledText>
+        </LiButton>
+      </Li>
+
       <Li>
         <LiButton
           onClick={() => {
