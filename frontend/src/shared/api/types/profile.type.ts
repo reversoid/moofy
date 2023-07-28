@@ -17,3 +17,5 @@ export interface Profile {
     lists: IterableResponse<FavoriteList>;
   };
 }
+
+export type ProfileShort = Pick<Profile, 'id' | 'image_url' | 'username'>

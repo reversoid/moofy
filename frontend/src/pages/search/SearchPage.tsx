@@ -1,10 +1,11 @@
 import { Text, styled } from '@nextui-org/react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SearchInput } from '@/shared/components/SearchInput';
 import { SearchTypeGroup } from './ui/SearchTypeGroup';
 import { useCollectionsSearch } from '@/features/search-collections';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { SearchListItem } from './ui/SearchListItem';
+import { useProfilesSearch } from '@/features/search-profiles';
 
 export const enum SearchType {
   collections,
@@ -15,23 +16,48 @@ const Lists = styled('div', {
   display: 'flex',
   gap: '$8',
   flexDirection: 'column',
-  mt: '$12'
+  mt: '$12',
 });
 
 export const SearchPage = () => {
-  const { lists, loading, setSearch } = useCollectionsSearch();
+  const {
+    lists,
+    loading: loadingLists,
+    setSearch: setListsSearch,
+  } = useCollectionsSearch();
+  const {
+    loading: loadingProfiles,
+    profiles,
+    setSearch: setProfileSearch,
+  } = useProfilesSearch();
 
-  useLoadingBar(loading);
+  useLoadingBar(loadingLists, loadingProfiles);
 
-  const handleSearchChange = useCallback((search: string) => {
-    setSearch(search);
+  const [searchType, setSearchType] = useState(SearchType.collections);
+
+  const handleSearchListsChange = useCallback((search: string) => {
+    setListsSearch(search);
   }, []);
+
+  const handleSearchProfileChange = useCallback((search: string) => {
+    setProfileSearch(search);
+  }, []);
+
+  const searchCallback = useCallback(() => {
+    if (searchType === SearchType.collections) {
+      return handleSearchListsChange;
+    }
+
+    if (searchType === SearchType.users) {
+      return handleSearchProfileChange;
+    }
+  }, [searchType]);
 
   return (
     <>
       <Text h1>Поиск</Text>
-      <SearchInput onChange={handleSearchChange} />
-      <SearchTypeGroup defaultType={SearchType.collections} />
+      <SearchInput onChange={searchCallback()} />
+      <SearchTypeGroup type={searchType} setType={setSearchType} />
 
       <Lists>
         {lists?.map((list) => (

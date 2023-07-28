@@ -1,3 +1,4 @@
+import { ProfileShort } from './profile.type';
 import { DateAsString } from './shared';
 
 export interface List {
@@ -7,10 +8,7 @@ export interface List {
   is_public: boolean;
   created_at: DateAsString;
   updated_at: DateAsString;
-  user: {
-    id: number;
-    username: string;
-  };
+  user: ProfileShort;
   image_url?: string;
 }
 
