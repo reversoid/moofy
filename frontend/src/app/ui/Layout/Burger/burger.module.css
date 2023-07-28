@@ -1,0 +1,87 @@
+.menu-burger {
+    position: relative;
+    width: 40px;
+    height: 34px;
+    z-index: 2;
+}
+
+.menu-burger span,
+.menu-burger:after,
+.menu-burger:before {
+    height: 3px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    background: #fff;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+.menu-burger span {
+    top: 16px;
+}
+
+.menu-burger:after,
+.menu-burger:before {
+    content: '';
+}
+
+.menu-burger:after {
+    bottom: 4px;
+}
+
+.menu-burger:before {
+    top: 4px;
+}
+
+.menu-burger.open-menu span {
+    opacity: 0;
+    -webkit-transition: 0.1s;
+    -o-transition: 0.1s;
+    transition: 0.1s;
+}
+
+.menu-burger.open-menu:before {
+    -webkit-transform: rotate(43deg);
+    -ms-transform: rotate(43deg);
+    transform: rotate(43deg);
+    top: 16px;
+    -webkit-transition: 0.15s;
+    -o-transition: 0.15s;
+    transition: 0.15s;
+}
+
+.menu-burger.open-menu:after {
+    -webkit-transform: rotate(-43deg);
+    -ms-transform: rotate(-43deg);
+    transform: rotate(-43deg);
+    bottom: 16px;
+    -webkit-transition: 0.15s;
+    -o-transition: 0.15s;
+    transition: 0.15s;
+}
+
+.menu-burger.close-menu span {
+    opacity: 1;
+    -webkit-transition: 0.1s;
+    -o-transition: 0.1s;
+    transition: 0.1s;
+}
+
+.menu-burger.close-menu:before {
+    -webkit-transform: rotate(0);
+    -ms-transform: rotate(0);
+    transform: rotate(0);
+    -webkit-transition: 0.15s;
+    -o-transition: 0.15s;
+    transition: 0.15s;
+}
+
+.menu-burger.close-menu:after {
+    -webkit-transform: rotate(0);
+    -ms-transform: rotate(0);
+    transform: rotate(0);
+    -webkit-transition: 0.15s;
+    -o-transition: 0.15s;
+    transition: 0.15s;
+}

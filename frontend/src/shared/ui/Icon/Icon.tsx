@@ -1,4 +1,4 @@
-import { Image } from '@nextui-org/react';
+import { Image, styled } from '@nextui-org/react';
 import React, { FC } from 'react';
 
 export interface IconProps {
@@ -9,11 +9,14 @@ export interface IconProps {
   height?: string;
 }
 
+const _Image = styled(Image, {
+  margin: 0,
+});
 
 // TODO make 1.75rem reusable
 export const Icon: FC<IconProps> = (props) => {
   return (
-    <Image
+    <_Image
       src={props.iconUrl}
       width={props.size ?? props.width ?? '1.75rem'}
       height={props.size ?? props.height ?? '1.75rem'}

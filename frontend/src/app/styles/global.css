@@ -11,3 +11,8 @@ html {
 html, body, #root, #root>div, #root>div>div {
   height: 100%
 }
+
+body {
+  /* stop mui scroll shift */
+  padding-right: 0px !important;
+}
