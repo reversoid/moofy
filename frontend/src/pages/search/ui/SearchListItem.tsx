@@ -1,3 +1,4 @@
+import { colorHash } from '@/entities/List/ui/List/ListBackground';
 import { List } from '@/shared/api/types/list.type';
 import { Card } from '@/shared/ui/Card';
 import { Link } from '@/shared/ui/Link/Link';
@@ -31,12 +32,21 @@ const MainContent = styled('div', {
   height: '100%',
 });
 
+const Background = styled('div', {
+  width: '7rem',
+  height: '7rem',
+});
+
 export const SearchListItem: FC<SearchListItemProps> = ({ list }) => {
   return (
     <Card horizontal>
       <ImgWrapper>
         <Link to={`/list/${list.id}`}>
-          <Img width={'7rem'} height={'7rem'} src={list.image_url ?? ''} />
+          {list.image_url ? (
+            <Img width={'7rem'} height={'7rem'} src={list.image_url ?? ''} />
+          ) : (
+            <Background css={{backgroundColor: colorHash.hex(String(list.id))}}/>
+          )}
         </Link>
       </ImgWrapper>
       <Content>
