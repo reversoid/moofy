@@ -6,6 +6,7 @@ import { useCollectionsSearch } from '@/features/search-collections';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { SearchListItem } from './ui/SearchListItem';
 import { useProfilesSearch } from '@/features/search-profiles';
+import { SearchProfileItem } from './ui/SearchProfileItem';
 
 export const enum SearchType {
   collections,
@@ -59,11 +60,19 @@ export const SearchPage = () => {
       <SearchInput onChange={searchCallback()} />
       <SearchTypeGroup type={searchType} setType={setSearchType} />
 
-      <Lists>
-        {lists?.map((list) => (
-          <SearchListItem list={list} key={list.id} />
-        ))}
-      </Lists>
+      {searchType === SearchType.collections ? (
+        <Lists>
+          {lists?.map((list) => (
+            <SearchListItem list={list} key={list.id} />
+          ))}
+        </Lists>
+      ) : (
+        <Lists>
+          {profiles?.map((profile) => (
+            <SearchProfileItem profile={profile} key={profile.id} />
+          ))}
+        </Lists>
+      )}
     </>
   );
 };

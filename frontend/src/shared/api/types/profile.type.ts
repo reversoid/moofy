@@ -18,4 +18,9 @@ export interface Profile {
   };
 }
 
-export type ProfileShort = Pick<Profile, 'id' | 'image_url' | 'username'>
+export type ProfileShort = Pick<Profile, 'id' | 'image_url' | 'username'>;
+
+export type ProfileShortWithDescription = Pick<
+  Profile,
+  'id' | 'image_url' | 'username' | 'description'
+>;
