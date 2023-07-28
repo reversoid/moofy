@@ -5,10 +5,10 @@ import { IterableResponse } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
 
 class SearchProfilesService extends ApiService {
-  searchUsers(search?: string) {
+  searchUsers(username?: string) {
     const queryParams: SearchParamsOption = {};
-    if (search) {
-      queryParams['search'] = search;
+    if (username) {
+      queryParams['username'] = username;
     }
 
     return super.get<Profile[]>('/profile/search', {
