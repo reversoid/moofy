@@ -12,13 +12,7 @@ export const useProfilePage = (id: number) => {
 
   const result = useQuery<Profile, ApiError>({
     queryKey: ['Profile page', id],
-    queryFn: () => profileService.getProfile(),
-  });
-
-  useNewData(result, () => {
-    if (result.data) {
-      setProfile(result.data);
-    }
+    queryFn: () => profileService.getProfile(id),
   });
 
   useCachedData(result, () => {
@@ -27,9 +21,15 @@ export const useProfilePage = (id: number) => {
     }
   });
 
+  useNewData(result, () => {
+    if (result.data) {
+      setProfile(result.data);
+    }
+  });
+
   return {
     isLoading: result.isLoading,
-    data: profile ?? undefined,
+    data: profile?.id === id ? profile : undefined,
     error: result.error,
   };
 };

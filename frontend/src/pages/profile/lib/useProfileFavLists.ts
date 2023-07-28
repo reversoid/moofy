@@ -1,19 +1,13 @@
-import { Profile } from '@/shared/api/types/profile.type';
-import {
-  $profileFavLists,
-  $profileLists,
-  setProfileFavLists,
-  setProfileLists,
-} from '../model';
-import { useStore } from 'effector-react';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { FetchError, IterableResponse } from '@/shared/api/types/shared';
-import { List } from '@/shared/api/types/list.type';
 import { listService } from '@/features/list/api/list.service';
-import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
-import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
-import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
+import { Profile } from '@/shared/api/types/profile.type';
+import { FetchError, IterableResponse } from '@/shared/api/types/shared';
+import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
+import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
+import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useStore } from 'effector-react';
+import { $profileFavLists, setProfileFavLists } from '../model';
 
 export const useProfileFavLists = (profile: Profile) => {
   const lists = useStore($profileFavLists);
@@ -21,7 +15,7 @@ export const useProfileFavLists = (profile: Profile) => {
   const result = useInfiniteQuery<IterableResponse<FavoriteList>, FetchError>({
     queryKey: ['Fetch more profile fav lists', profile.id],
     queryFn: ({ pageParam }) => listService.getFavoritesLists(pageParam),
-    getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
+    getNextPageParam: (lastPage) => lastPage?.nextKey ?? undefined,
     enabled: false,
     initialData: {
       pageParams: [],
@@ -37,7 +31,7 @@ export const useProfileFavLists = (profile: Profile) => {
   });
 
   useCachedInfiniteData(result, () => {
-    if (result.data) {
+    if (result.data) {      
       const content = transformInfiniteIterableData(result.data);
       setProfileFavLists(content);
     }
@@ -48,7 +42,7 @@ export const useProfileFavLists = (profile: Profile) => {
       const content = transformInfiniteIterableData(result.data);
       setProfileFavLists(content);
     }
-  });
+  });  
 
   return {
     result: lists ?? [],
