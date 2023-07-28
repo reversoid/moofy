@@ -17,5 +17,22 @@ export const Card = styled('div', {
         },
       },
     },
+
+    horizontal: {
+      true: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        gap: '$6',
+        padding: '$6',
+
+        '@xsMax': {
+          flexDirection: 'column',
+          paddingTop: '$7',
+          paddingBottom: '$7',
+        },
+        position: 'relative',
+      },
+    },
   },
 });

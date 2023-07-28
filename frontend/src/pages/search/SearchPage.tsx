@@ -1,18 +1,25 @@
-import { Text } from '@nextui-org/react';
+import { Text, styled } from '@nextui-org/react';
 import React, { useCallback } from 'react';
 import { SearchInput } from '@/shared/components/SearchInput';
 import { SearchTypeGroup } from './ui/SearchTypeGroup';
 import { useCollectionsSearch } from '@/features/search-collections';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { SearchListItem } from './ui/SearchListItem';
 
 export const enum SearchType {
   collections,
   users,
 }
 
+const Lists = styled('div', {
+  display: 'flex',
+  gap: '$8',
+  flexDirection: 'column',
+  mt: '$12'
+});
+
 export const SearchPage = () => {
-  const { isSearchFinished, lists, loading, setSearch } =
-    useCollectionsSearch();
+  const { lists, loading, setSearch } = useCollectionsSearch();
 
   useLoadingBar(loading);
 
@@ -26,9 +33,11 @@ export const SearchPage = () => {
       <SearchInput onChange={handleSearchChange} />
       <SearchTypeGroup defaultType={SearchType.collections} />
 
-      {lists?.map((l) => (
-        <>{l.name} | </>
-      ))}
+      <Lists>
+        {lists?.map((list) => (
+          <SearchListItem list={list} key={list.id} />
+        ))}
+      </Lists>
     </>
   );
 };
