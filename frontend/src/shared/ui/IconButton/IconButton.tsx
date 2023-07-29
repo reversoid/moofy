@@ -1,4 +1,4 @@
-import { Button, ButtonProps, styled, Image } from '@nextui-org/react';
+import { Button, ButtonProps } from '@nextui-org/react';
 import { forwardRef } from 'react';
 import { Icon } from '../Icon/Icon';
 

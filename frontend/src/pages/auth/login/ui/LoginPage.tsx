@@ -16,7 +16,7 @@ const LoginPage = () => {
 
       <Text css={{ mt: '$8' }} as="p">
         Еще нет аккаунта?{'  '}
-        <Link to={{ pathname: '/auth/register', search }}>Войти</Link>
+        <Link to={{ pathname: '/auth/register', search }}>Зарегистрироваться</Link>
       </Text>
     </AuthContainer>
   );
