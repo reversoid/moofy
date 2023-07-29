@@ -1,5 +1,13 @@
 import logo from '@/shared/assets/img/Logo.svg';
-import { Button, Container, Image, Loading, Text, styled } from '@nextui-org/react';
+import {
+  Button,
+  Container,
+  Image,
+  Loading,
+  Row,
+  Text,
+  styled,
+} from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 import LinearProgress from './LinearProgress';
 import { useStore } from 'effector-react';
@@ -11,6 +19,8 @@ import { useState } from 'react';
 import { BurgerButton } from './Burger/BurgerButton';
 import { ProfileLink } from './ProfileLink';
 import { HEADER_HEIGHT } from '@/app/utils/layoutConstants';
+import { Icon } from '@/shared/ui/Icon/Icon';
+import searchIcon from '@/shared/assets/img/search.svg';
 
 const HeaderStyled = styled('header', {
   position: 'fixed',
@@ -64,7 +74,15 @@ function Header() {
               isOpen={sidenavOpen}
               onClick={() => setSidenavOpen((open) => !open)}
             />
-            <ProfileLink />
+            <Row css={{ ai: 'center', gap: '$8', jc: 'flex-end' }}>
+              <Button onClick={() => navigate('/search')} color={'secondary'} css={{ minWidth: '6.5rem', gap: '$4' }}>
+                <Row css={{ gap: '$4', ai: 'center' }}>
+                  <Icon iconUrl={searchIcon} size="1.25rem" />
+                  <Text b>Поиск</Text>
+                </Row>
+              </Button>
+              <ProfileLink />
+            </Row>
           </>
         ) : isLoggedIn === false ? (
           <Button

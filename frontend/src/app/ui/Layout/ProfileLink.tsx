@@ -1,12 +1,11 @@
-import { Dropdown, Image, Row, Text, styled } from '@nextui-org/react';
-import React from 'react';
+import { useAuth } from '@/app/auth';
+import { useLogout } from '@/features/auth';
 import profile from '@/shared/assets/img/user-round.svg';
-import searchIcon from '@/shared/assets/img/search.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
-import { useAuth } from '@/app/auth';
+import { Dropdown, Image, Text, styled } from '@nextui-org/react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLogout } from '@/features/auth';
 
 const IconButtonStyled = styled(IconButton, {
   width: '3rem !important',
@@ -19,16 +18,12 @@ export const ProfileLink = () => {
   const logoutMutation = useLogout();
 
   if (!profileInfo) {
-    return null
+    return null;
   }
 
   const handleDropdownAction = (key: React.Key) => {
     if (key === 'profile') {
       navigate(`/profile/${profileInfo?.id}`);
-    }
-
-    if (key === 'search') {
-      navigate(`/search`);
     }
 
     if (key === 'logout') {
@@ -66,13 +61,6 @@ export const ProfileLink = () => {
           <Text b size={'$lg'} css={{ d: 'flex' }}>
             {profileInfo?.username}
           </Text>
-        </Dropdown.Item>
-
-        <Dropdown.Item key="search">
-          <Row css={{ ai: 'center', gap: '$4' }}>
-            <Icon iconUrl={searchIcon} size="1.25rem" />
-            <Text>Поиск</Text>
-          </Row>
         </Dropdown.Item>
 
         <Dropdown.Item key="logout" color="error" withDivider>
