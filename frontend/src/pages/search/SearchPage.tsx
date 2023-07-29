@@ -1,10 +1,9 @@
-import { Text } from '@nextui-org/react';
 import { SearchInput } from '@/shared/components/SearchInput';
-import { SearchTypeGroup } from './ui/SearchTypeGroup';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { SearchListItem } from './ui/SearchListItem';
-import { SearchProfileItem } from './ui/SearchProfileItem';
-import { Stack } from './ui/Stack';
+import { Text } from '@nextui-org/react';
+import { Collections } from './ui/Collections';
+import { Profiles } from './ui/Profiles';
+import { SearchTypeGroup } from './ui/SearchTypeGroup';
 import { SearchTarget, useSearchPage } from './utils/useSearchPage';
 
 export const SearchPage = () => {
@@ -15,10 +14,10 @@ export const SearchPage = () => {
     profilesLoading,
     searchCallback,
     searchTarget,
-    setSearchTarget
+    setSearchTarget,
   } = useSearchPage();
 
-  useLoadingBar(collectionsLoading, profilesLoading)
+  useLoadingBar(collectionsLoading, profilesLoading);
 
   return (
     <>
@@ -27,17 +26,9 @@ export const SearchPage = () => {
       <SearchTypeGroup type={searchTarget} setType={setSearchTarget} />
 
       {searchTarget === SearchTarget.collections ? (
-        <Stack>
-          {collections?.map((list) => (
-            <SearchListItem list={list} key={list.id} />
-          ))}
-        </Stack>
+        <Collections loading={collectionsLoading} collections={collections} />
       ) : (
-        <Stack>
-          {profiles?.map((profile) => (
-            <SearchProfileItem profile={profile} key={profile.id} />
-          ))}
-        </Stack>
+        <Profiles loading={profilesLoading} profiles={profiles} />
       )}
     </>
   );
