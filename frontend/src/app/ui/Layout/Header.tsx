@@ -74,8 +74,19 @@ function Header() {
               isOpen={sidenavOpen}
               onClick={() => setSidenavOpen((open) => !open)}
             />
-            <Row css={{ ai: 'center', gap: '$8', jc: 'flex-end' }}>
-              <Button onClick={() => navigate('/search')} color={'secondary'} css={{ minWidth: '6.5rem', gap: '$4' }}>
+            <Row
+              css={{
+                ai: 'center',
+                gap: '$8',
+                jc: 'flex-end',
+                '@xsMax': { display: 'none' },
+              }}
+            >
+              <Button
+                onClick={() => navigate('/search')}
+                color={'secondary'}
+                css={{ minWidth: '6.5rem', gap: '$4' }}
+              >
                 <Row css={{ gap: '$4', ai: 'center' }}>
                   <Icon iconUrl={searchIcon} size="1.25rem" />
                   <Text b>Поиск</Text>
