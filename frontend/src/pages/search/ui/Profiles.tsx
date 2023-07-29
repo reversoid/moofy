@@ -11,7 +11,13 @@ export interface ProfilesProps {
 
 export const Profiles: FC<ProfilesProps> = ({ profiles, loading }) => {
   if (!loading && profiles?.length === 0) {
-    return <Text as={'p'} color='$neutral'>Пользователи не найдены</Text>
+    return (
+      <Stack>
+        <Text as={'p'} color="$neutral">
+          Пользователи не найдены
+        </Text>
+      </Stack>
+    );
   }
 
   return (

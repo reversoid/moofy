@@ -11,7 +11,13 @@ export interface CollectionsProps {
 
 export const Collections: FC<CollectionsProps> = ({ collections, loading }) => {
   if (!loading && collections?.length === 0) {
-    return <Text as={'p'} color='$neutral'>Коллекций не найдено</Text>
+    return (
+      <Stack>
+        <Text as={'p'} color="$neutral">
+          Коллекций не найдено
+        </Text>
+      </Stack>
+    );
   }
 
   return (
