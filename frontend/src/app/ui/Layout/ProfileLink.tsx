@@ -1,6 +1,7 @@
-import { Avatar, Dropdown, Image, Text, styled } from '@nextui-org/react';
+import { Dropdown, Image, Row, Text, styled } from '@nextui-org/react';
 import React from 'react';
 import profile from '@/shared/assets/img/user-round.svg';
+import searchIcon from '@/shared/assets/img/search.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { useAuth } from '@/app/auth';
@@ -15,17 +16,25 @@ const IconButtonStyled = styled(IconButton, {
 export const ProfileLink = () => {
   const { profile: profileInfo } = useAuth();
   const navigate = useNavigate();
-  const logoutMutation = useLogout()
+  const logoutMutation = useLogout();
+
+  if (!profileInfo) {
+    return null
+  }
 
   const handleDropdownAction = (key: React.Key) => {
     if (key === 'profile') {
-      navigate(`/profile/${profileInfo?.id}`)
+      navigate(`/profile/${profileInfo?.id}`);
+    }
+
+    if (key === 'search') {
+      navigate(`/search`);
     }
 
     if (key === 'logout') {
-      logoutMutation.mutate()
+      logoutMutation.mutate();
     }
-  }
+  };
 
   return (
     <Dropdown placement="bottom-right">
@@ -45,14 +54,25 @@ export const ProfileLink = () => {
           </IconButtonStyled>
         )}
       </Dropdown.Trigger>
-      <Dropdown.Menu onAction={handleDropdownAction}  color="secondary" aria-label="Avatar Actions">
+      <Dropdown.Menu
+        onAction={handleDropdownAction}
+        color="secondary"
+        aria-label="Avatar Actions"
+      >
         <Dropdown.Item key="profile" css={{ height: '$18' }}>
           <Text b color="inherit" css={{ d: 'flex' }}>
             Выполнен вход за
           </Text>
-          <Text b color="secondary" css={{ d: 'flex' }}>
+          <Text b size={'$lg'} css={{ d: 'flex' }}>
             {profileInfo?.username}
           </Text>
+        </Dropdown.Item>
+
+        <Dropdown.Item key="search">
+          <Row css={{ ai: 'center', gap: '$4' }}>
+            <Icon iconUrl={searchIcon} size="1.25rem" />
+            <Text>Поиск</Text>
+          </Row>
         </Dropdown.Item>
 
         <Dropdown.Item key="logout" color="error" withDivider>

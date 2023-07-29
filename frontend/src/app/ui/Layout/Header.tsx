@@ -1,5 +1,5 @@
 import logo from '@/shared/assets/img/Logo.svg';
-import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
+import { Button, Container, Image, Loading, Text, styled } from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 import LinearProgress from './LinearProgress';
 import { useStore } from 'effector-react';
@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { BurgerButton } from './Burger/BurgerButton';
 import { ProfileLink } from './ProfileLink';
 import { HEADER_HEIGHT } from '@/app/utils/layoutConstants';
-
 
 const HeaderStyled = styled('header', {
   position: 'fixed',
@@ -32,7 +31,7 @@ const HeaderContainer = styled(Container, {
 });
 
 function Header() {
-  const { isLoggedIn, isLoading: isAuthLoading, userId } = useAuth();
+  const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
   const loading = useStore($loading);
   const [sidenavOpen, setSidenavOpen] = useState(false);
@@ -65,7 +64,7 @@ function Header() {
               isOpen={sidenavOpen}
               onClick={() => setSidenavOpen((open) => !open)}
             />
-            <ProfileLink userId={userId!} />
+            <ProfileLink />
           </>
         ) : isLoggedIn === false ? (
           <Button
