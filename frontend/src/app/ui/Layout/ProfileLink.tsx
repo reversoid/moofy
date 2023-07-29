@@ -1,39 +1,15 @@
-import { Link } from '@/shared/ui/Link/Link';
 import { Avatar, Dropdown, Image, Text, styled } from '@nextui-org/react';
-import React, { FC } from 'react';
+import React from 'react';
 import profile from '@/shared/assets/img/user-round.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { useAuth } from '@/app/auth';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
 import { useLogout } from '@/features/auth';
-
-{
-  /* <Link
-      to={`/profile/${userId}`}
-      css={{
-        display: 'flex',
-        width: 'fit-content',
-        height: '100%',
-        ai: 'center',
-        jc: 'center',
-        '@xsMax': {
-          display: 'none',
-        },
-      }}
-    >
-      <Image src={profile} height="3rem" objectFit="contain" width="3rem" />
-    </Link> */
-}
 
 const IconButtonStyled = styled(IconButton, {
   width: '3rem !important',
   height: '3rem !important',
-});
-
-const AvatarStyled = styled(Avatar, {
-  // padding: 0
 });
 
 export const ProfileLink = () => {

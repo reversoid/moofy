@@ -1,6 +1,6 @@
 import { authService } from '@/features/auth';
 import { createEffect, sample } from 'effector';
-import { authorize, checkoutUser, unAuthorize } from './auth';
+import { authorize, checkoutUser, setCurrentUserProfile, unAuthorize } from './auth';
 import { getMyProfileFx } from './getMyProfile';
 
 export const checkoutUserFx = createEffect<
@@ -27,14 +27,20 @@ sample({
 sample({
   clock: checkoutUserFx.doneData,
   filter: ({ loggedIn }) => loggedIn === true,
-  fn: (data) => ({ id: data.userId! }),
+  fn: (data) => ({ userId: data.userId! }),
+  target: authorize,
+});
+
+sample({
+  clock: authorize,
+  fn: ({ userId }) => ({ id: userId }),
   target: getMyProfileFx,
 });
 
 sample({
   clock: getMyProfileFx.doneData,
   fn: (profile) => ({ profile }),
-  target: authorize,
+  target: setCurrentUserProfile,
 });
 
 sample({

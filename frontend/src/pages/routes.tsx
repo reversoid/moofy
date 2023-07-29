@@ -56,7 +56,7 @@ export const routes: RouteObject[] = [
       {
         path: 'search',
         element: (
-          <AuthOnly>
+          <AuthOnly redirect='/'>
             <SearchPage />
           </AuthOnly>
         ),
