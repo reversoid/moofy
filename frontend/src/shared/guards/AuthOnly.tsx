@@ -13,7 +13,7 @@ const AuthOnly = ({
   fallback,
   redirect,
 }: PropsWithChildren<AuthOnlyProps>) => {
-  const { isLoading, isLoggedIn } = useAuth();  
+  const { isLoading, isLoggedIn } = useAuth();    
 
   if (isLoading || isLoggedIn === undefined) {
     return null;

@@ -1,10 +1,10 @@
 import { Review as IReview } from '@/shared/api/types/review.type';
 import _Dropdown from '@/shared/ui/Dropdown/Dropdown';
-import { ReviewWrapper } from './ReviewWrapper';
 import ReviewImageWithScore from './ReviewImageWithScore';
 import ReviewContent from './ReviewContent';
 import { memo } from 'react';
 import { styled } from '@nextui-org/react';
+import { Card } from '@/shared/ui/Card';
 
 const ButtonContainer = styled('div', {
   position: 'absolute',
@@ -22,7 +22,7 @@ export const ReviewItem = memo(
   ({ review, topRightButton }: ReviewItemProps) => {
     return (
       <>
-        <ReviewWrapper>
+        <Card horizontal>
           <ReviewImageWithScore
             imgSrc={review.film.posterPreviewUrl}
             score={review.score}
@@ -35,7 +35,7 @@ export const ReviewItem = memo(
             filmYear={review.film.year}
           />
           <ButtonContainer>{topRightButton}</ButtonContainer>
-        </ReviewWrapper>
+        </Card>
       </>
     );
   },

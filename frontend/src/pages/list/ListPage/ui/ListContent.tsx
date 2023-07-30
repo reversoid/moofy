@@ -5,7 +5,8 @@ import { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
-import { SearchInput } from './SearchInput';
+import { SearchInput } from '../../../../shared/components/SearchInput';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -36,6 +37,8 @@ export const ListContent = ({
   } = useSearchReviews(id!);
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
+
+  useLoadingBar(loadingSearch)
 
   return (
     <>
@@ -68,7 +71,7 @@ export const ListContent = ({
       <>
         {Boolean(reviews?.length) && (
           <Row css={{ mb: '$8', mt: '$8' }}>
-            <SearchInput onChange={handleSearchInput} loading={loadingSearch} />
+            <SearchInput onChange={handleSearchInput} />
           </Row>
         )}
 

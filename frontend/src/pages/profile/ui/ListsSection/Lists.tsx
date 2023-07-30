@@ -31,7 +31,7 @@ interface ListsProps {
 export const Lists: FC<ListsProps> = ({ profile, tab }) => {
   const lists = useProfileLists(profile);
   const favLists = useProfileFavLists(profile);
-
+  
   useListsRefetch(tab, PageTabs.collections, lists.refetch);
   useListsRefetch(tab, PageTabs.favorites, favLists.refetch);
 

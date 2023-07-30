@@ -5,11 +5,13 @@ import { routes as listRoutes } from './list/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
 import ErrorPage from './error';
 import Layout from '@/app/ui/Layout/Layout';
+import AuthOnly from '@/shared/guards/AuthOnly';
 
 const MainPage = lazy(() => import('./main'));
 const SupportPage = lazy(() => import('./support'));
 const HelpPage = lazy(() => import('./help'));
 const ProfilePage = lazy(() => import('./profile/ui/ProfilePage'));
+const SearchPage = lazy(() => import('./search'));
 
 export const routes: RouteObject[] = [
   {
@@ -50,6 +52,14 @@ export const routes: RouteObject[] = [
       {
         path: 'help',
         element: <HelpPage />,
+      },
+      {
+        path: 'search',
+        element: (
+          <AuthOnly redirect='/'>
+            <SearchPage />
+          </AuthOnly>
+        ),
       },
       {
         path: '*',
