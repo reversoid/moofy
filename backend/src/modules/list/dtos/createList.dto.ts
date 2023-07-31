@@ -11,9 +11,10 @@ export class CreateListDTO {
   @MaxLength(32)
   name: string;
 
+  @IsOptional()
   @IsString()
   @MaxLength(400)
-  description: string;
+  description?: string;
 
   @IsBoolean()
   isPublic: boolean;
