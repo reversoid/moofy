@@ -24,8 +24,8 @@ export class PaginatedRepository<
   }
 
   /** Returns correct nextKey for pagination and items */
-  protected processPagination(
-    items: T[],
+  protected processPagination<V = T>(
+    items: V[],
     limit: number,
     by: 'created_at' | 'updated_at',
   ) {

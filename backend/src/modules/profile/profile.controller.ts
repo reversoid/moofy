@@ -27,6 +27,8 @@ import { ImageErrors } from 'src/errors/image.errors';
 import { SearchProfileDTO } from './dtos/SearchProfile.dto';
 import { ProfileShort } from './types/profile-short.type';
 import { Profile } from './types/profile.type';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 
 const LISTS_LIMIT = 20;
 
@@ -115,28 +117,46 @@ export class ProfileController {
     description: 'Get user followers',
   })
   @Get(':id/followers')
-  async getFollowers(@Param('id') id: string): Promise<ProfileShort[]> {
+  async getFollowers(
+    @Param('id') id: string,
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, lowerBound }: PaginationQueryDTO,
+  ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    return this.profileService.getUserFollowers(numericId);
+    return this.profileService.getUserFollowers(numericId, limit, lowerBound);
   }
 
   @ApiOperation({
     description: 'Get who user follows',
   })
   @Get(':id/following')
-  async getFollowing(@Param('id') id: string): Promise<ProfileShort[]> {
+  async getFollowing(
+    @Param('id') id: string,
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, lowerBound }: PaginationQueryDTO,
+  ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    return this.profileService.getUserFollowing(numericId);
+    return this.profileService.getUserFollowing(numericId, limit, lowerBound);
   }
 
   @ApiOperation({

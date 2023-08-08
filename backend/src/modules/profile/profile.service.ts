@@ -224,11 +224,11 @@ export class ProfileService {
     return Boolean(subscription);
   }
 
-  async getUserFollowers(userId: number) {
-    return [];
+  async getUserFollowers(userId: number, limit: number, lowerBound?: Date) {
+    return this.subcriptionRepository.getFollowers(userId, lowerBound, limit);
   }
 
-  async getUserFollowing(userId: number) {
-    return [];
+  async getUserFollowing(userId: number, limit: number, lowerBound?: Date) {
+    return this.subcriptionRepository.getFollowing(userId, lowerBound, limit);
   }
 }
