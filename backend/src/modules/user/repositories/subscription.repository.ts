@@ -24,11 +24,16 @@ export class SubscriptionRepository extends PaginatedRepository<Subscription> {
         created_at: super.getCompareOperator(lowerBound),
       },
       relations: {
+        follower: true,
+      },
+      select: {
         follower: {
           id: true,
           username: true,
           image_url: true,
         },
+        created_at: true,
+        id: true,
       },
       take: limit + 1,
       order: {
@@ -47,18 +52,23 @@ export class SubscriptionRepository extends PaginatedRepository<Subscription> {
         created_at: super.getCompareOperator(lowerBound),
       },
       relations: {
+        followed: true,
+      },
+      select: {
         followed: {
           id: true,
           username: true,
           image_url: true,
         },
+        created_at: true,
+        id: true,
       },
       take: limit + 1,
       order: {
         created_at: 'DESC',
       },
     });
-    const following = subscriptions.map((s) => s.follower);
+    const following = subscriptions.map((s) => s.followed);
 
     return super.processPagination(following, limit, 'created_at');
   }
