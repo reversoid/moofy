@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Param,
@@ -108,5 +109,41 @@ export class ProfileController {
     }
 
     return this.profileService.getUserProfile(numericId, LISTS_LIMIT);
+  }
+
+  @ApiOperation({
+    description: 'Subscribe to user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/subscriptions')
+  async subscribeToUser(
+    @Request() { user }: { user: User | undefined },
+    @Param('id') id: string,
+  ): Promise<void> {
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.subscribeToUser(user.id, numericId);
+  }
+
+  @ApiOperation({
+    description: 'Unsubscribe from user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/subscriptions')
+  async unsubscribeFromUser(
+    @Request() { user }: { user: User | undefined },
+    @Param('id') id: string,
+  ): Promise<void> {
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.unSubscribeFromUser(user.id, numericId);
   }
 }

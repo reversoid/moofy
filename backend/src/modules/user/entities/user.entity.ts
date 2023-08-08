@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Subscription } from './subscription.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -60,4 +61,10 @@ export class User {
   /** Is used for full text search */
   @Column({ type: 'tsvector', select: false })
   username_search_document: any;
+
+  @OneToMany(() => Subscription, (subscription) => subscription.follower)
+  followedSubscriptions: Subscription[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.followed)
+  followerSubscriptions: Subscription[];
 }

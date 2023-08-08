@@ -11,11 +11,14 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { EditProfileDTO } from './dtos/EditProfile.dto';
 import { ProfileShort } from './types/profile-short.type';
 import { Profile } from './types/profile.type';
+import { SubscriptionRepository } from '../user/repositories/subscription.repository';
+import { SubscribeErrors } from 'src/errors/subscribe.errors';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly subcriptionRepository: SubscriptionRepository,
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
   ) {}
@@ -157,5 +160,62 @@ export class ProfileService {
     limit: number,
   ): Promise<ProfileShort[]> {
     return this.userRepository.searchUsersByUsername(username, limit);
+  }
+
+  async subscribeToUser(fromId: number, toId: number) {
+    await this.validateUsersIds(fromId, toId);
+    const alreadySubscribed = await this.subscriptionExists(fromId, toId);
+
+    if (alreadySubscribed) {
+      throw new HttpException(SubscribeErrors.ALREADY_SUBSCRIBED, 400);
+    }
+
+    await this.subcriptionRepository.save({
+      follower: {
+        id: fromId,
+      },
+      followed: {
+        id: toId,
+      },
+    });
+
+    return;
+  }
+
+  async unSubscribeFromUser(fromId: number, toId: number) {
+    await this.validateUsersIds(fromId, toId);
+    const isSubscribed = await this.subscriptionExists(fromId, toId);
+
+    if (!isSubscribed) {
+      throw new HttpException(SubscribeErrors.NOT_SUBSCRIBED, 400);
+    }
+
+    await this.subcriptionRepository.softDelete({
+      follower: {
+        id: fromId,
+      },
+      followed: {
+        id: toId,
+      },
+    });
+
+    return;
+  }
+
+  private async validateUsersIds(fromId: number, toId: number) {
+    const users = await this.userRepository.find({
+      where: [{ id: fromId }, { id: toId }],
+    });
+    const notAllUsersFound = users.length !== 2;
+    if (notAllUsersFound) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+  }
+
+  private async subscriptionExists(fromId: number, toId: number) {
+    const subscription = await this.subcriptionRepository.findOne({
+      where: { follower: { id: fromId }, followed: { id: toId } },
+    });
+    return Boolean(subscription);
   }
 }
