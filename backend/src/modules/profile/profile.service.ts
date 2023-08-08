@@ -30,12 +30,14 @@ export class ProfileService {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    const [lists, favLists, listsCount, favListsCount] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit),
-      this.favListRepository.getUserFavoriteLists(id, listsLimit),
-      this.listRepository.getAmountOfUserLists(id),
-      this.favListRepository.getAmountOfUserFavLists(id),
-    ]);
+    const [lists, favLists, listsCount, favListsCount, subscriptionsInfo] =
+      await Promise.all([
+        this.listRepository.getUserLists(id, listsLimit),
+        this.favListRepository.getUserFavoriteLists(id, listsLimit),
+        this.listRepository.getAmountOfUserLists(id),
+        this.favListRepository.getAmountOfUserFavLists(id),
+        this.subcriptionRepository.getSubscriptionsInfo(id),
+      ]);
 
     return {
       id,
@@ -51,6 +53,7 @@ export class ProfileService {
         count: favListsCount,
         lists: favLists,
       },
+      subscriptionsInfo,
     };
   }
 
@@ -60,9 +63,10 @@ export class ProfileService {
     if (!user) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
-    const [lists, listsCount] = await Promise.all([
+    const [lists, listsCount, subscriptionsInfo] = await Promise.all([
       this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
       this.listRepository.getAmountOfUserLists(id, true),
+      this.subcriptionRepository.getSubscriptionsInfo(id),
     ]);
 
     return {
@@ -75,13 +79,14 @@ export class ProfileService {
       created_at: user.created_at,
       description: user.description,
       username: user.username,
+      subscriptionsInfo,
     };
   }
 
   async editProfile(
     userId: number,
     dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists'>> {
+  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
     const user = await this.userRepository.getUserInfoById(userId);
 
     if (!user) {

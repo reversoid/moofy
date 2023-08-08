@@ -55,7 +55,7 @@ export class ProfileController {
   async editProfile(
     @Request() { user }: { user: User },
     @Body() dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists'>> {
+  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
     return this.profileService.editProfile(user.id, dto);
   }
 
