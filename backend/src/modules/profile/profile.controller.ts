@@ -112,6 +112,34 @@ export class ProfileController {
   }
 
   @ApiOperation({
+    description: 'Get user followers',
+  })
+  @Get(':id/followers')
+  async getFollowers(@Param('id') id: string): Promise<ProfileShort[]> {
+    // TODO use validation for @Param
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.getUserFollowers(numericId);
+  }
+
+  @ApiOperation({
+    description: 'Get who user follows',
+  })
+  @Get(':id/following')
+  async getFollowing(@Param('id') id: string): Promise<ProfileShort[]> {
+    // TODO use validation for @Param
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.getUserFollowing(numericId);
+  }
+
+  @ApiOperation({
     description: 'Subscribe to user',
   })
   @ApiHeader(SwaggerAuthHeader)

@@ -223,4 +223,12 @@ export class ProfileService {
     });
     return Boolean(subscription);
   }
+
+  async getUserFollowers(userId: number) {
+    return [];
+  }
+
+  async getUserFollowing(userId: number) {
+    return [];
+  }
 }
