@@ -21,7 +21,7 @@ export class ListLike {
   user: User;
 
   @ManyToOne(() => List, (list) => list.likes, {
-    nullable: true,
+    nullable: false,
     onDelete: 'CASCADE',
   })
   list: List;

@@ -5,7 +5,7 @@ export class likes1691620346135 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "comment_like" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "userId" integer NOT NULL, "commentId" integer, CONSTRAINT "PK_04f93e6f1ace5dbc1d8c562ccbf" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "comment_like" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "userId" integer NOT NULL, "commentId" integer NOT NULL, CONSTRAINT "PK_04f93e6f1ace5dbc1d8c562ccbf" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_15eb3b90a408e3222e1ef34035" ON "comment_like" ("created_at") `,
@@ -14,7 +14,7 @@ export class likes1691620346135 implements MigrationInterface {
       `CREATE INDEX "IDX_2e9f9d450d42a53a579dd00c38" ON "comment_like" ("deleted_at") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "list_like" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "userId" integer NOT NULL, "listId" integer, CONSTRAINT "PK_08d899a0a4870c8959ddf52a604" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "list_like" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "userId" integer NOT NULL, "listId" integer NOT NULL, CONSTRAINT "PK_08d899a0a4870c8959ddf52a604" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_72bcd910d3caf258faded7e777" ON "list_like" ("created_at") `,

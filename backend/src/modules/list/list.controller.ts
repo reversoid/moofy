@@ -36,6 +36,7 @@ import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 import { GetCommentsQueryDTO } from './dtos/get-comments.query.dto';
 import { SendCommentDTO } from './dtos/send-comment.dto';
 import { ListIdParamsDTO } from './dtos/list-id.param.dto';
+import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -188,8 +189,6 @@ export class ListController {
   @ApiOperation({
     description: 'Get list comments',
   })
-  @ApiHeader(SwaggerAuthHeader)
-  @UseGuards(JwtAuthGuard)
   @Get(':id/comments')
   getComments(
     @Param() { id }: ListIdParamsDTO,
@@ -237,10 +236,36 @@ export class ListController {
   @ApiHeader(SwaggerAuthHeader)
   @UseGuards(JwtAuthGuard)
   @Delete(':id/likes')
-  dislikeList(
+  unlikeList(
     @Request() { user }: { user: User },
     @Param() { id }: ListIdParamsDTO,
   ) {
-    return this.listService.dislikeList(id, user.id);
+    return this.listService.unlikeList(id, user.id);
+  }
+
+  @ApiOperation({
+    description: 'Like a comment',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/comments/:commentId/likes')
+  likeComment(
+    @Request() { user }: { user: User },
+    @Param() { commentId }: CommentIdParamDTO,
+  ) {
+    return this.listService.likeComment(commentId, user.id);
+  }
+
+  @ApiOperation({
+    description: 'Unlike a comment',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/comments/:commentId/likes')
+  unlikeComment(
+    @Request() { user }: { user: User },
+    @Param() { commentId }: CommentIdParamDTO,
+  ) {
+    return this.listService.unlikeComment(commentId, user.id);
   }
 }
