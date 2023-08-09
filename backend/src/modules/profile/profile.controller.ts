@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Param,
@@ -26,6 +27,8 @@ import { ImageErrors } from 'src/errors/image.errors';
 import { SearchProfileDTO } from './dtos/SearchProfile.dto';
 import { ProfileShort } from './types/profile-short.type';
 import { Profile } from './types/profile.type';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 
 const LISTS_LIMIT = 20;
 
@@ -54,7 +57,7 @@ export class ProfileController {
   async editProfile(
     @Request() { user }: { user: User },
     @Body() dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists'>> {
+  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
     return this.profileService.editProfile(user.id, dto);
   }
 
@@ -108,5 +111,87 @@ export class ProfileController {
     }
 
     return this.profileService.getUserProfile(numericId, LISTS_LIMIT);
+  }
+
+  @ApiOperation({
+    description: 'Get user followers',
+  })
+  @Get(':id/followers')
+  async getFollowers(
+    @Param('id') id: string,
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, lowerBound }: PaginationQueryDTO,
+  ): Promise<IterableResponse<ProfileShort>> {
+    // TODO use validation for @Param
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.getUserFollowers(numericId, limit, lowerBound);
+  }
+
+  @ApiOperation({
+    description: 'Get who user follows',
+  })
+  @Get(':id/following')
+  async getFollowing(
+    @Param('id') id: string,
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, lowerBound }: PaginationQueryDTO,
+  ): Promise<IterableResponse<ProfileShort>> {
+    // TODO use validation for @Param
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.getUserFollowing(numericId, limit, lowerBound);
+  }
+
+  @ApiOperation({
+    description: 'Subscribe to user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/subscriptions')
+  async subscribeToUser(
+    @Request() { user }: { user: User | undefined },
+    @Param('id') id: string,
+  ): Promise<void> {
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.subscribeToUser(user.id, numericId);
+  }
+
+  @ApiOperation({
+    description: 'Unsubscribe from user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/subscriptions')
+  async unsubscribeFromUser(
+    @Request() { user }: { user: User | undefined },
+    @Param('id') id: string,
+  ): Promise<void> {
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.unSubscribeFromUser(user.id, numericId);
   }
 }

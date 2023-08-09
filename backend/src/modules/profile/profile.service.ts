@@ -11,11 +11,14 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { EditProfileDTO } from './dtos/EditProfile.dto';
 import { ProfileShort } from './types/profile-short.type';
 import { Profile } from './types/profile.type';
+import { SubscriptionRepository } from '../user/repositories/subscription.repository';
+import { SubscribeErrors } from 'src/errors/subscribe.errors';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly subcriptionRepository: SubscriptionRepository,
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
   ) {}
@@ -27,12 +30,14 @@ export class ProfileService {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    const [lists, favLists, listsCount, favListsCount] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit),
-      this.favListRepository.getUserFavoriteLists(id, listsLimit),
-      this.listRepository.getAmountOfUserLists(id),
-      this.favListRepository.getAmountOfUserFavLists(id),
-    ]);
+    const [lists, favLists, listsCount, favListsCount, subscriptionsInfo] =
+      await Promise.all([
+        this.listRepository.getUserLists(id, listsLimit),
+        this.favListRepository.getUserFavoriteLists(id, listsLimit),
+        this.listRepository.getAmountOfUserLists(id),
+        this.favListRepository.getAmountOfUserFavLists(id),
+        this.subcriptionRepository.getSubscriptionsInfo(id),
+      ]);
 
     return {
       id,
@@ -48,6 +53,7 @@ export class ProfileService {
         count: favListsCount,
         lists: favLists,
       },
+      subscriptionsInfo,
     };
   }
 
@@ -57,9 +63,10 @@ export class ProfileService {
     if (!user) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
-    const [lists, listsCount] = await Promise.all([
+    const [lists, listsCount, subscriptionsInfo] = await Promise.all([
       this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
       this.listRepository.getAmountOfUserLists(id, true),
+      this.subcriptionRepository.getSubscriptionsInfo(id),
     ]);
 
     return {
@@ -72,13 +79,14 @@ export class ProfileService {
       created_at: user.created_at,
       description: user.description,
       username: user.username,
+      subscriptionsInfo,
     };
   }
 
   async editProfile(
     userId: number,
     dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists'>> {
+  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
     const user = await this.userRepository.getUserInfoById(userId);
 
     if (!user) {
@@ -157,5 +165,70 @@ export class ProfileService {
     limit: number,
   ): Promise<ProfileShort[]> {
     return this.userRepository.searchUsersByUsername(username, limit);
+  }
+
+  async subscribeToUser(fromId: number, toId: number) {
+    await this.validateUsersIds(fromId, toId);
+    const alreadySubscribed = await this.subscriptionExists(fromId, toId);
+
+    if (alreadySubscribed) {
+      throw new HttpException(SubscribeErrors.ALREADY_SUBSCRIBED, 400);
+    }
+
+    await this.subcriptionRepository.save({
+      follower: {
+        id: fromId,
+      },
+      followed: {
+        id: toId,
+      },
+    });
+
+    return;
+  }
+
+  async unSubscribeFromUser(fromId: number, toId: number) {
+    await this.validateUsersIds(fromId, toId);
+    const isSubscribed = await this.subscriptionExists(fromId, toId);
+
+    if (!isSubscribed) {
+      throw new HttpException(SubscribeErrors.NOT_SUBSCRIBED, 400);
+    }
+
+    await this.subcriptionRepository.softDelete({
+      follower: {
+        id: fromId,
+      },
+      followed: {
+        id: toId,
+      },
+    });
+
+    return;
+  }
+
+  private async validateUsersIds(fromId: number, toId: number) {
+    const users = await this.userRepository.find({
+      where: [{ id: fromId }, { id: toId }],
+    });
+    const notAllUsersFound = users.length !== 2;
+    if (notAllUsersFound) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+  }
+
+  private async subscriptionExists(fromId: number, toId: number) {
+    const subscription = await this.subcriptionRepository.findOne({
+      where: { follower: { id: fromId }, followed: { id: toId } },
+    });
+    return Boolean(subscription);
+  }
+
+  async getUserFollowers(userId: number, limit: number, lowerBound?: Date) {
+    return this.subcriptionRepository.getFollowers(userId, lowerBound, limit);
+  }
+
+  async getUserFollowing(userId: number, limit: number, lowerBound?: Date) {
+    return this.subcriptionRepository.getFollowing(userId, lowerBound, limit);
   }
 }

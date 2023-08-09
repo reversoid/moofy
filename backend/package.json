@@ -25,10 +25,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration:create": "yarn typeorm migration:create",
-    "migration:generate": "yarn typeorm migration:generate -d dist/db/data-source.js",
+    "create-migration": "./create-migration.sh",
+    "generate-migration": "./generate-migration.sh",
     "migration:run": "yarn typeorm migration:run -d dist/db/data-source.js",
-    "migration:down": "yarn typeorm migration:revert -d dist/db/data-source.js"
+    "migration:down": "yarn typeorm migration:revert -d dist/db/data-source.js",
+    "migration:create": "yarn typeorm migration:create",
+    "migration:generate": "yarn typeorm migration:generate -d dist/db/data-source.js"
   },
   "dependencies": {
     "@liaoliaots/nestjs-redis": "^9.0.4",

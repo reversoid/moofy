@@ -63,5 +63,6 @@ export class List {
 
   /** Is used for full text search */
   @Column({ type: 'tsvector', select: false })
+  @Index()
   search_document: any;
 }
