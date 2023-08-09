@@ -9,6 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { List } from './list.entity';
 
 @Entity()
 export class Comment {
@@ -29,6 +30,9 @@ export class Comment {
 
   @OneToMany(() => Comment, (comment) => comment.reply_to)
   replies: Comment[];
+
+  @ManyToOne(() => List, (list) => list.comments)
+  list: List;
 
   @Index()
   @Column('varchar', { length: 400, nullable: false })

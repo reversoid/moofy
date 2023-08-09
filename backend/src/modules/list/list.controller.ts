@@ -32,8 +32,9 @@ import { GetPublicListsDTO } from './dtos/getPublicLists.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
-import { ListIdParamsDTO } from './dtos/list-id.param.dto';
+import { GetCommentsQueryDTO } from './dtos/get-comments.query.dto';
 import { SendCommentDTO } from './dtos/send-comment.dto';
+import { ListIdParamsDTO } from './dtos/list-id.param.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -181,6 +182,25 @@ export class ListController {
       throw new HttpException(ImageErrors.NO_IMAGE, 400);
     }
     return this.listService.uploadImage(file);
+  }
+
+  @ApiOperation({
+    description: 'Get list comments',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/comments')
+  getComments(
+    @Param() { id }: ListIdParamsDTO,
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, commentId, lowerBound }: GetCommentsQueryDTO,
+  ) {
+    return this.listService.getComments(id, commentId, limit, lowerBound);
   }
 
   @ApiOperation({

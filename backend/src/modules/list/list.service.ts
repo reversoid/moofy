@@ -12,7 +12,10 @@ import * as sharp from 'sharp';
 import { getS3 } from 'src/shared/libs/S3/s3';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { SendCommentDTO } from './dtos/send-comment.dto';
-import { CommentRepository } from './repositories/comment.repository';
+import {
+  CommentRepository,
+  CommentWithRepliesAmount,
+} from './repositories/comment.repository';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -249,6 +252,7 @@ export class ListService {
     const newComment = this.commentRepository.create({
       reply_to: { id: dto.replyToId },
       text: dto.text,
+      list: { id: listId },
     });
 
     const comment = await this.commentRepository.save(newComment);
@@ -258,5 +262,19 @@ export class ListService {
       image_url: user.image_url,
     });
     return comment;
+  }
+
+  async getComments(
+    listId: number,
+    commentId?: number,
+    limit = 20,
+    lowerBound?: Date,
+  ): Promise<CommentWithRepliesAmount[]> {
+    return this.commentRepository.getComments(
+      listId,
+      commentId,
+      limit,
+      lowerBound,
+    );
   }
 }
