@@ -25,14 +25,20 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .leftJoinAndSelect('comment.list', 'list')
       .leftJoin('comment.replies', 'replies')
       .addSelect('COUNT(replies.id)', 'repliesCount')
-      .where('comment.reply_to = :commentId', { commentId })
       .andWhere('comment.list = :listId', { listId })
-      .andWhere('comment.created_at >= :lowerBound', { lowerBound })
       .groupBy('comment.id')
       .addGroupBy('user.id')
       .addGroupBy('list.id')
       .orderBy('comment.created_at', 'DESC')
       .take(limit + 1);
+
+    if (commentId !== undefined) {
+      query.andWhere('comment.reply_to = :commentId', { commentId });
+    }
+
+    if (lowerBound !== undefined) {
+      query.andWhere('comment.created_at >= :lowerBound', { lowerBound });
+    }
 
     const comments = await query.getRawAndEntities();
 
