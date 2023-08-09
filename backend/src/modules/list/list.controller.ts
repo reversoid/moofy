@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   HttpException,
+  Param,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
@@ -31,6 +32,8 @@ import { GetPublicListsDTO } from './dtos/getPublicLists.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { ListIdParamsDTO } from './dtos/list-id.param.dto';
+import { SendCommentDTO } from './dtos/send-comment.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -178,5 +181,19 @@ export class ListController {
       throw new HttpException(ImageErrors.NO_IMAGE, 400);
     }
     return this.listService.uploadImage(file);
+  }
+
+  @ApiOperation({
+    description: 'Send a comment for list',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/comments')
+  sendComment(
+    @Request() { user }: { user: User },
+    @Param() { id }: ListIdParamsDTO,
+    @Body() dto: SendCommentDTO,
+  ) {
+    return this.listService.sendComment(user, id, dto);
   }
 }

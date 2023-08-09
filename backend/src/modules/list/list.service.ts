@@ -11,6 +11,8 @@ import { ImageErrors } from 'src/errors/image.errors';
 import * as sharp from 'sharp';
 import { getS3 } from 'src/shared/libs/S3/s3';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
+import { SendCommentDTO } from './dtos/send-comment.dto';
+import { CommentRepository } from './repositories/comment.repository';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -30,6 +32,7 @@ export class ListService {
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
     private readonly userRepository: UserRepository,
+    private readonly commentRepository: CommentRepository,
   ) {}
 
   async createList(
@@ -233,5 +236,27 @@ export class ListService {
     }
 
     return { link: response.Location };
+  }
+
+  async sendComment(user: User, listId: number, dto: SendCommentDTO) {
+    const list = await this.listRepository.getListById(listId);
+
+    const notAllowed = !list.is_public && list.user.id !== user.id;
+    if (notAllowed) {
+      throw new HttpException(ListErrors.NOT_ALLOWED, 403);
+    }
+
+    const newComment = this.commentRepository.create({
+      reply_to: { id: dto.replyToId },
+      text: dto.text,
+    });
+
+    const comment = await this.commentRepository.save(newComment);
+    comment.user = this.userRepository.create({
+      id: user.id,
+      username: user.username,
+      image_url: user.image_url,
+    });
+    return comment;
   }
 }
