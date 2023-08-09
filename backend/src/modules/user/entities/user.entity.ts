@@ -60,6 +60,7 @@ export class User {
 
   /** Is used for full text search */
   @Column({ type: 'tsvector', select: false })
+  @Index()
   username_search_document: any;
 
   @OneToMany(() => Subscription, (subscription) => subscription.follower)
