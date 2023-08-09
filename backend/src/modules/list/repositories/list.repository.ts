@@ -188,8 +188,8 @@ export class ListRepository extends PaginatedRepository<List> {
     const data = await query.getRawOne();
 
     return {
-      likesAmount: data.likesCount ?? 0,
-      commentsAmount: data.commentsCount ?? 0,
+      likesAmount: Number(data.likesCount ?? 0),
+      commentsAmount: Number(data.commentsCount ?? 0),
       isLiked: data.userLiked ?? false,
     };
   }
