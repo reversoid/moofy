@@ -13,6 +13,7 @@ import {
   UploadedFile,
   HttpException,
   Param,
+  Put,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
@@ -215,5 +216,31 @@ export class ListController {
     @Body() dto: SendCommentDTO,
   ) {
     return this.listService.sendComment(user, id, dto);
+  }
+
+  @ApiOperation({
+    description: 'Like a list',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/likes')
+  likeList(
+    @Request() { user }: { user: User },
+    @Param() { id }: ListIdParamsDTO,
+  ) {
+    return this.listService.likeList(id, user.id);
+  }
+
+  @ApiOperation({
+    description: 'Dislike a list',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/likes')
+  dislikeList(
+    @Request() { user }: { user: User },
+    @Param() { id }: ListIdParamsDTO,
+  ) {
+    return this.listService.dislikeList(id, user.id);
   }
 }

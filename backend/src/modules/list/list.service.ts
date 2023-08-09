@@ -17,6 +17,10 @@ import {
   CommentWithRepliesAmount,
 } from './repositories/comment.repository';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { ListLike } from './entities/list-like.entity';
+import { ListLikeRepository } from './repositories/list-like.repository';
+import { CommentLikeRepository } from './repositories/comment-like.repository';
+import { LikeErrors } from 'src/errors/like.errors';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -37,6 +41,8 @@ export class ListService {
     private readonly favListRepository: FavoriteListRepository,
     private readonly userRepository: UserRepository,
     private readonly commentRepository: CommentRepository,
+    private readonly listLikeRepository: ListLikeRepository,
+    private readonly commentLikeRepository: CommentLikeRepository,
   ) {}
 
   async createList(
@@ -287,5 +293,50 @@ export class ListService {
       limit,
       lowerBound,
     );
+  }
+
+  async likeList(listId: number, userId: number): Promise<ListLike> {
+    const [list, existingLike] = await Promise.all([
+      this.listRepository.getListById(listId),
+      this.listLikeRepository.findOneBy({
+        list: { id: listId },
+        user: { id: userId },
+      }),
+    ]);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    if (existingLike) {
+      throw new HttpException(LikeErrors.ALREADY_LIKED, 400);
+    }
+
+    const newLike = this.listLikeRepository.create({
+      list: { id: listId },
+      user: { id: userId },
+    });
+
+    return this.listLikeRepository.save(newLike);
+  }
+
+  async dislikeList(listId: number, userId: number): Promise<ListLike> {
+    const [list, existingLike] = await Promise.all([
+      this.listRepository.getListById(listId),
+      this.listLikeRepository.findOneBy({
+        list: { id: listId },
+        user: { id: userId },
+      }),
+    ]);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    if (!existingLike) {
+      throw new HttpException(LikeErrors.NOT_LIKED, 400);
+    }
+
+    return this.listLikeRepository.softRemove(existingLike);
   }
 }

@@ -1,46 +1,30 @@
 import { User } from 'src/modules/user/entities/user.entity';
 import {
-  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   Index,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { List } from './list.entity';
-import { CommentLike } from './comment-like.entity';
 
 @Entity()
-export class Comment {
+export class ListLike {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.comments, {
+  @ManyToOne(() => User, (user) => user.likes, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   user: User;
 
-  @ManyToOne(() => Comment, (comment) => comment.replies, {
+  @ManyToOne(() => List, (list) => list.likes, {
     nullable: true,
     onDelete: 'CASCADE',
   })
-  reply_to: Comment;
-
-  @OneToMany(() => Comment, (comment) => comment.reply_to)
-  replies: Comment[];
-
-  @OneToMany(() => CommentLike, (like) => like.comment)
-  likes: CommentLike[];
-
-  @ManyToOne(() => List, (list) => list.comments)
   list: List;
-
-  @Index()
-  @Column('varchar', { length: 400, nullable: false })
-  text: string;
 
   @Index()
   @CreateDateColumn({ type: 'timestamptz' })
