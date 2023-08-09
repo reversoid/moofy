@@ -11,6 +11,13 @@ import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Button, Checkbox, Loading, Text } from '@nextui-org/react';
 import { memo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Field, Form as FinalForm, useForm as useFinalForm } from 'react-final-form';
+import { composeValidators } from '@/shared/lib/forms/composeValidators';
+import {
+  maxLengthDescription,
+  maxLengthName,
+  requiredName,
+} from '../../create-list/utils/validators';
 import { useDefaultFormValues } from '../lib/useDefaultFormValues';
 import { useUpdateList } from '../lib/useUpdateList';
 import { useUploadImage } from '../lib/useUploadImage';
@@ -37,16 +44,20 @@ export const UpdateListModal = memo(
     listId,
     listImageUrl,
   }: UpdateListModalProps) => {
-    const {
-      register,
-      formState: { isValid: isFormValid, errors },
-      setValue,
-      handleSubmit,
-      getValues,
-    } = useForm<FormData>({
-      mode: 'onChange',
-    });
 
+    // const {
+    //   register,
+    //   formState: { isValid: isFormValid, errors },
+    //   setValue,
+    //   handleSubmit,
+    //   getValues,
+    // } = useForm<FormData>({
+    //   mode: 'onChange',
+    // });
+    const setValue = (fieldName, value) => {
+      form.change(fieldName, value);
+    };
+    
     useDefaultFormValues(isOpen, setValue, listData);
 
     const updateMutation = useUpdateList();
@@ -78,58 +89,174 @@ export const UpdateListModal = memo(
       uploadImageMutation.mutate(file);
     };
 
+    // return (
+    //   <Modal
+    //     closeButton
+    //     aria-labelledby="modal-title"
+    //     open={isOpen}
+    //     onClose={() => setIsOpen(false)}
+    //   >
+    //     <ModalHeader>
+    //       <Text h3>Изменить коллекцию</Text>
+    //     </ModalHeader>
+    //     <ModalBody>
+    //       <Form
+    //         onSubmit={handleSubmit(({ description, isPrivate, name }) =>
+    //           updateMutation.mutate({
+    //             isPublic: !isPrivate,
+    //             name,
+    //             description,
+    //             listId,
+    //             imageUrl: uploadImageMutation.data?.link ?? undefined,
+    //           }),
+    //         )}
+    //         css={{ mb: '$10' }}
+    //         id="update-list-modal-form"
+    //       >
+    //         <Input
+    //           bordered
+    //           fullWidth
+    //           label="Название"
+    //           size="xl"
+    //           placeholder="Название123"
+    //           status={errors.name && 'error'}
+    //           {...register('name', {
+    //             required: {
+    //               value: true,
+    //               message: 'Поле не должно быть пустым',
+    //             },
+    //             maxLength: { value: 32, message: 'Слишком длинное название' },
+    //           })}
+    //         />
+    //         <Textarea
+    //           maxLength={400}
+    //           bordered
+    //           size="xl"
+    //           label="Описание"
+    //           placeholder="Ваше описание коллекции"
+    //           {...register('description', {
+    //             maxLength: { value: 400, message: 'Слишком длинное описание' },
+    //           })}
+    //           initialValue={getValues('description')}
+    //           maxRows={Infinity}
+    //         />
+    //         <Checkbox
+    //           color="gradient"
+    //           label="Сделать коллекцию приватной"
+    //           css={{
+    //             '& .nextui-checkbox-text': {
+    //               fontSize: '$lg',
+    //             },
+    //           }}
+    //           size="lg"
+    //           {...register('isPrivate')}
+    //           defaultSelected={listData.isPrivate}
+    //           onChange={(newValue) => setValue('isPrivate', newValue)}
+    //         />
+    //       </Form>
+    //       <ImageUpload
+    //         text="Загрузить обложку"
+    //         loading={uploadImageMutation.isLoading}
+    //         loadedImageSrc={
+    //           uploadImageMutation.data?.link ?? listImageUrl ?? undefined
+    //         }
+    //         onChange={handleUploadImage}
+    //       />
+    //     </ModalBody>
+    //     <ModalFooter>
+    //       <Button
+    //         form="update-list-modal-form"
+    //         type="submit"
+    //         size="lg"
+    //         disabled={!isFormValid || uploadImageMutation.isLoading}
+    //         color={'gradient'}
+    //         auto
+    //         css={{
+    //           minWidth: '7.5rem',
+    //           m: 0,
+    //           '@xsMax': {
+    //             width: '100%',
+    //           },
+    //         }}
+    //       >
+    //         {updateMutation.isLoading ? (
+    //           <Loading size="lg" type="points" color="white" />
+    //         ) : (
+    //           'Обновить'
+    //         )}
+    //       </Button>
+    //     </ModalFooter>
+    //   </Modal>
+    // );
     return (
-      <Modal
-        closeButton
-        aria-labelledby="modal-title"
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
-        <ModalHeader>
-          <Text h3>Изменить коллекцию</Text>
-        </ModalHeader>
-        <ModalBody>
-          <Form
-            onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-              updateMutation.mutate({
-                isPublic: !isPrivate,
-                name,
-                description,
-                listId,
-                imageUrl: uploadImageMutation.data?.link ?? undefined,
-              }),
-            )}
+      <>
+        <FinalForm<FormData>
+          onSubmit={async (form) => {
+            await updateMutation.mutateAsync({
+              isPublic: !form.isPrivate,
+              name: form.name,
+              description: form.description,
+              listId,
+              imageUrl: uploadImageMutation.data?.link ?? undefined,
+            });
+          }}
+          render={({ handleSubmit, submitting, invalid, form }) => (
+        <>
+         <Modal
+          closeButton
+          aria-labelledby="modal-title"
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          >
+          <ModalHeader>
+           <Text h3>Изменить коллекцию</Text>
+         </ModalHeader>
+          <ModalBody>
+           <Form
+            onSubmit={handleSubmit}
             css={{ mb: '$10' }}
             id="update-list-modal-form"
-          >
-            <Input
+            >
+            <Field
+            name="name"
+            validate={composeValidators(requiredName, maxLengthName)}
+            validateFields={[]}
+            >
+          {({ input, meta }) => (
+              <Input
+              {...input}
               bordered
               fullWidth
               label="Название"
               size="xl"
               placeholder="Название123"
-              status={errors.name && 'error'}
-              {...register('name', {
-                required: {
-                  value: true,
-                  message: 'Поле не должно быть пустым',
-                },
-                maxLength: { value: 32, message: 'Слишком длинное название' },
-              })}
-            />
+              status={meta.error && 'error'}
+              />
+          )}
+            </Field>
+          </Form>
+          
+          <Field
+            name="description"
+            validate={maxLengthDescription}
+            validateFields={[]}>
+              {({ input }) => (
             <Textarea
+              {...input}
               maxLength={400}
               bordered
               size="xl"
               label="Описание"
               placeholder="Ваше описание коллекции"
-              {...register('description', {
-                maxLength: { value: 400, message: 'Слишком длинное описание' },
-              })}
               initialValue={getValues('description')}
               maxRows={Infinity}
-            />
+            /> )}
+          </Field>
+            
+          <Field name="isPrivate" validateFields={[]}
+          >{({ input }) => (
             <Checkbox
+              name={input.name}
               color="gradient"
               label="Сделать коллекцию приватной"
               css={{
@@ -138,11 +265,11 @@ export const UpdateListModal = memo(
                 },
               }}
               size="lg"
-              {...register('isPrivate')}
               defaultSelected={listData.isPrivate}
               onChange={(newValue) => setValue('isPrivate', newValue)}
-            />
-          </Form>
+            />)}
+          </Field>
+          
           <ImageUpload
             text="Загрузить обложку"
             loading={uploadImageMutation.isLoading}
@@ -174,10 +301,14 @@ export const UpdateListModal = memo(
               'Обновить'
             )}
           </Button>
-        </ModalFooter>
-      </Modal>
-    );
-  },
+          </ModalFooter>
+        </Modal>
+        </>
+        )}
+      />
+    </>
+  );
+},
   (prev, next) => {
     const formEqual =
       (prev.listData.description === next.listData.description &&
