@@ -250,9 +250,12 @@ export class ListService {
     }
 
     const newComment = this.commentRepository.create({
-      reply_to: { id: dto.replyToId },
+      reply_to: dto.replyToId !== undefined ? { id: dto.replyToId } : undefined,
       text: dto.text,
       list: { id: listId },
+      user: {
+        id: user.id,
+      },
     });
 
     const comment = await this.commentRepository.save(newComment);
@@ -261,6 +264,13 @@ export class ListService {
       username: user.username,
       image_url: user.image_url,
     });
+
+    if (dto.replyToId !== undefined) {
+      comment.reply_to = this.commentRepository.create({
+        id: user.id,
+      });
+    }
+
     return comment;
   }
 

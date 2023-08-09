@@ -13,6 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Subscription } from './subscription.entity';
+import { Comment } from 'src/modules/list/entities/comment.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -68,4 +69,7 @@ export class User {
 
   @OneToMany(() => Subscription, (subscription) => subscription.followed)
   followerSubscriptions: Subscription[];
+
+  @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
+  comments: Comment[];
 }

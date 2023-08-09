@@ -29,6 +29,8 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .andWhere('comment.list = :listId', { listId })
       .andWhere('comment.created_at >= :lowerBound', { lowerBound })
       .groupBy('comment.id')
+      .addGroupBy('user.id')
+      .addGroupBy('list.id')
       .orderBy('comment.created_at', 'DESC')
       .take(limit + 1);
 

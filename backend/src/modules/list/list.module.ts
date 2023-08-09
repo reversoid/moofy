@@ -9,6 +9,7 @@ import { ListRepository } from './repositories/list.repository';
 import { FavoriteListRepository } from './repositories/favoriteList.repository';
 import { FavoriteList } from './entities/favoriteList.entity';
 import { CommentRepository } from './repositories/comment.repository';
+import { Comment } from './entities/comment.entity';
 
 @Module({
   imports: [

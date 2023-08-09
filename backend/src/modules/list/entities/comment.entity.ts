@@ -16,7 +16,7 @@ export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.lists, {
+  @ManyToOne(() => User, (user) => user.comments, {
     nullable: false,
     onDelete: 'CASCADE',
   })
