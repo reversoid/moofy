@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
 import { DataSource } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 export interface CommentWithRepliesAmount {
   comment: Comment;
@@ -19,10 +20,12 @@ export class CommentRepository extends PaginatedRepository<Comment> {
     commentId?: number,
     limit = 20,
     lowerBound?: Date,
-  ): Promise<CommentWithRepliesAmount[]> {
+  ): Promise<IterableResponse<CommentWithRepliesAmount>> {
     const query = this.createQueryBuilder('comment')
-      .leftJoinAndSelect('comment.user', 'user')
-      .leftJoinAndSelect('comment.list', 'list')
+      .leftJoin('comment.user', 'user')
+      .leftJoin('comment.list', 'list')
+      .addSelect('list.id')
+      .addSelect(['user.id', 'user.username', 'user.image_url'])
       .leftJoin('comment.replies', 'replies')
       .addSelect('COUNT(replies.id)', 'repliesCount')
       .andWhere('comment.list = :listId', { listId })
@@ -53,6 +56,10 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       }),
     );
 
-    return result;
+    return super.processPagination<CommentWithRepliesAmount>(
+      result,
+      limit,
+      'created_at',
+    );
   }
 }

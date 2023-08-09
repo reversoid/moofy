@@ -16,6 +16,7 @@ import {
   CommentRepository,
   CommentWithRepliesAmount,
 } from './repositories/comment.repository';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -279,7 +280,7 @@ export class ListService {
     commentId?: number,
     limit = 20,
     lowerBound?: Date,
-  ): Promise<CommentWithRepliesAmount[]> {
+  ): Promise<IterableResponse<CommentWithRepliesAmount>> {
     return this.commentRepository.getComments(
       listId,
       commentId,
