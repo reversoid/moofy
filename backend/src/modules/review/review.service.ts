@@ -173,11 +173,18 @@ export class ReviewService {
         list: { id: listId },
         user: { id: user.id },
       }));
+
+    const listStats = await this.listRepository.getListStatistics(
+      listId,
+      user?.id,
+    );
+
     return {
       list,
       reviews,
       additionalInfo: {
         isFavorite: Boolean(isFaved),
+        ...listStats,
       },
     };
   }
