@@ -40,6 +40,10 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       query.andWhere('comment.created_at >= :lowerBound', { lowerBound });
     }
 
+    if (commentId === undefined) {
+      query.andWhere('comment.reply_to IS NULL', { listId });
+    }
+
     const comments = await query.getRawAndEntities();
 
     const result = comments.entities.map<CommentWithRepliesAmount>(
