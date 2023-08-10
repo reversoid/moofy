@@ -37,6 +37,7 @@ import { GetCommentsQueryDTO } from './dtos/get-comments.query.dto';
 import { SendCommentDTO } from './dtos/send-comment.dto';
 import { ListIdParamsDTO } from './dtos/list-id.param.dto';
 import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
+import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -267,5 +268,24 @@ export class ListController {
     @Param() { commentId }: CommentIdParamDTO,
   ) {
     return this.listService.unlikeComment(commentId, user.id);
+  }
+
+  @ApiOperation({
+    description: 'Get latest lists updates for user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get('updates')
+  getListUpdates(
+    @Request() { user }: { user: User },
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, lowerBound, order }: GetUpdatesQueryDTO,
+  ): Promise<IterableResponse<List>> {
+    return this.listService.getLatestUpdates(user.id, lowerBound, limit, order);
   }
 }

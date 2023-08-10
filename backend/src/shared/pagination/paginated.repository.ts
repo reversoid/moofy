@@ -41,7 +41,7 @@ export class PaginatedRepository<
   }
 
   /** Returns operator and date to compare */
-  protected getRAWUpdatedAtCompareString(lowerBound?: Date): {
+  protected getRAWDatesCompareString(lowerBound?: Date): {
     operator: string;
     date: string;
   } {

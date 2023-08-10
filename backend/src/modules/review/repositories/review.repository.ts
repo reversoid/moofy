@@ -37,7 +37,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
 
   /** Get all user reviews. Only info about film is **id** */
   async getAllUserReviews(userId: number, limit?: number, lowerBound?: Date) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
 
     const reviews = await this.createQueryBuilder('review')
       .select([
@@ -69,7 +69,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
     limit?: number,
     lowerBound?: Date,
   ) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
     const reviews = await this.createQueryBuilder('review')
       .select([
         'created_at',
@@ -150,7 +150,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
   ) {
     const limit = options.limit ?? 20;
 
-    const { date, operator } = super.getRAWUpdatedAtCompareString(
+    const { date, operator } = super.getRAWDatesCompareString(
       options.lowerBound,
     );
     const plainQb = this.createQueryBuilder('review')
