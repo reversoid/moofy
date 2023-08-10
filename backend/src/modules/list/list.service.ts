@@ -33,13 +33,12 @@ export class ListService {
   ) {}
 
   async createList(
-    user: User,
+    userId: number,
     { name, description, isPublic, imageUrl }: CreateListDTO,
   ) {
     const list = this.listRepository.create({
       user: {
-        id: user.id,
-        username: user.username,
+        id: userId,
       },
       name,
       description,
