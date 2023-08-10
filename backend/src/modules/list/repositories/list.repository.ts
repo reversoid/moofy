@@ -21,7 +21,7 @@ export class ListRepository extends PaginatedRepository<List> {
       search?: string;
     },
   ) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(
+    const { date, operator } = super.getRAWDatesCompareString(
       options?.lowerBound,
     );
     const plainQb = this.createQueryBuilder('list')
@@ -113,7 +113,7 @@ export class ListRepository extends PaginatedRepository<List> {
   }
 
   async getPublicLists(search: string, limit: number, lowerBound: Date) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
 
     const plainQb = this.createQueryBuilder('list')
       .where('is_public = :isPublic', {
@@ -216,7 +216,7 @@ export class ListRepository extends PaginatedRepository<List> {
       .take(limit + 1);
 
     if (lowerBound !== undefined) {
-      const { date, operator } = this.getRAWUpdatedAtCompareString(lowerBound);
+      const { date, operator } = this.getRAWDatesCompareString(lowerBound);
       query.andWhere(`list.updated_at ${operator} :lowerBound`, {
         lowerBound: date,
       });
