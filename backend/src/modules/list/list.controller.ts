@@ -37,6 +37,7 @@ import { GetCommentsQueryDTO } from './dtos/get-comments.query.dto';
 import { SendCommentDTO } from './dtos/send-comment.dto';
 import { ListIdParamsDTO } from './dtos/list-id.param.dto';
 import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
+import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -283,8 +284,8 @@ export class ListController {
         forbidNonWhitelisted: true,
       }),
     )
-    { limit = 20, lowerBound }: PaginationQueryDTO,
+    { limit = 20, lowerBound, order }: GetUpdatesQueryDTO,
   ): Promise<IterableResponse<List>> {
-    return this.listService.getLatestUpdates(user.id, lowerBound, limit);
+    return this.listService.getLatestUpdates(user.id, lowerBound, limit, order);
   }
 }

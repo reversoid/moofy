@@ -22,6 +22,7 @@ import { ListLikeRepository } from './repositories/list-like.repository';
 import { CommentLikeRepository } from './repositories/comment-like.repository';
 import { LikeErrors } from 'src/errors/like.errors';
 import { CommentLike } from './entities/comment-like.entity';
+import { Order } from './dtos/get-updates.query.dto';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -390,7 +391,17 @@ export class ListService {
     return this.commentLikeRepository.softRemove(existingLike);
   }
 
-  async getLatestUpdates(userId: number, lowerBound?: Date, limit = 20) {
-    return this.listRepository.getLatestUpdates(userId, lowerBound, limit);
+  async getLatestUpdates(
+    userId: number,
+    lowerBound?: Date,
+    limit = 20,
+    order?: Order,
+  ) {
+    return this.listRepository.getLatestUpdates(
+      userId,
+      lowerBound,
+      limit,
+      order,
+    );
   }
 }

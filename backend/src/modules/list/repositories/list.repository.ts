@@ -4,6 +4,7 @@ import { List } from '../entities/list.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 import { AdditionalListInfo } from 'src/modules/review/review.controller';
+import { Order } from '../dtos/get-updates.query.dto';
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
@@ -194,7 +195,14 @@ export class ListRepository extends PaginatedRepository<List> {
     };
   }
 
-  async getLatestUpdates(userId: number, lowerBound?: Date, limit = 20) {
+  async getLatestUpdates(
+    userId: number,
+    lowerBound?: Date,
+    limit = 20,
+    order?: Order,
+  ) {
+    const dateField = this.getDateFieldByOrder(order);
+
     const query = this.createQueryBuilder('list')
       .select([
         'list.id',
@@ -212,18 +220,27 @@ export class ListRepository extends PaginatedRepository<List> {
       .innerJoin('Subscription', 'sub', 'sub.followed = user.id')
       .where('sub.follower = :userId', { userId })
       .andWhere('list.is_public = TRUE')
-      .orderBy('list.updated_at', 'DESC')
+      .orderBy(`list.${dateField}`, 'DESC')
       .take(limit + 1);
 
     if (lowerBound !== undefined) {
       const { date, operator } = this.getRAWDatesCompareString(lowerBound);
-      query.andWhere(`list.updated_at ${operator} :lowerBound`, {
+      query.andWhere(`list.${dateField} ${operator} :lowerBound`, {
         lowerBound: date,
       });
     }
 
     const latestUpdatedLists = await query.getMany();
 
-    return this.processPagination(latestUpdatedLists, limit, 'updated_at');
+    return this.processPagination(latestUpdatedLists, limit, dateField);
+  }
+
+  private getDateFieldByOrder(order?: Order) {
+    if (!order) {
+      return 'updated_at';
+    }
+    if (order === Order.created) return 'created_at';
+    if (order === Order.updated) return 'updated_at';
+    return 'updated_at';
   }
 }
