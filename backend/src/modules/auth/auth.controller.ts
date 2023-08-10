@@ -6,6 +6,9 @@ import globalConfig, { AppEnvironments } from 'src/config/global.config';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
+import { ListService } from '../list/list.service';
+const GRADIENT_IMAGE =
+  'https://storage.yandexcloud.net/moofy/list-images/pexels-codioful-(formerly-gradienta)-7135121.webp';
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   signed: true,
@@ -17,6 +20,7 @@ const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly listService: ListService,
     @Inject(globalConfig.KEY)
     private config: ConfigType<typeof globalConfig>,
   ) {}
@@ -30,6 +34,20 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const userId = await this.authService.createUser(dto);
+
+    // TODO possible to make better?
+    await Promise.all([
+      this.listService.createList(userId, {
+        name: 'Избранное',
+        isPublic: true,
+        imageUrl: GRADIENT_IMAGE,
+      }),
+      this.listService.createList(userId, {
+        name: 'Посмотреть',
+        isPublic: false,
+      }),
+    ]);
+
     const { access, refresh } = await this.authService.generateTokens(userId);
 
     response.cookie('refresh_token', refresh, this.getRefreshCookieOptions());

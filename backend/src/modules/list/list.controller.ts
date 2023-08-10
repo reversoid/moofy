@@ -47,7 +47,7 @@ export class ListController {
     @Request() { user }: { user: User },
     @Body() dto: CreateListDTO,
   ): Promise<List> {
-    return this.listService.createList(user, dto);
+    return this.listService.createList(user.id, dto);
   }
 
   @ApiOperation({
