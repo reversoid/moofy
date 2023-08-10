@@ -6,6 +6,7 @@ import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 export interface CommentWithRepliesAmount {
   comment: Comment;
+  likesAmount: number;
   repliesAmount: number;
 }
 
@@ -28,6 +29,10 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .addSelect(['user.id', 'user.username', 'user.image_url'])
       .leftJoin('comment.replies', 'replies')
       .addSelect('COUNT(replies.id)', 'repliesCount')
+
+      .leftJoin('comment.likes', 'likes')
+      .addSelect('COUNT(likes.id)', 'likesCount')
+
       .andWhere('comment.list = :listId', { listId })
       .groupBy('comment.id')
       .addGroupBy('user.id')
@@ -52,7 +57,8 @@ export class CommentRepository extends PaginatedRepository<Comment> {
     const result = comments.entities.map<CommentWithRepliesAmount>(
       (comment, index) => ({
         comment,
-        repliesAmount: comments.raw[index].repliesCount,
+        repliesAmount: Number(comments.raw[index].repliesCount ?? 0),
+        likesAmount: Number(comments.raw[index].likesCount ?? 0),
       }),
     );
 
