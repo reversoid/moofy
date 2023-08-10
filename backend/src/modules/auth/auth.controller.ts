@@ -7,8 +7,6 @@ import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
 import { ListService } from '../list/list.service';
-const GRADIENT_IMAGE =
-  'https://storage.yandexcloud.net/moofy/list-images/pexels-codioful-(formerly-gradienta)-7135121.webp';
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   signed: true,
@@ -40,7 +38,6 @@ export class AuthController {
       this.listService.createList(userId, {
         name: 'Избранное',
         isPublic: true,
-        imageUrl: GRADIENT_IMAGE,
       }),
       this.listService.createList(userId, {
         name: 'Посмотреть',
