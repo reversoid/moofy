@@ -45,7 +45,10 @@ export class CommentRepository extends PaginatedRepository<Comment> {
     }
 
     if (lowerBound !== undefined) {
-      query.andWhere('comment.created_at >= :lowerBound', { lowerBound });
+      const { date, operator } = super.getRAWDatesCompareString(lowerBound);
+      query.andWhere(`comment.created_at ${operator} :lowerBound`, {
+        lowerBound: date,
+      });
     }
 
     if (commentId === undefined) {
