@@ -389,4 +389,8 @@ export class ListService {
 
     return this.commentLikeRepository.softRemove(existingLike);
   }
+
+  async getLatestUpdates(userId: number, lowerBound?: Date, limit = 20) {
+    return this.listRepository.getLatestUpdates(userId, lowerBound, limit);
+  }
 }

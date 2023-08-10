@@ -268,4 +268,23 @@ export class ListController {
   ) {
     return this.listService.unlikeComment(commentId, user.id);
   }
+
+  @ApiOperation({
+    description: 'Get latest lists updates for user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get('updates')
+  getListUpdates(
+    @Request() { user }: { user: User },
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { limit = 20, lowerBound }: PaginationQueryDTO,
+  ): Promise<IterableResponse<List>> {
+    return this.listService.getLatestUpdates(user.id, lowerBound, limit);
+  }
 }

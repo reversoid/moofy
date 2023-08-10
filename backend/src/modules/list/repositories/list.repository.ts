@@ -193,4 +193,37 @@ export class ListRepository extends PaginatedRepository<List> {
       isLiked: data.userLiked ?? false,
     };
   }
+
+  async getLatestUpdates(userId: number, lowerBound?: Date, limit = 20) {
+    const query = this.createQueryBuilder('list')
+      .select([
+        'list.id',
+        'list.image_url',
+        'list.name',
+        'list.is_public',
+        'list.created_at',
+        'list.updated_at',
+
+        'user.id',
+        'user.username',
+        'user.image_url',
+      ])
+      .innerJoin('list.user', 'user')
+      .innerJoin('Subscription', 'sub', 'sub.followed = user.id')
+      .where('sub.follower = :userId', { userId })
+      .andWhere('list.is_public = TRUE')
+      .orderBy('list.updated_at', 'DESC')
+      .take(limit + 1);
+
+    if (lowerBound !== undefined) {
+      const { date, operator } = this.getRAWUpdatedAtCompareString(lowerBound);
+      query.andWhere(`list.updated_at ${operator} :lowerBound`, {
+        lowerBound: date,
+      });
+    }
+
+    const latestUpdatedLists = await query.getMany();
+
+    return this.processPagination(latestUpdatedLists, limit, 'updated_at');
+  }
 }
