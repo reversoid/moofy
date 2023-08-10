@@ -14,6 +14,7 @@ import {
 } from 'typeorm';
 import { Subscription } from './subscription.entity';
 import { Comment } from 'src/modules/list/entities/comment.entity';
+import { ListLike } from 'src/modules/list/entities/list-like.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -72,4 +73,7 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
   comments: Comment[];
+
+  @OneToMany(() => ListLike, (like) => like.user, { cascade: true })
+  likes: ListLike[];
 }

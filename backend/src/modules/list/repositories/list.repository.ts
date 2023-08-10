@@ -3,10 +3,11 @@ import { DataSource } from 'typeorm';
 import { List } from '../entities/list.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
+import { AdditionalListInfo } from 'src/modules/review/review.controller';
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
-  constructor(private dataSource: DataSource) {
+  constructor(dataSource: DataSource) {
     super(List, dataSource.createEntityManager());
   }
 
@@ -157,5 +158,39 @@ export class ListRepository extends PaginatedRepository<List> {
     lists.forEach((l) => (l.user = idUserMap.get(l.id)));
 
     return super.processPagination(lists, limit, 'updated_at');
+  }
+
+  async getListStatistics(
+    listId: number,
+    userId?: number,
+  ): Promise<Omit<AdditionalListInfo, 'isFavorite'>> {
+    const query = this.createQueryBuilder('list')
+      .select('list.id', 'id')
+      .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentsCount')
+      .leftJoin('list.likes', 'like')
+      .leftJoin('list.comments', 'comment')
+      .groupBy('list.id')
+      .where('list.id = :listId', { listId });
+
+    if (userId !== undefined) {
+      query
+        .addSelect(
+          'CASE WHEN userLike.id IS NOT NULL THEN TRUE ELSE FALSE END',
+          'userLiked',
+        )
+        .leftJoin('like.user', 'userLike', 'userLike.id = :userId', { userId })
+        .addGroupBy('userLike.id');
+    } else {
+      query.addSelect('FALSE', 'userLiked');
+    }
+
+    const data = await query.getRawOne();
+
+    return {
+      likesAmount: Number(data.likesCount ?? 0),
+      commentsAmount: Number(data.commentsCount ?? 0),
+      isLiked: data.userLiked ?? false,
+    };
   }
 }

@@ -26,6 +26,13 @@ import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
 import { List } from '../list/entities/list.entity';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
+export interface AdditionalListInfo {
+  isFavorite: boolean;
+  isLiked: boolean;
+  likesAmount: number;
+  commentsAmount: number;
+}
+
 @ApiTags('Review')
 @Controller('review')
 export class ReviewController {
@@ -79,9 +86,7 @@ export class ReviewController {
   ): Promise<{
     list: List;
     reviews: IterableResponse<Review>;
-    additionalInfo: {
-      isFavorite: boolean;
-    };
+    additionalInfo: AdditionalListInfo;
   }> {
     return this.reviewService.getReviewsFromListWithFilms(user, listId, {
       limit,
