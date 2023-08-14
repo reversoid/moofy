@@ -11,11 +11,14 @@ import {
 import { FC, createRef, useEffect, useState } from 'react';
 import { useEditDescription } from '../lib/useEditDescription';
 import { useAuth } from '@/app';
+import { useSubscribe } from '../lib/useSubscribe';
+import { useUnsubscribe } from '../lib/useUnsubscribe';
 
 interface ProfileInfoProps {
   description: string | null;
   isOwner: boolean;
   isSubscribed: boolean;
+  userId: number
 }
 
 const Description = styled('div', { mb: '$4', mt: '$10' });
@@ -57,6 +60,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
   description,
   isOwner,
   isSubscribed,
+  userId
 }) => {
   const [editMode, setEditMode] = useState(false);
   const { isLoggedIn } = useAuth();
@@ -65,6 +69,9 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
   const inputRef = createRef<unknown>();
 
   const editDescriptionMutation = useEditDescription();
+
+  const subscribeMutation = useSubscribe();
+  const unsubscribeMutation = useUnsubscribe();
 
   useEffect(() => {
     // TODO can use hook for that?
@@ -135,6 +142,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
               color={'gradient'}
               bordered
               css={{ '@xsMax': { width: '100%' } }}
+              onClick={() => unsubscribeMutation.mutate(userId)}
             >
               Отписаться
             </Button>
@@ -143,6 +151,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
               size={'lg'}
               color={'gradient'}
               css={{ '@xsMax': { width: '100%' } }}
+              onClick={() => subscribeMutation.mutate(userId)}
             >
               Подписаться
             </Button>

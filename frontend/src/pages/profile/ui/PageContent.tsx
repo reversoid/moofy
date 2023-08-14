@@ -29,6 +29,7 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
         description={profile.description}
         isOwner={isOwner}
         isSubscribed={profile.additionalInfo.isSubscribed}
+        userId={profile.id}
       />
 
       <ListsSection profile={profile} isOwner={isOwner} />

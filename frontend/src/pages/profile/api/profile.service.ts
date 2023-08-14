@@ -21,6 +21,18 @@ export class ProfileService extends ApiService {
       },
     });
   }
+
+  public async subscribe(toId: number) {
+    return this.post<void>(`/profile/${toId}/subscriptions`, {
+      useJWT: true,
+    });
+  }
+
+  public async unsubscribe(toId: number) {
+    return this.delete<void>(`/profile/${toId}/subscriptions`, {
+      useJWT: true,
+    });
+  }
 }
 
 export const profileService = new ProfileService();
