@@ -300,6 +300,8 @@ export class ProfileService {
         followed: In(users.map((u) => u.id)),
       },
     });
+    console.log(subscriptions);
+
     const userIsSubscribedSet = new Set(
       subscriptions.map((s) => s.followed.id),
     );
