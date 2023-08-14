@@ -1,9 +1,10 @@
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { ProfileImageModal } from '@/widgets/profile-image-modal';
-import { Row, Text, styled } from '@nextui-org/react';
+import { Button, Row, Text, styled } from '@nextui-org/react';
 import { FC, useState } from 'react';
 import { UserImageContainer } from './UserImageContainer';
+import { StatsCounters } from './StatsCounters/StatsCounters';
 
 export interface ProfileHeaderProps {
   username: string;
@@ -46,6 +47,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({
         <Text h1 css={{ textAlign: 'center' }}>
           {username}
         </Text>
+        <StatsCounters followed={123} followers={123} />
       </Row>
     </>
   );

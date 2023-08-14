@@ -1,11 +1,14 @@
 import DoneButton from '@/shared/components/DoneButton';
 import EditButton from '@/shared/components/EditButton';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import { Loading, Row, Text, Textarea, styled } from '@nextui-org/react';
-import { useMutation } from '@tanstack/react-query';
+import {
+  Button,
+  Loading,
+  Row,
+  Text,
+  Textarea,
+  styled,
+} from '@nextui-org/react';
 import { FC, createRef, useEffect, useState } from 'react';
-import { profileService } from '../api/profile.service';
-import { setProfile, setProfileWithoutLists } from '../model';
 import { useEditDescription } from '../lib/useEditDescription';
 
 interface ProfileInfoProps {
@@ -14,7 +17,7 @@ interface ProfileInfoProps {
   isOwner: boolean;
 }
 
-const Description = styled('div', { mb: '$4' });
+const Description = styled('div', { mb: '$4', mt: '$10' });
 
 const AnimatedTextarea = styled(Textarea, {
   '& textarea': {
@@ -120,12 +123,13 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
         )}
       </Description>
 
-      <Row css={{ gap: '$3' }}>
-        <Text size="lg" color="$neutral">
-          Дата регистрации
-        </Text>
-        <Text size="lg">{formatDate(createdAt)}</Text>
-      </Row>
+      <Button
+        size={'lg'}
+        color={'gradient'}
+        css={{ mt: '$8', '@xsMax': { width: '100%' } }}
+      >
+        Подписаться
+      </Button>
     </>
   );
 };
