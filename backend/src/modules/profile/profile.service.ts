@@ -292,6 +292,8 @@ export class ProfileService {
   private async getShortProfileFromUsers<
     T extends Omit<ProfileShort, 'additionalInfo'>,
   >(users: T[], requesterUserId?: number) {
+    console.log(users);
+
     const subscriptions = await this.subcriptionRepository.find({
       where: {
         follower: { id: requesterUserId },

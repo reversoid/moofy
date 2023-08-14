@@ -14,7 +14,7 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation } from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserErrors } from 'src/errors/user.errors';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
@@ -33,6 +33,7 @@ import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 const LISTS_LIMIT = 20;
 
 @Controller('profile')
+@ApiTags('Profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
