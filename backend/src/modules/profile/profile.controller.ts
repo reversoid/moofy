@@ -122,8 +122,10 @@ export class ProfileController {
   @ApiOperation({
     description: 'Get user followers',
   })
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':id/followers')
   async getFollowers(
+    @Request() { user }: { user?: User },
     @Param('id') id: string,
     @Query(
       new ValidationPipe({
@@ -132,21 +134,28 @@ export class ProfileController {
       }),
     )
     { limit = 20, lowerBound }: PaginationQueryDTO,
-  ): Promise<IterableResponse<Omit<ProfileShort, 'additionalInfo'>>> {
+  ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    return this.profileService.getUserFollowers(numericId, limit, lowerBound);
+    return this.profileService.getUserFollowers(
+      numericId,
+      limit,
+      lowerBound,
+      user?.id,
+    );
   }
 
   @ApiOperation({
     description: 'Get who user follows',
   })
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':id/following')
   async getFollowing(
+    @Request() { user }: { user?: User },
     @Param('id') id: string,
     @Query(
       new ValidationPipe({
@@ -155,7 +164,7 @@ export class ProfileController {
       }),
     )
     { limit = 20, lowerBound }: PaginationQueryDTO,
-  ): Promise<IterableResponse<Omit<ProfileShort, 'additionalInfo'>>> {
+  ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {

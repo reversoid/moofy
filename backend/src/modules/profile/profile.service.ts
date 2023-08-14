@@ -14,6 +14,7 @@ import { Profile } from './types/profile.type';
 import { SubscriptionRepository } from '../user/repositories/subscription.repository';
 import { SubscribeErrors } from 'src/errors/subscribe.errors';
 import { In } from 'typeorm';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 @Injectable()
 export class ProfileService {
@@ -261,11 +262,66 @@ export class ProfileService {
     return Boolean(subscription);
   }
 
-  async getUserFollowers(userId: number, limit: number, lowerBound?: Date) {
-    return this.subcriptionRepository.getFollowers(userId, lowerBound, limit);
+  async getUserFollowers(
+    userId: number,
+    limit: number,
+    lowerBound?: Date,
+    requesterUserId?: number,
+  ): Promise<IterableResponse<ProfileShort>> {
+    const usersPaginated = await this.subcriptionRepository.getFollowers(
+      userId,
+      lowerBound,
+      limit,
+    );
+    const subscriptions = await this.subcriptionRepository.find({
+      where: {
+        follower: { id: requesterUserId },
+        followed: In(usersPaginated.items.map((u) => u.id)),
+      },
+    });
+    const userIsSubscribedSet = new Set(
+      subscriptions.map((s) => s.followed.id),
+    );
+    return {
+      ...usersPaginated,
+      items: usersPaginated.items.map<ProfileShort>((u) => ({
+        ...u,
+        additionalInfo: {
+          isSubscribed: userIsSubscribedSet.has(u.id),
+        },
+      })),
+    };
   }
 
-  async getUserFollowing(userId: number, limit: number, lowerBound?: Date) {
-    return this.subcriptionRepository.getFollowing(userId, lowerBound, limit);
+  async getUserFollowing(
+    userId: number,
+    limit: number,
+    lowerBound?: Date,
+    requesterUserId?: number,
+  ): Promise<IterableResponse<ProfileShort>> {
+    const usersPaginated = await this.subcriptionRepository.getFollowing(
+      userId,
+      lowerBound,
+      limit,
+    );
+
+    const subscriptions = await this.subcriptionRepository.find({
+      where: {
+        follower: { id: requesterUserId },
+        followed: In(usersPaginated.items.map((u) => u.id)),
+      },
+    });
+    const userIsSubscribedSet = new Set(
+      subscriptions.map((s) => s.followed.id),
+    );
+    return {
+      ...usersPaginated,
+      items: usersPaginated.items.map<ProfileShort>((u) => ({
+        ...u,
+        additionalInfo: {
+          isSubscribed: userIsSubscribedSet.has(u.id),
+        },
+      })),
+    };
   }
 }
