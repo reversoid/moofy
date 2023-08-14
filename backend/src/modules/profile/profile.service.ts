@@ -188,21 +188,7 @@ export class ProfileService {
       username,
       limit,
     );
-    const subscriptions = await this.subcriptionRepository.find({
-      where: {
-        follower: { id: requesterUserId },
-        followed: In(users.map((u) => u.id)),
-      },
-    });
-    const userIsSubscribedSet = new Set(
-      subscriptions.map((s) => s.followed.id),
-    );
-    return users.map<ProfileShort>((u) => ({
-      ...u,
-      additionalInfo: {
-        isSubscribed: userIsSubscribedSet.has(u.id),
-      },
-    }));
+    return this.getShortProfileFromUsers(users, requesterUserId);
   }
 
   async subscribeToUser(fromId: number, toId: number) {
@@ -273,23 +259,12 @@ export class ProfileService {
       lowerBound,
       limit,
     );
-    const subscriptions = await this.subcriptionRepository.find({
-      where: {
-        follower: { id: requesterUserId },
-        followed: In(usersPaginated.items.map((u) => u.id)),
-      },
-    });
-    const userIsSubscribedSet = new Set(
-      subscriptions.map((s) => s.followed.id),
-    );
     return {
       ...usersPaginated,
-      items: usersPaginated.items.map<ProfileShort>((u) => ({
-        ...u,
-        additionalInfo: {
-          isSubscribed: userIsSubscribedSet.has(u.id),
-        },
-      })),
+      items: await this.getShortProfileFromUsers(
+        usersPaginated.items,
+        requesterUserId,
+      ),
     };
   }
 
@@ -305,23 +280,32 @@ export class ProfileService {
       limit,
     );
 
+    return {
+      ...usersPaginated,
+      items: await this.getShortProfileFromUsers(
+        usersPaginated.items,
+        requesterUserId,
+      ),
+    };
+  }
+
+  private async getShortProfileFromUsers<
+    T extends Omit<ProfileShort, 'additionalInfo'>,
+  >(users: T[], requesterUserId?: number) {
     const subscriptions = await this.subcriptionRepository.find({
       where: {
         follower: { id: requesterUserId },
-        followed: In(usersPaginated.items.map((u) => u.id)),
+        followed: In(users.map((u) => u.id)),
       },
     });
     const userIsSubscribedSet = new Set(
       subscriptions.map((s) => s.followed.id),
     );
-    return {
-      ...usersPaginated,
-      items: usersPaginated.items.map<ProfileShort>((u) => ({
-        ...u,
-        additionalInfo: {
-          isSubscribed: userIsSubscribedSet.has(u.id),
-        },
-      })),
-    };
+    return users.map<ProfileShort>((u) => ({
+      ...u,
+      additionalInfo: {
+        isSubscribed: userIsSubscribedSet.has(u.id),
+      },
+    }));
   }
 }
