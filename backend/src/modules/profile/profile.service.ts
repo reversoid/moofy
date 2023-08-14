@@ -292,15 +292,25 @@ export class ProfileService {
   private async getShortProfileFromUsers<
     T extends Omit<ProfileShort, 'additionalInfo'>,
   >(users: T[], requesterUserId?: number) {
-    console.log(users);
-
     const subscriptions = await this.subcriptionRepository.find({
       where: {
         follower: { id: requesterUserId },
         followed: In(users.map((u) => u.id)),
       },
+      relations: {
+        followed: true,
+        follower: true,
+      },
+      select: {
+        id: true,
+        follower: {
+          id: true,
+        },
+        followed: {
+          id: true,
+        },
+      },
     });
-    console.log(subscriptions);
 
     const userIsSubscribedSet = new Set(
       subscriptions.map((s) => s.followed.id),
