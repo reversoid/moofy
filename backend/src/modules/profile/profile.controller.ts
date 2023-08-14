@@ -171,7 +171,12 @@ export class ProfileController {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    return this.profileService.getUserFollowing(numericId, limit, lowerBound);
+    return this.profileService.getUserFollowing(
+      numericId,
+      limit,
+      lowerBound,
+      user.id,
+    );
   }
 
   @ApiOperation({
