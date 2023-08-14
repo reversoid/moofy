@@ -22,6 +22,7 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
         username={profile.username}
         imageUrl={profile.image_url}
         isOwner={isOwner}
+        subscriptionsInfo={profile.subscriptionsInfo}
       />
 
       <ProfileInfo

@@ -1,15 +1,16 @@
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
-import { IconButton } from '@/shared/ui/IconButton/IconButton';
 import { ProfileImageModal } from '@/widgets/profile-image-modal';
-import { Button, Row, Text, styled } from '@nextui-org/react';
+import { Row, Text, styled } from '@nextui-org/react';
 import { FC, useState } from 'react';
 import { UserImageContainer } from './UserImageContainer';
 import { StatsCounters } from './StatsCounters/StatsCounters';
+import { SubscriptionsInfo } from '@/shared/api/types/profile.type';
 
 export interface ProfileHeaderProps {
   username: string;
   imageUrl: string | null;
   isOwner: boolean;
+  subscriptionsInfo: SubscriptionsInfo;
 }
 
 const UserImg = styled('img', {
@@ -23,6 +24,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({
   username,
   imageUrl,
   isOwner,
+  subscriptionsInfo,
 }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
@@ -47,7 +49,10 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({
         <Text h1 css={{ textAlign: 'center' }}>
           {username}
         </Text>
-        <StatsCounters followed={123} followers={123} />
+        <StatsCounters
+          followed={subscriptionsInfo.followedAmount}
+          followers={subscriptionsInfo.followersAmount}
+        />
       </Row>
     </>
   );
