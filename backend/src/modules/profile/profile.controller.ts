@@ -57,7 +57,12 @@ export class ProfileController {
   async editProfile(
     @Request() { user }: { user: User },
     @Body() dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
+  ): Promise<
+    Omit<
+      Profile,
+      'allLists' | 'favLists' | 'subscriptionsInfo' | 'additionalInfo'
+    >
+  > {
     return this.profileService.editProfile(user.id, dto);
   }
 
@@ -82,6 +87,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @Get('search')
   async searchUserProfile(
+    @Request() { user }: { user: User },
     @Query(
       new ValidationPipe({
         transform: true,
@@ -89,7 +95,7 @@ export class ProfileController {
     )
     { username, limit = 20 }: SearchProfileDTO,
   ): Promise<ProfileShort[]> {
-    return this.profileService.searchUserProfiles(username, limit);
+    return this.profileService.searchUserProfiles(username, limit, user.id);
   }
 
   @ApiOperation({
@@ -110,14 +116,16 @@ export class ProfileController {
       return this.profileService.getOwnerProfile(numericId, LISTS_LIMIT);
     }
 
-    return this.profileService.getUserProfile(numericId, LISTS_LIMIT);
+    return this.profileService.getUserProfile(numericId, LISTS_LIMIT, user?.id);
   }
 
   @ApiOperation({
     description: 'Get user followers',
   })
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':id/followers')
   async getFollowers(
+    @Request() { user }: { user?: User },
     @Param('id') id: string,
     @Query(
       new ValidationPipe({
@@ -133,14 +141,21 @@ export class ProfileController {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    return this.profileService.getUserFollowers(numericId, limit, lowerBound);
+    return this.profileService.getUserFollowers(
+      numericId,
+      limit,
+      lowerBound,
+      user?.id,
+    );
   }
 
   @ApiOperation({
     description: 'Get who user follows',
   })
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':id/following')
   async getFollowing(
+    @Request() { user }: { user?: User },
     @Param('id') id: string,
     @Query(
       new ValidationPipe({
@@ -156,7 +171,12 @@ export class ProfileController {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    return this.profileService.getUserFollowing(numericId, limit, lowerBound);
+    return this.profileService.getUserFollowing(
+      numericId,
+      limit,
+      lowerBound,
+      user.id,
+    );
   }
 
   @ApiOperation({

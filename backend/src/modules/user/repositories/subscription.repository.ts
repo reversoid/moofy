@@ -72,4 +72,17 @@ export class SubscriptionRepository extends PaginatedRepository<Subscription> {
 
     return super.processPagination(following, limit, 'created_at');
   }
+
+  async isSubscribed(whoId: number | undefined, toWhoId: number) {
+    if (whoId === undefined) {
+      return false;
+    }
+
+    const sub = await this.findOneBy({
+      follower: { id: whoId },
+      followed: { id: toWhoId },
+    });
+
+    return Boolean(sub);
+  }
 }
