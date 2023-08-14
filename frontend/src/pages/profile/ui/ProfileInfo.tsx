@@ -10,11 +10,12 @@ import {
 } from '@nextui-org/react';
 import { FC, createRef, useEffect, useState } from 'react';
 import { useEditDescription } from '../lib/useEditDescription';
+import { useAuth } from '@/app';
 
 interface ProfileInfoProps {
   description: string | null;
-  createdAt: Date;
   isOwner: boolean;
+  isSubscribed: boolean;
 }
 
 const Description = styled('div', { mb: '$4', mt: '$10' });
@@ -50,12 +51,15 @@ const AnimatedTextarea = styled(Textarea, {
   },
 });
 
+const SubscribeContainer = styled('div');
+
 const ProfileInfo: FC<ProfileInfoProps> = ({
-  createdAt,
   description,
   isOwner,
+  isSubscribed,
 }) => {
   const [editMode, setEditMode] = useState(false);
+  const { isLoggedIn } = useAuth();
 
   // Yeah we use ref because onChange with input makes impossible autosizing rows
   const inputRef = createRef<unknown>();
@@ -123,13 +127,28 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
         )}
       </Description>
 
-      <Button
-        size={'lg'}
-        color={'gradient'}
-        css={{ mt: '$8', '@xsMax': { width: '100%' } }}
-      >
-        Подписаться
-      </Button>
+      {isLoggedIn && !isOwner && (
+        <SubscribeContainer css={{ mt: '$8' }}>
+          {isSubscribed ? (
+            <Button
+              size={'lg'}
+              color={'gradient'}
+              bordered
+              css={{ '@xsMax': { width: '100%' } }}
+            >
+              Отписаться
+            </Button>
+          ) : (
+            <Button
+              size={'lg'}
+              color={'gradient'}
+              css={{ '@xsMax': { width: '100%' } }}
+            >
+              Подписаться
+            </Button>
+          )}
+        </SubscribeContainer>
+      )}
     </>
   );
 };

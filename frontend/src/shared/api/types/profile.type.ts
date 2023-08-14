@@ -22,6 +22,9 @@ export interface Profile {
     lists: IterableResponse<FavoriteList>;
   };
   subscriptionsInfo: SubscriptionsInfo;
+  additionalInfo: {
+    isSubscribed: boolean;
+  };
 }
 
 export type ProfileShort = Pick<Profile, 'id' | 'image_url' | 'username'>;
