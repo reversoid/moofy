@@ -12,6 +12,8 @@ import {
 import { User } from 'src/modules/user/entities/user.entity';
 import { Review } from 'src/modules/review/entities/review.entity';
 import { FavoriteList } from './favoriteList.entity';
+import { Comment } from './comment.entity';
+import { ListLike } from './list-like.entity';
 
 @Entity()
 export class List {
@@ -46,6 +48,12 @@ export class List {
   @OneToMany(() => Review, (reviewEntity) => reviewEntity.list)
   reviews: Review[];
 
+  @OneToMany(() => Comment, (comment) => comment.list)
+  comments: Comment[];
+
+  @OneToMany(() => ListLike, (like) => like.list)
+  likes: ListLike[];
+
   @OneToMany(() => FavoriteList, (entity) => entity.list)
   favorite_lists: FavoriteList[];
 
@@ -63,5 +71,6 @@ export class List {
 
   /** Is used for full text search */
   @Column({ type: 'tsvector', select: false })
+  @Index()
   search_document: any;
 }

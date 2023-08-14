@@ -3,10 +3,12 @@ import { DataSource } from 'typeorm';
 import { List } from '../entities/list.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
+import { AdditionalListInfo } from 'src/modules/review/review.controller';
+import { Order } from '../dtos/get-updates.query.dto';
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
-  constructor(private dataSource: DataSource) {
+  constructor(dataSource: DataSource) {
     super(List, dataSource.createEntityManager());
   }
 
@@ -20,7 +22,7 @@ export class ListRepository extends PaginatedRepository<List> {
       search?: string;
     },
   ) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(
+    const { date, operator } = super.getRAWDatesCompareString(
       options?.lowerBound,
     );
     const plainQb = this.createQueryBuilder('list')
@@ -112,7 +114,7 @@ export class ListRepository extends PaginatedRepository<List> {
   }
 
   async getPublicLists(search: string, limit: number, lowerBound: Date) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
 
     const plainQb = this.createQueryBuilder('list')
       .where('is_public = :isPublic', {
@@ -157,5 +159,88 @@ export class ListRepository extends PaginatedRepository<List> {
     lists.forEach((l) => (l.user = idUserMap.get(l.id)));
 
     return super.processPagination(lists, limit, 'updated_at');
+  }
+
+  async getListStatistics(
+    listId: number,
+    userId?: number,
+  ): Promise<Omit<AdditionalListInfo, 'isFavorite'>> {
+    const query = this.createQueryBuilder('list')
+      .select('list.id', 'id')
+      .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentsCount')
+      .leftJoin('list.likes', 'like')
+      .leftJoin('list.comments', 'comment')
+      .groupBy('list.id')
+      .where('list.id = :listId', { listId });
+
+    if (userId !== undefined) {
+      query
+        .addSelect(
+          'CASE WHEN userLike.id IS NOT NULL THEN TRUE ELSE FALSE END',
+          'userLiked',
+        )
+        .leftJoin('like.user', 'userLike', 'userLike.id = :userId', { userId })
+        .addGroupBy('userLike.id');
+    } else {
+      query.addSelect('FALSE', 'userLiked');
+    }
+
+    const data = await query.getRawOne();
+
+    return {
+      likesAmount: Number(data.likesCount ?? 0),
+      commentsAmount: Number(data.commentsCount ?? 0),
+      isLiked: data.userLiked ?? false,
+    };
+  }
+
+  async getLatestUpdates(
+    userId: number,
+    lowerBound?: Date,
+    limit = 20,
+    order?: Order,
+  ) {
+    const dateField = this.getDateFieldByOrder(order);
+
+    const query = this.createQueryBuilder('list')
+      .select([
+        'list.id',
+        'list.image_url',
+        'list.name',
+        'list.is_public',
+        'list.created_at',
+        'list.updated_at',
+
+        'user.id',
+        'user.username',
+        'user.image_url',
+      ])
+      .innerJoin('list.user', 'user')
+      .innerJoin('Subscription', 'sub', 'sub.followed = user.id')
+      .where('sub.follower = :userId', { userId })
+      .andWhere('list.is_public = TRUE')
+      .orderBy(`list.${dateField}`, 'DESC')
+      .take(limit + 1);
+
+    if (lowerBound !== undefined) {
+      const { date, operator } = this.getRAWDatesCompareString(lowerBound);
+      query.andWhere(`list.${dateField} ${operator} :lowerBound`, {
+        lowerBound: date,
+      });
+    }
+
+    const latestUpdatedLists = await query.getMany();
+
+    return this.processPagination(latestUpdatedLists, limit, dateField);
+  }
+
+  private getDateFieldByOrder(order?: Order) {
+    if (!order) {
+      return 'updated_at';
+    }
+    if (order === Order.created) return 'created_at';
+    if (order === Order.updated) return 'updated_at';
+    return 'updated_at';
   }
 }

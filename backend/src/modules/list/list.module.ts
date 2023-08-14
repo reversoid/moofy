@@ -7,12 +7,43 @@ import { ListService } from './list.service';
 import { RevealOptionalUserMiddleware } from '../user/middlewares/revealUser.middleware';
 import { ListRepository } from './repositories/list.repository';
 import { FavoriteListRepository } from './repositories/favoriteList.repository';
+import { FavoriteList } from './entities/favoriteList.entity';
+import { CommentRepository } from './repositories/comment.repository';
+import { Comment } from './entities/comment.entity';
+import { ListLike } from './entities/list-like.entity';
+import { CommentLike } from './entities/comment-like.entity';
+import { CommentLikeRepository } from './repositories/comment-like.repository';
+import { ListLikeRepository } from './repositories/list-like.repository';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([List])],
-  exports: [TypeOrmModule, ListService, ListRepository, FavoriteListRepository],
+  imports: [
+    UserModule,
+    TypeOrmModule.forFeature([
+      List,
+      FavoriteList,
+      Comment,
+      ListLike,
+      CommentLike,
+    ]),
+  ],
+  exports: [
+    TypeOrmModule,
+    ListService,
+    ListRepository,
+    FavoriteListRepository,
+    CommentRepository,
+    ListLikeRepository,
+    CommentLikeRepository,
+  ],
   controllers: [ListController],
-  providers: [ListService, ListRepository, FavoriteListRepository],
+  providers: [
+    ListService,
+    ListRepository,
+    FavoriteListRepository,
+    CommentRepository,
+    CommentLikeRepository,
+    ListLikeRepository,
+  ],
 })
 export class ListModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

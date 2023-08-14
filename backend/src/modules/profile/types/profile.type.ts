@@ -2,6 +2,11 @@ import { FavoriteList } from 'src/modules/list/entities/favoriteList.entity';
 import { List } from 'src/modules/list/entities/list.entity';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
+export interface SubscriptionsInfo {
+  followersAmount: number;
+  followedAmount: number;
+}
+
 /** Describes full info for user profile */
 export interface Profile {
   id: number;
@@ -21,4 +26,6 @@ export interface Profile {
     count: number;
     lists: IterableResponse<FavoriteList>;
   };
+
+  subscriptionsInfo: SubscriptionsInfo;
 }
