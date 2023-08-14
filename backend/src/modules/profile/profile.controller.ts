@@ -57,7 +57,12 @@ export class ProfileController {
   async editProfile(
     @Request() { user }: { user: User },
     @Body() dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
+  ): Promise<
+    Omit<
+      Profile,
+      'allLists' | 'favLists' | 'subscriptionsInfo' | 'additionalInfo'
+    >
+  > {
     return this.profileService.editProfile(user.id, dto);
   }
 
@@ -82,6 +87,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @Get('search')
   async searchUserProfile(
+    @Request() { user }: { user: User },
     @Query(
       new ValidationPipe({
         transform: true,
@@ -89,7 +95,7 @@ export class ProfileController {
     )
     { username, limit = 20 }: SearchProfileDTO,
   ): Promise<ProfileShort[]> {
-    return this.profileService.searchUserProfiles(username, limit);
+    return this.profileService.searchUserProfiles(username, limit, user.id);
   }
 
   @ApiOperation({
@@ -110,7 +116,7 @@ export class ProfileController {
       return this.profileService.getOwnerProfile(numericId, LISTS_LIMIT);
     }
 
-    return this.profileService.getUserProfile(numericId, LISTS_LIMIT);
+    return this.profileService.getUserProfile(numericId, LISTS_LIMIT, user?.id);
   }
 
   @ApiOperation({
@@ -126,7 +132,7 @@ export class ProfileController {
       }),
     )
     { limit = 20, lowerBound }: PaginationQueryDTO,
-  ): Promise<IterableResponse<ProfileShort>> {
+  ): Promise<IterableResponse<Omit<ProfileShort, 'additionalInfo'>>> {
     // TODO use validation for @Param
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {
@@ -149,7 +155,7 @@ export class ProfileController {
       }),
     )
     { limit = 20, lowerBound }: PaginationQueryDTO,
-  ): Promise<IterableResponse<ProfileShort>> {
+  ): Promise<IterableResponse<Omit<ProfileShort, 'additionalInfo'>>> {
     // TODO use validation for @Param
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {

@@ -86,7 +86,7 @@ export class UserRepository extends Repository<User> {
   async searchUsersByUsername(
     username: string,
     limit: number,
-  ): Promise<ProfileShort[]> {
+  ): Promise<Omit<ProfileShort, 'additionalInfo'>[]> {
     if (!username) {
       return this.find({
         select: {

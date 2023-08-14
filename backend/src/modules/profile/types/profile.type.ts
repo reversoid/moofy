@@ -28,4 +28,7 @@ export interface Profile {
   };
 
   subscriptionsInfo: SubscriptionsInfo;
+  additionalInfo: {
+    isSubscribed: boolean;
+  };
 }

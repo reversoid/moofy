@@ -13,6 +13,7 @@ import { ProfileShort } from './types/profile-short.type';
 import { Profile } from './types/profile.type';
 import { SubscriptionRepository } from '../user/repositories/subscription.repository';
 import { SubscribeErrors } from 'src/errors/subscribe.errors';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ProfileService {
@@ -54,20 +55,29 @@ export class ProfileService {
         lists: favLists,
       },
       subscriptionsInfo,
+      additionalInfo: {
+        isSubscribed: false,
+      },
     };
   }
 
   /** Get guest data for profile, excluding private and favorite lists */
-  async getUserProfile(id: number, listsLimit: number): Promise<Profile> {
+  async getUserProfile(
+    id: number,
+    listsLimit: number,
+    requesterUserId?: number,
+  ): Promise<Profile> {
     const user = await this.userRepository.getUserInfoById(id);
     if (!user) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
-    const [lists, listsCount, subscriptionsInfo] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
-      this.listRepository.getAmountOfUserLists(id, true),
-      this.subcriptionRepository.getSubscriptionsInfo(id),
-    ]);
+    const [lists, listsCount, subscriptionsInfo, isSubscribed] =
+      await Promise.all([
+        this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
+        this.listRepository.getAmountOfUserLists(id, true),
+        this.subcriptionRepository.getSubscriptionsInfo(id),
+        this.subcriptionRepository.isSubscribed(requesterUserId, id),
+      ]);
 
     return {
       id,
@@ -80,13 +90,21 @@ export class ProfileService {
       description: user.description,
       username: user.username,
       subscriptionsInfo,
+      additionalInfo: {
+        isSubscribed,
+      },
     };
   }
 
   async editProfile(
     userId: number,
     dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists' | 'subscriptionsInfo'>> {
+  ): Promise<
+    Omit<
+      Profile,
+      'allLists' | 'favLists' | 'subscriptionsInfo' | 'additionalInfo'
+    >
+  > {
     const user = await this.userRepository.getUserInfoById(userId);
 
     if (!user) {
@@ -163,8 +181,27 @@ export class ProfileService {
   async searchUserProfiles(
     username: string,
     limit: number,
+    requesterUserId: number,
   ): Promise<ProfileShort[]> {
-    return this.userRepository.searchUsersByUsername(username, limit);
+    const users = await this.userRepository.searchUsersByUsername(
+      username,
+      limit,
+    );
+    const subscriptions = await this.subcriptionRepository.find({
+      where: {
+        follower: { id: requesterUserId },
+        followed: In(users.map((u) => u.id)),
+      },
+    });
+    const userIsSubscribedSet = new Set(
+      subscriptions.map((s) => s.followed.id),
+    );
+    return users.map<ProfileShort>((u) => ({
+      ...u,
+      additionalInfo: {
+        isSubscribed: userIsSubscribedSet.has(u.id),
+      },
+    }));
   }
 
   async subscribeToUser(fromId: number, toId: number) {
