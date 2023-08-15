@@ -1,20 +1,27 @@
 import DoneButton from '@/shared/components/DoneButton';
 import EditButton from '@/shared/components/EditButton';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import { Loading, Row, Text, Textarea, styled } from '@nextui-org/react';
-import { useMutation } from '@tanstack/react-query';
+import {
+  Button,
+  Loading,
+  Row,
+  Text,
+  Textarea,
+  styled,
+} from '@nextui-org/react';
 import { FC, createRef, useEffect, useState } from 'react';
-import { profileService } from '../api/profile.service';
-import { setProfile, setProfileWithoutLists } from '../model';
 import { useEditDescription } from '../lib/useEditDescription';
+import { useAuth } from '@/app';
+import { useSubscribe } from '../lib/useSubscribe';
+import { useUnsubscribe } from '../lib/useUnsubscribe';
 
 interface ProfileInfoProps {
   description: string | null;
-  createdAt: Date;
   isOwner: boolean;
+  isSubscribed: boolean;
+  userId: number;
 }
 
-const Description = styled('div', { mb: '$4' });
+const Description = styled('div', { mb: '$4', mt: '$10' });
 
 const AnimatedTextarea = styled(Textarea, {
   '& textarea': {
@@ -47,17 +54,24 @@ const AnimatedTextarea = styled(Textarea, {
   },
 });
 
+const SubscribeContainer = styled('div');
+
 const ProfileInfo: FC<ProfileInfoProps> = ({
-  createdAt,
   description,
   isOwner,
+  isSubscribed,
+  userId,
 }) => {
   const [editMode, setEditMode] = useState(false);
+  const { isLoggedIn } = useAuth();
 
   // Yeah we use ref because onChange with input makes impossible autosizing rows
   const inputRef = createRef<unknown>();
 
   const editDescriptionMutation = useEditDescription();
+
+  const subscribeMutation = useSubscribe();
+  const unsubscribeMutation = useUnsubscribe();
 
   useEffect(() => {
     // TODO can use hook for that?
@@ -120,12 +134,40 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
         )}
       </Description>
 
-      <Row css={{ gap: '$3' }}>
-        <Text size="lg" color="$neutral">
-          Дата регистрации
-        </Text>
-        <Text size="lg">{formatDate(createdAt)}</Text>
-      </Row>
+      {isLoggedIn && !isOwner && (
+        <SubscribeContainer css={{ mt: '$8' }}>
+          {isSubscribed ? (
+            <Button
+              size={'lg'}
+              color={'gradient'}
+              bordered
+              css={{ '@xsMax': { width: '100%' } }}
+              onClick={() => unsubscribeMutation.mutate(userId)}
+              disabled={subscribeMutation.isLoading}
+            >
+              {unsubscribeMutation.isLoading ? (
+                <Loading type="points" />
+              ) : (
+                'Отписаться'
+              )}
+            </Button>
+          ) : (
+            <Button
+              size={'lg'}
+              color={'gradient'}
+              css={{ '@xsMax': { width: '100%' } }}
+              onClick={() => subscribeMutation.mutate(userId)}
+              disabled={subscribeMutation.isLoading}
+            >
+              {subscribeMutation.isLoading ? (
+                <Loading type="points" />
+              ) : (
+                'Подписаться'
+              )}
+            </Button>
+          )}
+        </SubscribeContainer>
+      )}
     </>
   );
 };

@@ -6,7 +6,7 @@ export const $profile = createStore<Profile | null>(null);
 export const setProfile = createEvent<Profile>();
 
 export const setProfileWithoutLists =
-  createEvent<Omit<Profile, 'allLists' | 'favLists'>>();
+  createEvent<Omit<Partial<Profile>, 'allLists' | 'favLists'>>();
 
 $profile.on(setProfile, (state, payload) => payload);
 
