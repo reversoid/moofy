@@ -93,6 +93,7 @@ export class UserRepository extends Repository<User> {
           id: true,
           image_url: true,
           username: true,
+          description: true,
         },
         take: limit,
         order: {
@@ -104,7 +105,12 @@ export class UserRepository extends Repository<User> {
 
     return this.createQueryBuilder()
       .from(User, 'user')
-      .select(['user.id', 'user.username', 'user.image_url'])
+      .select([
+        'user.id',
+        'user.username',
+        'user.image_url',
+        'user.description',
+      ])
       .addSelect(
         `
          ts_rank(user.username_search_document, plainto_tsquery('simple', :initial_search_string)) +
