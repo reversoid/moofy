@@ -4,7 +4,7 @@ import React, { FC, MouseEventHandler, PropsWithChildren, memo } from 'react';
 
 const styles: CSS = {
   borderRadius: '50%',
-  backgroundColor: '$gray100 !important',
+  backgroundColor: '$gray100',
   width: '6rem !important',
   height: '6rem !important',
   display: 'flex',
