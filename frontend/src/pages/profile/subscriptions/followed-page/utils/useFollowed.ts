@@ -4,10 +4,16 @@ import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
-import { useState } from 'react';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { useStore } from 'effector-react';
+import { $userFollowed, setFollowed } from '@/entities/user-subscriptions';
+import { useAuth } from '@/app';
+import { useState } from 'react';
 
 export const useFollowed = (userId: number) => {
+  const { userId: currentUserID } = useAuth();
+  const isOwner = currentUserID === userId;
+
   const result = useInfiniteQuery<IterableResponse<ProfileShort>, FetchError>({
     queryKey: ['Profile followed', userId],
     queryFn: ({ pageParam }) =>
@@ -15,24 +21,33 @@ export const useFollowed = (userId: number) => {
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 
-  const [profiles, setProfiles] = useState<ProfileShort[]>()
+  const myFollowed = useStore($userFollowed);
+  const [profilesFetched, setProfilesFetched] = useState<ProfileShort[]>();
 
   useCachedInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setProfiles(content);
+      setProfilesFetched(content);
+
+      if (isOwner && !myFollowed) {
+        setFollowed({ profiles: content });
+      }
     }
   });
 
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setProfiles(content);
+      setProfilesFetched(content);
+
+      if (isOwner) {
+        setFollowed({ profiles: content });
+      }
     }
   });
 
   return {
-    data: profiles,
+    data: isOwner ? myFollowed ?? undefined : profilesFetched,
     isLoading: result.isLoading,
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,

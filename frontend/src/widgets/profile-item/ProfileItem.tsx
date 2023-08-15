@@ -15,10 +15,9 @@ export const ProfileItem: FC<ProfileItemProps> = ({ profile }) => {
     <ProfileCard
       profile={profile}
       button={
-        currentUserId !== profile.id ? <FollowUnfollowButton
-          isSubsribed={profile.additionalInfo.isSubscribed}
-          userId={profile.id}
-        /> : undefined
+        currentUserId !== profile.id ? (
+          <FollowUnfollowButton profile={profile} />
+        ) : undefined
       }
     ></ProfileCard>
   );

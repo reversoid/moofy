@@ -2,32 +2,30 @@ import { Button, Loading } from '@nextui-org/react';
 import { FC, useEffect, useState } from 'react';
 import { useFollow } from '../utils/useFollow';
 import { useUnfollow } from '../utils/useUnfollow';
-import { useAuth } from '@/app';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 
 export interface SubscribeButtonProps {
-  isSubsribed: boolean;
-  userId: number;
+  profile: ProfileShort;
 }
 
-export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({
-  isSubsribed: isUserSubscribed,
-  userId,
-}) => {
-  const [isSubscribed, setIsSubscribed] = useState(isUserSubscribed);
+export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({ profile }) => {
+  const [isSubscribed, setIsSubscribed] = useState(profile.additionalInfo.isSubscribed);
 
   useEffect(() => {
-    setIsSubscribed(isUserSubscribed);
-  }, [isUserSubscribed]);
+    setIsSubscribed(profile.additionalInfo.isSubscribed);
+  }, [profile.additionalInfo.isSubscribed]);
 
   const followMutation = useFollow({
     onSuccess() {
       setIsSubscribed(true);
     },
+    profile,
   });
   const unfollowMutation = useUnfollow({
     onSuccess() {
       setIsSubscribed(false);
     },
+    profile,
   });
 
   return (
@@ -36,7 +34,7 @@ export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({
         <Button
           color={'gradient'}
           css={{ alignSelf: 'center', '@xsMax': { width: '100%' } }}
-          onClick={() => unfollowMutation.mutate(userId)}
+          onClick={() => unfollowMutation.mutate(profile.id)}
           disabled={unfollowMutation.isLoading}
           bordered
         >
@@ -50,7 +48,7 @@ export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({
         <Button
           color={'gradient'}
           css={{ alignSelf: 'center', '@xsMax': { width: '100%' } }}
-          onClick={() => followMutation.mutate(userId)}
+          onClick={() => followMutation.mutate(profile.id)}
           disabled={followMutation.isLoading}
         >
           {followMutation.isLoading ? <Loading type="points" /> : 'Подписаться'}
