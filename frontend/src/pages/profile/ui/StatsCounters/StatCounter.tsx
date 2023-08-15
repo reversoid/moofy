@@ -14,7 +14,7 @@ export const StatCounter: FC<StatCounterProps> = ({ amount, title }) => {
   return (
     <StatCounterContainer>
       <Text css={{ fontWeight: '700', textAlign: 'center' }} size={'$xl'}>
-        {amount}
+        {amount.toLocaleString()}
       </Text>
       <Text css={{ textAlign: 'center' }}>{title}</Text>
     </StatCounterContainer>
