@@ -1,7 +1,9 @@
 import { Text, styled } from '@nextui-org/react';
 import { FC } from 'react';
 
-const StatCounterContainer = styled('div', {});
+const StatCounterContainer = styled('div', {
+  width: '5.25rem'
+});
 
 interface StatCounterProps {
   amount: number;
