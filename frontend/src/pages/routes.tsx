@@ -11,7 +11,6 @@ import AuthOnly from '@/shared/guards/AuthOnly';
 const MainPage = lazy(() => import('./main'));
 const SupportPage = lazy(() => import('./support'));
 const HelpPage = lazy(() => import('./help'));
-const ProfilePage = lazy(() => import('./profile/ui/ProfilePage'));
 const SearchPage = lazy(() => import('./search'));
 
 export const routes: RouteObject[] = [

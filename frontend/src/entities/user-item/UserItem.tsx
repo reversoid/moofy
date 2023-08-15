@@ -3,15 +3,11 @@ import {
   ImgPlaceholder,
   SearchItem,
 } from '@/entities/search-item/SearchItem';
-import { ProfileShortWithDescription } from '@/shared/api/types/profile.type';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 import profileIcon from '@/shared/assets/img/user-round.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
 import { styled } from '@nextui-org/react';
 import { FC } from 'react';
-
-export interface SearchProfileItemProps {
-  profile: ProfileShortWithDescription;
-}
 
 const Background = styled(ImgPlaceholder, {
   backgroundColor: '$neutral',
@@ -37,7 +33,7 @@ const Image: FC<{ url: string | null }> = ({ url }) => {
   );
 };
 
-export const SearchProfileItem: FC<SearchProfileItemProps> = ({ profile }) => {
+export const UserItem: FC<{ profile: ProfileShort }> = ({ profile }) => {
   return (
     <SearchItem
       title={profile.username}

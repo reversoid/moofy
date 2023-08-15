@@ -1,8 +1,8 @@
 import { List } from '@/shared/api/types/list.type';
 import { FC } from 'react';
-import { Stack } from './Stack';
 import { SearchListItem } from './SearchListItem';
 import { Text } from '@nextui-org/react';
+import { Stack } from '@/shared/ui/Stack';
 
 export interface CollectionsProps {
   collections?: List[];
@@ -12,7 +12,7 @@ export interface CollectionsProps {
 export const Collections: FC<CollectionsProps> = ({ collections, loading }) => {
   if (!loading && collections?.length === 0) {
     return (
-      <Stack>
+      <Stack css={{ mt: '$12' }}>
         <Text as={'p'} color="$neutral">
           Коллекций не найдено
         </Text>
@@ -21,7 +21,7 @@ export const Collections: FC<CollectionsProps> = ({ collections, loading }) => {
   }
 
   return (
-    <Stack>
+    <Stack css={{ mt: '$12' }}>
       {collections?.map((list) => (
         <SearchListItem list={list} key={list.id} />
       ))}
