@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Text } from '@nextui-org/react';
-import { UserItem } from '../../../entities/user-item/UserItem';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import { Stack } from '@/shared/ui/Stack';
+import { ProfileItem } from '@/widgets/profile-item/ProfileItem';
 
 export interface ProfilesProps {
   profiles?: ProfileShort[];
@@ -23,7 +23,7 @@ export const Profiles: FC<ProfilesProps> = ({ profiles, loading }) => {
   return (
     <Stack css={{ mt: '$12' }}>
       {profiles?.map((profile) => (
-        <UserItem profile={profile} key={profile.id} />
+        <ProfileItem profile={profile} key={profile.id} />
       ))}
     </Stack>
   );

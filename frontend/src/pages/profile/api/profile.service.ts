@@ -1,5 +1,5 @@
 import ApiService from '@/shared/api/api.service';
-import { Profile, SubscriptionsInfo } from '@/shared/api/types/profile.type';
+import { Profile } from '@/shared/api/types/profile.type';
 
 export class ProfileService extends ApiService {
   public async getProfile(id?: number) {
@@ -19,18 +19,6 @@ export class ProfileService extends ApiService {
       json: {
         description: newValue,
       },
-    });
-  }
-
-  public async subscribe(toId: number) {
-    return this.post<SubscriptionsInfo>(`/profile/${toId}/subscriptions`, {
-      useJWT: true,
-    });
-  }
-
-  public async unsubscribe(toId: number) {
-    return this.delete<SubscriptionsInfo>(`/profile/${toId}/subscriptions`, {
-      useJWT: true,
     });
   }
 }

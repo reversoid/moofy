@@ -1,11 +1,11 @@
-import {
-  Img,
-  ImgPlaceholder,
-  SearchItem,
-} from '@/entities/search-item/SearchItem';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import profileIcon from '@/shared/assets/img/user-round.svg';
 import { Icon } from '@/shared/ui/Icon/Icon';
+import {
+  CardWithContent,
+  Img,
+  ImgPlaceholder,
+} from '@/shared/ui/card-with-content/CardWithContent';
 import { styled } from '@nextui-org/react';
 import { FC } from 'react';
 
@@ -33,13 +33,19 @@ const Image: FC<{ url: string | null }> = ({ url }) => {
   );
 };
 
-export const UserItem: FC<{ profile: ProfileShort }> = ({ profile }) => {
+export interface UserItemProps {
+  profile: ProfileShort;
+  button?: JSX.Element;
+}
+
+export const ProfileCard: FC<UserItemProps> = ({ profile, button }) => {
   return (
-    <SearchItem
+    <CardWithContent
       title={profile.username}
       description={profile.description ?? ''}
       link={`/profile/${profile.id}`}
       image={<Image url={profile.image_url} />}
+      button={button}
     />
   );
 };

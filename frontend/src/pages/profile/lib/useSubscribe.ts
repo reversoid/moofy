@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { profileService } from '../api/profile.service';
 import { setProfileWithoutLists } from '../model';
+import { subscriptionsService } from '../subscriptions/api/subscriptions.service';
 
 export const useSubscribe = () => {
   const mutation = useMutation({
-    mutationFn: (userId: number) => profileService.subscribe(userId),
+    mutationFn: (userId: number) => subscriptionsService.subscribe(userId),
 
     onSuccess(subscriptionsInfo) {
       setProfileWithoutLists({

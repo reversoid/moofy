@@ -1,7 +1,7 @@
 import { createStore, sample } from 'effector';
 import { unAuthorize, authorize, checkoutUser, setCurrentUserProfile } from './auth';
 import { appStarted } from '@/app/model';
-import { ProfileShortWithDescription } from '@/shared/api/types/profile.type';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 
 export * from './checkout';
 export * from './auth';
@@ -14,7 +14,7 @@ sample({
 export interface UserLoggedInState {
   loggedIn?: boolean;
   userId?: number;
-  profile?: ProfileShortWithDescription
+  profile?: ProfileShort
 }
 
 /** This store contains auth info */

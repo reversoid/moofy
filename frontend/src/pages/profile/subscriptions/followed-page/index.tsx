@@ -1,5 +1,5 @@
-import { UserItem } from '@/entities/user-item';
 import { Stack } from '@/shared/ui/Stack';
+import { ProfileItem } from '@/widgets/profile-item/ProfileItem';
 import { Text } from '@nextui-org/react';
 
 export const FollowedPage = () => {
@@ -7,7 +7,7 @@ export const FollowedPage = () => {
     <>
       <Text h1>Подписки</Text>
       <Stack>
-        <UserItem
+        <ProfileItem
           profile={{
             additionalInfo: { isSubscribed: true },
             description: 'desc',

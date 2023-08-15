@@ -69,14 +69,16 @@ export interface SearchItemProps {
   image: ReactNode;
   description: string;
   bottomContent?: ReactNode;
+  button?: JSX.Element;
 }
 
-export const SearchItem: FC<SearchItemProps> = ({
+export const CardWithContent: FC<SearchItemProps> = ({
   image,
   link,
   title,
   description,
   bottomContent,
+  button
 }) => {
   return (
     <Card horizontal>
@@ -100,6 +102,7 @@ export const SearchItem: FC<SearchItemProps> = ({
           {bottomContent}
         </MainContent>
       </Content>
+      {button}
     </Card>
   );
 };
