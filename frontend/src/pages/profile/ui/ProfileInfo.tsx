@@ -18,7 +18,7 @@ interface ProfileInfoProps {
   description: string | null;
   isOwner: boolean;
   isSubscribed: boolean;
-  userId: number
+  userId: number;
 }
 
 const Description = styled('div', { mb: '$4', mt: '$10' });
@@ -60,7 +60,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
   description,
   isOwner,
   isSubscribed,
-  userId
+  userId,
 }) => {
   const [editMode, setEditMode] = useState(false);
   const { isLoggedIn } = useAuth();
@@ -143,8 +143,13 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
               bordered
               css={{ '@xsMax': { width: '100%' } }}
               onClick={() => unsubscribeMutation.mutate(userId)}
+              disabled={subscribeMutation.isLoading}
             >
-              Отписаться
+              {unsubscribeMutation.isLoading ? (
+                <Loading type="points" />
+              ) : (
+                'Отписаться'
+              )}
             </Button>
           ) : (
             <Button
@@ -152,8 +157,13 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
               color={'gradient'}
               css={{ '@xsMax': { width: '100%' } }}
               onClick={() => subscribeMutation.mutate(userId)}
+              disabled={subscribeMutation.isLoading}
             >
-              Подписаться
+              {subscribeMutation.isLoading ? (
+                <Loading type="points" />
+              ) : (
+                'Подписаться'
+              )}
             </Button>
           )}
         </SubscribeContainer>
