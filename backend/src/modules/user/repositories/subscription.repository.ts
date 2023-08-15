@@ -40,7 +40,10 @@ export class SubscriptionRepository extends PaginatedRepository<Subscription> {
         created_at: 'DESC',
       },
     });
-    const followers = subscriptions.map((s) => s.follower);
+    const followers = subscriptions.map((s) => ({
+      ...s.follower,
+      created_at: s.created_at,
+    }));
 
     return super.processPagination(followers, limit, 'created_at');
   }
@@ -68,7 +71,10 @@ export class SubscriptionRepository extends PaginatedRepository<Subscription> {
         created_at: 'DESC',
       },
     });
-    const following = subscriptions.map((s) => s.followed);
+    const following = subscriptions.map((s) => ({
+      ...s.followed,
+      created_at: s.created_at,
+    }));
 
     return super.processPagination(following, limit, 'created_at');
   }
