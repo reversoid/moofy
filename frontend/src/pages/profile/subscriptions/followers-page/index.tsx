@@ -1,23 +1,23 @@
-import { Stack } from '@/shared/ui/Stack';
-import { ProfileItem } from '@/widgets/profile-item/ProfileItem';
-import { Text } from '@nextui-org/react';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { useId } from '../../ui/ProfilePage';
+import { SubscriptionsTemplatePage } from '../TemplatePage';
+import { useFollowers } from './utils/useFollowers';
 
 export const FollowersPage = () => {
+  const id = useId();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useFollowers(id);
+
+  useLoadingBar(isLoading);
+
   return (
-    <>
-      <Text h1>Подписчики</Text>
-      <Stack>
-        <ProfileItem
-          profile={{
-            additionalInfo: { isSubscribed: true },
-            description: 'desc',
-            id: 1,
-            image_url: null,
-            username: 'username',
-          }}
-        />
-      </Stack>
-    </>
+    <SubscriptionsTemplatePage
+      title="Подписчики"
+      canLoadMore={hasNextPage ?? false}
+      loadMore={fetchNextPage}
+      loadingMore={isFetchingNextPage}
+      profiles={data}
+    />
   );
 };
 export default FollowersPage;
