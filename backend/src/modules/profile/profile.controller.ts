@@ -26,7 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageErrors } from 'src/errors/image.errors';
 import { SearchProfileDTO } from './dtos/SearchProfile.dto';
 import { ProfileShort } from './types/profile-short.type';
-import { Profile } from './types/profile.type';
+import { Profile, SubscriptionsInfo } from './types/profile.type';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 
@@ -189,7 +189,7 @@ export class ProfileController {
   async subscribeToUser(
     @Request() { user }: { user: User | undefined },
     @Param('id') id: string,
-  ): Promise<void> {
+  ): Promise<SubscriptionsInfo> {
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
@@ -207,7 +207,7 @@ export class ProfileController {
   async unsubscribeFromUser(
     @Request() { user }: { user: User | undefined },
     @Param('id') id: string,
-  ): Promise<void> {
+  ): Promise<SubscriptionsInfo> {
     const numericId = Number(id);
     if (Number.isNaN(numericId)) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);

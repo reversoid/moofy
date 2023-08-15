@@ -208,7 +208,7 @@ export class ProfileService {
       },
     });
 
-    return;
+    return this.subcriptionRepository.getSubscriptionsInfo(toId);
   }
 
   async unSubscribeFromUser(fromId: number, toId: number) {
@@ -227,8 +227,7 @@ export class ProfileService {
         id: toId,
       },
     });
-
-    return;
+    return this.subcriptionRepository.getSubscriptionsInfo(toId);
   }
 
   private async validateUsersIds(fromId: number, toId: number) {
