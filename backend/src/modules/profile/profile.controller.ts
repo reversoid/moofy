@@ -166,7 +166,7 @@ export class ProfileController {
         forbidNonWhitelisted: true,
       }),
     )
-    { limit = 20, lowerBound }: PaginationQueryDTO,
+    { limit = 20, lowerBound, search }: GetSubscriptionsDTO,
   ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
@@ -179,6 +179,7 @@ export class ProfileController {
       limit,
       lowerBound,
       user.id,
+      search,
     );
   }
 

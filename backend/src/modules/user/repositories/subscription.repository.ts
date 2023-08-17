@@ -109,7 +109,64 @@ export class SubscriptionRepository extends PaginatedRepository<Subscription> {
     return super.processPagination(followers, limit, 'created_at');
   }
 
-  async getFollowing(userId: number, lowerBound?: Date, limit = 20) {
+  async getFollowing(
+    userId: number,
+    lowerBound?: Date,
+    limit = 20,
+    search?: string,
+  ) {
+    if (search) {
+      return this._getFollowingWithSearch(userId, limit, search);
+    }
+    return this._getFollowing(userId, lowerBound, limit);
+  }
+
+  private async _getFollowingWithSearch(
+    userId: number,
+    limit = 20,
+    search: string,
+  ) {
+    const words = getTsQueryFromString(search);
+
+    const users = await this.createQueryBuilder()
+      .from(User, 'user')
+      .select([
+        'user.id',
+        'user.username',
+        'user.image_url',
+        'user.description',
+      ])
+      .addSelect(
+        `
+     ts_rank(user.username_search_document, plainto_tsquery('simple', :initial_search_string)) +
+     ts_rank(user.username_search_document, to_tsquery('simple', :search_string))
+    `,
+        'rank',
+      )
+      .innerJoin(Subscription, 'sub', 'sub.followed_id = user.id')
+      .where('sub.follower_id = :currentUserId', {
+        currentUserId: userId,
+      })
+      .andWhere(
+        `(user.username_search_document) @@ plainto_tsquery('simple', :initial_search_string)`,
+        {
+          initial_search_string: search,
+        },
+      )
+      .orWhere(
+        `(user.username_search_document) @@ to_tsquery('simple', :search_string)`,
+        {
+          search_string: words,
+        },
+      )
+      .orderBy('rank', 'DESC')
+      .take(limit) // take exactly limit to disable pagination
+      .getMany();
+
+    return this.processPagination(users, limit, 'created_at');
+  }
+
+  private async _getFollowing(userId: number, lowerBound?: Date, limit = 20) {
     const subscriptions = await this.find({
       where: {
         follower: { id: userId },
