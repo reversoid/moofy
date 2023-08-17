@@ -29,6 +29,7 @@ import { ProfileShort } from './types/profile-short.type';
 import { Profile, SubscriptionsInfo } from './types/profile.type';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
+import { GetSubscriptionsDTO } from './dtos/GetSubscriptions';
 
 const LISTS_LIMIT = 20;
 
@@ -134,7 +135,7 @@ export class ProfileController {
         forbidNonWhitelisted: true,
       }),
     )
-    { limit = 20, lowerBound }: PaginationQueryDTO,
+    { limit = 20, lowerBound, search }: GetSubscriptionsDTO,
   ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
@@ -147,6 +148,7 @@ export class ProfileController {
       limit,
       lowerBound,
       user?.id,
+      search,
     );
   }
 
@@ -164,7 +166,7 @@ export class ProfileController {
         forbidNonWhitelisted: true,
       }),
     )
-    { limit = 20, lowerBound }: PaginationQueryDTO,
+    { limit = 20, lowerBound, search }: GetSubscriptionsDTO,
   ): Promise<IterableResponse<ProfileShort>> {
     // TODO use validation for @Param
     const numericId = Number(id);
@@ -177,6 +179,7 @@ export class ProfileController {
       limit,
       lowerBound,
       user.id,
+      search,
     );
   }
 
