@@ -252,11 +252,13 @@ export class ProfileService {
     limit: number,
     lowerBound?: Date,
     requesterUserId?: number,
+    search?: string,
   ): Promise<IterableResponse<ProfileShort>> {
     const usersPaginated = await this.subcriptionRepository.getFollowers(
       userId,
       lowerBound,
       limit,
+      search,
     );
     return {
       ...usersPaginated,
