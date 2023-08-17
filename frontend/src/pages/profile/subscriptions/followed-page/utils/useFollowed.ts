@@ -6,9 +6,13 @@ import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/tra
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 import { useStore } from 'effector-react';
-import { $userFollowed, setFollowed } from '@/entities/user-subscriptions';
+import {
+  $userFollowed,
+  clearUnfollowed,
+  setFollowed,
+} from '@/entities/user-subscriptions';
 import { useAuth } from '@/app';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useFollowed = (userId: number) => {
   const { userId: currentUserID } = useAuth();
@@ -45,6 +49,12 @@ export const useFollowed = (userId: number) => {
       }
     }
   });
+
+  useEffect(() => {
+    return () => {
+      clearUnfollowed();
+    };
+  }, []);
 
   return {
     data: isOwner ? myFollowed ?? undefined : profilesFetched,

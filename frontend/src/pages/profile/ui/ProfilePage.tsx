@@ -1,7 +1,7 @@
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { Text } from '@nextui-org/react';
 import { useParams } from 'react-router-dom';
-import { useProfilePage } from '../lib/useProfilePage';
+import { useProfilePage } from '../utils/useProfilePage';
 import PageContent from './PageContent';
 
 export const useId = () => {

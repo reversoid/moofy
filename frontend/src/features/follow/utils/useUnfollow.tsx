@@ -1,4 +1,4 @@
-import { removeFollowed } from '@/entities/user-subscriptions';
+import { markUserAsUnfollowed } from '@/entities/user-subscriptions/model/actions';
 import { subscriptionsService } from '@/pages/profile/subscriptions/api/subscriptions.service';
 import {
   Profile,
@@ -17,7 +17,7 @@ export const useUnfollow = (props?: UseUnfollowProps) => {
     mutationFn: (id: number) => subscriptionsService.unsubscribe(id),
     onSuccess(data) {
       if (props?.profile) {
-        removeFollowed({ profileId: props.profile.id });
+        markUserAsUnfollowed({ profileId: props.profile.id });
       }
 
       props?.onSuccess?.(data);

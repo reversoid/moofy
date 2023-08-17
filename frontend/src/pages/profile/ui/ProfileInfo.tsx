@@ -9,10 +9,10 @@ import {
   styled,
 } from '@nextui-org/react';
 import { FC, createRef, useEffect, useState } from 'react';
-import { useEditDescription } from '../lib/useEditDescription';
+import { useEditDescription } from '../utils/useEditDescription';
 import { useAuth } from '@/app';
-import { useFollow } from '../lib/useFollow';
-import { useUnfollow } from '../lib/useUnfollow';
+import { useFollow } from '../utils/useFollow';
+import { useUnfollow } from '../utils/useUnfollow';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 
 interface ProfileInfoProps {

@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { useProfileLists } from '../../lib/useProfileLists';
-import { useProfileFavLists } from '../../lib/useProfileFavLists';
+import { useProfileLists } from '../../utils/useProfileLists';
+import { useProfileFavLists } from '../../utils/useProfileFavLists';
 import { Profile } from '@/shared/api/types/profile.type';
-import { useListsRefetch } from '../../lib/useListsRefetch';
+import { useListsRefetch } from '../../utils/useListsRefetch';
 import { Text } from '@nextui-org/react';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { PageTabs } from './ListsSection';

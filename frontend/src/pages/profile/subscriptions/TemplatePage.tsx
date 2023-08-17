@@ -24,7 +24,7 @@ export const SubscriptionsTemplatePage: FC<SubscriptionsTemplatePage> = ({
     <>
       <Text h1>{title}</Text>
       <Stack>
-        {profiles?.length === 0 && <Text color='$neutral'>Список пуст</Text>}
+        {profiles?.length === 0 && <Text color="$neutral">Список пуст</Text>}
         {profiles?.map((profile) => (
           <ProfileItem
             profile={{
