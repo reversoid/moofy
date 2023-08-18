@@ -18,9 +18,7 @@ $favoriteListsMap.on(addToFavorites, (state, { list: { id } }) => {
 
 $favoriteListsMap.on(removeFromFavorites, (state, { listId: id }) => {
   const newState = { ...state };
-  if (id in newState) {
-    newState[id] = false;
-  }
+  newState[id] = false;
   return newState;
 });
 
@@ -34,7 +32,7 @@ $favoriteListsMap.on(setFavorites, (state, payload) => {
   for (const {
     list: { id: listId },
   } of payload) {
-    newState[listId] = true
+    newState[listId] = true;
   }
 
   return newState;
