@@ -2,8 +2,8 @@ import { colorHash } from '@/entities/List/ui/List/ListBackground';
 import {
   Img,
   ImgPlaceholder,
-  SearchItem,
-} from '@/entities/search-item/SearchItem';
+  CardWithContent,
+} from '@/shared/ui/card-with-content/CardWithContent';
 import { List } from '@/shared/api/types/list.type';
 import { Link } from '@/shared/ui/Link/Link';
 import { Text } from '@nextui-org/react';
@@ -48,7 +48,7 @@ const Creator: FC<{ username: string; id: number }> = ({ id, username }) => {
 
 export const SearchListItem: FC<SearchListItemProps> = ({ list }) => {
   return (
-    <SearchItem
+    <CardWithContent
       title={list.name}
       description={list.description}
       link={`/list/${list.id}`}

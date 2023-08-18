@@ -31,24 +31,26 @@ $_listPageContent.on(addReview, (state, payload) => {
 });
 
 /** Provides reactive list page info */
-export const $singleListPage = combine([$_listPageContent, $favoriteListsMap]).map(
-  ([listData, favs]) => {    
-    if (!listData) {
-      return undefined;
-    }
-    const listId = listData.list.id;
-    const isFaved = listId in favs ? favs[listId] : undefined;
+export const $singleListPage = combine([
+  $_listPageContent,
+  $favoriteListsMap,
+]).map(([listData, favs]) => {
+  if (!listData) {
+    return undefined;
+  }
 
-    const newIsFaved =
-      isFaved !== undefined ? isFaved : listData.additionalInfo.isFavorite;
+  const listId = listData.list.id;
+  const isFaved = listId in favs ? favs[listId] : undefined;
 
-    const result: ListPageContent = {
-      ...listData,
-      additionalInfo: {
-        ...listData.additionalInfo,
-        isFavorite: newIsFaved,
-      },
-    };
-    return result;
-  },
-);
+  const newIsFaved =
+    isFaved !== undefined ? isFaved : listData.additionalInfo.isFavorite;
+
+  const result: ListPageContent = {
+    ...listData,
+    additionalInfo: {
+      ...listData.additionalInfo,
+      isFavorite: newIsFaved,
+    },
+  };
+  return result;
+});

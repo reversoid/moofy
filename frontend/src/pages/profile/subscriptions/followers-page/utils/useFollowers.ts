@@ -1,40 +1,38 @@
-import { $userFavLists, setFavorites } from '@/entities/user-fav-lists';
-import { listService } from '@/features/list/api/list.service';
-import { FavoriteList } from '@/shared/api/types/favoriteList.type';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { subscriptionsService } from '../../api/subscriptions.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
+import { useState } from 'react';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useStore } from 'effector-react';
 
-export const useFavoritePage = () => {
-  const favoriteLists = useStore($userFavLists);
-
-  const result = useInfiniteQuery<IterableResponse<FavoriteList>, FetchError>({
-    queryKey: ['Favorite collections page'],
-    queryFn: ({ pageParam }) => listService.getFavoritesLists(pageParam),
+export const useFollowers = (userId: number) => {
+  const result = useInfiniteQuery<IterableResponse<ProfileShort>, FetchError>({
+    queryKey: ['Profile followers', userId],
+    queryFn: ({ pageParam }) =>
+      subscriptionsService.getFollowers(userId, pageParam, 20),
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
+
+  const [profiles, setProfiles] = useState<ProfileShort[]>()
 
   useCachedInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      if (!favoriteLists) {
-        setFavorites(content);
-      }
+      setProfiles(content);
     }
   });
 
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setFavorites(content);
+      setProfiles(content);
     }
   });
 
   return {
-    data: favoriteLists,
+    data: profiles,
     isLoading: result.isLoading,
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,

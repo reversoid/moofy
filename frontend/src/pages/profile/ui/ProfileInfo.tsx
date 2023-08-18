@@ -9,16 +9,15 @@ import {
   styled,
 } from '@nextui-org/react';
 import { FC, createRef, useEffect, useState } from 'react';
-import { useEditDescription } from '../lib/useEditDescription';
+import { useEditDescription } from '../utils/useEditDescription';
 import { useAuth } from '@/app';
-import { useSubscribe } from '../lib/useSubscribe';
-import { useUnsubscribe } from '../lib/useUnsubscribe';
+import { useFollow } from '../utils/useFollow';
+import { useUnfollow } from '../utils/useUnfollow';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 
 interface ProfileInfoProps {
-  description: string | null;
   isOwner: boolean;
-  isSubscribed: boolean;
-  userId: number;
+  profile: ProfileShort;
 }
 
 const Description = styled('div', { mb: '$4', mt: '$10' });
@@ -56,12 +55,7 @@ const AnimatedTextarea = styled(Textarea, {
 
 const SubscribeContainer = styled('div');
 
-const ProfileInfo: FC<ProfileInfoProps> = ({
-  description,
-  isOwner,
-  isSubscribed,
-  userId,
-}) => {
+const ProfileInfo: FC<ProfileInfoProps> = ({ isOwner, profile }) => {
   const [editMode, setEditMode] = useState(false);
   const { isLoggedIn } = useAuth();
 
@@ -70,14 +64,14 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
 
   const editDescriptionMutation = useEditDescription();
 
-  const subscribeMutation = useSubscribe();
-  const unsubscribeMutation = useUnsubscribe();
+  const subscribeMutation = useFollow(profile);
+  const unsubscribeMutation = useUnfollow(profile);
 
   useEffect(() => {
     // TODO can use hook for that?
     if (!inputRef.current) return;
-    (inputRef.current as any).value = description ?? '';
-  }, [description]);
+    (inputRef.current as any).value = profile.description ?? '';
+  }, [profile.description]);
 
   useEffect(() => {
     if (!editDescriptionMutation.isSuccess) return;
@@ -117,7 +111,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           )}
         </Row>
 
-        {isOwner || description ? (
+        {isOwner || profile.description ? (
           <AnimatedTextarea
             width="100%"
             size="lg"
@@ -136,13 +130,13 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
 
       {isLoggedIn && !isOwner && (
         <SubscribeContainer css={{ mt: '$8' }}>
-          {isSubscribed ? (
+          {profile.additionalInfo.isSubscribed ? (
             <Button
               size={'lg'}
               color={'gradient'}
               bordered
               css={{ '@xsMax': { width: '100%' } }}
-              onClick={() => unsubscribeMutation.mutate(userId)}
+              onClick={() => unsubscribeMutation.mutate()}
               disabled={subscribeMutation.isLoading}
             >
               {unsubscribeMutation.isLoading ? (
@@ -156,7 +150,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
               size={'lg'}
               color={'gradient'}
               css={{ '@xsMax': { width: '100%' } }}
-              onClick={() => subscribeMutation.mutate(userId)}
+              onClick={() => subscribeMutation.mutate()}
               disabled={subscribeMutation.isLoading}
             >
               {subscribeMutation.isLoading ? (

@@ -5,7 +5,7 @@ import { useAuth } from '@/app';
 import { Row, Text } from '@nextui-org/react';
 import { FC } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
-import { useFavoritesMutations as useFavoritesMutations } from '../utils/hooks/useFavoritesMutations';
+import { useFavoritesMutations } from '../utils/hooks/useFavoritesMutations';
 
 interface ListHeaderProps {
   listName: string;

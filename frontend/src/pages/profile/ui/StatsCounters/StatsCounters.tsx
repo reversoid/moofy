@@ -32,8 +32,8 @@ export const StatsCounters: FC<StatsCountersProps> = ({
             px: '$10',
           }}
         >
-          <StatCounter amount={followers} title="Подписчики" />
-          <StatCounter amount={followed} title="Подписки" />
+          <StatCounter amount={followers} title="Подписчики" link='followers' />
+          <StatCounter amount={followed} title="Подписки" link='followed' />
         </Row>
       </Wrapper>
     </>

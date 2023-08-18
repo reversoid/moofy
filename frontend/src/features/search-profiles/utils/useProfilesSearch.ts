@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FetchError } from '@/shared/api/types/shared';
 import { searchProfilesService } from '../api/search-users.service';
-import { ProfileShort, ProfileShortWithDescription } from '@/shared/api/types/profile.type';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 
 export const useProfilesSearch = () => {
   const [search, setSearch] = useState('');
 
   const result = useQuery<
-    {profiles: ProfileShortWithDescription[]} & { search: string },
+    {profiles: ProfileShort[]} & { search: string },
     FetchError
   >({
     queryKey: ['Search profiles', search ?? ''],
