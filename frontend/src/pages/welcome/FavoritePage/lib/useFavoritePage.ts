@@ -20,7 +20,9 @@ export const useFavoritePage = () => {
   useCachedInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setFavorites(content);
+      if (!favoriteLists) {
+        setFavorites(content);
+      }
     }
   });
 
