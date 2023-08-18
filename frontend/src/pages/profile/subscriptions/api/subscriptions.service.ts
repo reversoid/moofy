@@ -23,12 +23,16 @@ export class SubscriptionsService extends ApiService {
     toId: number,
     lowerBound?: DateAsString,
     limit = 20,
+    search?: string
   ) {
     const searchParams: SearchParamsOption = {
       limit,
     };
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
+    }
+    if (search) {
+      searchParams['search'] = search;
     }
 
     return this.get<IterableResponse<ProfileShort>>(
@@ -44,12 +48,16 @@ export class SubscriptionsService extends ApiService {
     toId: number,
     lowerBound?: DateAsString,
     limit = 20,
+    search?: string
   ) {
     const searchParams: SearchParamsOption = {
       limit,
     };
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
+    }
+    if (search) {
+      searchParams['search'] = search;
     }
 
     return this.get<IterableResponse<ProfileShort>>(

@@ -1,5 +1,6 @@
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import LoadMore from '@/shared/components/LoadMore';
+import { SearchInput } from '@/shared/components/SearchInput';
 import { Stack } from '@/shared/ui/Stack';
 import { ProfileItem } from '@/widgets/profile-item/ProfileItem';
 import { Text } from '@nextui-org/react';
@@ -11,6 +12,7 @@ interface SubscriptionsTemplatePage {
   loadingMore: boolean;
   canLoadMore: boolean;
   profiles?: ProfileShort[];
+  setSearch?: (search: string) => void;
 }
 
 export const SubscriptionsTemplatePage: FC<SubscriptionsTemplatePage> = ({
@@ -19,11 +21,13 @@ export const SubscriptionsTemplatePage: FC<SubscriptionsTemplatePage> = ({
   title,
   canLoadMore,
   profiles,
+  setSearch,
 }) => {
   return (
     <>
       <Text h1>{title}</Text>
-      <Stack>
+      <SearchInput onChange={setSearch} />
+      <Stack css={{ mt: '$8' }}>
         {profiles?.length === 0 && <Text color="$neutral">Список пуст</Text>}
         {profiles?.map((profile) => (
           <ProfileItem

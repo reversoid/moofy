@@ -57,7 +57,7 @@ export const useFollowed = (userId: number) => {
   }, []);
 
   return {
-    data: isOwner ? myFollowed ?? undefined : profilesFetched,
+    data: isOwner ? myFollowed ?? profilesFetched : profilesFetched,
     isLoading: result.isLoading,
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,
