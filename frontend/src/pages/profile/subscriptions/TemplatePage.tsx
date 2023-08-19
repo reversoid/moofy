@@ -2,7 +2,7 @@ import { ProfileShort } from '@/shared/api/types/profile.type';
 import LoadMore from '@/shared/components/LoadMore';
 import { SearchInput } from '@/shared/components/SearchInput';
 import { Stack } from '@/shared/ui/Stack';
-import { ProfileItem } from '@/widgets/profile-item/ProfileItem';
+import { ProfileItem } from '@/widgets/profile-item';
 import { Text } from '@nextui-org/react';
 import { FC } from 'react';
 

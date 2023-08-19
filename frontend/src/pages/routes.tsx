@@ -4,6 +4,7 @@ import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
 import { routes as profileRoutes } from './profile/routes';
+import { routes as searchRoutes } from './search/routes';
 import ErrorPage from './error';
 import Layout from '@/app/ui/Layout/Layout';
 import AuthOnly from '@/shared/guards/AuthOnly';
@@ -56,10 +57,11 @@ export const routes: RouteObject[] = [
       {
         path: 'search',
         element: (
-          <AuthOnly redirect='/'>
+          <AuthOnly redirect="/">
             <SearchPage />
           </AuthOnly>
         ),
+        children: searchRoutes,
       },
       {
         path: '*',

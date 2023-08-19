@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Text } from '@nextui-org/react';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import { Stack } from '@/shared/ui/Stack';
-import { ProfileItem } from '@/widgets/profile-item/ProfileItem';
+import { ProfileItem } from '@/widgets/profile-item';
 
 export interface ProfilesProps {
   profiles?: ProfileShort[];
