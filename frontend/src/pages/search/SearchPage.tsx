@@ -1,35 +1,33 @@
 import { SearchInput } from '@/shared/components/SearchInput';
-import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { Text } from '@nextui-org/react';
-import { Collections } from './ui/Collections';
-import { Profiles } from './ui/Profiles';
+import { Outlet, useLocation } from 'react-router-dom';
+import { setSearchValue } from './model';
 import { SearchTypeGroup } from './ui/SearchTypeGroup';
-import { SearchTarget, useSearchPage } from './utils/useSearchPage';
+import { useEffect, useState } from 'react';
 
 export const SearchPage = () => {
-  const {
-    collections,
-    collectionsLoading,
-    profiles,
-    profilesLoading,
-    searchCallback,
-    searchTarget,
-    setSearchTarget,
-  } = useSearchPage();
+  const { pathname } = useLocation();
+  const [value, setValue] = useState('');
 
-  useLoadingBar(collectionsLoading, profilesLoading);
+  const clearSearchValues = () => {
+    setSearchValue({ newValue: '' });
+    setValue('');
+  };
+
+  useEffect(() => {
+    clearSearchValues()
+  }, [pathname]);
 
   return (
     <>
       <Text h1>Поиск</Text>
-      <SearchInput onChange={searchCallback} />
-      <SearchTypeGroup type={searchTarget} setType={setSearchTarget} />
-
-      {searchTarget === SearchTarget.collections ? (
-        <Collections loading={collectionsLoading} collections={collections} />
-      ) : (
-        <Profiles loading={profilesLoading} profiles={profiles} />
-      )}
+      <SearchInput
+        value={value}
+        setValue={setValue}
+        onChange={(v) => setSearchValue({ newValue: v })}
+      />
+      <SearchTypeGroup />
+      <Outlet />
     </>
   );
 };

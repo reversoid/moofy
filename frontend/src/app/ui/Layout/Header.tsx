@@ -83,7 +83,7 @@ function Header() {
               }}
             >
               <Button
-                onClick={() => navigate('/search')}
+                onClick={() => navigate('/search/collections')}
                 color={'secondary'}
                 css={{ minWidth: '6.5rem', gap: '$4' }}
               >

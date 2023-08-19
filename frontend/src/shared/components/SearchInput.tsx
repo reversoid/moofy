@@ -1,25 +1,36 @@
 import { Icon } from '@/shared/ui/Icon/Icon';
 import { Input } from '@nextui-org/react';
 import searchIcon from '@/shared/assets/img/search.svg';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 
 export interface SearchInputProps {
   /** Debounced onChange */
   onChange?: (value: string) => void;
   size?: 'xl' | 'xs' | 'sm' | 'md' | 'lg';
+  value?: string;
+  setValue?: (v: string) => void;
 }
 
-export const SearchInput: FC<SearchInputProps> = ({ onChange, size }) => {
-  const onChangeDebounced = debounce((str: string) => onChange?.(str), 300);
+export const SearchInput: FC<SearchInputProps> = ({
+  onChange,
+  size,
+  value,
+  setValue,
+}) => {
+  const onChangeDebounced = useCallback(debounce((str: string) => onChange?.(str), 300), []);
 
   return (
     <Input
-      size={size ?? "xl"}
+      value={value}
+      size={size ?? 'xl'}
       placeholder="Поиск"
       fullWidth={true}
       contentLeft={<Icon iconUrl={searchIcon} size={'3rem'} />}
-      onChange={(e) => onChangeDebounced(e.target.value)}
+      onChange={(e) => {
+        setValue?.(e.target.value);
+        onChangeDebounced(e.target.value);
+      }}
     />
   );
 };
