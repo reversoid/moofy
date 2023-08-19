@@ -68,7 +68,7 @@ export const SidenavContent: FC<SidenavContentProps> = ({ onItemClick }) => {
       <Li>
         <LiButton
           onClick={() => {
-            navigate(`/search`);
+            navigate('/search/collections');
             onItemClick();
           }}
         >
