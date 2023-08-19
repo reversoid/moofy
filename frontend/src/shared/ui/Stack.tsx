@@ -4,5 +4,4 @@ export const Stack = styled('div', {
   display: 'flex',
   gap: '$8',
   flexDirection: 'column',
-  mt: '$12',
 });

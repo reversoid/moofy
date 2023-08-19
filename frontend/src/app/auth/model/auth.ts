@@ -1,11 +1,11 @@
-import { Profile, ProfileShortWithDescription } from '@/shared/api/types/profile.type';
+import { Profile, ProfileShort } from '@/shared/api/types/profile.type';
 import { createEvent } from 'effector';
 
 /** Set app state as authorized with userId */
 export const authorize = createEvent<{ userId: number }>();
 
 /** Set current user profile */
-export const setCurrentUserProfile = createEvent<{ profile: ProfileShortWithDescription }>();;
+export const setCurrentUserProfile = createEvent<{ profile: ProfileShort }>();;
 
 /** Set app state as unAuthorized */
 export const unAuthorize = createEvent<void>();

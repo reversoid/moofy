@@ -31,9 +31,11 @@ export const useProfileFavLists = (profile: Profile) => {
   });
 
   useCachedInfiniteData(result, () => {
-    if (result.data) {      
+    if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setProfileFavLists(content);
+      if (!lists) {
+        setProfileFavLists(content);
+      }
     }
   });
 
@@ -42,7 +44,7 @@ export const useProfileFavLists = (profile: Profile) => {
       const content = transformInfiniteIterableData(result.data);
       setProfileFavLists(content);
     }
-  });  
+  });
 
   return {
     result: lists ?? [],

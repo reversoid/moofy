@@ -1,20 +1,26 @@
 import DoneButton from '@/shared/components/DoneButton';
 import EditButton from '@/shared/components/EditButton';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import { Loading, Row, Text, Textarea, styled } from '@nextui-org/react';
-import { useMutation } from '@tanstack/react-query';
+import {
+  Button,
+  Loading,
+  Row,
+  Text,
+  Textarea,
+  styled,
+} from '@nextui-org/react';
 import { FC, createRef, useEffect, useState } from 'react';
-import { profileService } from '../api/profile.service';
-import { setProfile, setProfileWithoutLists } from '../model';
-import { useEditDescription } from '../lib/useEditDescription';
+import { useEditDescription } from '../utils/useEditDescription';
+import { useAuth } from '@/app';
+import { useFollow } from '../utils/useFollow';
+import { useUnfollow } from '../utils/useUnfollow';
+import { ProfileShort } from '@/shared/api/types/profile.type';
 
 interface ProfileInfoProps {
-  description: string | null;
-  createdAt: Date;
   isOwner: boolean;
+  profile: ProfileShort;
 }
 
-const Description = styled('div', { mb: '$4' });
+const Description = styled('div', { mb: '$4', mt: '$10' });
 
 const AnimatedTextarea = styled(Textarea, {
   '& textarea': {
@@ -47,23 +53,25 @@ const AnimatedTextarea = styled(Textarea, {
   },
 });
 
-const ProfileInfo: FC<ProfileInfoProps> = ({
-  createdAt,
-  description,
-  isOwner,
-}) => {
+const SubscribeContainer = styled('div');
+
+const ProfileInfo: FC<ProfileInfoProps> = ({ isOwner, profile }) => {
   const [editMode, setEditMode] = useState(false);
+  const { isLoggedIn } = useAuth();
 
   // Yeah we use ref because onChange with input makes impossible autosizing rows
   const inputRef = createRef<unknown>();
 
   const editDescriptionMutation = useEditDescription();
 
+  const subscribeMutation = useFollow(profile);
+  const unsubscribeMutation = useUnfollow(profile);
+
   useEffect(() => {
     // TODO can use hook for that?
     if (!inputRef.current) return;
-    (inputRef.current as any).value = description ?? '';
-  }, [description]);
+    (inputRef.current as any).value = profile.description ?? '';
+  }, [profile.description]);
 
   useEffect(() => {
     if (!editDescriptionMutation.isSuccess) return;
@@ -103,7 +111,7 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
           )}
         </Row>
 
-        {isOwner || description ? (
+        {isOwner || profile.description ? (
           <AnimatedTextarea
             width="100%"
             size="lg"
@@ -120,12 +128,40 @@ const ProfileInfo: FC<ProfileInfoProps> = ({
         )}
       </Description>
 
-      <Row css={{ gap: '$3' }}>
-        <Text size="lg" color="$neutral">
-          Дата регистрации
-        </Text>
-        <Text size="lg">{formatDate(createdAt)}</Text>
-      </Row>
+      {isLoggedIn && !isOwner && (
+        <SubscribeContainer css={{ mt: '$8' }}>
+          {profile.additionalInfo.isSubscribed ? (
+            <Button
+              size={'lg'}
+              color={'gradient'}
+              bordered
+              css={{ '@xsMax': { width: '100%' } }}
+              onClick={() => unsubscribeMutation.mutate()}
+              disabled={subscribeMutation.isLoading}
+            >
+              {unsubscribeMutation.isLoading ? (
+                <Loading type="points" />
+              ) : (
+                'Отписаться'
+              )}
+            </Button>
+          ) : (
+            <Button
+              size={'lg'}
+              color={'gradient'}
+              css={{ '@xsMax': { width: '100%' } }}
+              onClick={() => subscribeMutation.mutate()}
+              disabled={subscribeMutation.isLoading}
+            >
+              {subscribeMutation.isLoading ? (
+                <Loading type="points" />
+              ) : (
+                'Подписаться'
+              )}
+            </Button>
+          )}
+        </SubscribeContainer>
+      )}
     </>
   );
 };

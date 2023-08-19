@@ -22,12 +22,12 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
         username={profile.username}
         imageUrl={profile.image_url}
         isOwner={isOwner}
+        subscriptionsInfo={profile.subscriptionsInfo}
       />
 
       <ProfileInfo
-        createdAt={new Date(profile.created_at)}
-        description={profile.description}
         isOwner={isOwner}
+        profile={profile}
       />
 
       <ListsSection profile={profile} isOwner={isOwner} />
