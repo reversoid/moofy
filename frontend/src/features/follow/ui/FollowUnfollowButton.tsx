@@ -9,7 +9,9 @@ export interface SubscribeButtonProps {
 }
 
 export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({ profile }) => {
-  const [isSubscribed, setIsSubscribed] = useState(profile.additionalInfo.isSubscribed);
+  const [isSubscribed, setIsSubscribed] = useState(
+    profile.additionalInfo.isSubscribed,
+  );
 
   useEffect(() => {
     setIsSubscribed(profile.additionalInfo.isSubscribed);
@@ -34,6 +36,7 @@ export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({ profile }) => {
         <Button
           color={'gradient'}
           css={{ alignSelf: 'center', '@xsMax': { width: '100%' } }}
+          size={'lg'}
           onClick={() => unfollowMutation.mutate(profile.id)}
           disabled={unfollowMutation.isLoading}
           bordered
@@ -46,7 +49,8 @@ export const FollowUnfollowButton: FC<SubscribeButtonProps> = ({ profile }) => {
         </Button>
       ) : (
         <Button
-          color={'gradient'}
+          color={'primary'}
+          size={'lg'}
           css={{ alignSelf: 'center', '@xsMax': { width: '100%' } }}
           onClick={() => followMutation.mutate(profile.id)}
           disabled={followMutation.isLoading}
