@@ -3,7 +3,7 @@ import { Text } from '@nextui-org/react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { setSearchValue } from './model';
 import { SearchTypeGroup } from './ui/SearchTypeGroup';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 export const SearchPage = () => {
   const { pathname } = useLocation();
@@ -15,7 +15,7 @@ export const SearchPage = () => {
   };
 
   useEffect(() => {
-    clearSearchValues()
+    clearSearchValues();
   }, [pathname]);
 
   return (
@@ -27,7 +27,9 @@ export const SearchPage = () => {
         onChange={(v) => setSearchValue({ newValue: v })}
       />
       <SearchTypeGroup />
-      <Outlet />
+      <Suspense>
+        <Outlet />
+      </Suspense>
     </>
   );
 };
