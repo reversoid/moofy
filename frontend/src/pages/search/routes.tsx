@@ -8,4 +8,5 @@ export const routes: RouteObject[] = [
   { path: 'collections', element: <SearchCollections /> },
   { path: 'profiles', element: <SearchProfiles /> },
   { path: '*', element: <Navigate to={'/search/collections'} /> },
+  { path: '', element: <Navigate to={'/search/collections'} /> },
 ];
