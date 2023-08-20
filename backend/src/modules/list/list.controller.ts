@@ -38,6 +38,7 @@ import { SendCommentDTO } from './dtos/send-comment.dto';
 import { ListIdParamsDTO } from './dtos/list-id.param.dto';
 import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
 import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
+import { NumericIDParamDTO } from 'src/shared/dto/NumericParam.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -287,5 +288,18 @@ export class ListController {
     { limit = 20, lowerBound, order }: GetUpdatesQueryDTO,
   ): Promise<IterableResponse<List>> {
     return this.listService.getLatestUpdates(user.id, lowerBound, limit, order);
+  }
+
+  @ApiOperation({
+    description: 'Mark list as viewed',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/views')
+  async markListAsViewed(
+    @Request() { user }: { user: User },
+    @Param() { id }: NumericIDParamDTO,
+  ) {
+    await this.listService.markListAsViewed(user.id, id);
   }
 }

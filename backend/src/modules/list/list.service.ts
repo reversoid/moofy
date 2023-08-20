@@ -23,6 +23,7 @@ import { CommentLikeRepository } from './repositories/comment-like.repository';
 import { LikeErrors } from 'src/errors/like.errors';
 import { CommentLike } from './entities/comment-like.entity';
 import { Order } from './dtos/get-updates.query.dto';
+import { ListViewRepository } from './repositories/list-view.repository';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -45,6 +46,7 @@ export class ListService {
     private readonly commentRepository: CommentRepository,
     private readonly listLikeRepository: ListLikeRepository,
     private readonly commentLikeRepository: CommentLikeRepository,
+    private readonly listViewRepository: ListViewRepository,
   ) {}
 
   async createList(
@@ -402,5 +404,14 @@ export class ListService {
       limit,
       order,
     );
+  }
+
+  async markListAsViewed(userId: number, listId: number) {
+    const isViewed = await this.listViewRepository.isListViewed(userId, listId);
+    if (isViewed) {
+      return;
+    }
+
+    await this.listViewRepository.markListAsViewed(userId, listId);
   }
 }
