@@ -3,7 +3,6 @@ import up from '@/shared/assets/img/up.svg';
 import { getColorsByScore } from '@/shared/lib/scoreColors';
 import { Button, styled } from '@nextui-org/react';
 import { memo, useState } from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
 
 const removeArrows = {
   '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
@@ -58,13 +57,13 @@ const CounterContainer = styled('div', {
 });
 
 interface CounterProps {
-  registerReturn: UseFormRegisterReturn;
+  score: any;
   setValue: (newValue: number) => void;
   getValue: () => number;
   disabled?: boolean;
 }
 
-const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps) => {
+const Counter = ({ score, setValue, getValue, disabled }: CounterProps) => {
   const increase = () => {
     const currentValue = getValue();
     if (currentValue >= 10) {
@@ -75,7 +74,7 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
   };
 
   const decrease = () => {
-    const currentValue = getValue();
+    const currentValue = getValue() || 1;
     if (currentValue <= 1) {
       return;
     }
@@ -98,7 +97,7 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
       <InputStyled
         readOnly
         type="number"
-        {...registerReturn}
+        value={score}
         style={{
           background: color?.main,
           color: color?.contrast,
@@ -114,3 +113,5 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
 };
 
 export default memo(Counter);
+
+

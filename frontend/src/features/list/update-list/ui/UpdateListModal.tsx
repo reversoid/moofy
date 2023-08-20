@@ -10,8 +10,13 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Button, Checkbox, Loading, Text } from '@nextui-org/react';
 import { memo, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDefaultFormValues } from '../lib/useDefaultFormValues';
+import { Field, Form as FinalForm } from 'react-final-form';
+import { composeValidators } from '@/shared/lib/forms/composeValidators';
+import {
+  maxLengthDescription,
+  maxLengthName,
+  requiredName,
+} from '../../create-list/utils/validators';
 import { useUpdateList } from '../lib/useUpdateList';
 import { useUploadImage } from '../lib/useUploadImage';
 
@@ -37,17 +42,12 @@ export const UpdateListModal = memo(
     listId,
     listImageUrl,
   }: UpdateListModalProps) => {
-    const {
-      register,
-      formState: { isValid: isFormValid, errors },
-      setValue,
-      handleSubmit,
-      getValues,
-    } = useForm<FormData>({
-      mode: 'onChange',
-    });
 
-    useDefaultFormValues(isOpen, setValue, listData);
+    const initialValues = {
+      name: listData.name,
+      description: listData.description,
+      isPrivate: listData.isPrivate
+    }
 
     const updateMutation = useUpdateList();
     const uploadImageMutation = useUploadImage();
@@ -77,59 +77,75 @@ export const UpdateListModal = memo(
 
       uploadImageMutation.mutate(file);
     };
-
     return (
-      <Modal
-        closeButton
-        aria-labelledby="modal-title"
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
-        <ModalHeader>
-          <Text h3>Изменить коллекцию</Text>
-        </ModalHeader>
-        <ModalBody>
-          <Form
-            onSubmit={handleSubmit(({ description, isPrivate, name }) =>
-              updateMutation.mutate({
-                isPublic: !isPrivate,
-                name,
-                description,
-                listId,
-                imageUrl: uploadImageMutation.data?.link ?? undefined,
-              }),
-            )}
+      <>
+        <FinalForm<FormData>
+          initialValues={initialValues}
+          onSubmit={async (form) => {
+            await updateMutation.mutateAsync({
+              isPublic: !form.isPrivate,
+              name: form.name,
+              description: form.description,
+              listId,
+              imageUrl: uploadImageMutation.data?.link ?? undefined,
+            });
+          }}
+          render={({ handleSubmit, invalid }) => (
+        <>
+         <Modal
+          closeButton
+          aria-labelledby="modal-title"
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          >
+          <ModalHeader>
+           <Text h3>Изменить коллекцию</Text>
+         </ModalHeader>
+          <ModalBody>
+           <Form
+            onSubmit={handleSubmit}
             css={{ mb: '$10' }}
             id="update-list-modal-form"
-          >
-            <Input
+            >
+            <Field
+            name="name"
+            validate={composeValidators(requiredName, maxLengthName)}
+            validateFields={[]}
+            >
+          {({ input, meta }) => (
+              <Input
+              {...input}
               bordered
               fullWidth
               label="Название"
               size="xl"
               placeholder="Название123"
-              status={errors.name && 'error'}
-              {...register('name', {
-                required: {
-                  value: true,
-                  message: 'Поле не должно быть пустым',
-                },
-                maxLength: { value: 32, message: 'Слишком длинное название' },
-              })}
-            />
+              status={meta.error && 'error'}
+              />
+          )}
+            </Field>
+          </Form>
+          
+          <Field
+            name="description"
+            validate={maxLengthDescription}
+            validateFields={[]}>
+              {({ input }) => (
             <Textarea
+              {...input}
               maxLength={400}
               bordered
               size="xl"
               label="Описание"
               placeholder="Ваше описание коллекции"
-              {...register('description', {
-                maxLength: { value: 400, message: 'Слишком длинное описание' },
-              })}
-              initialValue={getValues('description')}
               maxRows={Infinity}
-            />
+            /> )}
+          </Field>
+            
+          <Field name="isPrivate" validateFields={[]}
+          >{({ input }) => (
             <Checkbox
+              name={input.name}
               color="gradient"
               label="Сделать коллекцию приватной"
               css={{
@@ -138,11 +154,10 @@ export const UpdateListModal = memo(
                 },
               }}
               size="lg"
-              {...register('isPrivate')}
               defaultSelected={listData.isPrivate}
-              onChange={(newValue) => setValue('isPrivate', newValue)}
-            />
-          </Form>
+            />)}
+          </Field>
+          
           <ImageUpload
             text="Загрузить обложку"
             loading={uploadImageMutation.isLoading}
@@ -157,7 +172,7 @@ export const UpdateListModal = memo(
             form="update-list-modal-form"
             type="submit"
             size="lg"
-            disabled={!isFormValid || uploadImageMutation.isLoading}
+            disabled={invalid || uploadImageMutation.isLoading}
             color={'gradient'}
             auto
             css={{
@@ -174,10 +189,14 @@ export const UpdateListModal = memo(
               'Обновить'
             )}
           </Button>
-        </ModalFooter>
-      </Modal>
-    );
-  },
+          </ModalFooter>
+        </Modal>
+        </>
+        )}
+      />
+    </>
+  );
+},
   (prev, next) => {
     const formEqual =
       (prev.listData.description === next.listData.description &&

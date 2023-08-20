@@ -3,6 +3,7 @@ import { updateList } from './updateList';
 import { ListPageContent } from '../utils/hooks/useListPage';
 import { addReview } from './addReview';
 import { $favoriteListsMap } from '@/entities/user-fav-lists';
+import { updateReview } from './updateReview';
 
 export const setListPageContent = createEvent<{ data: ListPageContent }>();
 
@@ -16,6 +17,18 @@ $_listPageContent.on(updateList, (state, { list }) => {
     return state;
   }
   return { ...state, list };
+});
+
+$_listPageContent.on(updateReview, (state, { review }) => {
+  
+  if (!state) {
+    return state;
+  }
+  const indexOfReview = state.reviews.findIndex((item) => item.id === review.id)
+  
+  return {
+    ...state, 
+  };
 });
 
 $_listPageContent.on(addReview, (state, payload) => {
