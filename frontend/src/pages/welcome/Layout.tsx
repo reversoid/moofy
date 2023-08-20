@@ -6,6 +6,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 enum Tabs {
   'collections',
   'favorite',
+  'updates',
 }
 
 const getTabNumericValueFromPath = (path: string) => {
@@ -30,6 +31,7 @@ const Layout = () => {
           tabs={[
             { to: '/welcome/collections', label: 'Мои коллекции' },
             { to: '/welcome/favorite', label: 'Избранное' },
+            { to: '/welcome/updates', label: 'Обновления' },
           ]}
           css={{ mb: '0.75rem' }}
         />
