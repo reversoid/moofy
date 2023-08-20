@@ -1,5 +1,5 @@
 import ReviewModal, { ReviewFormData } from '../../ui/ReviewModal';
-import { useUpdateReview } from '../lib/useUpdateReview';
+import { useUpdateReview } from '../utils/useUpdateReview';
 
 interface UpdateReviewModalProps {
   isOpen: boolean;

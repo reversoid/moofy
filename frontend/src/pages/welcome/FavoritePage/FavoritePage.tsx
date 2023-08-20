@@ -1,7 +1,7 @@
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { Text } from '@nextui-org/react';
-import { useFavoritePage } from './lib/useFavoritePage';
+import { useFavoritePage } from './utils/useFavoritePage';
 
 const FavoritePage = () => {
   const {

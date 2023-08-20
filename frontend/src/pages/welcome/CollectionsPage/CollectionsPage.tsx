@@ -2,7 +2,7 @@ import { CreateListItem, CreateListModal } from '@/features/list/create-list';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { useState } from 'react';
-import { useCollectionsPage } from './lib/useCollectionsPage';
+import { useCollectionsPage } from './utils/useCollectionsPage';
 
 const CollectionsPage = () => {
   const [createListModal, setCreateListModal] = useState(false);

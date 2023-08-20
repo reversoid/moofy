@@ -5,8 +5,8 @@ import { FC, useEffect } from 'react';
 import { PictureIcon } from '@/shared/Icons/Picture.icon';
 import { notify } from '@/app';
 import { useUnmount } from '@/shared/hooks/useUnmount';
-import { useUploadAndSaveImage } from '../lib/useUploadImage';
-import { useDeleteImage } from '../lib/useDeleteImage';
+import { useUploadAndSaveImage } from '../utils/useUploadImage';
+import { useDeleteImage } from '../utils/useDeleteImage';
 
 const ImageContainer = styled('div', {
   width: 'min(100%, 25rem)',

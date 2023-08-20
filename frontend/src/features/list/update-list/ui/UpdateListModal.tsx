@@ -17,8 +17,8 @@ import {
   maxLengthName,
   requiredName,
 } from '../../create-list/utils/validators';
-import { useUpdateList } from '../lib/useUpdateList';
-import { useUploadImage } from '../lib/useUploadImage';
+import { useUpdateList } from '../utils/useUpdateList';
+import { useUploadImage } from '../utils/useUploadImage';
 
 export interface FormData {
   name: string;
