@@ -42,11 +42,7 @@ export const UpdateListModal = memo(
     listId,
     listImageUrl,
   }: UpdateListModalProps) => {
-    const initialValues = {
-      name: listData.name,
-      description: listData.description,
-      isPrivate: listData.isPrivate,
-    };
+    const initialValues = { ...listData };
 
     const updateMutation = useUpdateList();
     const uploadImageMutation = useUploadImage();
