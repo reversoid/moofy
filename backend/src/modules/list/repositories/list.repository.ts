@@ -8,6 +8,10 @@ import { Order } from '../dtos/get-updates.query.dto';
 import { Subscription } from 'src/modules/user/entities/subscription.entity';
 import { ListView } from '../entities/list-view.entity';
 
+export class ListWithIsViewed extends List {
+  is_viewed: boolean;
+}
+
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
   constructor(dataSource: DataSource) {
@@ -217,9 +221,12 @@ export class ListRepository extends PaginatedRepository<List> {
         'user.id',
         'user.username',
         'user.image_url',
+
+        'CASE WHEN view.id IS NULL THEN FALSE ELSE TRUE END AS is_viewed',
       ])
       .innerJoin('list.user', 'user')
       .innerJoin('Subscription', 'sub', 'sub.followed = user.id')
+      .leftJoin('list.views', 'view', 'view.user_id = :userId')
       .where('sub.follower = :userId', { userId })
       .andWhere('list.is_public = TRUE')
       .orderBy(`list.${dateField}`, 'DESC')
@@ -232,7 +239,7 @@ export class ListRepository extends PaginatedRepository<List> {
       });
     }
 
-    const latestUpdatedLists = await query.getMany();
+    const latestUpdatedLists = (await query.getMany()) as ListWithIsViewed[];
 
     return this.processPagination(latestUpdatedLists, limit, dateField);
   }
