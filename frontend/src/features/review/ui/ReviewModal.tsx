@@ -37,6 +37,8 @@ export interface ReviewModalProps {
   };
 }
 
+const DEFAULT_SCORE = 7;
+
 /** Provides basis for update and create review modal */
 const ReviewModal = ({
   isOpen,
@@ -45,13 +47,12 @@ const ReviewModal = ({
   handlers,
   state,
 }: ReviewModalProps) => {
+  const scoreIsNotSet = form?.score === null;
+  const isNewReview = form !== undefined;
 
-  const DEFAULT_SCORE = 7;
   const [includeScore, setIncludeScore] = useState(
-    form !== undefined && form.score !== null,
+    !(isNewReview || scoreIsNotSet),
   );
-
-
 
   useEffect(() => {
     if (!state.success) {
@@ -68,97 +69,109 @@ const ReviewModal = ({
     <>
       <FinalForm<ReviewFormData>
         initialValues={form}
-        onSubmit={handlers.onSubmit}
+        onSubmit={(data) =>
+          handlers.onSubmit({
+            score: includeScore ? data.score : null,
+            description: data.description,
+          })
+        }
         render={({ handleSubmit, invalid }) => (
           <>
-          <Modal
-            closeButton
-            aria-labelledby="modal-title"
-            open={isOpen}
-            onClose={() => setIsOpen(false)}
+            <Modal
+              closeButton
+              aria-labelledby="modal-title"
+              open={isOpen}
+              onClose={() => setIsOpen(false)}
             >
-      <ModalHeader css={{ paddingBottom: '$3' }}>
-        <Text h3>Обзор к фильму</Text>
-      </ModalHeader>
-      
-      <ModalBody>
-        <Form
-            css={{ mb: '$10' }}
-            id="add-review-modal-form"
-            onSubmit={handleSubmit}
-            > 
-          <Field
-            name="description"
-            validate={(value) =>
-            value && value.length > 400 ? 'Слишком длинное описание' : undefined
-          }>
-            {({ input }) => (
-          <Textarea
-            maxLength={400}
-            bordered
-            size="xl"
-            label="Описание"
-            placeholder="Ваше описание фильма"
-            {...input}
-            maxRows={Infinity}
-          />)}
-          </Field>
-          
-          <Checkbox
-            color="gradient"
-            label="Включить оценку"
-            css={{
-              '& .nextui-checkbox-text': {
-                fontSize: '$lg',
-              },
-            }}
-            size="lg"
-            defaultSelected={includeScore}
-            onChange={(newValue) => setIncludeScore(newValue)}
-          />
-          
-          <Field
-            initialValue={form?.score ?? DEFAULT_SCORE}
-            component={ScoreContainer}
-            name='score'>
-            {({ input }) => (
-            <ScoreContainer>
-              <StyledLabel htmlFor="slider">Оценка</StyledLabel>
-              <Counter
-                getValue={() => input.value}
-                setValue={newValue => input.onChange(Number(newValue)) }
-                disabled={!includeScore}
-                score={Number(input.value)}
-              />
-            </ScoreContainer>)}
-          </Field>
-         </Form>
-        </ModalBody>
-      
-        <ModalFooter>
-          <Button
-            disabled={invalid}
-            type="submit"
-            form="add-review-modal-form"
-            color={'gradient'}
-            css={{ minWidth: '7.5rem', margin: 0, '@xsMax': { width: '100%' } }}
-            auto
-            size="lg"
-          >
-            {state.loading ? (
-              <Loading size="lg" type="points" color="white" />
-           ) : (
-              'Добавить'
-            )}
-          </Button>
-      </ModalFooter>
-    </Modal>
+              <ModalHeader css={{ paddingBottom: '$3' }}>
+                <Text h3>Обзор к фильму</Text>
+              </ModalHeader>
+
+              <ModalBody>
+                <Form
+                  css={{ mb: '$10' }}
+                  id="add-review-modal-form"
+                  onSubmit={handleSubmit}
+                >
+                  <Field
+                    name="description"
+                    validate={(value) =>
+                      value && value.length > 400
+                        ? 'Слишком длинное описание'
+                        : undefined
+                    }
+                  >
+                    {({ input }) => (
+                      <Textarea
+                        maxLength={400}
+                        bordered
+                        size="xl"
+                        label="Описание"
+                        placeholder="Ваше описание фильма"
+                        {...input}
+                        maxRows={Infinity}
+                      />
+                    )}
+                  </Field>
+
+                  <Checkbox
+                    color="gradient"
+                    label="Включить оценку"
+                    css={{
+                      '& .nextui-checkbox-text': {
+                        fontSize: '$lg',
+                      },
+                    }}
+                    size="lg"
+                    defaultSelected={includeScore}
+                    onChange={(newValue) => setIncludeScore(newValue)}
+                  />
+
+                  <Field
+                    initialValue={form?.score ?? DEFAULT_SCORE}
+                    component={ScoreContainer}
+                    name="score"
+                  >
+                    {({ input }) => (
+                      <ScoreContainer>
+                        <StyledLabel htmlFor="slider">Оценка</StyledLabel>
+                        <Counter
+                          fieldInputProps={input}
+                          disabled={!includeScore}
+                        />
+                      </ScoreContainer>
+                    )}
+                  </Field>
+                </Form>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  disabled={invalid}
+                  type="submit"
+                  form="add-review-modal-form"
+                  color={'gradient'}
+                  css={{
+                    minWidth: '7.5rem',
+                    margin: 0,
+                    '@xsMax': { width: '100%' },
+                  }}
+                  auto
+                  size="lg"
+                >
+                  {state.loading ? (
+                    <Loading size="lg" type="points" color="white" />
+                  ) : (
+                    'Добавить'
+                  )}
+                </Button>
+              </ModalFooter>
+            </Modal>
+          </>
+        )}
+      />
     </>
-    )}
-  />
-  </>
-  )
+  );
 };
- 
 
 export default memo(ReviewModal);

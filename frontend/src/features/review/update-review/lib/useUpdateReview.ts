@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { UpdateReviewDTO, reviewService } from '../../api/review.service';
-import { updateReview } from '@/pages/list/ListPage/model/updateReview';
+import { updateReview } from '../model';
 
 export const useUpdateReview = () => {
   const mutation = useMutation({

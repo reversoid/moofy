@@ -1,5 +1,4 @@
 import ReviewModal, { ReviewFormData } from '../../ui/ReviewModal';
-import { clearState } from '../model';
 import { useUpdateReview } from '../lib/useUpdateReview';
 
 interface UpdateReviewModalProps {
@@ -15,16 +14,16 @@ const UpdateReviewModal = ({
   reviewId,
   formData,
 }: UpdateReviewModalProps) => {
+  const { isLoading, isSuccess, mutateAsync } = useUpdateReview();
 
-  const { data, isLoading, isSuccess, mutate } = useUpdateReview();
   return (
     <ReviewModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       form={formData}
       handlers={{
-        onSubmit({ description, score }) {
-          return mutate({
+        async onSubmit({ description, score }) {
+          await mutateAsync({
             description,
             score: score === null ? score : Number(score),
             reviewId,
@@ -32,12 +31,11 @@ const UpdateReviewModal = ({
         },
         onSuccess() {
           setIsOpen(false);
-          clearState();
         },
       }}
       state={{
-        loading:isLoading,
-        success:isSuccess,
+        loading: isLoading,
+        success: isSuccess,
       }}
     />
   );

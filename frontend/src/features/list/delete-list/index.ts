@@ -1,3 +1,3 @@
 export * from './model';
 export * from './ui/DeleteListModal';
-export * from './lib/useDeleteList';
+export * from './utils/useDeleteList';

@@ -42,12 +42,11 @@ export const UpdateListModal = memo(
     listId,
     listImageUrl,
   }: UpdateListModalProps) => {
-
     const initialValues = {
       name: listData.name,
       description: listData.description,
-      isPrivate: listData.isPrivate
-    }
+      isPrivate: listData.isPrivate,
+    };
 
     const updateMutation = useUpdateList();
     const uploadImageMutation = useUploadImage();
@@ -91,112 +90,119 @@ export const UpdateListModal = memo(
             });
           }}
           render={({ handleSubmit, invalid }) => (
-        <>
-         <Modal
-          closeButton
-          aria-labelledby="modal-title"
-          open={isOpen}
-          onClose={() => setIsOpen(false)}
-          >
-          <ModalHeader>
-           <Text h3>Изменить коллекцию</Text>
-         </ModalHeader>
-          <ModalBody>
-           <Form
-            onSubmit={handleSubmit}
-            css={{ mb: '$10' }}
-            id="update-list-modal-form"
-            >
-            <Field
-            name="name"
-            validate={composeValidators(requiredName, maxLengthName)}
-            validateFields={[]}
-            >
-          {({ input, meta }) => (
-              <Input
-              {...input}
-              bordered
-              fullWidth
-              label="Название"
-              size="xl"
-              placeholder="Название123"
-              status={meta.error && 'error'}
-              />
+            <>
+              <Modal
+                closeButton
+                aria-labelledby="modal-title"
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+              >
+                <ModalHeader>
+                  <Text h3>Изменить коллекцию</Text>
+                </ModalHeader>
+                <ModalBody>
+                  <Form
+                    onSubmit={handleSubmit}
+                    css={{ mb: '$10' }}
+                    id="update-list-modal-form"
+                  >
+                    <Field
+                      name="name"
+                      validate={composeValidators(requiredName, maxLengthName)}
+                      validateFields={[]}
+                    >
+                      {({ input, meta }) => (
+                        <Input
+                          {...input}
+                          bordered
+                          fullWidth
+                          label="Название"
+                          size="xl"
+                          placeholder="Название123"
+                          status={meta.error && 'error'}
+                        />
+                      )}
+                    </Field>
+                  </Form>
+
+                  <Field
+                    name="description"
+                    validate={maxLengthDescription}
+                    validateFields={[]}
+                  >
+                    {({ input }) => (
+                      <Textarea
+                        {...input}
+                        maxLength={400}
+                        bordered
+                        size="xl"
+                        label="Описание"
+                        placeholder="Ваше описание коллекции"
+                        maxRows={Infinity}
+                      />
+                    )}
+                  </Field>
+
+                  <Field name="isPrivate" validateFields={[]}>
+                    {({ input }) => (
+                      <Checkbox
+                        name={input.name}
+                        isSelected={input.checked}
+                        onChange={input.onChange}
+                        color="gradient"
+                        label="Сделать коллекцию приватной"
+                        css={{
+                          '& .nextui-checkbox-text': {
+                            fontSize: '$lg',
+                          },
+                        }}
+                        size="lg"
+                        defaultSelected={listData.isPrivate}
+                      />
+                    )}
+                  </Field>
+
+                  <ImageUpload
+                    text="Загрузить обложку"
+                    loading={uploadImageMutation.isLoading}
+                    loadedImageSrc={
+                      uploadImageMutation.data?.link ??
+                      listImageUrl ??
+                      undefined
+                    }
+                    onChange={handleUploadImage}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    form="update-list-modal-form"
+                    type="submit"
+                    size="lg"
+                    disabled={invalid || uploadImageMutation.isLoading}
+                    color={'gradient'}
+                    auto
+                    css={{
+                      minWidth: '7.5rem',
+                      m: 0,
+                      '@xsMax': {
+                        width: '100%',
+                      },
+                    }}
+                  >
+                    {updateMutation.isLoading ? (
+                      <Loading size="lg" type="points" color="white" />
+                    ) : (
+                      'Обновить'
+                    )}
+                  </Button>
+                </ModalFooter>
+              </Modal>
+            </>
           )}
-            </Field>
-          </Form>
-          
-          <Field
-            name="description"
-            validate={maxLengthDescription}
-            validateFields={[]}>
-              {({ input }) => (
-            <Textarea
-              {...input}
-              maxLength={400}
-              bordered
-              size="xl"
-              label="Описание"
-              placeholder="Ваше описание коллекции"
-              maxRows={Infinity}
-            /> )}
-          </Field>
-            
-          <Field name="isPrivate" validateFields={[]}
-          >{({ input }) => (
-            <Checkbox
-              name={input.name}
-              color="gradient"
-              label="Сделать коллекцию приватной"
-              css={{
-                '& .nextui-checkbox-text': {
-                  fontSize: '$lg',
-                },
-              }}
-              size="lg"
-              defaultSelected={listData.isPrivate}
-            />)}
-          </Field>
-          
-          <ImageUpload
-            text="Загрузить обложку"
-            loading={uploadImageMutation.isLoading}
-            loadedImageSrc={
-              uploadImageMutation.data?.link ?? listImageUrl ?? undefined
-            }
-            onChange={handleUploadImage}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            form="update-list-modal-form"
-            type="submit"
-            size="lg"
-            disabled={invalid || uploadImageMutation.isLoading}
-            color={'gradient'}
-            auto
-            css={{
-              minWidth: '7.5rem',
-              m: 0,
-              '@xsMax': {
-                width: '100%',
-              },
-            }}
-          >
-            {updateMutation.isLoading ? (
-              <Loading size="lg" type="points" color="white" />
-            ) : (
-              'Обновить'
-            )}
-          </Button>
-          </ModalFooter>
-        </Modal>
-        </>
-        )}
-      />
-    </>
-  );
-},
+        />
+      </>
+    );
+  },
   (prev, next) => {
     const formEqual =
       (prev.listData.description === next.listData.description &&

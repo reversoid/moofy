@@ -6,7 +6,7 @@ import { formatDate } from '@/shared/lib/formatDate/formatDate';
 import { styled, Text } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDeleteList } from '../../../../features/list/delete-list/lib/useDeleteList';
+import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
 
 const ListInfoContainer = styled('div', {

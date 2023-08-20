@@ -3,7 +3,6 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReviewModal from '../../ui/ReviewModal';
 import { useCreateReview } from '../lib/useCreateReview';
-import { clearState } from '../model';
 
 export interface CreateReviewModalProps {
   isOpen: boolean;
@@ -34,7 +33,6 @@ const CreateReviewModal = ({
           });
         },
         onSuccess() {
-          clearState();
           setIsOpen(false);
           navigate('../');
         },

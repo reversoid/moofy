@@ -10,7 +10,10 @@ import { useStore } from 'effector-react';
 import { transformResponse } from '../helpers/transformResponse';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
-import { $singleListPage, setListPageContent } from '../../model/listPageContent';
+import {
+  $singleListPage,
+  setListPageContent,
+} from '../../model/listPageContent';
 
 export interface ListPageContent {
   list: List;
@@ -31,7 +34,9 @@ export const useListPage = (id: number) => {
   useCachedInfiniteData(result, () => {
     if (result.data) {
       const content = transformResponse(result.data);
-      setListPageContent({ data: content });
+      if (!listPageContent) {
+        setListPageContent({ data: content });
+      }
     }
   });
 
