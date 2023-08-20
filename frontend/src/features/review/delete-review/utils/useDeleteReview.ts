@@ -5,8 +5,8 @@ import { deleteReview } from '../model';
 export const useDeleteReview = () => {
   const mutation = useMutation({
     mutationFn: (reviewId: number) => reviewService.deleteReview(reviewId),
-    onSuccess({ reviewId }) {
-      deleteReview({ reviewId });
+    onSuccess({ reviewId, list }) {
+      deleteReview({ reviewId, list });
     },
   });
   return mutation;

@@ -42,19 +42,19 @@ $_listPageContent.on(updateReview, (state, { review, list }) => {
   };
 });
 
-$_listPageContent.on(createReview, (state, payload) => {
-  if (!state || state.list.id !== payload.list.id) {
+$_listPageContent.on(createReview, (state, {list, review}) => {
+  if (!state || state.list.id !== list.id) {
     return state;
   }
 
   return {
     ...state,
-    reviews: [payload.review, ...state.reviews],
-    list: payload.list,
+    reviews: [review, ...state.reviews],
+    list: list,
   };
 });
 
-$_listPageContent.on(deleteReview, (state, { reviewId }) => {
+$_listPageContent.on(deleteReview, (state, { reviewId, list }) => {
   if (!state) {
     return state;
   }
@@ -62,6 +62,7 @@ $_listPageContent.on(deleteReview, (state, { reviewId }) => {
   return {
     ...state,
     reviews: state.reviews.filter((r) => r.id !== reviewId),
+    list,
   };
 });
 
