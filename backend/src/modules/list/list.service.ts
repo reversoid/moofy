@@ -414,4 +414,14 @@ export class ListService {
 
     await this.listViewRepository.markListAsViewed(userId, listId);
   }
+
+  async getAmountOfUpdatesForUser(
+    userId: number,
+  ): Promise<{ updatesAmount: number }> {
+    const updatesAmount = await this.listRepository.getLatestUpdatesAmount(
+      userId,
+    );
+
+    return { updatesAmount };
+  }
 }

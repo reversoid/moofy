@@ -5,6 +5,8 @@ import { PaginatedRepository } from 'src/shared/pagination/paginated.repository'
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 import { AdditionalListInfo } from 'src/modules/review/review.controller';
 import { Order } from '../dtos/get-updates.query.dto';
+import { Subscription } from 'src/modules/user/entities/subscription.entity';
+import { ListView } from '../entities/list-view.entity';
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
@@ -233,6 +235,20 @@ export class ListRepository extends PaginatedRepository<List> {
     const latestUpdatedLists = await query.getMany();
 
     return this.processPagination(latestUpdatedLists, limit, dateField);
+  }
+
+  async getLatestUpdatesAmount(userId: number): Promise<number> {
+    return this.createQueryBuilder('list')
+      .innerJoin(Subscription, 'sub', 'list.user_id = sub.followed_id')
+      .leftJoinAndSelect(
+        ListView,
+        'view',
+        'list.id = view.list_id AND view.user_id = :userId',
+        { userId },
+      )
+      .where('sub.follower_id = :userId', { userId })
+      .andWhere('view.id IS NULL')
+      .getCount();
   }
 
   private getDateFieldByOrder(order?: Order) {

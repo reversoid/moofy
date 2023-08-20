@@ -302,4 +302,14 @@ export class ListController {
   ) {
     await this.listService.markListAsViewed(user.id, id);
   }
+
+  @ApiOperation({
+    description: 'Amount of list updates for user',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get('updates/amount')
+  async getAmountOfUpdates(@Request() { user }: { user: User }) {
+    return this.listService.getAmountOfUpdatesForUser(user.id);
+  }
 }
