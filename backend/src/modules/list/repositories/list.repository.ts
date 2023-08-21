@@ -8,10 +8,6 @@ import { Order } from '../dtos/get-updates.query.dto';
 import { Subscription } from 'src/modules/user/entities/subscription.entity';
 import { ListView } from '../entities/list-view.entity';
 
-export class ListWithIsViewed extends List {
-  is_viewed: boolean;
-}
-
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
   constructor(dataSource: DataSource) {
