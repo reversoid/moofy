@@ -221,12 +221,9 @@ export class ListRepository extends PaginatedRepository<List> {
         'user.id',
         'user.username',
         'user.image_url',
-
-        'CASE WHEN view.id IS NULL THEN FALSE ELSE TRUE END AS is_viewed',
       ])
       .innerJoin('list.user', 'user')
       .innerJoin('Subscription', 'sub', 'sub.followed = user.id')
-      .leftJoin('list.views', 'view', 'view.user_id = :userId')
       .where('sub.follower = :userId', { userId })
       .andWhere('list.is_public = TRUE')
       .orderBy(`list.${dateField}`, 'DESC')
@@ -239,9 +236,27 @@ export class ListRepository extends PaginatedRepository<List> {
       });
     }
 
-    const latestUpdatedLists = (await query.getMany()) as ListWithIsViewed[];
+    const latestUpdatedLists = await query.getMany();
 
     return this.processPagination(latestUpdatedLists, limit, dateField);
+  }
+
+  async isViewed(
+    userId: number,
+    listIds: number[],
+  ): Promise<Map<number, boolean>> {
+    const result = (await this.createQueryBuilder('list')
+      .select([
+        'list.id',
+        'CASE WHEN view.id IS NULL THEN FALSE ELSE TRUE END AS is_viewed',
+      ])
+      .leftJoin('list.views', 'view', 'view.user.id = :userId', { userId })
+      .where('list.id = ANY(:listIds)', { listIds })
+      .getRawMany()) as { list_id: number; is_viewed: boolean }[];
+
+    return new Map<number, boolean>(
+      result.map<[number, boolean]>((item) => [item.list_id, item.is_viewed]),
+    );
   }
 
   async getLatestUpdatesAmount(userId: number): Promise<number> {

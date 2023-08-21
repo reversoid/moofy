@@ -168,11 +168,7 @@ export class ReviewService {
       });
 
     const isFaved =
-      user &&
-      (await this.favListRepository.findOneBy({
-        list: { id: listId },
-        user: { id: user.id },
-      }));
+      user && (await this.favListRepository.isFaved(user.id, listId));
 
     const listStats = await this.listRepository.getListStatistics(
       listId,
@@ -183,7 +179,7 @@ export class ReviewService {
       list,
       reviews,
       additionalInfo: {
-        isFavorite: Boolean(isFaved),
+        isFavorite: isFaved,
         ...listStats,
       },
     };

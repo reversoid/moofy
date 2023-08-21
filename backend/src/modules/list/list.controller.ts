@@ -39,7 +39,6 @@ import { ListIdParamsDTO } from './dtos/list-id.param.dto';
 import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
 import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
 import { NumericIDParamDTO } from 'src/shared/dto/NumericParam.dto';
-import { ListWithIsViewed } from './repositories/list.repository';
 
 @ApiTags('List')
 @Controller('list')
@@ -287,7 +286,7 @@ export class ListController {
       }),
     )
     { limit = 20, lowerBound, order }: GetUpdatesQueryDTO,
-  ): Promise<IterableResponse<ListWithIsViewed>> {
+  ): Promise<IterableResponse<List>> {
     return this.listService.getLatestUpdates(user.id, lowerBound, limit, order);
   }
 

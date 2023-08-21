@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
 import { FavoriteList } from '../entities/favoriteList.entity';
+import { List } from '../entities/list.entity';
 
 @Injectable()
 export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
@@ -60,5 +61,37 @@ export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
         },
       },
     });
+  }
+
+  async areListsFaved(
+    userId: number,
+    listIds: number[],
+  ): Promise<Map<number, boolean>> {
+    const result = (await this.createQueryBuilder()
+      .from(List, 'list')
+      .select([
+        'list.id',
+        'CASE WHEN fav.id IS NULL THEN FALSE ELSE TRUE END AS is_faved',
+      ])
+      .leftJoin(
+        FavoriteList,
+        'fav',
+        'fav.listId = list.id AND fav.userId = :userId',
+        { userId },
+      )
+      .where('list.id = ANY(:listIds)', { listIds })
+      .getRawMany()) as { list_id: number; is_faved: boolean }[];
+
+    return new Map<number, boolean>(
+      result.map((item) => [item.list_id, item.is_faved]),
+    );
+  }
+
+  async isFaved(userId: number, listId: number) {
+    const result = await this.findOneBy({
+      list: { id: listId },
+      user: { id: userId },
+    });
+    return Boolean(result);
   }
 }
