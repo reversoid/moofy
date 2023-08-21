@@ -7,7 +7,7 @@ import {
   useInfiniteQuery,
 } from '@tanstack/react-query';
 import { FetchError, Id, IterableResponse } from '@/shared/api/types/shared';
-import { List } from '@/shared/api/types/list.type';
+import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { listService } from '@/features/list/api/list.service';
 import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
@@ -16,7 +16,9 @@ import { useAuth } from '@/app';
 
 const useFnToFetch = (
   profileId: Id,
-): QueryFunction<IterableResponse<List>, QueryKey, any> | undefined => {
+):
+  | QueryFunction<IterableResponse<ListWithAdditionalInfo>, QueryKey, any>
+  | undefined => {
   const { userId } = useAuth();
   const userIsOwner = userId === profileId;
 
@@ -24,14 +26,17 @@ const useFnToFetch = (
     return ({ pageParam }) => listService.getMyLists(pageParam);
   }
 
-  return ({ pageParam }) => listService.getUserLists(profileId, pageParam)
+  return ({ pageParam }) => listService.getUserLists(profileId, pageParam);
 };
 
 export const useProfileLists = (profile: Profile) => {
   const lists = useStore($profileLists);
   const fnToFetch = useFnToFetch(profile.id);
 
-  const result = useInfiniteQuery<IterableResponse<List>, FetchError>({
+  const result = useInfiniteQuery<
+    IterableResponse<ListWithAdditionalInfo>,
+    FetchError
+  >({
     queryKey: ['Fetch more profile lists', profile.id],
     queryFn: fnToFetch,
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
@@ -40,7 +45,7 @@ export const useProfileLists = (profile: Profile) => {
       pageParams: [],
       pages: [
         {
-          items: profile.allLists.lists.items,
+          items: profile.allLists.lists.items.map((i) => ({ list: i })),
           nextKey: profile.allLists.lists.nextKey,
         },
       ],
@@ -50,14 +55,14 @@ export const useProfileLists = (profile: Profile) => {
   useCachedInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setProfileLists(content);
+      setProfileLists(content.map((c) => c.list));
     }
   });
 
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setProfileLists(content);
+      setProfileLists(content.map((c) => c.list));
     }
   });
 

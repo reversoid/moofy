@@ -42,7 +42,7 @@ $_listPageContent.on(updateReview, (state, { review, list }) => {
   };
 });
 
-$_listPageContent.on(createReview, (state, {list, review}) => {
+$_listPageContent.on(createReview, (state, { list, review }) => {
   if (!state || state.list.id !== list.id) {
     return state;
   }
@@ -78,15 +78,16 @@ export const $singleListPage = combine([
   const listId = listData.list.id;
   const isFaved = listId in favs ? favs[listId] : undefined;
 
-  const newIsFaved =
-    isFaved !== undefined ? isFaved : listData.additionalInfo.isFavorite;
+  const newIsFaved = Boolean(
+    isFaved !== undefined ? isFaved : listData?.additionalInfo?.isFavorite,
+  );
 
   const result: ListPageContent = {
     ...listData,
-    additionalInfo: {
+    additionalInfo: listData.additionalInfo ? {
       ...listData.additionalInfo,
       isFavorite: newIsFaved,
-    },
+    } : undefined,
   };
   return result;
 });

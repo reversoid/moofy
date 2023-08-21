@@ -14,6 +14,7 @@ import { Review } from 'src/modules/review/entities/review.entity';
 import { FavoriteList } from './favoriteList.entity';
 import { Comment } from './comment.entity';
 import { ListLike } from './list-like.entity';
+import { ListView } from './list-view.entity';
 
 @Entity()
 export class List {
@@ -50,6 +51,9 @@ export class List {
 
   @OneToMany(() => Comment, (comment) => comment.list)
   comments: Comment[];
+
+  @OneToMany(() => ListView, (listView) => listView.list)
+  views: ListView[];
 
   @OneToMany(() => ListLike, (like) => like.list)
   likes: ListLike[];

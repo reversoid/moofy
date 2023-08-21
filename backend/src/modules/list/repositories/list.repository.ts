@@ -5,6 +5,12 @@ import { PaginatedRepository } from 'src/shared/pagination/paginated.repository'
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 import { AdditionalListInfo } from 'src/modules/review/review.controller';
 import { Order } from '../dtos/get-updates.query.dto';
+import { Subscription } from 'src/modules/user/entities/subscription.entity';
+import { ListView } from '../entities/list-view.entity';
+
+export class ListWithIsViewed extends List {
+  is_viewed: boolean;
+}
 
 @Injectable()
 export class ListRepository extends PaginatedRepository<List> {
@@ -164,7 +170,7 @@ export class ListRepository extends PaginatedRepository<List> {
   async getListStatistics(
     listId: number,
     userId?: number,
-  ): Promise<Omit<AdditionalListInfo, 'isFavorite'>> {
+  ): Promise<Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>> {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
       .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
@@ -193,6 +199,54 @@ export class ListRepository extends PaginatedRepository<List> {
       commentsAmount: Number(data.commentsCount ?? 0),
       isLiked: data.userLiked ?? false,
     };
+  }
+
+  async getListsStatistics(
+    listIds: number[],
+    userId?: number,
+  ): Promise<Map<number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>>> {
+    const query = this.createQueryBuilder('list')
+      .select('list.id', 'id')
+      .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentsCount')
+      .leftJoin('list.likes', 'like')
+      .leftJoin('list.comments', 'comment')
+      .groupBy('list.id')
+      .where('list.id = ANY(:listIds)', { listIds });
+
+    if (userId !== undefined) {
+      query
+        .addSelect(
+          'CASE WHEN userLike.id IS NOT NULL THEN TRUE ELSE FALSE END',
+          'userLiked',
+        )
+        .leftJoin('like.user', 'userLike', 'userLike.id = :userId', { userId })
+        .addGroupBy('userLike.id');
+    } else {
+      query.addSelect('FALSE', 'userLiked');
+    }
+
+    const data = await query.getRawMany();
+
+    const infos = data.map((data) => ({
+      likesAmount: Number(data.likesCount ?? 0),
+      commentsAmount: Number(data.commentsCount ?? 0),
+      isLiked: data.userLiked ?? false,
+      id: Number(data.id),
+    }));
+
+    return new Map(
+      infos.map<[number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>]>(
+        (i) => [
+          i.id,
+          {
+            commentsAmount: i.commentsAmount,
+            isLiked: i.isLiked,
+            likesAmount: i.likesAmount,
+          },
+        ],
+      ),
+    );
   }
 
   async getLatestUpdates(
@@ -233,6 +287,20 @@ export class ListRepository extends PaginatedRepository<List> {
     const latestUpdatedLists = await query.getMany();
 
     return this.processPagination(latestUpdatedLists, limit, dateField);
+  }
+
+  async getLatestUpdatesAmount(userId: number): Promise<number> {
+    return this.createQueryBuilder('list')
+      .innerJoin(Subscription, 'sub', 'list.user_id = sub.followed_id')
+      .leftJoinAndSelect(
+        ListView,
+        'view',
+        'list.id = view.list_id AND view.user_id = :userId',
+        { userId },
+      )
+      .where('sub.follower_id = :userId', { userId })
+      .andWhere('view.id IS NULL')
+      .getCount();
   }
 
   private getDateFieldByOrder(order?: Order) {

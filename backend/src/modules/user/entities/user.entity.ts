@@ -15,6 +15,7 @@ import {
 import { Subscription } from './subscription.entity';
 import { Comment } from 'src/modules/list/entities/comment.entity';
 import { ListLike } from 'src/modules/list/entities/list-like.entity';
+import { ListView } from 'src/modules/list/entities/list-view.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -47,6 +48,9 @@ export class User {
 
   @OneToMany(() => ToWatch, (toWatch) => toWatch.user)
   toWatch: ToWatch[];
+
+  @OneToMany(() => ListView, (entity) => entity.user)
+  list_views: ListView[];
 
   @Index()
   @CreateDateColumn({ type: 'timestamptz', select: false })
