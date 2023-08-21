@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { AuthErrors } from 'src/errors/auth.errors';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import Redis from 'ioredis';
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { UserRepository } from '../user/repositories/user.repository';
+import globalConfig, { AppEnvironments } from 'src/config/global.config';
+import { ConfigType } from '@nestjs/config';
 
 interface Tokens {
   access: string;
@@ -19,6 +21,8 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
     @InjectRedis() private readonly redis: Redis,
+    @Inject(globalConfig.KEY)
+    private config: ConfigType<typeof globalConfig>,
   ) {}
 
   async createUser({ password, username }: RegisterDTO): Promise<number> {
@@ -61,7 +65,10 @@ export class AuthService {
   async generateTokens(userId: number): Promise<Tokens> {
     const access = await this.jwtService.signAsync(
       { id: userId },
-      { expiresIn: '15m' },
+      {
+        expiresIn:
+          this.config.environment === AppEnvironments.prod ? '15m' : '300d',
+      },
     );
 
     const refresh = await this.jwtService.signAsync(

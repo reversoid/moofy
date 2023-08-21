@@ -31,6 +31,7 @@ export interface AdditionalListInfo {
   isLiked: boolean;
   likesAmount: number;
   commentsAmount: number;
+  isViewed: boolean;
 }
 
 @ApiTags('Review')

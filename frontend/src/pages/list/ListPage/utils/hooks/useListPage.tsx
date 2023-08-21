@@ -2,7 +2,7 @@ import {
   ListWithContentResponse,
   listService,
 } from '@/features/list/api/list.service';
-import { AdditinalInfo, List } from '@/shared/api/types/list.type';
+import { AdditinalInfo, List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import { FetchError } from '@/shared/api/types/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -15,9 +15,7 @@ import {
   setListPageContent,
 } from '../../model/listPageContent';
 
-export interface ListPageContent {
-  list: List;
-  additionalInfo: AdditinalInfo;
+export interface ListPageContent extends ListWithAdditionalInfo {
   reviews: Review[];
 }
 

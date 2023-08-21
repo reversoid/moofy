@@ -1,5 +1,4 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Film } from './entities/film.entity';
 import { FilmRepository } from './repositories/film.repository';
 import { ExternalMovieProxyService } from '../externalMovieProxy/externalMovieProxy.service';
 
@@ -10,21 +9,15 @@ export class FilmService {
     private readonly externalMovieProxy: ExternalMovieProxyService,
   ) {}
 
-  async createFilm(filmId: string) {
+  async saveFilmById(filmId: string) {
     const film = await this.externalMovieProxy.getFilmById(Number(filmId));
     if (!film) {
       throw new HttpException('WRONG_FILM_ID_GIVEN', 400);
     }
 
-    const insertResult = await this.filmRepository
-      .createQueryBuilder('film')
-      .insert()
-      .into(Film)
-      .values([film])
-      .returning(['id'])
-      .execute();
+    const { id } = await this.filmRepository.saveFilm(film);
 
-    film.id = insertResult.raw[0].id;
+    film.id = id;
 
     return film;
   }

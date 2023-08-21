@@ -1,6 +1,10 @@
 import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import { List } from '@/shared/api/types/list.type';
+import {
+  AdditinalInfo,
+  List,
+  ListWithAdditionalInfo,
+} from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import {
   DateAsString,
@@ -33,10 +37,8 @@ export interface RemoveFromFavoritesDTO {
   listId: number;
 }
 
-export interface ListWithContentResponse {
+export interface ListWithContentResponse extends ListWithAdditionalInfo {
   reviews: IterableResponse<Review>;
-  list: List;
-  additionalInfo: { isFavorite: boolean };
 }
 
 export class ListService extends ApiService {
@@ -47,7 +49,7 @@ export class ListService extends ApiService {
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
     }
-    return this.get<IterableResponse<List>>('/list', {
+    return this.get<IterableResponse<ListWithAdditionalInfo>>('/list', {
       useJWT: true,
       searchParams,
     });
@@ -66,7 +68,7 @@ export class ListService extends ApiService {
     if (lowerBound) {
       searchParams['lowerBound'] = lowerBound;
     }
-    return this.get<IterableResponse<List>>('/list/public', {
+    return this.get<IterableResponse<ListWithAdditionalInfo>>('/list/public', {
       useJWT: true,
       searchParams,
     });

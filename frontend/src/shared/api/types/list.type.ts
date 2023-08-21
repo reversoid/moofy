@@ -14,4 +14,13 @@ export interface List {
 
 export interface AdditinalInfo {
   isFavorite: boolean;
+  isLiked: boolean;
+  likesAmount: number;
+  commentsAmount: number;
+  isViewed: boolean;
+}
+
+export interface ListWithAdditionalInfo {
+  list: List;
+  additionalInfo?: AdditinalInfo;
 }

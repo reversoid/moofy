@@ -23,6 +23,8 @@ import { CommentLikeRepository } from './repositories/comment-like.repository';
 import { LikeErrors } from 'src/errors/like.errors';
 import { CommentLike } from './entities/comment-like.entity';
 import { Order } from './dtos/get-updates.query.dto';
+import { ListViewRepository } from './repositories/list-view.repository';
+import { AdditionalListInfo } from '../review/review.controller';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -45,6 +47,7 @@ export class ListService {
     private readonly commentRepository: CommentRepository,
     private readonly listLikeRepository: ListLikeRepository,
     private readonly commentLikeRepository: CommentLikeRepository,
+    private readonly listViewRepository: ListViewRepository,
   ) {}
 
   async createList(
@@ -73,6 +76,7 @@ export class ListService {
       lowerBound?: Date;
       search?: string;
     },
+    requesterId?: number,
   ) {
     const isPublic = IsPublicByStrategy[listsToGet];
 
@@ -86,13 +90,38 @@ export class ListService {
     ]);
 
     processedLists.items.forEach(
-      (item) => (item.user = { id: userId, username: user.username } as User),
+      (item) =>
+        (item.user = {
+          id: userId,
+          username: user.username,
+          image_url: user.image_url,
+        } as User),
     );
-    return processedLists;
+    const { items, nextKey } = processedLists;
+    const listsWithInfo = await this.getListsWithAdditionalInfo(
+      items,
+      requesterId,
+    );
+    return {
+      nextKey,
+      items: listsWithInfo,
+    };
   }
 
-  async getPublicLists(search: string, limit: number, lowerBound?: Date) {
-    return this.listRepository.getPublicLists(search, limit, lowerBound);
+  async getPublicLists(
+    search: string,
+    limit: number,
+    lowerBound?: Date,
+    userId?: number,
+  ) {
+    const { items, nextKey } = await this.listRepository.getPublicLists(
+      search,
+      limit,
+      lowerBound,
+    );
+    const listsWithInfo = await this.getListsWithAdditionalInfo(items, userId);
+
+    return { items: listsWithInfo, nextKey };
   }
 
   async getUserList(user: User, listId: number): Promise<List> {
@@ -396,11 +425,61 @@ export class ListService {
     limit = 20,
     order?: Order,
   ) {
-    return this.listRepository.getLatestUpdates(
+    const { items, nextKey } = await this.listRepository.getLatestUpdates(
       userId,
       lowerBound,
       limit,
       order,
+    );
+
+    const listsWithInfo = await this.getListsWithAdditionalInfo(items, userId);
+
+    return {
+      nextKey,
+      items: listsWithInfo,
+    };
+  }
+
+  async markListAsViewed(userId: number, listId: number) {
+    const isViewed = await this.listViewRepository.isListViewed(userId, listId);
+    if (isViewed) {
+      return;
+    }
+
+    await this.listViewRepository.markListAsViewed(userId, listId);
+  }
+
+  async getAmountOfUpdatesForUser(
+    userId: number,
+  ): Promise<{ updatesAmount: number }> {
+    const updatesAmount = await this.listRepository.getLatestUpdatesAmount(
+      userId,
+    );
+
+    return { updatesAmount };
+  }
+
+  async getListsWithAdditionalInfo(
+    lists: List[],
+    userId: number | undefined,
+  ): Promise<{ list: List; additionalInfo: AdditionalListInfo }[]> {
+    const listIds = lists.map((i) => i.id);
+
+    const [favedMap, viewedMap, stats] = await Promise.all([
+      this.favListRepository.areListsFaved(listIds, userId),
+      this.listViewRepository.areListsViewed(listIds, userId),
+      this.listRepository.getListsStatistics(listIds, userId),
+    ]);
+
+    return lists.map<{ list: List; additionalInfo: AdditionalListInfo }>(
+      (item) => ({
+        list: item,
+        additionalInfo: {
+          ...stats.get(item.id),
+          isViewed: viewedMap.get(item.id),
+          isFavorite: favedMap.get(item.id),
+        },
+      }),
     );
   }
 }

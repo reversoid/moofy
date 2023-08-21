@@ -14,12 +14,15 @@ import { ListLike } from './entities/list-like.entity';
 import { CommentLike } from './entities/comment-like.entity';
 import { CommentLikeRepository } from './repositories/comment-like.repository';
 import { ListLikeRepository } from './repositories/list-like.repository';
+import { ListView } from './entities/list-view.entity';
+import { ListViewRepository } from './repositories/list-view.repository';
 
 @Module({
   imports: [
     UserModule,
     TypeOrmModule.forFeature([
       List,
+      ListView,
       FavoriteList,
       Comment,
       ListLike,
@@ -34,6 +37,7 @@ import { ListLikeRepository } from './repositories/list-like.repository';
     CommentRepository,
     ListLikeRepository,
     CommentLikeRepository,
+    ListViewRepository,
   ],
   controllers: [ListController],
   providers: [
@@ -43,6 +47,7 @@ import { ListLikeRepository } from './repositories/list-like.repository';
     CommentRepository,
     CommentLikeRepository,
     ListLikeRepository,
+    ListViewRepository,
   ],
 })
 export class ListModule implements NestModule {

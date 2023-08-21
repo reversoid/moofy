@@ -15,7 +15,9 @@ export const SearchCollections = () => {
 
   useLoadingBar(loading);
 
-  return <Collections loading={loading} collections={result} />;
+  return (
+    <Collections loading={loading} collections={result?.map((r) => r.list)} />
+  );
 };
 
 export default SearchCollections;
