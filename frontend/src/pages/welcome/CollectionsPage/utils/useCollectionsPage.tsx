@@ -1,6 +1,6 @@
 import { $userLists, setUserLists } from '@/entities/user-lists';
 import { listService } from '@/features/list/api/list.service';
-import { List } from '@/shared/api/types/list.type';
+import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
@@ -10,7 +10,10 @@ import { useStore } from 'effector-react';
 export const useCollectionsPage = () => {
   const userLists = useStore($userLists);
 
-  const result = useInfiniteQuery<IterableResponse<List>, FetchError>({
+  const result = useInfiniteQuery<
+    IterableResponse<ListWithAdditionalInfo>,
+    FetchError
+  >({
     queryKey: ['Collections page'],
     queryFn: ({ pageParam }) =>
       listService.getMyLists(pageParam, pageParam == undefined ? 19 : 20),
@@ -20,7 +23,7 @@ export const useCollectionsPage = () => {
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setUserLists(content);
+      setUserLists(content.map((c) => c.list));
     }
   });
 
