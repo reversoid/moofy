@@ -1,7 +1,7 @@
 import GearButton from '@/shared/components/GearButton';
 import Dropdown, { Option } from '@/shared/ui/Dropdown/Dropdown';
 import { ButtonProps } from '@nextui-org/react';
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
 export interface OwnerActionsProps {
   onClickUpdate: () => void;

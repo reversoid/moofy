@@ -1,7 +1,7 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import { Button, Loading, Text } from '@nextui-org/react';
 import { memo, useEffect } from 'react';
-import { useUploadImage } from '../../update-list/lib/useUploadImage';
+import { useUploadImage } from '../../update-list/utils/useUploadImage';
 import { useCreateListModal } from '../utils/useCreateListModal';
 import { CreateListForm } from './CreateListForm';
 

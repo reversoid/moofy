@@ -1,8 +1,10 @@
 import { combine, createEvent, createStore } from 'effector';
-import { updateList } from './updateList';
 import { ListPageContent } from '../utils/hooks/useListPage';
-import { addReview } from './addReview';
 import { $favoriteListsMap } from '@/entities/user-fav-lists';
+import { updateReview } from '@/features/review/update-review';
+import { createReview } from '@/features/review/create-review';
+import { deleteReview } from '@/features/review/delete-review';
+import { updateList } from '@/features/list/update-list';
 
 export const setListPageContent = createEvent<{ data: ListPageContent }>();
 
@@ -18,15 +20,49 @@ $_listPageContent.on(updateList, (state, { list }) => {
   return { ...state, list };
 });
 
-$_listPageContent.on(addReview, (state, payload) => {
-  if (!state || state.list.id !== payload.list.id) {
+$_listPageContent.on(updateReview, (state, { review, list }) => {
+  if (!state) {
+    return state;
+  }
+
+  const indexOfReview = state.reviews.findIndex(
+    (item) => item.id === review.id,
+  );
+  if (indexOfReview === -1) {
+    return state;
+  }
+
+  const reviews = [...state.reviews];
+  reviews[indexOfReview] = { ...reviews[indexOfReview], ...review };
+
+  return {
+    ...state,
+    reviews,
+    list,
+  };
+});
+
+$_listPageContent.on(createReview, (state, {list, review}) => {
+  if (!state || state.list.id !== list.id) {
     return state;
   }
 
   return {
     ...state,
-    reviews: [payload.review, ...state.reviews],
-    list: payload.list,
+    reviews: [review, ...state.reviews],
+    list: list,
+  };
+});
+
+$_listPageContent.on(deleteReview, (state, { reviewId, list }) => {
+  if (!state) {
+    return state;
+  }
+
+  return {
+    ...state,
+    reviews: state.reviews.filter((r) => r.id !== reviewId),
+    list,
   };
 });
 

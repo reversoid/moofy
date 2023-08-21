@@ -3,7 +3,7 @@ import up from '@/shared/assets/img/up.svg';
 import { getColorsByScore } from '@/shared/lib/scoreColors';
 import { Button, styled } from '@nextui-org/react';
 import { memo, useState } from 'react';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { FieldInputProps } from 'react-final-form';
 
 const removeArrows = {
   '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
@@ -58,35 +58,33 @@ const CounterContainer = styled('div', {
 });
 
 interface CounterProps {
-  registerReturn: UseFormRegisterReturn;
-  setValue: (newValue: number) => void;
-  getValue: () => number;
+  fieldInputProps: FieldInputProps<number, HTMLElement>
   disabled?: boolean;
 }
 
-const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps) => {
+const Counter = ({ fieldInputProps, disabled }: CounterProps) => {
   const increase = () => {
-    const currentValue = getValue();
+    const currentValue = fieldInputProps.value;
     if (currentValue >= 10) {
       return;
     }
-    setValue(currentValue + 1);
+    fieldInputProps.onChange(currentValue + 1);
     changeColor();
   };
 
   const decrease = () => {
-    const currentValue = getValue();
+    const currentValue = fieldInputProps.value;
     if (currentValue <= 1) {
       return;
     }
-    setValue(currentValue - 1);
+    fieldInputProps.onChange(currentValue - 1);
     changeColor();
   };
 
-  const [color, setColor] = useState(getColorsByScore(getValue()));
+  const [color, setColor] = useState(getColorsByScore(fieldInputProps.value));
 
   const changeColor = () => {
-    setColor(getColorsByScore(getValue()));
+    setColor(getColorsByScore(fieldInputProps.value));
   };
 
   return (
@@ -98,12 +96,13 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
       <InputStyled
         readOnly
         type="number"
-        {...registerReturn}
+        value={fieldInputProps.value}
         style={{
           background: color?.main,
           color: color?.contrast,
         }}
         disabled={disabled}
+        name={fieldInputProps.name}
       />
 
       <IconButton onPress={increase} disabled={disabled}>
@@ -114,3 +113,5 @@ const Counter = ({ registerReturn, setValue, getValue, disabled }: CounterProps)
 };
 
 export default memo(Counter);
+
+

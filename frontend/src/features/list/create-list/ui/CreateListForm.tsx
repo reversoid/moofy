@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { Field, Form as FinalForm } from 'react-final-form';
-import { useUploadImage } from '../../update-list/lib/useUploadImage';
+import { useUploadImage } from '../../update-list/utils/useUploadImage';
 import { useCreateListModal } from '../utils/useCreateListModal';
 import { composeValidators } from '@/shared/lib/forms/composeValidators';
 import {

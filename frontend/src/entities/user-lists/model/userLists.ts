@@ -23,8 +23,9 @@ $userLists.on(updateList, (state, payload) => {
     return newState;
   }
 
-  newState[index] = payload;
-  return newState;
+  newState.splice(index, 1);
+
+  return [payload, ...newState];
 });
 
 $userLists.on(removeList, (state, payload) =>
