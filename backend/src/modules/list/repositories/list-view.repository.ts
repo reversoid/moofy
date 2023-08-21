@@ -22,19 +22,30 @@ export class ListViewRepository extends Repository<ListView> {
   }
 
   async areListsViewed(
-    userId: number,
     listIds: number[],
+    userId?: number,
   ): Promise<Map<number, boolean>> {
-    const result = (await this.manager
+    const query = this.manager
       .createQueryBuilder()
       .from(List, 'list')
-      .select([
-        'list.id',
-        'CASE WHEN view.id IS NULL THEN FALSE ELSE TRUE END AS is_viewed',
-      ])
-      .leftJoin('list.views', 'view', 'view.user.id = :userId', { userId })
-      .where('list.id = ANY(:listIds)', { listIds })
-      .getRawMany()) as { list_id: number; is_viewed: boolean }[];
+      .select(['list.id'])
+      .where('list.id = ANY(:listIds)', { listIds });
+
+    if (userId !== undefined) {
+      query
+        .addSelect(
+          'CASE WHEN view.id IS NULL THEN FALSE ELSE TRUE END',
+          'is_viewed',
+        )
+        .leftJoin('list.views', 'view', 'view.user.id = :userId', { userId });
+    } else {
+      query.addSelect('FALSE', 'is_viewed');
+    }
+
+    const result = (await query.getRawMany()) as {
+      list_id: number;
+      is_viewed: boolean;
+    }[];
 
     return new Map<number, boolean>(
       result.map<[number, boolean]>((item) => [item.list_id, item.is_viewed]),

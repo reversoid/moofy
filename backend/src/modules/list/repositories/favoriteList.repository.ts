@@ -64,29 +64,39 @@ export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
   }
 
   async areListsFaved(
-    userId: number,
     listIds: number[],
+    userId: number,
   ): Promise<Map<number, boolean>> {
-    const result = await this.manager
+    const query = this.manager
       .createQueryBuilder()
       .from(List, 'list')
       .select('list.id', 'list_id')
-      .addSelect(
-        'CASE WHEN COUNT(fav.id) > 0 THEN TRUE ELSE FALSE END',
-        'is_faved',
-      )
-      .leftJoin(
-        FavoriteList,
-        'fav',
-        'fav.listId = list.id AND fav.userId = :userId',
-        { userId },
-      )
-      .where('list.id = ANY(:listIds)', { listIds })
-      .groupBy('list.id')
-      .getRawMany();
+      .where('list.id = ANY(:listIds)', { listIds });
+
+    if (userId !== undefined) {
+      query
+        .addSelect(
+          'CASE WHEN COUNT(fav.id) > 0 THEN TRUE ELSE FALSE END',
+          'is_faved',
+        )
+        .leftJoin(
+          FavoriteList,
+          'fav',
+          'fav.listId = list.id AND fav.userId = :userId',
+          { userId },
+        )
+        .groupBy('list.id');
+    } else {
+      query.addSelect('FALSE', 'is_faved');
+    }
+
+    const result = (await query.getRawMany()) as {
+      list_id: number;
+      is_faved: boolean;
+    }[];
 
     return new Map<number, boolean>(
-      result.map((item) => [item.list_id, item.is_faved === true]),
+      result.map((item) => [Number(item.list_id), Boolean(item.is_faved)]),
     );
   }
 

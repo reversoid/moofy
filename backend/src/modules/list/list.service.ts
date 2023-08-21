@@ -406,7 +406,7 @@ export class ListService {
       order,
     );
 
-    const listsWithInfo = await this.getListsWithAdditionalInfo(userId, items);
+    const listsWithInfo = await this.getListsWithAdditionalInfo(items, userId);
 
     return {
       nextKey,
@@ -433,15 +433,15 @@ export class ListService {
     return { updatesAmount };
   }
 
-  private async getListsWithAdditionalInfo(
-    userId: number,
+  async getListsWithAdditionalInfo(
     lists: List[],
+    userId: number | undefined,
   ): Promise<{ list: List; additionalInfo: AdditionalListInfo }[]> {
     const listIds = lists.map((i) => i.id);
 
     const [favedMap, viewedMap, stats] = await Promise.all([
-      this.favListRepository.areListsFaved(userId, listIds),
-      this.listViewRepository.areListsViewed(userId, listIds),
+      this.favListRepository.areListsFaved(listIds, userId),
+      this.listViewRepository.areListsViewed(listIds, userId),
       this.listRepository.getListsStatistics(listIds, userId),
     ]);
 

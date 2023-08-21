@@ -163,33 +163,17 @@ export class ReviewService {
       }
     }
 
-    // TODO should make concurrent
-
-    const reviews =
-      await this.reviewRepository.getReviewsFromListWithFilmsForUser(listId, {
+    const [[listWithInfo], reviews] = await Promise.all([
+      this.listService.getListsWithAdditionalInfo([list], user?.id),
+      this.reviewRepository.getReviewsFromListWithFilmsForUser(listId, {
         ...options,
         search: options.search,
-      });
-
-    const isFaved =
-      user && (await this.favListRepository.isFaved(user.id, listId));
-
-    const listStats = await this.listRepository.getListStatistics(
-      listId,
-      user?.id,
-    );
-
-    const isViewed =
-      user && (await this.listViewRepository.isListViewed(user.id, listId));
+      }),
+    ]);
 
     return {
-      list,
+      ...listWithInfo,
       reviews,
-      additionalInfo: {
-        isFavorite: Boolean(isFaved),
-        isViewed: Boolean(isViewed),
-        ...listStats,
-      },
     };
   }
 
