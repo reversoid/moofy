@@ -148,6 +148,18 @@ export class ListService extends ApiService {
       searchParams,
     });
   }
+
+  public async getUpdates(lowerBound?: DateAsString) {
+    const searchParams: SearchParamsOption = {};
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+
+    return this.get<IterableResponse<ListWithAdditionalInfo>>('/list/updates', {
+      useJWT: true,
+      searchParams,
+    });
+  }
 }
 
 export const listService = new ListService();
