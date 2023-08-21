@@ -40,6 +40,7 @@ import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
 import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
 import { NumericIDParamDTO } from 'src/shared/dto/NumericParam.dto';
 import { AdditionalListInfo } from '../review/review.controller';
+import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
 
 @ApiTags('List')
 @Controller('list')
@@ -74,7 +75,9 @@ export class ListController {
       }),
     )
     { limit = 20, lowerBound, search }: GetUserListsDTO,
-  ): Promise<IterableResponse<List>> {
+  ): Promise<
+    IterableResponse<{ list: List; additionalInfo: AdditionalListInfo }>
+  > {
     return this.listService.getLists(user.id, limit, GetListsStrategy.ALL, {
       lowerBound,
       search,
@@ -155,8 +158,10 @@ export class ListController {
   @ApiOperation({
     description: 'Get all public lists',
   })
+  @UseGuards(OptionalJwtAuthGuard)
   @Get('public')
   async getPublicLists(
+    @Request() { user: requester }: { user?: User },
     @Query(
       new ValidationPipe({
         transform: true,
@@ -166,13 +171,24 @@ export class ListController {
     { limit = 20, lowerBound, user, search = '' }: GetPublicListsDTO,
   ) {
     if (user === undefined) {
-      return this.listService.getPublicLists(search, limit, lowerBound);
+      return this.listService.getPublicLists(
+        search,
+        limit,
+        lowerBound,
+        requester?.id,
+      );
     }
 
-    return this.listService.getLists(user, limit, GetListsStrategy.PUBLIC, {
-      lowerBound,
-      search,
-    });
+    return this.listService.getLists(
+      user,
+      limit,
+      GetListsStrategy.PUBLIC,
+      {
+        lowerBound,
+        search,
+      },
+      requester?.id,
+    );
   }
 
   @ApiOperation({
