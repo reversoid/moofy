@@ -24,6 +24,7 @@ import { LikeErrors } from 'src/errors/like.errors';
 import { CommentLike } from './entities/comment-like.entity';
 import { Order } from './dtos/get-updates.query.dto';
 import { ListViewRepository } from './repositories/list-view.repository';
+import { AdditionalListInfo } from '../review/review.controller';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -398,12 +399,19 @@ export class ListService {
     limit = 20,
     order?: Order,
   ) {
-    return this.listRepository.getLatestUpdates(
+    const { items, nextKey } = await this.listRepository.getLatestUpdates(
       userId,
       lowerBound,
       limit,
       order,
     );
+
+    const listsWithInfo = await this.getListsWithAdditionalInfo(userId, items);
+
+    return {
+      nextKey,
+      items: listsWithInfo,
+    };
   }
 
   async markListAsViewed(userId: number, listId: number) {
@@ -423,5 +431,29 @@ export class ListService {
     );
 
     return { updatesAmount };
+  }
+
+  private async getListsWithAdditionalInfo(
+    userId: number,
+    lists: List[],
+  ): Promise<{ list: List; additionalInfo: AdditionalListInfo }[]> {
+    const listIds = lists.map((i) => i.id);
+
+    const [favedMap, viewedMap, stats] = await Promise.all([
+      this.favListRepository.areListsFaved(userId, listIds),
+      this.listViewRepository.areListsViewed(userId, listIds),
+      this.listRepository.getListsStatistics(listIds, userId),
+    ]);
+
+    return lists.map<{ list: List; additionalInfo: AdditionalListInfo }>(
+      (item) => ({
+        list: item,
+        additionalInfo: {
+          ...stats.get(item.id),
+          isViewed: viewedMap.get(item.id),
+          isFavorite: favedMap.get(item.id),
+        },
+      }),
+    );
   }
 }

@@ -39,6 +39,7 @@ import { ListIdParamsDTO } from './dtos/list-id.param.dto';
 import { CommentIdParamDTO } from './dtos/comment-id.param.dto';
 import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
 import { NumericIDParamDTO } from 'src/shared/dto/NumericParam.dto';
+import { AdditionalListInfo } from '../review/review.controller';
 
 @ApiTags('List')
 @Controller('list')
@@ -286,7 +287,9 @@ export class ListController {
       }),
     )
     { limit = 20, lowerBound, order }: GetUpdatesQueryDTO,
-  ): Promise<IterableResponse<List>> {
+  ): Promise<
+    IterableResponse<{ list: List; additionalInfo: AdditionalListInfo }>
+  > {
     return this.listService.getLatestUpdates(user.id, lowerBound, limit, order);
   }
 

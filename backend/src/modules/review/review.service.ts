@@ -13,6 +13,7 @@ import { Review } from './entities/review.entity';
 import { ListService } from '../list/list.service';
 import { ListErrors } from 'src/errors/list.errors';
 import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
+import { ListViewRepository } from '../list/repositories/list-view.repository';
 
 export const ORDER_INITIAL_VALUE = 1984;
 export const ORDER_INCREMENT_VALUE = 8;
@@ -22,6 +23,7 @@ export class ReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
     private readonly listRepository: ListRepository,
+    private readonly listViewRepository: ListViewRepository,
     private readonly favListRepository: FavoriteListRepository,
     private readonly filmRepository: FilmRepository,
     private readonly listService: ListService,
@@ -161,6 +163,8 @@ export class ReviewService {
       }
     }
 
+    // TODO should make concurrent
+
     const reviews =
       await this.reviewRepository.getReviewsFromListWithFilmsForUser(listId, {
         ...options,
@@ -175,11 +179,15 @@ export class ReviewService {
       user?.id,
     );
 
+    const isViewed =
+      user && (await this.listViewRepository.isListViewed(user.id, listId));
+
     return {
       list,
       reviews,
       additionalInfo: {
-        isFavorite: isFaved,
+        isFavorite: Boolean(isFaved),
+        isViewed: Boolean(isViewed),
         ...listStats,
       },
     };

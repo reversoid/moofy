@@ -67,12 +67,14 @@ export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
     userId: number,
     listIds: number[],
   ): Promise<Map<number, boolean>> {
-    const result = (await this.createQueryBuilder()
+    const result = await this.manager
+      .createQueryBuilder()
       .from(List, 'list')
-      .select([
-        'list.id',
-        'CASE WHEN fav.id IS NULL THEN FALSE ELSE TRUE END AS is_faved',
-      ])
+      .select('list.id', 'list_id')
+      .addSelect(
+        'CASE WHEN COUNT(fav.id) > 0 THEN TRUE ELSE FALSE END',
+        'is_faved',
+      )
       .leftJoin(
         FavoriteList,
         'fav',
@@ -80,10 +82,11 @@ export class FavoriteListRepository extends PaginatedRepository<FavoriteList> {
         { userId },
       )
       .where('list.id = ANY(:listIds)', { listIds })
-      .getRawMany()) as { list_id: number; is_faved: boolean }[];
+      .groupBy('list.id')
+      .getRawMany();
 
     return new Map<number, boolean>(
-      result.map((item) => [item.list_id, item.is_faved]),
+      result.map((item) => [item.list_id, item.is_faved === true]),
     );
   }
 

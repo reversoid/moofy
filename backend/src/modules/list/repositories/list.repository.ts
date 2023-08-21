@@ -170,7 +170,7 @@ export class ListRepository extends PaginatedRepository<List> {
   async getListStatistics(
     listId: number,
     userId?: number,
-  ): Promise<Omit<AdditionalListInfo, 'isFavorite'>> {
+  ): Promise<Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>> {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
       .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
@@ -199,6 +199,54 @@ export class ListRepository extends PaginatedRepository<List> {
       commentsAmount: Number(data.commentsCount ?? 0),
       isLiked: data.userLiked ?? false,
     };
+  }
+
+  async getListsStatistics(
+    listIds: number[],
+    userId?: number,
+  ): Promise<Map<number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>>> {
+    const query = this.createQueryBuilder('list')
+      .select('list.id', 'id')
+      .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentsCount')
+      .leftJoin('list.likes', 'like')
+      .leftJoin('list.comments', 'comment')
+      .groupBy('list.id')
+      .where('list.id = ANY(:listIds)', { listIds });
+
+    if (userId !== undefined) {
+      query
+        .addSelect(
+          'CASE WHEN userLike.id IS NOT NULL THEN TRUE ELSE FALSE END',
+          'userLiked',
+        )
+        .leftJoin('like.user', 'userLike', 'userLike.id = :userId', { userId })
+        .addGroupBy('userLike.id');
+    } else {
+      query.addSelect('FALSE', 'userLiked');
+    }
+
+    const data = await query.getRawMany();
+
+    const infos = data.map((data) => ({
+      likesAmount: Number(data.likesCount ?? 0),
+      commentsAmount: Number(data.commentsCount ?? 0),
+      isLiked: data.userLiked ?? false,
+      id: Number(data.id),
+    }));
+
+    return new Map(
+      infos.map<[number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>]>(
+        (i) => [
+          i.id,
+          {
+            commentsAmount: i.commentsAmount,
+            isLiked: i.isLiked,
+            likesAmount: i.likesAmount,
+          },
+        ],
+      ),
+    );
   }
 
   async getLatestUpdates(
@@ -239,24 +287,6 @@ export class ListRepository extends PaginatedRepository<List> {
     const latestUpdatedLists = await query.getMany();
 
     return this.processPagination(latestUpdatedLists, limit, dateField);
-  }
-
-  async isViewed(
-    userId: number,
-    listIds: number[],
-  ): Promise<Map<number, boolean>> {
-    const result = (await this.createQueryBuilder('list')
-      .select([
-        'list.id',
-        'CASE WHEN view.id IS NULL THEN FALSE ELSE TRUE END AS is_viewed',
-      ])
-      .leftJoin('list.views', 'view', 'view.user.id = :userId', { userId })
-      .where('list.id = ANY(:listIds)', { listIds })
-      .getRawMany()) as { list_id: number; is_viewed: boolean }[];
-
-    return new Map<number, boolean>(
-      result.map<[number, boolean]>((item) => [item.list_id, item.is_viewed]),
-    );
   }
 
   async getLatestUpdatesAmount(userId: number): Promise<number> {
