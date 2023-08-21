@@ -23,4 +23,15 @@ export class FilmRepository extends Repository<Film> {
       },
     });
   }
+
+  async saveFilm(film: Film) {
+    const insertResult = await this.createQueryBuilder('film')
+      .insert()
+      .into(Film)
+      .values([film])
+      .returning(['id'])
+      .execute();
+
+    return { id: insertResult.raw[0].id as string };
+  }
 }

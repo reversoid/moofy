@@ -57,7 +57,7 @@ export class ReviewService {
     let existingFilm = await this.filmRepository.getFilmById(filmId);
 
     if (!existingFilm) {
-      existingFilm = await this.filmService.createFilm(filmId);
+      existingFilm = await this.filmService.saveFilmById(filmId);
     }
 
     const { maxOrder }: { maxOrder: string | null } =
