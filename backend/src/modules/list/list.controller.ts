@@ -78,10 +78,17 @@ export class ListController {
   ): Promise<
     IterableResponse<{ list: List; additionalInfo: AdditionalListInfo }>
   > {
-    return this.listService.getLists(user.id, limit, GetListsStrategy.ALL, {
-      lowerBound,
-      search,
-    });
+    return this.listService.getLists(
+      user.id,
+      limit,
+      GetListsStrategy.ALL,
+      {
+        lowerBound,
+        search,
+      },
+      user.id,
+    );
+
   }
 
   @ApiOperation({
