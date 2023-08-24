@@ -441,11 +441,6 @@ export class ListService {
   }
 
   async markListAsViewed(userId: number, listId: number) {
-    const isViewed = await this.listViewRepository.isListViewed(userId, listId);
-    if (isViewed) {
-      return;
-    }
-
     await this.listViewRepository.markListAsViewed(userId, listId);
   }
 
