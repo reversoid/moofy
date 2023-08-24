@@ -15,6 +15,7 @@ export const UpdatesPage = () => {
         isLoadingMore={isFetchingNextPage}
         loadMore={fetchNextPage}
         data={data}
+        loading={isLoading}
       />
     </>
   );
