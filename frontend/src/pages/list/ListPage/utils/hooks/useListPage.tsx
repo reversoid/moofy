@@ -2,7 +2,7 @@ import {
   ListWithContentResponse,
   listService,
 } from '@/features/list/api/list.service';
-import { AdditinalInfo, List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
+import { ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import { FetchError } from '@/shared/api/types/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -14,6 +14,7 @@ import {
   $singleListPage,
   setListPageContent,
 } from '../../model/listPageContent';
+import { useViewList } from './useViewList';
 
 export interface ListPageContent extends ListWithAdditionalInfo {
   reviews: Review[];
@@ -28,6 +29,8 @@ export const useListPage = (id: number) => {
       listService.getMyListWithContent(Number(id), pageParam),
     getNextPageParam: (lastPage) => lastPage.reviews.nextKey ?? undefined,
   });
+
+  useViewList(id);
 
   useCachedInfiniteData(result, () => {
     if (result.data) {

@@ -4,8 +4,7 @@ import {
   styled,
   cssFocusVisible,
 } from '@nextui-org/react';
-import { nanoid } from 'nanoid';
-import { PropsWithChildren, createRef, forwardRef, useState } from 'react';
+import { PropsWithChildren, forwardRef, useId, useState } from 'react';
 import { SUPPORTED_EXTENSIONS } from './ImageUpload';
 
 const Input = styled('input', {
@@ -27,7 +26,7 @@ export const BasicImageUpload = forwardRef<
   HTMLButtonElement,
   PropsWithChildren<BasicImageUploadProps & ButtonProps>
 >(({ onFileSelect, children, ...props }, ref) => {
-  const [id] = useState(nanoid());
+  const id = useId();
   const [labelFocused, setLabelFocused] = useState(false);
 
   const handleFocus = () => {

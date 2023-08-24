@@ -1,16 +1,11 @@
 import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import {
-  AdditinalInfo,
-  List,
-  ListWithAdditionalInfo,
-} from '@/shared/api/types/list.type';
+import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import {
   DateAsString,
   IterableResponse,
   RankValue,
-  SearchResponse,
 } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
 
@@ -101,6 +96,10 @@ export class ListService extends ApiService {
     return this.post<List>('/list', { useJWT: true, json: dto });
   }
 
+  public async markListAsViewed(id: number) {
+    return this.post<void>(`/list/${id}/views`, { useJWT: true });
+  }
+
   public async updateList(dto: UpdateListDTO) {
     return this.patch<List>('/list', { useJWT: true, json: dto });
   }
@@ -146,6 +145,24 @@ export class ListService extends ApiService {
     return this.get<IterableResponse<FavoriteList>>('/list/favorites', {
       useJWT: true,
       searchParams,
+    });
+  }
+
+  public async getUpdates(lowerBound?: DateAsString) {
+    const searchParams: SearchParamsOption = {};
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+
+    return this.get<IterableResponse<ListWithAdditionalInfo>>('/list/updates', {
+      useJWT: true,
+      searchParams,
+    });
+  }
+
+  public async getUpdatesAmount() {
+    return this.get<{ updatesAmount: number }>('/list/updates/amount', {
+      useJWT: true,
     });
   }
 }

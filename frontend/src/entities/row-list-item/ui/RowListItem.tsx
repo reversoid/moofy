@@ -11,6 +11,7 @@ import { FC } from 'react';
 
 export interface SearchListItemProps {
   list: List;
+  titleMarker?: JSX.Element
 }
 
 const Image: FC<{ url?: string; valueToHash: string }> = ({
@@ -46,7 +47,7 @@ const Creator: FC<{ username: string; id: number }> = ({ id, username }) => {
   );
 };
 
-export const SearchListItem: FC<SearchListItemProps> = ({ list }) => {
+export const RowListItem: FC<SearchListItemProps> = ({ list, titleMarker: marker }) => {
   return (
     <CardWithContent
       title={list.name}
@@ -56,6 +57,7 @@ export const SearchListItem: FC<SearchListItemProps> = ({ list }) => {
       bottomContent={
         <Creator id={list.user.id} username={list.user.username} />
       }
+      titleMarker={marker}
     />
   );
 };

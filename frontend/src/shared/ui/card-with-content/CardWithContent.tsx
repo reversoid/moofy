@@ -1,6 +1,6 @@
 import { Card } from '@/shared/ui/Card';
 import { Link } from '@/shared/ui/Link/Link';
-import { CSS, Image, Text, styled } from '@nextui-org/react';
+import { CSS, Image, Row, Text, styled } from '@nextui-org/react';
 import React, { FC, ReactNode } from 'react';
 
 const Content = styled('div', { flexGrow: 1 });
@@ -69,6 +69,7 @@ export interface SearchItemProps {
   image: ReactNode;
   description: string;
   bottomContent?: ReactNode;
+  titleMarker?: JSX.Element;
   button?: JSX.Element;
 }
 
@@ -78,7 +79,8 @@ export const CardWithContent: FC<SearchItemProps> = ({
   title,
   description,
   bottomContent,
-  button
+  button,
+  titleMarker,
 }) => {
   return (
     <Card horizontal>
@@ -87,18 +89,19 @@ export const CardWithContent: FC<SearchItemProps> = ({
       </ImgWrapper>
       <Content>
         <MainContent>
-          <Link to={link} css={{ width: 'fit-content' }}>
-            <Text
-              h4
-              color="$primary"
-              css={{ lineHeight: '$sm', display: 'inline-block' }}
-            >
-              {title}
-            </Text>
-          </Link>
-
+          <Row css={{ gap: '$5', ai: 'center', mb: '$5' }}>
+            <Link to={link} css={{ width: 'fit-content' }}>
+              <Text
+                h4
+                color="$primary"
+                css={{ lineHeight: '$sm', display: 'inline-block', m: 0 }}
+              >
+                {title}
+              </Text>
+            </Link>
+            {titleMarker}
+          </Row>
           {description && <Text as={'p'}>{description}</Text>}
-
           {bottomContent}
         </MainContent>
       </Content>
