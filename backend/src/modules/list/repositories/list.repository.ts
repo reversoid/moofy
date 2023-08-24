@@ -166,7 +166,12 @@ export class ListRepository extends PaginatedRepository<List> {
   async getListStatistics(
     listId: number,
     userId?: number,
-  ): Promise<Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>> {
+  ): Promise<
+    Omit<
+      AdditionalListInfo,
+      'isFavorite' | 'isViewed' | 'isUpdatedSinceLastView'
+    >
+  > {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
       .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
@@ -200,7 +205,15 @@ export class ListRepository extends PaginatedRepository<List> {
   async getListsStatistics(
     listIds: number[],
     userId?: number,
-  ): Promise<Map<number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>>> {
+  ): Promise<
+    Map<
+      number,
+      Omit<
+        AdditionalListInfo,
+        'isFavorite' | 'isViewed' | 'isUpdatedSinceLastView'
+      >
+    >
+  > {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
       .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
@@ -232,16 +245,25 @@ export class ListRepository extends PaginatedRepository<List> {
     }));
 
     return new Map(
-      infos.map<[number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>]>(
-        (i) => [
-          i.id,
-          {
-            commentsAmount: i.commentsAmount,
-            isLiked: i.isLiked,
-            likesAmount: i.likesAmount,
-          },
-        ],
-      ),
+      infos.map<
+        [
+          number,
+          Omit<
+            AdditionalListInfo,
+            | 'isFavorite'
+            | 'isViewed'
+            | 'isViewedUpdate'
+            | 'isUpdatedSinceLastView'
+          >,
+        ]
+      >((i) => [
+        i.id,
+        {
+          commentsAmount: i.commentsAmount,
+          isLiked: i.isLiked,
+          likesAmount: i.likesAmount,
+        },
+      ]),
     );
   }
 
@@ -287,15 +309,16 @@ export class ListRepository extends PaginatedRepository<List> {
 
   async getLatestUpdatesAmount(userId: number): Promise<number> {
     return this.createQueryBuilder('list')
-      .innerJoin(Subscription, 'sub', 'list.user_id = sub.followed_id')
+      .innerJoin(Subscription, 'sub', 'list.userId = sub.followed.id')
       .leftJoinAndSelect(
         ListView,
         'view',
-        'list.id = view.list_id AND view.user_id = :userId',
+        'list.id = view.listId AND view.userId = :userId',
         { userId },
       )
-      .where('sub.follower_id = :userId', { userId })
+      .where('sub.follower.id = :userId', { userId })
       .andWhere('view.id IS NULL')
+      .andWhere('list.is_public = TRUE')
       .getCount();
   }
 
