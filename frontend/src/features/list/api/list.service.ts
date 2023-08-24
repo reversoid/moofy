@@ -159,6 +159,12 @@ export class ListService extends ApiService {
       searchParams,
     });
   }
+
+  public async getUpdatesAmount() {
+    return this.get<{ updatesAmount: number }>('/list/updates/amount', {
+      useJWT: true,
+    });
+  }
 }
 
 export const listService = new ListService();
