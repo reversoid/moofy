@@ -460,7 +460,7 @@ export class ListService {
   ): Promise<{ list: List; additionalInfo: AdditionalListInfo }[]> {
     const listIds = lists.map((i) => i.id);
 
-    const [favedMap, viewedMap, stats, viewedAfterUpdateMap] =
+    const [favedMap, viewedMap, stats, updatedSinceLastViewMap] =
       await Promise.all([
         this.favListRepository.areListsFaved(listIds, userId),
         this.listViewRepository.areListsViewed(listIds, userId),
@@ -475,7 +475,7 @@ export class ListService {
           ...stats.get(item.id),
           isViewed: viewedMap.get(item.id),
           isFavorite: favedMap.get(item.id),
-          isUpdatedSinceView: viewedAfterUpdateMap.get(item.id),
+          isUpdatedSinceView: updatedSinceLastViewMap.get(item.id),
         },
       }),
     );
