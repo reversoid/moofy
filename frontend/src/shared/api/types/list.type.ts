@@ -18,6 +18,7 @@ export interface AdditinalInfo {
   likesAmount: number;
   commentsAmount: number;
   isViewed: boolean;
+  isUpdatedSinceLastView: boolean;
 }
 
 export interface ListWithAdditionalInfo {

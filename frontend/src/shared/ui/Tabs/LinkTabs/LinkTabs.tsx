@@ -3,19 +3,16 @@ import { FC, forwardRef, useEffect, useState } from 'react';
 import { LinkTab, LinkTabProps } from './LinkTab';
 import { StyledTabs } from '../_base/StyledTabs';
 import { styled } from '@nextui-org/react';
+import { MarkerRound } from '../../MarkerRound';
 
 const TabWrapper = styled('div', {
   position: 'relative',
 });
 
-const Round = styled('div', {
+export const Round = styled(MarkerRound, {
   position: 'absolute',
   top: '0',
   right: '-1rem',
-  width: '0.75rem',
-  height: '0.75rem',
-  background: '#f8d355dd',
-  borderRadius: '50%',
 });
 
 export interface LinkTabsProps {
@@ -39,7 +36,12 @@ const LinkTabs: FC<LinkTabsProps> = ({ tabValue, tabs, css }) => {
       sx={css ?? {}}
     >
       {tabs.map((t) => (
-        <LinkTab to={t.to} label={t.label} highlighted={t.highlighted} key={t.label} />
+        <LinkTab
+          to={t.to}
+          label={t.label}
+          highlighted={t.highlighted}
+          key={t.label}
+        />
       ))}
     </StyledTabs>
   );
