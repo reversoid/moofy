@@ -97,7 +97,7 @@ export class ListService extends ApiService {
   }
 
   public async markListAsViewed(id: number) {
-    return this.post<List>(`/list/${id}/views`, { useJWT: true });
+    return this.post<void>(`/list/${id}/views`, { useJWT: true });
   }
 
   public async updateList(dto: UpdateListDTO) {
