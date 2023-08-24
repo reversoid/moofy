@@ -321,7 +321,7 @@ export class ListController {
   })
   @ApiHeader(SwaggerAuthHeader)
   @UseGuards(JwtAuthGuard)
-  @Get(':id/views')
+  @Post(':id/views')
   async markListAsViewed(
     @Request() { user }: { user: User },
     @Param() { id }: NumericIDParamDTO,
