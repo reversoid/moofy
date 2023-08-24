@@ -46,7 +46,7 @@ const Creator: FC<{ username: string; id: number }> = ({ id, username }) => {
   );
 };
 
-export const SearchListItem: FC<SearchListItemProps> = ({ list }) => {
+export const RowListItem: FC<SearchListItemProps> = ({ list }) => {
   return (
     <CardWithContent
       title={list.name}

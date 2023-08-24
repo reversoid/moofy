@@ -1,6 +1,6 @@
-import React from 'react';
-import { useUpdates } from './utils/useUpdates';
+import { useUpdates } from '../../../widgets/list-updates/utils/useUpdates';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import CollectionsUpdatesList from '@/widgets/list-updates';
 
 export const UpdatesPage = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -8,7 +8,16 @@ export const UpdatesPage = () => {
 
   useLoadingBar(isLoading);
 
-  return <div>Some updates here</div>;
+  return (
+    <>
+      <CollectionsUpdatesList
+        canLoadMore={hasNextPage}
+        isLoadingMore={isFetchingNextPage}
+        loadMore={fetchNextPage}
+        data={data}
+      />
+    </>
+  );
 };
 
 export default UpdatesPage;

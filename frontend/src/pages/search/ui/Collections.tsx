@@ -1,6 +1,6 @@
 import { List } from '@/shared/api/types/list.type';
 import { FC } from 'react';
-import { SearchListItem } from './SearchListItem';
+import { RowListItem } from '../../../entities/row-list-item/ui/RowListItem';
 import { Text } from '@nextui-org/react';
 import { Stack } from '@/shared/ui/Stack';
 
@@ -23,7 +23,7 @@ export const Collections: FC<CollectionsProps> = ({ collections, loading }) => {
   return (
     <Stack css={{ mt: '$12' }}>
       {collections?.map((list) => (
-        <SearchListItem list={list} key={list.id} />
+        <RowListItem list={list} key={list.id} />
       ))}
     </Stack>
   );

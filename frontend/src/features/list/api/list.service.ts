@@ -1,16 +1,11 @@
 import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
-import {
-  AdditinalInfo,
-  List,
-  ListWithAdditionalInfo,
-} from '@/shared/api/types/list.type';
+import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 import {
   DateAsString,
   IterableResponse,
   RankValue,
-  SearchResponse,
 } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
 
