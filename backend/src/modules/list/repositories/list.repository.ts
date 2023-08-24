@@ -287,15 +287,16 @@ export class ListRepository extends PaginatedRepository<List> {
 
   async getLatestUpdatesAmount(userId: number): Promise<number> {
     return this.createQueryBuilder('list')
-      .innerJoin(Subscription, 'sub', 'list.user_id = sub.followed_id')
+      .innerJoin(Subscription, 'sub', 'list.userId = sub.followed.id')
       .leftJoinAndSelect(
         ListView,
         'view',
-        'list.id = view.list_id AND view.user_id = :userId',
+        'list.id = view.listId AND view.userId = :userId',
         { userId },
       )
-      .where('sub.follower_id = :userId', { userId })
+      .where('sub.follower.id = :userId', { userId })
       .andWhere('view.id IS NULL')
+      .andWhere('list.is_public = TRUE')
       .getCount();
   }
 

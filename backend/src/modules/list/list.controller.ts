@@ -88,7 +88,6 @@ export class ListController {
       },
       user.id,
     );
-
   }
 
   @ApiOperation({
