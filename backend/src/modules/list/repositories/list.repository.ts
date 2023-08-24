@@ -166,7 +166,9 @@ export class ListRepository extends PaginatedRepository<List> {
   async getListStatistics(
     listId: number,
     userId?: number,
-  ): Promise<Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>> {
+  ): Promise<
+    Omit<AdditionalListInfo, 'isFavorite' | 'isViewed' | 'isUpdatedSinceView'>
+  > {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
       .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
@@ -200,7 +202,12 @@ export class ListRepository extends PaginatedRepository<List> {
   async getListsStatistics(
     listIds: number[],
     userId?: number,
-  ): Promise<Map<number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>>> {
+  ): Promise<
+    Map<
+      number,
+      Omit<AdditionalListInfo, 'isFavorite' | 'isViewed' | 'isUpdatedSinceView'>
+    >
+  > {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
       .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
@@ -232,16 +239,22 @@ export class ListRepository extends PaginatedRepository<List> {
     }));
 
     return new Map(
-      infos.map<[number, Omit<AdditionalListInfo, 'isFavorite' | 'isViewed'>]>(
-        (i) => [
-          i.id,
-          {
-            commentsAmount: i.commentsAmount,
-            isLiked: i.isLiked,
-            likesAmount: i.likesAmount,
-          },
-        ],
-      ),
+      infos.map<
+        [
+          number,
+          Omit<
+            AdditionalListInfo,
+            'isFavorite' | 'isViewed' | 'isViewedUpdate' | 'isUpdatedSinceView'
+          >,
+        ]
+      >((i) => [
+        i.id,
+        {
+          commentsAmount: i.commentsAmount,
+          isLiked: i.isLiked,
+          likesAmount: i.likesAmount,
+        },
+      ]),
     );
   }
 

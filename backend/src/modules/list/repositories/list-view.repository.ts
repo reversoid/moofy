@@ -51,4 +51,43 @@ export class ListViewRepository extends Repository<ListView> {
       result.map<[number, boolean]>((item) => [item.list_id, item.is_viewed]),
     );
   }
+
+  async areListsUpdatedSinceLastView(
+    listIds: number[],
+    userId?: number,
+  ): Promise<Map<number, boolean>> {
+    const query = this.manager
+      .createQueryBuilder()
+      .from(List, 'list')
+      .select(['list.id', 'list.updated_at'])
+      .where('list.id = ANY(:listIds)', { listIds });
+
+    if (userId !== undefined) {
+      query.addSelect((qb) => {
+        return qb
+          .select(
+            'CASE WHEN (MAX(view.created_at) IS NULL OR list.updated_at > MAX(view.created_at)) THEN TRUE ELSE FALSE END',
+            'is_updated_since_last_view',
+          )
+          .from(ListView, 'view')
+          .where('view.user.id = :userId AND view.listId = list.id', {
+            userId,
+          });
+      }, 'is_updated_since_last_view');
+    } else {
+      query.addSelect('TRUE', 'is_updated_since_last_view');
+    }
+
+    const result = (await query.getRawMany()) as {
+      list_id: number;
+      is_updated_since_last_view: boolean;
+    }[];
+
+    return new Map<number, boolean>(
+      result.map<[number, boolean]>((item) => [
+        item.list_id,
+        item.is_updated_since_last_view,
+      ]),
+    );
+  }
 }
