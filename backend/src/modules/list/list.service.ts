@@ -475,7 +475,7 @@ export class ListService {
           ...stats.get(item.id),
           isViewed: viewedMap.get(item.id),
           isFavorite: favedMap.get(item.id),
-          isUpdatedSinceView: updatedSinceLastViewMap.get(item.id),
+          isUpdatedSinceLastView: updatedSinceLastViewMap.get(item.id),
         },
       }),
     );

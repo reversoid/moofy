@@ -167,7 +167,10 @@ export class ListRepository extends PaginatedRepository<List> {
     listId: number,
     userId?: number,
   ): Promise<
-    Omit<AdditionalListInfo, 'isFavorite' | 'isViewed' | 'isUpdatedSinceView'>
+    Omit<
+      AdditionalListInfo,
+      'isFavorite' | 'isViewed' | 'isUpdatedSinceLastView'
+    >
   > {
     const query = this.createQueryBuilder('list')
       .select('list.id', 'id')
@@ -205,7 +208,10 @@ export class ListRepository extends PaginatedRepository<List> {
   ): Promise<
     Map<
       number,
-      Omit<AdditionalListInfo, 'isFavorite' | 'isViewed' | 'isUpdatedSinceView'>
+      Omit<
+        AdditionalListInfo,
+        'isFavorite' | 'isViewed' | 'isUpdatedSinceLastView'
+      >
     >
   > {
     const query = this.createQueryBuilder('list')
@@ -244,7 +250,10 @@ export class ListRepository extends PaginatedRepository<List> {
           number,
           Omit<
             AdditionalListInfo,
-            'isFavorite' | 'isViewed' | 'isViewedUpdate' | 'isUpdatedSinceView'
+            | 'isFavorite'
+            | 'isViewed'
+            | 'isViewedUpdate'
+            | 'isUpdatedSinceLastView'
           >,
         ]
       >((i) => [

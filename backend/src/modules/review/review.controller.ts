@@ -32,7 +32,7 @@ export interface AdditionalListInfo {
   likesAmount: number;
   commentsAmount: number;
   isViewed: boolean;
-  isUpdatedSinceView: boolean;
+  isUpdatedSinceLastView: boolean;
 }
 
 @ApiTags('Review')
