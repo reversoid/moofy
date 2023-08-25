@@ -12,6 +12,9 @@ import {
 import { User } from 'src/modules/user/entities/user.entity';
 import { Review } from 'src/modules/review/entities/review.entity';
 import { FavoriteList } from './favoriteList.entity';
+import { Comment } from './comment.entity';
+import { ListLike } from './list-like.entity';
+import { ListView } from './list-view.entity';
 
 @Entity()
 export class List {
@@ -46,6 +49,15 @@ export class List {
   @OneToMany(() => Review, (reviewEntity) => reviewEntity.list)
   reviews: Review[];
 
+  @OneToMany(() => Comment, (comment) => comment.list)
+  comments: Comment[];
+
+  @OneToMany(() => ListView, (listView) => listView.list)
+  views: ListView[];
+
+  @OneToMany(() => ListLike, (like) => like.list)
+  likes: ListLike[];
+
   @OneToMany(() => FavoriteList, (entity) => entity.list)
   favorite_lists: FavoriteList[];
 
@@ -60,4 +72,9 @@ export class List {
   @Index()
   @DeleteDateColumn({ select: false, type: 'timestamptz' })
   deleted_at: Date;
+
+  /** Is used for full text search */
+  @Column({ type: 'tsvector', select: false })
+  @Index()
+  search_document: any;
 }

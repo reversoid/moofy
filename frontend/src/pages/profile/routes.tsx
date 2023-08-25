@@ -1,27 +1,11 @@
-import AuthOnly from '@/shared/guards/AuthOnly';
 import { RouteObject } from 'react-router-dom';
-import { lazy } from 'react';
-import UserIdGuard from './guards/UserIdGuard';
-
-const ProfilePage = lazy(() => import('./ui/ProfilePage'));
+import ProfilePage from './ui/ProfilePage';
+import { routes as subscriptionsRoutes } from './subscriptions/routes';
 
 export const routes: RouteObject[] = [
   {
     path: '',
-    element: (
-      <AuthOnly redirect="/auth/login">
-        <ProfilePage userOwner={true} />
-      </AuthOnly>
-    ),
+    element: <ProfilePage />,
   },
-  {
-    path: ':id',
-    element: (
-      <UserIdGuard
-        componentIfIdMatch={<ProfilePage userOwner={true} />}
-        componentIfIdNotMatch={<ProfilePage userOwner={false} />}
-        navigateToIfWrongId="/welcome"
-      />
-    ),
-  },
+  ...subscriptionsRoutes,
 ];

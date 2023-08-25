@@ -12,8 +12,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Subscription } from './subscription.entity';
+import { Comment } from 'src/modules/list/entities/comment.entity';
+import { ListLike } from 'src/modules/list/entities/list-like.entity';
+import { ListView } from 'src/modules/list/entities/list-view.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -45,6 +49,9 @@ export class User {
   @OneToMany(() => ToWatch, (toWatch) => toWatch.user)
   toWatch: ToWatch[];
 
+  @OneToMany(() => ListView, (entity) => entity.user)
+  list_views: ListView[];
+
   @Index()
   @CreateDateColumn({ type: 'timestamptz', select: false })
   created_at: Date;
@@ -56,4 +63,21 @@ export class User {
   @Index()
   @DeleteDateColumn({ select: false, type: 'timestamptz' })
   deleted_at: Date;
+
+  /** Is used for full text search */
+  @Column({ type: 'tsvector', select: false })
+  @Index()
+  username_search_document: any;
+
+  @OneToMany(() => Subscription, (subscription) => subscription.follower)
+  followedSubscriptions: Subscription[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.followed)
+  followerSubscriptions: Subscription[];
+
+  @OneToMany(() => Comment, (comment) => comment.user, { cascade: true })
+  comments: Comment[];
+
+  @OneToMany(() => ListLike, (like) => like.user, { cascade: true })
+  likes: ListLike[];
 }

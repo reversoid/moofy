@@ -1,13 +1,12 @@
 import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 import { UserService } from './user.service';
+import { UserExistsResponseDTO } from './dto/user-exists.response.dto';
 
 class CheckUserExistenceDTO {
   @IsOptional()
-  email: string;
-
-  @IsOptional()
+  @IsString()
   username: string;
 }
 
@@ -19,6 +18,7 @@ export class UserController {
   @ApiOperation({
     description: 'Check if user exists',
   })
+  @ApiResponse({ description: 'Result', type: UserExistsResponseDTO })
   @Get('existence')
   async checkUserExistence(
     @Query(
@@ -27,9 +27,9 @@ export class UserController {
         forbidNonWhitelisted: true,
       }),
     )
-    { email = '', username = '' }: CheckUserExistenceDTO,
+    { username = '' }: CheckUserExistenceDTO,
   ): Promise<{ userExists: boolean }> {
-    const userExists = await this.userService.userExists({ email, username });
+    const userExists = await this.userService.userExists({ username });
     return { userExists };
   }
 }

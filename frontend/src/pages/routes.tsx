@@ -2,15 +2,17 @@ import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { routes as authRoutes } from './auth/routes';
 import { routes as listRoutes } from './list/routes';
-import { routes as profileRoutes } from './profile/routes';
 import { routes as welcomeRoutes } from './welcome/routes';
-
+import { routes as profileRoutes } from './profile/routes';
+import { routes as searchRoutes } from './search/routes';
 import ErrorPage from './error';
 import Layout from '@/app/ui/Layout/Layout';
+import AuthOnly from '@/shared/guards/AuthOnly';
 
 const MainPage = lazy(() => import('./main'));
 const SupportPage = lazy(() => import('./support'));
 const HelpPage = lazy(() => import('./help'));
+const SearchPage = lazy(() => import('./search'));
 
 export const routes: RouteObject[] = [
   {
@@ -41,7 +43,7 @@ export const routes: RouteObject[] = [
         children: listRoutes,
       },
       {
-        path: 'profile',
+        path: 'profile/:id',
         children: profileRoutes,
       },
       {
@@ -51,6 +53,15 @@ export const routes: RouteObject[] = [
       {
         path: 'help',
         element: <HelpPage />,
+      },
+      {
+        path: 'search',
+        element: (
+          <AuthOnly redirect="/">
+            <SearchPage />
+          </AuthOnly>
+        ),
+        children: searchRoutes,
       },
       {
         path: '*',

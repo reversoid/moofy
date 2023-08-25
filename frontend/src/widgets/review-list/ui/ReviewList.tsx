@@ -1,8 +1,7 @@
 import { Review as IReview } from '@/shared/api/types/review.type';
-import { IterableResponse } from '@/shared/api/types/shared';
 import LoadMore from '@/shared/components/LoadMore';
 import { Review } from '@/widgets/review-list/ui/Review';
-import { styled } from '@nextui-org/react';
+import { Text, styled } from '@nextui-org/react';
 import { memo } from 'react';
 
 const ReviewsContainer = styled('div', {
@@ -12,26 +11,36 @@ const ReviewsContainer = styled('div', {
 });
 
 interface ReviewListProps {
-  reviews?: IterableResponse<IReview>;
+  reviews?: IReview[];
   isUserOwner: boolean;
   loadMore?: () => void;
   canLoadMore?: boolean;
   loadingMore?: boolean;
+  noReviewsText: string;
 }
 
 export const ReviewList = memo(
-  ({ reviews, isUserOwner, loadingMore, loadMore }: ReviewListProps) => {
+  ({
+    reviews,
+    isUserOwner,
+    loadingMore,
+    loadMore,
+    canLoadMore,
+    noReviewsText,
+  }: ReviewListProps) => {
     return (
       <>
         <ReviewsContainer>
-          {reviews?.items.map((review) => (
+          {reviews?.map((review) => (
             <Review key={review.id} isUserOwner={isUserOwner} review={review} />
           ))}
+
+          {reviews?.length === 0 ? (
+            <Text color="$neutral">{noReviewsText}</Text>
+          ) : null}
         </ReviewsContainer>
 
-        {reviews?.nextKey && (
-          <LoadMore loadMore={loadMore} loading={loadingMore} />
-        )}
+        {canLoadMore && <LoadMore loadMore={loadMore} loading={loadingMore} />}
       </>
     );
   },

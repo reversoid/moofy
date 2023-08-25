@@ -1,40 +1,31 @@
-import { useStore } from 'effector-react';
-import { useEffect } from 'react';
-import {
-  $getFavoriteListsLoading,
-  $getMoreFavoritesLoading,
-  getFavoriteLists,
-  getMoreFavorites,
-} from '@/features/list/favorite-lists';
-import ListGrid from '@/widgets/list-grid/ui/ListGrid';
-import { $favoriteLists } from '@/features/list/_model/favoriteLists';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { Text } from '@nextui-org/react';
+import { useFavoritePage } from './utils/useFavoritePage';
 
 const FavoritePage = () => {
-  useEffect(getFavoriteLists, []);
-  const favLists = useStore($favoriteLists);
-  const loadingMore = useStore($getMoreFavoritesLoading);
-  const loading = useStore($getFavoriteListsLoading);
+  const {
+    data: favLists,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useFavoritePage();
 
-  useLoadingBar(loading, loadingMore);
+  useLoadingBar(isLoading);
 
   return (
     <>
-      {favLists?.items.length === 0 ? (
+      {favLists?.length === 0 && !isLoading ? (
         <Text size={'$lg'} color="$neutral">
           Нет избранных коллекций
         </Text>
       ) : (
         <ListGrid
-          items={(favLists?.items ?? []).map((f) => f.list)}
-          canLoadMore={Boolean(favLists?.nextKey)}
-          loadMore={
-            favLists?.nextKey
-              ? () => getMoreFavorites({ lowerBound: favLists.nextKey! })
-              : undefined
-          }
-          loadingMore={loadingMore}
+          items={(favLists ?? []).map((f) => f.list)}
+          canLoadMore={hasNextPage}
+          loadMore={fetchNextPage}
+          loadingMore={isFetchingNextPage}
         />
       )}
     </>

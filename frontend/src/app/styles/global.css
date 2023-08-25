@@ -1,0 +1,18 @@
+html {
+  scrollbar-gutter: stable;
+}
+
+@media (max-width: 650px) {
+  html {
+    font-size: 0.9375em;
+  }
+}
+
+html, body, #root, #root>div, #root>div>div {
+  height: 100%
+}
+
+body {
+  /* stop mui scroll shift */
+  padding-right: 0px !important;
+}

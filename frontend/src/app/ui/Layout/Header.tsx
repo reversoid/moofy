@@ -1,21 +1,33 @@
 import logo from '@/shared/assets/img/Logo.svg';
-import profile from '@/shared/assets/img/user-round.svg';
-import { useAuth } from '@/shared/hooks/useAuth';
-import { Button, Container, Image, Loading, styled } from '@nextui-org/react';
+import {
+  Button,
+  Container,
+  Image,
+  Loading,
+  Row,
+  Text,
+  styled,
+} from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 import LinearProgress from './LinearProgress';
 import { useStore } from 'effector-react';
-import { $loading } from '@/features/app';
+import { $loading } from '@/app';
 import { Link } from '@/shared/ui/Link/Link';
-
-export const HEADER_HEIGHT = '4.75rem';
+import { useAuth } from '@/app';
+import { Sidenav } from './Sidenav/Sidenav';
+import { useState } from 'react';
+import { BurgerButton } from './Burger/BurgerButton';
+import { ProfileLink } from './ProfileLink';
+import { HEADER_HEIGHT } from '@/app/utils/layoutConstants';
+import { Icon } from '@/shared/ui/Icon/Icon';
+import searchIcon from '@/shared/assets/img/search.svg';
 
 const HeaderStyled = styled('header', {
   position: 'fixed',
   top: 0,
   left: 0,
   width: '100vw',
-  zIndex: 201,
+  zIndex: 1201,
 });
 
 const HeaderContainer = styled(Container, {
@@ -29,12 +41,14 @@ const HeaderContainer = styled(Container, {
 });
 
 function Header() {
-  const { isLoggedIn, isLoading: isAuthLoading, userId } = useAuth();
+  const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
   const loading = useStore($loading);
+  const [sidenavOpen, setSidenavOpen] = useState(false);
 
   return (
     <HeaderStyled>
+      <Sidenav isOpen={sidenavOpen} setIsOpen={setSidenavOpen} />
       <LinearProgress loading={loading} />
       <HeaderContainer
         lg
@@ -46,7 +60,7 @@ function Header() {
         }}
       >
         <Link
-          to={isLoggedIn ? '/welcome' : ''}
+          to={isLoggedIn ? '/welcome/collections' : ''}
           css={{ height: '100%', width: 'fit-content', dflex: 'center' }}
         >
           <Image src={logo} height="4rem" objectFit="contain" width="8rem" />
@@ -55,23 +69,32 @@ function Header() {
         {isAuthLoading ? (
           <Loading />
         ) : isLoggedIn === true ? (
-          <Link
-            to={`/profile/${userId}`}
-            css={{
-              display: 'flex',
-              width: 'fit-content',
-              height: '100%',
-              ai: 'center',
-              jc: 'center',
-            }}
-          >
-            <Image
-              src={profile}
-              height="3rem"
-              objectFit="contain"
-              width="3rem"
+          <>
+            <BurgerButton
+              isOpen={sidenavOpen}
+              onClick={() => setSidenavOpen((open) => !open)}
             />
-          </Link>
+            <Row
+              css={{
+                ai: 'center',
+                gap: '$8',
+                jc: 'flex-end',
+                '@xsMax': { display: 'none' },
+              }}
+            >
+              <Button
+                onClick={() => navigate('/search/collections')}
+                color={'secondary'}
+                css={{ minWidth: '6.5rem', gap: '$4' }}
+              >
+                <Row css={{ gap: '$4', ai: 'center' }}>
+                  <Icon iconUrl={searchIcon} size="1.25rem" />
+                  <Text b>Поиск</Text>
+                </Row>
+              </Button>
+              <ProfileLink />
+            </Row>
+          </>
         ) : isLoggedIn === false ? (
           <Button
             color="gradient"

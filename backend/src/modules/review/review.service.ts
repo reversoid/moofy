@@ -13,6 +13,7 @@ import { Review } from './entities/review.entity';
 import { ListService } from '../list/list.service';
 import { ListErrors } from 'src/errors/list.errors';
 import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
+import { ListViewRepository } from '../list/repositories/list-view.repository';
 
 export const ORDER_INITIAL_VALUE = 1984;
 export const ORDER_INCREMENT_VALUE = 8;
@@ -22,6 +23,7 @@ export class ReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
     private readonly listRepository: ListRepository,
+    private readonly listViewRepository: ListViewRepository,
     private readonly favListRepository: FavoriteListRepository,
     private readonly filmRepository: FilmRepository,
     private readonly listService: ListService,
@@ -34,6 +36,7 @@ export class ReviewService {
     { listId, score, filmId, description, tags }: CreateReviewDTO,
   ): Promise<{ list: List; review: Review }> {
     const list = await this.listRepository.getUserList(listId, user.id);
+
     if (!list) {
       throw new HttpException(ReviewErrors.INVALID_LIST_ID, 400);
     }
@@ -56,7 +59,7 @@ export class ReviewService {
     let existingFilm = await this.filmRepository.getFilmById(filmId);
 
     if (!existingFilm) {
-      existingFilm = await this.filmService.createFilm(filmId);
+      existingFilm = await this.filmService.saveFilmById(filmId);
     }
 
     const { maxOrder }: { maxOrder: string | null } =
@@ -136,8 +139,11 @@ export class ReviewService {
   async getReviewsFromListWithFilms(
     user: User | undefined,
     listId: number,
-    limit?: number,
-    lowerBound?: Date,
+    options?: {
+      search?: string;
+      limit?: number;
+      lowerBound?: Date;
+    },
   ) {
     const list = await this.listService.getListById(listId);
 
@@ -157,24 +163,17 @@ export class ReviewService {
       }
     }
 
-    const reviews =
-      await this.reviewRepository.getReviewsFromListWithFilmsForUser(
-        listId,
-        limit,
-        lowerBound,
-      );
-    const isFaved =
-      user &&
-      (await this.favListRepository.findOneBy({
-        list: { id: listId },
-        user: { id: user.id },
-      }));
+    const [[listWithInfo], reviews] = await Promise.all([
+      this.listService.getListsWithAdditionalInfo([list], user?.id),
+      this.reviewRepository.getReviewsFromListWithFilmsForUser(listId, {
+        ...options,
+        search: options.search,
+      }),
+    ]);
+
     return {
-      list,
+      ...listWithInfo,
       reviews,
-      additionalInfo: {
-        isFavorite: Boolean(isFaved),
-      },
     };
   }
 

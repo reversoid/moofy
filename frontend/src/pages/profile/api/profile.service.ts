@@ -14,21 +14,11 @@ export class ProfileService extends ApiService {
   }
 
   public async editProfileDescription(newValue: string) {
-    return this.patch<Profile>('/profile', {
+    return this.patch<Omit<Profile, 'allLists' | 'favLists'>>('/profile', {
       useJWT: true,
       json: {
         description: newValue,
       },
-    });
-  }
-
-  public async uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    return this.post<{ link: string }>('/profile/image-upload', {
-      useJWT: true,
-      body: formData,
     });
   }
 }

@@ -1,9 +1,8 @@
 import { Film } from '@/shared/api/types/film.type';
-import { useEvent, useStore } from 'effector-react';
-import { useNavigate } from 'react-router-dom';
-import ReviewModal from '../../_ui/ReviewModal';
 import { memo } from 'react';
-import { $createReviewState, clearState, createReview } from '../model';
+import { useNavigate } from 'react-router-dom';
+import ReviewModal from '../../ui/ReviewModal';
+import { useCreateReview } from '../utils/useCreateReview';
 
 export interface CreateReviewModalProps {
   isOpen: boolean;
@@ -19,15 +18,14 @@ const CreateReviewModal = ({
   listId,
 }: CreateReviewModalProps) => {
   const navigate = useNavigate();
-  const onSubmit = useEvent(createReview);
 
-  const { loading, success } = useStore($createReviewState);
+  const { data, isLoading, isSuccess, mutate } = useCreateReview();
 
   return (
     <ReviewModal
       handlers={{
         onSubmit({ description, score }) {
-          return onSubmit({
+          return mutate({
             filmId: film?.id ?? '-1',
             description,
             score: score === null ? score : Number(score),
@@ -35,14 +33,13 @@ const CreateReviewModal = ({
           });
         },
         onSuccess() {
-          clearState();
           setIsOpen(false);
           navigate('../');
         },
       }}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      state={{ loading, success }}
+      state={{ loading: isLoading, success: isSuccess }}
     />
   );
 };

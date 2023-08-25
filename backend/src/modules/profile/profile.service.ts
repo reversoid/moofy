@@ -1,38 +1,26 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../user/repositories/user.repository';
-import { UserErrors } from 'src/errors/user.errors';
-import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
-import { List } from '../list/entities/list.entity';
-import { FavoriteList } from '../list/entities/favoriteList.entity';
-import { ListRepository } from '../list/repositories/list.repository';
-import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
-import { EditProfileDTO } from './dtos/EditProfile.dto';
+import { ManagedUpload } from 'aws-sdk/clients/s3';
+import * as sharp from 'sharp';
 import { AuthErrors } from 'src/errors/auth.errors';
 import { ImageErrors } from 'src/errors/image.errors';
-import * as sharp from 'sharp';
+import { UserErrors } from 'src/errors/user.errors';
 import { getS3 } from 'src/shared/libs/S3/s3';
-import { ManagedUpload } from 'aws-sdk/clients/s3';
-
-export interface Profile {
-  id: number;
-  username: string;
-  description: string | null;
-  image_url: string | null;
-  created_at: Date;
-  allLists: {
-    count: number;
-    lists: IterableResponse<List>;
-  };
-  favLists?: {
-    count: number;
-    lists: IterableResponse<FavoriteList>;
-  };
-}
+import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
+import { ListRepository } from '../list/repositories/list.repository';
+import { UserRepository } from '../user/repositories/user.repository';
+import { EditProfileDTO } from './dtos/EditProfile.dto';
+import { ProfileShort } from './types/profile-short.type';
+import { Profile } from './types/profile.type';
+import { SubscriptionRepository } from '../user/repositories/subscription.repository';
+import { SubscribeErrors } from 'src/errors/subscribe.errors';
+import { In } from 'typeorm';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly subcriptionRepository: SubscriptionRepository,
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
   ) {}
@@ -44,12 +32,14 @@ export class ProfileService {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    const [lists, favLists, listsCount, favListsCount] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit),
-      this.favListRepository.getUserFavoriteLists(id, listsLimit),
-      this.listRepository.getAmountOfUserLists(id),
-      this.favListRepository.getAmountOfUserFavLists(id),
-    ]);
+    const [lists, favLists, listsCount, favListsCount, subscriptionsInfo] =
+      await Promise.all([
+        this.listRepository.getUserLists(id, listsLimit),
+        this.favListRepository.getUserFavoriteLists(id, listsLimit),
+        this.listRepository.getAmountOfUserLists(id),
+        this.favListRepository.getAmountOfUserFavLists(id),
+        this.subcriptionRepository.getSubscriptionsInfo(id),
+      ]);
 
     return {
       id,
@@ -65,19 +55,30 @@ export class ProfileService {
         count: favListsCount,
         lists: favLists,
       },
+      subscriptionsInfo,
+      additionalInfo: {
+        isSubscribed: false,
+      },
     };
   }
 
   /** Get guest data for profile, excluding private and favorite lists */
-  async getUserProfile(id: number, listsLimit: number): Promise<Profile> {
+  async getUserProfile(
+    id: number,
+    listsLimit: number,
+    requesterUserId?: number,
+  ): Promise<Profile> {
     const user = await this.userRepository.getUserInfoById(id);
     if (!user) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
-    const [lists, listsCount] = await Promise.all([
-      this.listRepository.getUserLists(id, listsLimit, true),
-      this.listRepository.getAmountOfUserLists(id, true),
-    ]);
+    const [lists, listsCount, subscriptionsInfo, isSubscribed] =
+      await Promise.all([
+        this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
+        this.listRepository.getAmountOfUserLists(id, true),
+        this.subcriptionRepository.getSubscriptionsInfo(id),
+        this.subcriptionRepository.isSubscribed(requesterUserId, id),
+      ]);
 
     return {
       id,
@@ -89,13 +90,22 @@ export class ProfileService {
       created_at: user.created_at,
       description: user.description,
       username: user.username,
+      subscriptionsInfo,
+      additionalInfo: {
+        isSubscribed,
+      },
     };
   }
 
   async editProfile(
     userId: number,
     dto: EditProfileDTO,
-  ): Promise<Omit<Profile, 'allLists' | 'favLists'>> {
+  ): Promise<
+    Omit<
+      Profile,
+      'allLists' | 'favLists' | 'subscriptionsInfo' | 'additionalInfo'
+    >
+  > {
     const user = await this.userRepository.getUserInfoById(userId);
 
     if (!user) {
@@ -167,5 +177,152 @@ export class ProfileService {
     }
 
     return { link: response.Location };
+  }
+
+  async searchUserProfiles(
+    username: string,
+    limit: number,
+    requesterUserId: number,
+  ): Promise<ProfileShort[]> {
+    const users = await this.userRepository.searchUsersByUsername(
+      username,
+      limit,
+    );
+    return this.getShortProfileFromUsers(users, requesterUserId);
+  }
+
+  async subscribeToUser(fromId: number, toId: number) {
+    await this.validateUsersIds(fromId, toId);
+    const alreadySubscribed = await this.subscriptionExists(fromId, toId);
+
+    if (alreadySubscribed) {
+      throw new HttpException(SubscribeErrors.ALREADY_SUBSCRIBED, 400);
+    }
+
+    await this.subcriptionRepository.save({
+      follower: {
+        id: fromId,
+      },
+      followed: {
+        id: toId,
+      },
+    });
+
+    return this.subcriptionRepository.getSubscriptionsInfo(toId);
+  }
+
+  async unSubscribeFromUser(fromId: number, toId: number) {
+    await this.validateUsersIds(fromId, toId);
+    const isSubscribed = await this.subscriptionExists(fromId, toId);
+
+    if (!isSubscribed) {
+      throw new HttpException(SubscribeErrors.NOT_SUBSCRIBED, 400);
+    }
+
+    await this.subcriptionRepository.softDelete({
+      follower: {
+        id: fromId,
+      },
+      followed: {
+        id: toId,
+      },
+    });
+    return this.subcriptionRepository.getSubscriptionsInfo(toId);
+  }
+
+  private async validateUsersIds(fromId: number, toId: number) {
+    const users = await this.userRepository.find({
+      where: [{ id: fromId }, { id: toId }],
+    });
+    const notAllUsersFound = users.length !== 2;
+    if (notAllUsersFound) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+  }
+
+  private async subscriptionExists(fromId: number, toId: number) {
+    const subscription = await this.subcriptionRepository.findOne({
+      where: { follower: { id: fromId }, followed: { id: toId } },
+    });
+    return Boolean(subscription);
+  }
+
+  async getUserFollowers(
+    userId: number,
+    limit: number,
+    lowerBound?: Date,
+    requesterUserId?: number,
+    search?: string,
+  ): Promise<IterableResponse<ProfileShort>> {
+    const usersPaginated = await this.subcriptionRepository.getFollowers(
+      userId,
+      lowerBound,
+      limit,
+      search,
+    );
+    return {
+      ...usersPaginated,
+      items: await this.getShortProfileFromUsers(
+        usersPaginated.items,
+        requesterUserId,
+      ),
+    };
+  }
+
+  async getUserFollowing(
+    userId: number,
+    limit: number,
+    lowerBound?: Date,
+    requesterUserId?: number,
+    search?: string,
+  ): Promise<IterableResponse<ProfileShort>> {
+    const usersPaginated = await this.subcriptionRepository.getFollowing(
+      userId,
+      lowerBound,
+      limit,
+      search,
+    );
+
+    return {
+      ...usersPaginated,
+      items: await this.getShortProfileFromUsers(
+        usersPaginated.items,
+        requesterUserId,
+      ),
+    };
+  }
+
+  private async getShortProfileFromUsers<
+    T extends Omit<ProfileShort, 'additionalInfo'>,
+  >(users: T[], requesterUserId?: number) {
+    const subscriptions = await this.subcriptionRepository.find({
+      where: {
+        follower: { id: requesterUserId },
+        followed: In(users.map((u) => u.id)),
+      },
+      relations: {
+        followed: true,
+        follower: true,
+      },
+      select: {
+        id: true,
+        follower: {
+          id: true,
+        },
+        followed: {
+          id: true,
+        },
+      },
+    });
+
+    const userIsSubscribedSet = new Set(
+      subscriptions.map((s) => s.followed.id),
+    );
+    return users.map<ProfileShort>((u) => ({
+      ...u,
+      additionalInfo: {
+        isSubscribed: userIsSubscribedSet.has(u.id),
+      },
+    }));
   }
 }

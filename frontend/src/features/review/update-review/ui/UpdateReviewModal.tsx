@@ -1,6 +1,5 @@
-import ReviewModal, { ReviewFormData } from '../../_ui/ReviewModal';
-import { useStore } from 'effector-react';
-import { $updateReviewState, clearState, updateReview } from '../model';
+import ReviewModal, { ReviewFormData } from '../../ui/ReviewModal';
+import { useUpdateReview } from '../utils/useUpdateReview';
 
 interface UpdateReviewModalProps {
   isOpen: boolean;
@@ -15,7 +14,7 @@ const UpdateReviewModal = ({
   reviewId,
   formData,
 }: UpdateReviewModalProps) => {
-  const { loading, success } = useStore($updateReviewState);
+  const { isLoading, isSuccess, mutateAsync } = useUpdateReview();
 
   return (
     <ReviewModal
@@ -23,8 +22,8 @@ const UpdateReviewModal = ({
       setIsOpen={setIsOpen}
       form={formData}
       handlers={{
-        onSubmit({ description, score }) {
-          return updateReview({
+        async onSubmit({ description, score }) {
+          await mutateAsync({
             description,
             score: score === null ? score : Number(score),
             reviewId,
@@ -32,12 +31,11 @@ const UpdateReviewModal = ({
         },
         onSuccess() {
           setIsOpen(false);
-          clearState();
         },
       }}
       state={{
-        loading,
-        success,
+        loading: isLoading,
+        success: isSuccess,
       }}
     />
   );

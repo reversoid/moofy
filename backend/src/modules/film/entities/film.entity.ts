@@ -51,4 +51,9 @@ export class Film {
 
   @OneToMany(() => ToWatch, (toWatch) => toWatch.film)
   toWatch: ToWatch[];
+
+  /** Is used for full text search */
+  @Column({ type: 'tsvector', select: false })
+  @Index()
+  search_document: any;
 }

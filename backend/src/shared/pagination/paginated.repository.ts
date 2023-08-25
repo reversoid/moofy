@@ -24,8 +24,8 @@ export class PaginatedRepository<
   }
 
   /** Returns correct nextKey for pagination and items */
-  protected processPagination(
-    items: T[],
+  protected processPagination<V = T>(
+    items: V[],
     limit: number,
     by: 'created_at' | 'updated_at',
   ) {
@@ -41,7 +41,7 @@ export class PaginatedRepository<
   }
 
   /** Returns operator and date to compare */
-  protected getRAWUpdatedAtCompareString(lowerBound?: Date): {
+  protected getRAWDatesCompareString(lowerBound?: Date): {
     operator: string;
     date: string;
   } {

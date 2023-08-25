@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useStore } from 'effector-react';
-import { $appNotifyStore } from '@/features/app/model/notify';
+import { $appNotifyStore } from '@/app';
 
 export const useNotifySnackbar = () => {
   const message = useStore($appNotifyStore);

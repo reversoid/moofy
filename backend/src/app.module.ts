@@ -7,7 +7,6 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ListModule } from './modules/list/list.module';
 import { ExternalMovieProxyModule } from './modules/externalMovieProxy/externalMovieProxy.module';
-import { TaskModule } from './modules/task/task.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { getRedisConfig } from './config/modulesConfigs/getRedisConfig';
 import { FilmModule } from './modules/film/film.module';
@@ -42,7 +41,7 @@ import s3Config from './config/s3.config';
     AuthModule,
     ListModule,
     ExternalMovieProxyModule,
-    TaskModule,
+    // TaskModule, TODO: use if it and fix it if necessary
     FilmModule,
     ProfileModule,
   ],

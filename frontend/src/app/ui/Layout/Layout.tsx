@@ -1,11 +1,12 @@
-import { Suspense, memo, useEffect } from 'react';
+import { Suspense } from 'react';
 import { Container, styled } from '@nextui-org/react';
-import Header, { HEADER_HEIGHT } from './Header';
+import Header from './Header';
 import { ErrorSnackbar } from './Snackbar/ErrorSnackbar';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './Footer';
 import { NotifySnackbar } from './Snackbar/NotifySnackbar';
 import { ScrollToTop } from '@/app/utils/scrollToTop';
+import { HEADER_HEIGHT } from '@/app/utils/layoutConstants';
 
 interface LayoutProps {
   fullWidth?: boolean;

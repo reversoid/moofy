@@ -51,7 +51,7 @@ function Footer() {
       </Div>
       <PagesWrapper>
         <Link
-          href="https://github.com/reversoid/moofy-frontend"
+          href="https://github.com/reversoid/moofy"
           target="_blank"
           rel="noopener noreferrer"
           css={{

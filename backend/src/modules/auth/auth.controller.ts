@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Inject, Post, Req, Res } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CookieOptions, Request, Response } from 'express';
 import globalConfig, { AppEnvironments } from 'src/config/global.config';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dtos/login.dto';
 import { RegisterDTO } from './dtos/register.dto';
+import { ListService } from '../list/list.service';
+import { AuthResponse } from './dtos/responses/auth.response';
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
   signed: true,
@@ -17,6 +19,7 @@ const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieOptions = {
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly listService: ListService,
     @Inject(globalConfig.KEY)
     private config: ConfigType<typeof globalConfig>,
   ) {}
@@ -24,12 +27,26 @@ export class AuthController {
   @ApiOperation({
     description: 'Register',
   })
+  @ApiResponse({ description: 'Result', type: AuthResponse })
   @Post('register')
   async register(
     @Body() dto: RegisterDTO,
     @Res({ passthrough: true }) response: Response,
   ) {
     const userId = await this.authService.createUser(dto);
+
+    // TODO possible to make better?
+    await Promise.all([
+      this.listService.createList(userId, {
+        name: 'Избранное',
+        isPublic: true,
+      }),
+      this.listService.createList(userId, {
+        name: 'Посмотреть',
+        isPublic: false,
+      }),
+    ]);
+
     const { access, refresh } = await this.authService.generateTokens(userId);
 
     response.cookie('refresh_token', refresh, this.getRefreshCookieOptions());
@@ -39,6 +56,7 @@ export class AuthController {
   @ApiOperation({
     description: 'Login',
   })
+  @ApiResponse({ description: 'Result', type: AuthResponse })
   @Post('login')
   async login(
     @Body() dto: LoginDTO,
@@ -56,6 +74,7 @@ export class AuthController {
     description:
       'Updates auth and refresh token. Refresh token must be set in cookie.',
   })
+  @ApiResponse({ description: 'Result', type: AuthResponse })
   @Get('protected/checkout')
   async refresh(
     @Req() request: Request,
@@ -72,7 +91,6 @@ export class AuthController {
 
       return { access_token: access, userId };
     } catch (error) {
-      // response.clearCookie('refresh_token', DEFAULT_REFRESH_COOKIE_OPTIONS);
       throw error;
     }
   }
@@ -90,8 +108,6 @@ export class AuthController {
       await this.authService.logout(refreshToken);
 
       response.clearCookie('refresh_token', DEFAULT_REFRESH_COOKIE_OPTIONS);
-
-      return { success: true };
     } catch (error) {
       response.clearCookie('refresh_token', DEFAULT_REFRESH_COOKIE_OPTIONS);
       throw error;

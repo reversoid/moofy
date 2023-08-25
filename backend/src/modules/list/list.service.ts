@@ -11,6 +11,20 @@ import { ImageErrors } from 'src/errors/image.errors';
 import * as sharp from 'sharp';
 import { getS3 } from 'src/shared/libs/S3/s3';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
+import { SendCommentDTO } from './dtos/send-comment.dto';
+import {
+  CommentRepository,
+  CommentWithRepliesAmount,
+} from './repositories/comment.repository';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { ListLike } from './entities/list-like.entity';
+import { ListLikeRepository } from './repositories/list-like.repository';
+import { CommentLikeRepository } from './repositories/comment-like.repository';
+import { LikeErrors } from 'src/errors/like.errors';
+import { CommentLike } from './entities/comment-like.entity';
+import { Order } from './dtos/get-updates.query.dto';
+import { ListViewRepository } from './repositories/list-view.repository';
+import { AdditionalListInfo } from '../review/review.controller';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -30,16 +44,19 @@ export class ListService {
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
     private readonly userRepository: UserRepository,
+    private readonly commentRepository: CommentRepository,
+    private readonly listLikeRepository: ListLikeRepository,
+    private readonly commentLikeRepository: CommentLikeRepository,
+    private readonly listViewRepository: ListViewRepository,
   ) {}
 
   async createList(
-    user: User,
+    userId: number,
     { name, description, isPublic, imageUrl }: CreateListDTO,
   ) {
     const list = this.listRepository.create({
       user: {
-        id: user.id,
-        username: user.username,
+        id: userId,
       },
       name,
       description,
@@ -55,19 +72,56 @@ export class ListService {
     userId: number,
     limit: number,
     listsToGet: GetListsStrategy,
-    lowerBound?: Date,
+    options: {
+      lowerBound?: Date;
+      search?: string;
+    },
+    requesterId?: number,
   ) {
     const isPublic = IsPublicByStrategy[listsToGet];
 
     const [processedLists, user] = await Promise.all([
-      this.listRepository.getUserLists(userId, limit, isPublic, lowerBound),
+      this.listRepository.getUserLists(userId, limit, {
+        lowerBound: options.lowerBound,
+        isPublic,
+        search: options.search,
+      }),
       this.userRepository.getUserInfoById(userId),
     ]);
 
     processedLists.items.forEach(
-      (item) => (item.user = { id: userId, username: user.username } as User),
+      (item) =>
+        (item.user = {
+          id: userId,
+          username: user.username,
+          image_url: user.image_url,
+        } as User),
     );
-    return processedLists;
+    const { items, nextKey } = processedLists;
+    const listsWithInfo = await this.getListsWithAdditionalInfo(
+      items,
+      requesterId,
+    );
+    return {
+      nextKey,
+      items: listsWithInfo,
+    };
+  }
+
+  async getPublicLists(
+    search: string,
+    limit: number,
+    lowerBound?: Date,
+    userId?: number,
+  ) {
+    const { items, nextKey } = await this.listRepository.getPublicLists(
+      search,
+      limit,
+      lowerBound,
+    );
+    const listsWithInfo = await this.getListsWithAdditionalInfo(items, userId);
+
+    return { items: listsWithInfo, nextKey };
   }
 
   async getUserList(user: User, listId: number): Promise<List> {
@@ -139,7 +193,13 @@ export class ListService {
   }
 
   async addFavoriteList(user: User, listId: number) {
-    const userOwnsList = await this.listRepository.getUserList(listId, user.id);
+    const list = await this.listRepository.getListById(listId);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    const userOwnsList = list.user.id === user.id;
     if (userOwnsList) {
       throw new HttpException(ListErrors.FAV_LIST_OWNED_BY_USER, 400);
     }
@@ -152,14 +212,16 @@ export class ListService {
       throw new HttpException(ListErrors.FAV_LIST_ALREADY_EXISTS, 400);
     }
 
-    return this.favListRepository.save({
-      list: {
-        id: listId,
-      },
+    const fav = await this.favListRepository.save({
+      list,
       user: {
         id: user.id,
       },
     });
+
+    delete fav['user'];
+    delete fav['deleted_at'];
+    return fav;
   }
 
   async deleteFavoriteList(user: User, listId: number) {
@@ -214,5 +276,208 @@ export class ListService {
     }
 
     return { link: response.Location };
+  }
+
+  async sendComment(user: User, listId: number, dto: SendCommentDTO) {
+    const list = await this.listRepository.getListById(listId);
+
+    const notAllowed = !list.is_public && list.user.id !== user.id;
+    if (notAllowed) {
+      throw new HttpException(ListErrors.NOT_ALLOWED, 403);
+    }
+
+    const newComment = this.commentRepository.create({
+      reply_to: dto.replyToId !== undefined ? { id: dto.replyToId } : undefined,
+      text: dto.text,
+      list: { id: listId },
+      user: {
+        id: user.id,
+      },
+    });
+
+    const comment = await this.commentRepository.save(newComment);
+    comment.user = this.userRepository.create({
+      id: user.id,
+      username: user.username,
+      image_url: user.image_url,
+    });
+
+    if (dto.replyToId !== undefined) {
+      comment.reply_to = this.commentRepository.create({
+        id: user.id,
+      });
+    }
+
+    return comment;
+  }
+
+  async getComments(
+    listId: number,
+    commentId?: number,
+    limit = 20,
+    lowerBound?: Date,
+  ): Promise<IterableResponse<CommentWithRepliesAmount>> {
+    return this.commentRepository.getComments(
+      listId,
+      commentId,
+      limit,
+      lowerBound,
+    );
+  }
+
+  async likeList(listId: number, userId: number): Promise<ListLike> {
+    const [list, existingLike] = await Promise.all([
+      this.listRepository.getListById(listId),
+      this.listLikeRepository.findOneBy({
+        list: { id: listId },
+        user: { id: userId },
+      }),
+    ]);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    if (existingLike) {
+      throw new HttpException(LikeErrors.ALREADY_LIKED, 400);
+    }
+
+    const newLike = this.listLikeRepository.create({
+      list: { id: listId },
+      user: { id: userId },
+    });
+
+    return this.listLikeRepository.save(newLike);
+  }
+
+  async unlikeList(listId: number, userId: number): Promise<ListLike> {
+    const [list, existingLike] = await Promise.all([
+      this.listRepository.getListById(listId),
+      this.listLikeRepository.findOneBy({
+        list: { id: listId },
+        user: { id: userId },
+      }),
+    ]);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    if (!existingLike) {
+      throw new HttpException(LikeErrors.NOT_LIKED, 400);
+    }
+
+    return this.listLikeRepository.softRemove(existingLike);
+  }
+
+  async likeComment(commentId: number, userId: number): Promise<CommentLike> {
+    const [comment, existingLike] = await Promise.all([
+      this.commentRepository.findOneBy({ id: commentId }),
+      this.commentLikeRepository.findOneBy({
+        comment: {
+          id: commentId,
+        },
+        user: { id: userId },
+      }),
+    ]);
+
+    if (!comment) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    if (existingLike) {
+      throw new HttpException(LikeErrors.ALREADY_LIKED, 400);
+    }
+
+    const newLike = this.commentLikeRepository.create({
+      comment: { id: commentId },
+      user: { id: userId },
+    });
+
+    return this.commentLikeRepository.save(newLike);
+  }
+
+  async unlikeComment(commentId: number, userId: number): Promise<CommentLike> {
+    const [list, existingLike] = await Promise.all([
+      this.commentRepository.findOneBy({ id: commentId }),
+      this.commentLikeRepository.findOneBy({
+        comment: {
+          id: commentId,
+        },
+        user: { id: userId },
+      }),
+    ]);
+
+    if (!list) {
+      throw new HttpException(ListErrors.WRONG_LIST_ID, 400);
+    }
+
+    if (!existingLike) {
+      throw new HttpException(LikeErrors.NOT_LIKED, 400);
+    }
+
+    return this.commentLikeRepository.softRemove(existingLike);
+  }
+
+  async getLatestUpdates(
+    userId: number,
+    lowerBound?: Date,
+    limit = 20,
+    order?: Order,
+  ) {
+    const { items, nextKey } = await this.listRepository.getLatestUpdates(
+      userId,
+      lowerBound,
+      limit,
+      order,
+    );
+
+    const listsWithInfo = await this.getListsWithAdditionalInfo(items, userId);
+
+    return {
+      nextKey,
+      items: listsWithInfo,
+    };
+  }
+
+  async markListAsViewed(userId: number, listId: number) {
+    await this.listViewRepository.markListAsViewed(userId, listId);
+  }
+
+  async getAmountOfUpdatesForUser(
+    userId: number,
+  ): Promise<{ updatesAmount: number }> {
+    const updatesAmount = await this.listRepository.getLatestUpdatesAmount(
+      userId,
+    );
+
+    return { updatesAmount };
+  }
+
+  async getListsWithAdditionalInfo(
+    lists: List[],
+    userId: number | undefined,
+  ): Promise<{ list: List; additionalInfo: AdditionalListInfo }[]> {
+    const listIds = lists.map((i) => i.id);
+
+    const [favedMap, viewedMap, stats, updatedSinceLastViewMap] =
+      await Promise.all([
+        this.favListRepository.areListsFaved(listIds, userId),
+        this.listViewRepository.areListsViewed(listIds, userId),
+        this.listRepository.getListsStatistics(listIds, userId),
+        this.listViewRepository.areListsUpdatedSinceLastView(listIds, userId),
+      ]);
+
+    return lists.map<{ list: List; additionalInfo: AdditionalListInfo }>(
+      (item) => ({
+        list: item,
+        additionalInfo: {
+          ...stats.get(item.id),
+          isViewed: viewedMap.get(item.id),
+          isFavorite: favedMap.get(item.id),
+          isUpdatedSinceLastView: updatedSinceLastViewMap.get(item.id),
+        },
+      }),
+    );
   }
 }

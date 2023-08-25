@@ -1,22 +1,27 @@
-import { useAuth } from '@/shared/hooks/useAuth';
 import { ListContent } from './ListContent';
 import { ListInfo } from './ListInfo';
 import { Review } from '@/shared/api/types/review.type';
-import { IterableResponse } from '@/shared/api/types/shared';
 import { List } from '@/shared/api/types/list.type';
+import { useAuth } from '@/app';
 
 interface ListPageProps {
-  listWithContent: {
-    reviews?: IterableResponse<Review>;
-    list: List;
-    additionalInfo?: {
-      isFavorite?: boolean;
-    };
+  list: List;
+  reviews?: Review[];
+  canLoadMoreReviews?: boolean;
+  loadMoreReviews?: () => void;
+  additionalInfo?: {
+    isFavorite?: boolean;
   };
+  isFetchingMore?: boolean;
 }
 
 export const PageContent = ({
-  listWithContent: { list, reviews, additionalInfo },
+  list,
+  reviews,
+  additionalInfo,
+  canLoadMoreReviews,
+  loadMoreReviews,
+  isFetchingMore,
 }: ListPageProps) => {
   const { userId } = useAuth();
 
@@ -30,7 +35,9 @@ export const PageContent = ({
       <ListContent
         isUserOwner={userId === list.user.id}
         reviews={reviews}
-        listId={list.id}
+        canLoadMoreReviews={canLoadMoreReviews}
+        loadMoreReviews={loadMoreReviews}
+        isFetchingMore={isFetchingMore ?? false}
       />
     </>
   );

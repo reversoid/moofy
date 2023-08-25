@@ -24,6 +24,16 @@ import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
 import { ListService } from '../list/list.service';
 import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
 import { List } from '../list/entities/list.entity';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+
+export interface AdditionalListInfo {
+  isFavorite: boolean;
+  isLiked: boolean;
+  likesAmount: number;
+  commentsAmount: number;
+  isViewed: boolean;
+  isUpdatedSinceLastView: boolean;
+}
 
 @ApiTags('Review')
 @Controller('review')
@@ -56,10 +66,7 @@ export class ReviewController {
       }),
     )
     { limit = 20, lowerBound, includeFilms }: GetAllUserReviewsDTO,
-  ): Promise<{
-    nextKey: Date;
-    items: Review[];
-  }> {
+  ): Promise<IterableResponse<Review>> {
     return this.reviewService.getReviews(user, limit, includeFilms, lowerBound);
   }
 
@@ -77,23 +84,17 @@ export class ReviewController {
         forbidNonWhitelisted: true,
       }),
     )
-    { listId, limit = 20, lowerBound }: GetReviewsDTO,
+    { listId, limit = 20, lowerBound, search }: GetReviewsDTO,
   ): Promise<{
     list: List;
-    reviews: {
-      nextKey: Date;
-      items: Review[];
-    };
-    additionalInfo: {
-      isFavorite: boolean;
-    };
+    reviews: IterableResponse<Review>;
+    additionalInfo: AdditionalListInfo;
   }> {
-    return this.reviewService.getReviewsFromListWithFilms(
-      user,
-      listId,
+    return this.reviewService.getReviewsFromListWithFilms(user, listId, {
       limit,
       lowerBound,
-    );
+      search,
+    });
   }
 
   @ApiOperation({

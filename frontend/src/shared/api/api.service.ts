@@ -1,5 +1,5 @@
 import ky, { Options } from 'ky';
-import { setAppError } from '@/features/app';
+import { setAppError } from '@/app';
 import { tokenService } from '../services/token.service';
 import environment from '@/app/environment';
 import { AuthResponse } from './types/authResponse.type';

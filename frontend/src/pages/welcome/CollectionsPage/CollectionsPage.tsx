@@ -1,37 +1,25 @@
-import { useStore } from 'effector-react';
-import { memo, useEffect, useState } from 'react';
-import { $getListsLoading, $getMoreListsLoading, getLists, getMoreLists } from '@/features/list/get-lists';
-import { $lists } from '@/features/list/_model';
-import ListGrid from '@/widgets/list-grid/ui/ListGrid';
-import { List } from '@/entities/List';
-import { CreateListModal } from '@/features/list/create-list';
+import { CreateListItem, CreateListModal } from '@/features/list/create-list';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import ListGrid from '@/widgets/list-grid/ui/ListGrid';
+import { useState } from 'react';
+import { useCollectionsPage } from './utils/useCollectionsPage';
 
 const CollectionsPage = () => {
-  useEffect(getLists, []);
   const [createListModal, setCreateListModal] = useState(false);
 
-  const lists = useStore($lists);
-  const listsLoading = useStore($getListsLoading);
-  const moreListsLoading = useStore($getMoreListsLoading);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useCollectionsPage();
 
-  useLoadingBar(listsLoading, moreListsLoading)
+  useLoadingBar(isLoading);
 
   return (
     <>
       <ListGrid
-        items={lists?.items ?? []}
-        canLoadMore={Boolean(lists?.nextKey ?? null)}
-        loadMore={
-          lists?.nextKey ? () => getMoreLists({ lowerBound: lists?.nextKey! }) : undefined
-        }
-        loadingMore={moreListsLoading}
-        firstItem={
-          <List
-            onClick={() => setCreateListModal(true)}
-            text="Создать коллекцию"
-          />
-        }
+        items={data}
+        canLoadMore={hasNextPage}
+        loadMore={fetchNextPage}
+        loadingMore={isFetchingNextPage}
+        firstItem={<CreateListItem onClick={() => setCreateListModal(true)} />}
       />
       <CreateListModal
         isOpen={createListModal}

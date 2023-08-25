@@ -22,7 +22,7 @@ export const StyledTabs = forwardRef<MuiTabsRef, MuiTabsProps>((props, ref) => {
             height: '3px !important',
           },
           '& .MuiTabs-flexContainer': {
-            gap: '1rem !important',
+            gap: '0.5rem !important',
           },
           ...props.sx
         },

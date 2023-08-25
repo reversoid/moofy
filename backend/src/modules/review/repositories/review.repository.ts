@@ -1,12 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, Raw } from 'typeorm';
 import { Review } from '../entities/review.entity';
 import { Film } from 'src/modules/film/entities/film.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
+import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
+
+export function SearchMatch(search: string) {
+  return Raw(
+    (columnAlias: string) =>
+      `("Review__Review_film"."search_document" || ${columnAlias}) @@ plainto_tsquery(:search_string)`,
+    {
+      search_string: search,
+    },
+  );
+}
 
 @Injectable()
 export class ReviewRepository extends PaginatedRepository<Review> {
-  constructor(private dataSource: DataSource) {
+  constructor(dataSource: DataSource) {
     super(Review, dataSource.createEntityManager());
   }
 
@@ -26,7 +37,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
 
   /** Get all user reviews. Only info about film is **id** */
   async getAllUserReviews(userId: number, limit?: number, lowerBound?: Date) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
 
     const reviews = await this.createQueryBuilder('review')
       .select([
@@ -58,7 +69,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
     limit?: number,
     lowerBound?: Date,
   ) {
-    const { date, operator } = super.getRAWUpdatedAtCompareString(lowerBound);
+    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
     const reviews = await this.createQueryBuilder('review')
       .select([
         'created_at',
@@ -131,44 +142,57 @@ export class ReviewRepository extends PaginatedRepository<Review> {
   /** Get all reviews from list with films*/
   async getReviewsFromListWithFilmsForUser(
     listId: number,
-    limit = 20,
-    lowerBound?: Date,
+    options: {
+      limit?: number;
+      lowerBound?: Date;
+      search?: string;
+    },
   ) {
-    const reviews = await this.find({
-      where: {
-        list: {
-          id: listId,
-        },
-        created_at: super.getCompareOperator(lowerBound),
-      },
-      relations: {
-        list: true,
-        film: true,
-      },
-      select: {
-        created_at: true,
-        description: true,
-        film: {
-          filmLength: true,
-          genres: true,
-          id: true,
-          name: true,
-          posterPreviewUrl: true,
-          posterUrl: true,
-          reviews: true,
-          type: true,
-          year: true,
-        },
-        id: true,
-        score: true,
-        updated_at: true,
-      },
-      take: limit + 1,
-      order: {
-        created_at: 'DESC',
-      },
-    });
-    reviews.forEach((r) => delete r.list);
+    const limit = options.limit ?? 20;
+
+    const { date, operator } = super.getRAWDatesCompareString(
+      options.lowerBound,
+    );
+    const plainQb = this.createQueryBuilder('review')
+      .leftJoinAndSelect('review.list', 'list')
+      .leftJoinAndSelect('review.film', 'film')
+      .select([
+        'review.created_at',
+        'review.description',
+        'review.id',
+        'review.score',
+        'review.updated_at',
+        'film.filmLength',
+        'film.genres',
+        'film.id',
+        'film.name',
+        'film.posterPreviewUrl',
+        'film.posterUrl',
+        'film.type',
+        'film.year',
+      ])
+      .where('list.id = :listId', { listId })
+      .andWhere(`review.created_at ${operator} :date`, { date })
+      .take(options.limit + 1);
+
+    if (options.search) {
+      const words = getTsQueryFromString(options.search);
+
+      plainQb
+        .addSelect(
+          `ts_rank(film.search_document || review.search_document, to_tsquery('simple', :search_string))`,
+          'rank',
+        )
+        .andWhere(
+          `(film.search_document || review.search_document) @@ to_tsquery('simple', :search_string)`,
+          { search_string: words },
+        )
+        .orderBy('rank', 'DESC');
+    }
+
+    plainQb.addOrderBy('review.created_at', 'DESC');
+
+    const reviews = await plainQb.getMany();
     return super.processPagination(reviews, limit, 'created_at');
   }
 

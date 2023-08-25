@@ -1,45 +1,56 @@
-import { $lists, $singleList } from '@/features/list/_model';
-import { $getListState, getList } from '@/features/list/get-list';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { useStore } from 'effector-react';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { PageContent } from './PageContent';
 import { Text } from '@nextui-org/react';
+import { useListPage } from '../utils/hooks/useListPage';
+import { PageContent } from './PageContent';
+import { useEarlierLoadedList } from '../utils/hooks/useEarlierLoadedList';
+import { FC, createContext } from 'react';
+import { useParams } from 'react-router-dom';
 
-export const ListPage = () => {
+const useId = () => {
   const { id } = useParams();
+  return Number(id);
+};
 
-  useEffect(() => {
-    getList(Number(id));
-  }, []);
+export const ListPageContext = createContext<{ id: number | undefined }>({
+  id: undefined,
+});
 
-  const lists = useStore($lists);
+export const ListPage: FC = () => {
+  const id = useId();
 
-  const { error, loading } = useStore($getListState);
-  const listWithContent = useStore($singleList);
+  const {
+    data,
+    error,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useListPage(id);
 
-  const listAlreadyLoaded = lists?.items.find((list) => list.id === Number(id));
+  const { earlierLoadedList } = useEarlierLoadedList(id);
 
-  const listWithContentAlreadyLoaded = Boolean(
-    listWithContent && listWithContent.list.id === Number(id),
-  );
+  useLoadingBar(isLoading);
 
-  useLoadingBar(loading);
-
-  if (listWithContentAlreadyLoaded) {
-    return <PageContent listWithContent={{ ...listWithContent! }} />;
+  if (data) {
+    return (
+      <ListPageContext.Provider value={{ id }}>
+        <PageContent
+          list={data.list}
+          additionalInfo={data.additionalInfo}
+          reviews={data.reviews}
+          loadMoreReviews={fetchNextPage}
+          canLoadMoreReviews={hasNextPage}
+          isFetchingMore={isFetchingNextPage}
+        />
+      </ListPageContext.Provider>
+    );
   }
 
-  if (listAlreadyLoaded) {
-    return <PageContent listWithContent={{ list: listAlreadyLoaded }} />;
+  if (earlierLoadedList) {
+    return <PageContent list={earlierLoadedList} />;
   }
 
-  if (loading) {
-    return null;
-  }
-
-  if (error === 'NOT_ALLOWED') {
+  if (error?.cause.message === 'NOT_ALLOWED') {
     return (
       <>
         <Text size={'$lg'}>Коллекция скрыта пользователем</Text>
@@ -47,7 +58,7 @@ export const ListPage = () => {
     );
   }
 
-  if (error === 'WRONG_LIST_ID') {
+  if (error?.cause.message === 'WRONG_LIST_ID') {
     return (
       <>
         <Text size={'$lg'}>Коллекция недоступна</Text>

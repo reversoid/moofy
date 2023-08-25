@@ -57,4 +57,9 @@ export class Review {
   @Index()
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
+
+  /** Is used for full text search */
+  @Column({ type: 'tsvector', select: false })
+  @Index()
+  search_document: any;
 }
