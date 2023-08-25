@@ -5,8 +5,16 @@ export interface LinkTabProps {
   label: string;
   to: string;
   highlighted?: boolean;
+  first?: boolean;
 }
 
-export const LinkTab = ({ highlighted, ...props }: LinkTabProps) => {
-  return <StyledTab highlighted={highlighted} component={Link} {...props} />;
+export const LinkTab = ({ highlighted, first, ...props }: LinkTabProps) => {  
+  return (
+    <StyledTab
+      first={first}
+      highlighted={highlighted}
+      component={Link}
+      {...props}
+    />
+  );
 };

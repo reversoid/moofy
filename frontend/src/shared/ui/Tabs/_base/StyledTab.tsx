@@ -10,11 +10,21 @@ export const StyledTab = styled(Tab, {
           position: 'absolute !important',
           content: '',
           top: '0',
-          right: '0',
+          left: '0',
           width: '0.5rem',
           height: '0.5rem',
           background: '#f8d355dd',
           borderRadius: '50%',
+        },
+      },
+    },
+    first: {
+      true: {
+        px: '0 !important',
+        mr: '0.5rem !important',
+
+        '@xsMax': {
+          mr: '0.25rem !important',
         },
       },
     },
@@ -26,16 +36,18 @@ export const StyledTab = styled(Tab, {
   '@mdMax': {
     fontSize: '$3xl !important',
   },
-  '@xsMax': {
-    fontSize: '$3xl !important',
-  },
   color: '$text !important',
   textTransform: 'none !important',
   display: 'block !important',
   letterSpacing: '$tighter !important',
-  pl: '0.25rem !important',
-  pr: '0.25rem !important',
+  px: '0.5rem !important',
+  '@xsMax': {
+    fontSize: '$3xl !important',
+    px: '0.25rem !important',
+  },
   pt: '0 !important',
   textAlign: 'initial !important',
   width: 'fit-content !important',
-}) as ExtendButtonBase<TabTypeMap<{ highlighted?: boolean }, 'div'>>;
+}) as ExtendButtonBase<
+  TabTypeMap<{ highlighted?: boolean; first?: boolean }, 'div'>
+>;
