@@ -310,15 +310,27 @@ export class ListRepository extends PaginatedRepository<List> {
   async getLatestUpdatesAmount(userId: number): Promise<number> {
     return this.createQueryBuilder('list')
       .innerJoin(Subscription, 'sub', 'list.userId = sub.followed.id')
-      .leftJoinAndSelect(
-        ListView,
-        'view',
-        'list.id = view.listId AND view.userId = :userId',
-        { userId },
-      )
       .where('sub.follower.id = :userId', { userId })
-      .andWhere('view.id IS NULL')
       .andWhere('list.is_public = TRUE')
+      .andWhere((qb) => {
+        const maxViewTimeSubQuery = qb
+          .subQuery()
+          .select('MAX(view.created_at)')
+          .from(ListView, 'view')
+          .where('view.userId = :userId')
+          .andWhere('view.listId = list.id')
+          .getQuery();
+
+        const existsViewSubQuery = qb
+          .subQuery()
+          .select('1')
+          .from(ListView, 'view')
+          .where('view.userId = :userId')
+          .andWhere('view.listId = list.id')
+          .getQuery();
+
+        return `(list.updated_at > COALESCE((${maxViewTimeSubQuery}), '1970-01-01') OR NOT EXISTS(${existsViewSubQuery}))`;
+      })
       .getCount();
   }
 
