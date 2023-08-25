@@ -178,7 +178,7 @@ export class ProfileController {
       numericId,
       limit,
       lowerBound,
-      user.id,
+      user?.id,
       search,
     );
   }
