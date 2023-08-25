@@ -27,6 +27,8 @@ export const ImageContainer = styled('div', {
 
 export const Wrapper = styled('div', { width: '100%', position: 'relative' });
 
+const searchFilms = debounce(getFilmsByName, 250)
+
 export const SearchFilmPage = () => {
   const { id } = useParams();
   const { films, isLoading, searchFilms } = useSearchFilms();
