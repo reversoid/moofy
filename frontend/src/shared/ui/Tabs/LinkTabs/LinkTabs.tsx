@@ -35,12 +35,13 @@ const LinkTabs: FC<LinkTabsProps> = ({ tabValue, tabs, css }) => {
       onChange={(e, newValue) => setSelectedTab(newValue)}
       sx={css ?? {}}
     >
-      {tabs.map((t) => (
+      {tabs.map((t, index) => (
         <LinkTab
           to={t.to}
           label={t.label}
           highlighted={t.highlighted}
           key={t.label}
+          first={index === 0}
         />
       ))}
     </StyledTabs>
