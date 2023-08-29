@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
+import { Heart } from '@/shared/ui/Like';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -75,6 +76,8 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           Обновлен <Text as="span">{formatDate(list.updated_at)}</Text>
         </Text>
       </ListInfoContainer>
+
+      <Heart />
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}

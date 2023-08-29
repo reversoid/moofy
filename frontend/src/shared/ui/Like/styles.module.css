@@ -1,0 +1,121 @@
+.heart {
+    --size: 25px;
+    --background: red;
+
+    --success-time: 0.2s;
+    --loading-time: 0.8s;
+    --long-loading-time: 2s;
+    --unlike-time: 0.25s;
+
+    --animation: cubic-bezier(.27, .44, .38, .77);
+
+    position: relative;
+    background: var(--background);
+    height: var(--size);
+    width: var(--size);
+
+    transform: rotate(-45deg) scale(1);
+    transition: all 0.2s linear;
+}
+
+.heart.liked {
+    animation: success-pulse var(--success-time) var(--animation);
+}
+
+.heart.loading {
+    animation: loading-pulse var(--loading-time) var(--animation);
+    animation-fill-mode: forwards;
+}
+
+.heart.long-loading {
+    animation: long-loading-pulse var(--long-loading-time) infinite alternate;
+}
+
+.heart.down {
+    transform: rotate(-45deg) scale(0.8);
+}
+
+.heart.unliked {
+    animation: remove-pulse var(--unlike-time) var(--animation);
+}
+
+
+.heart::after {
+    background: inherit;
+    border-radius: 50%;
+    /* To make circle */
+    content: '';
+    position: absolute;
+    /* top: -20px;*/
+    top: -50%;
+    /* Inherit properties of parent */
+    /* left: -20px; */
+    left: 0;
+    height: var(--size);
+    width: var(--size);
+}
+
+.heart::before {
+    background: inherit;
+    border-radius: 50%;
+    /* To make circle */
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -50%;
+
+    height: var(--size);
+    width: var(--size);
+}
+
+@keyframes success-pulse {
+
+    0%,
+    100% {
+        transform: rotate(-45deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(-45deg) scale(1.1);
+    }
+}
+
+@keyframes loading-pulse {
+
+    0% {
+
+        transform: rotate(-45deg) scale(1);
+
+    }
+
+    80% {
+        transform: rotate(-45deg) scale(0.9);
+    }
+
+    100% {
+        transform: rotate(-45deg) scale(0.8);
+    }
+}
+
+@keyframes long-loading-pulse {
+    0%,
+    100% {
+        transform: rotate(-45deg) scale(0.8);
+    }
+
+    50% {
+        transform: rotate(-45deg) scale(0.9);
+    }
+}
+
+@keyframes remove-pulse {
+    0% {
+        transform: rotate(-45deg) scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(-45deg) scale(0);
+        opacity: 0;
+    }
+}
