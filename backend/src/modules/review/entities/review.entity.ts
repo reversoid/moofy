@@ -7,10 +7,13 @@ import {
   Index,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { List } from '../../list/entities/list.entity';
 import { User as User } from 'src/modules/user/entities/user.entity';
 import { Film } from 'src/modules/film/entities/film.entity';
+import { ReviewComment } from './review-comment.entity';
+import { ReviewLike } from './review-like.entity';
 
 @Entity()
 export class Review {
@@ -62,4 +65,10 @@ export class Review {
   @Column({ type: 'tsvector', select: false })
   @Index()
   search_document: any;
+
+  @OneToMany(() => ReviewComment, (comment) => comment.review)
+  comments: Comment[];
+
+  @OneToMany(() => ReviewLike, (like) => like.review)
+  likes: ReviewLike[];
 }

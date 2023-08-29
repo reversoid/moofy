@@ -7,12 +7,20 @@ import { Review } from './entities/review.entity';
 import { ReviewRepository } from './repositories/review.repository';
 import { ReviewController } from './review.controller';
 import { ReviewService } from './review.service';
+import { ReviewLike } from './entities/review-like.entity';
+import { ReviewComment } from './entities/review-comment.entity';
+import { ReviewCommentLike } from './entities/review-comment-like.entity';
 
 @Module({
   imports: [
     ListModule,
     UserModule,
-    TypeOrmModule.forFeature([Review]),
+    TypeOrmModule.forFeature([
+      Review,
+      ReviewLike,
+      ReviewComment,
+      ReviewCommentLike,
+    ]),
     FilmModule,
   ],
   controllers: [ReviewController],

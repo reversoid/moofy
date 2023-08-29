@@ -4,7 +4,7 @@ import { Film } from '../entities/film.entity';
 
 @Injectable()
 export class FilmRepository extends Repository<Film> {
-  constructor(private dataSource: DataSource) {
+  constructor(dataSource: DataSource) {
     super(Film, dataSource.createEntityManager());
   }
 
@@ -25,13 +25,8 @@ export class FilmRepository extends Repository<Film> {
   }
 
   async saveFilm(film: Film) {
-    const insertResult = await this.createQueryBuilder('film')
-      .insert()
-      .into(Film)
-      .values([film])
-      .returning(['id'])
-      .execute();
+    const result = await this.save(film);
 
-    return { id: insertResult.raw[0].id as string };
+    return { id: result.id as string };
   }
 }
