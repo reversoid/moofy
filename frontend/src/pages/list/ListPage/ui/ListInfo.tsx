@@ -77,8 +77,6 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
         </Text>
       </ListInfoContainer>
 
-      <Heart />
-
       <UpdateListModal
         isOpen={isUpdateDialogOpen}
         listId={list.id}

@@ -1,13 +1,20 @@
-.heart {
+.heart,
+.heart-wrapper {
     --size: 25px;
-    --background: red;
+    --background: var(--nextui-colors-red600);
 
     --success-time: 0.2s;
-    --loading-time: 0.8s;
-    --long-loading-time: 2s;
-    --unlike-time: 0.25s;
+    /* IF EDIT LOADING TIME, EDIT .TSX CODE AS WELL */
+    --loading-time: 0.5s;
+    --long-loading-time: 3s;
+    --unlike-time: 0.2s;
 
     --animation: cubic-bezier(.27, .44, .38, .77);
+
+    --largest-loading-scale: 0.7;
+    --smallest-loading-scale: 0.6;
+    --scale-between-loading: calc((var(--smallest-loading-scale) + var(--largest-loading-scale)) / 2);
+
 
     position: relative;
     background: var(--background);
@@ -18,29 +25,49 @@
     transition: all 0.2s linear;
 }
 
+.heart {
+    transform: rotate(0) scale(1);
+    z-index: 1;
+}
+
+.heart-wrapper {
+    --background: var(--nextui-colors-gray50);
+    position: absolute;
+    top: 27%;
+}
+
 .heart.liked {
     animation: success-pulse var(--success-time) var(--animation);
 }
 
-.heart.loading {
-    animation: loading-pulse var(--loading-time) var(--animation);
-    animation-fill-mode: forwards;
-}
-
-.heart.long-loading {
-    animation: long-loading-pulse var(--long-loading-time) infinite alternate;
-}
-
-.heart.down {
-    transform: rotate(-45deg) scale(0.8);
-}
 
 .heart.unliked {
     animation: remove-pulse var(--unlike-time) var(--animation);
+    animation-fill-mode: forwards;
+}
+
+.heart.loading {
+    background: var(--nextui-colors-red400);
+}
+
+.heart.loading.liked {
+    animation: loading-unlike var(--loading-time) var(--animation);
+    animation-fill-mode: forwards;
+}
+
+.heart.loading.unliked {
+    animation: loading-like var(--loading-time) var(--animation);
+    animation-fill-mode: forwards;
+}
+
+.heart.long-loading.liked,
+.heart.long-loading.unliked {
+    animation: long-loading-pulse var(--long-loading-time) infinite alternate;
 }
 
 
-.heart::after {
+.heart::after,
+.heart-wrapper::after {
     background: inherit;
     border-radius: 50%;
     /* To make circle */
@@ -55,7 +82,8 @@
     width: var(--size);
 }
 
-.heart::before {
+.heart::before,
+.heart-wrapper::before {
     background: inherit;
     border-radius: 50%;
     /* To make circle */
@@ -72,50 +100,64 @@
 
     0%,
     100% {
-        transform: rotate(-45deg) scale(1);
+        transform: scale(1);
     }
 
     50% {
-        transform: rotate(-45deg) scale(1.1);
+        transform: scale(1.2);
     }
 }
 
-@keyframes loading-pulse {
-
+@keyframes loading-unlike {
     0% {
-
-        transform: rotate(-45deg) scale(1);
-
+        transform: scale(1);
     }
 
     80% {
-        transform: rotate(-45deg) scale(0.9);
+        transform: scale(var(--largest-loading-scale));
     }
 
     100% {
-        transform: rotate(-45deg) scale(0.8);
+        transform: scale(var(--smallest-loading-scale));
+    }
+}
+
+@keyframes loading-like {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(var(--smallest-loading-scale));
+    }
+
+    100% {
+        transform: scale(var(--largest-loading-scale));
     }
 }
 
 @keyframes long-loading-pulse {
-    0%,
-    100% {
-        transform: rotate(-45deg) scale(0.8);
+    0% {
+        transform: scale(var(--scale-between-loading));
     }
 
     50% {
-        transform: rotate(-45deg) scale(0.9);
+        transform: scale(var(--largest-loading-scale));
+    }
+
+    100% {
+        transform: scale(var(--smallest-loading-scale));
     }
 }
 
 @keyframes remove-pulse {
     0% {
-        transform: rotate(-45deg) scale(0.8);
+        transform: scale(var(--scale-between-loading));
         opacity: 1;
     }
 
     100% {
-        transform: rotate(-45deg) scale(0);
+        transform: scale(0);
         opacity: 0;
     }
 }

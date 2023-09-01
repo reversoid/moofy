@@ -1,43 +1,58 @@
-import React, { FC, useEffect, useLayoutEffect, useState } from 'react';
+import React, { FC, useLayoutEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
+import { IconButton } from '../IconButton/IconButton';
+import { styled } from '@nextui-org/react';
 
 export interface HeartProps {
-  loading?: boolean;
-  liked?: boolean;
+  loading: boolean;
+  liked: boolean;
+  onChange: (liked: boolean) => void;
 }
 
-export const Heart: FC<HeartProps> = ({ liked, loading }) => {
-  const [classes, setClasses] = useState<string[]>([]);
+const IconButtonStyled = styled(IconButton, {
+  width: '3rem !important',
+  height: '3rem !important',
+  position: 'relative',
+});
+
+export const Heart: FC<HeartProps> = ({ liked, loading, onChange }) => {
+  const [longLoading, setLongLoading] = useState(false);
+  const timer = useRef<NodeJS.Timeout>();
+
+  const classes = [
+    liked ? 'liked' : 'unliked',
+    loading ? 'loading' : undefined,
+    longLoading ? 'long-loading' : undefined,
+  ].filter(Boolean) as string[];
 
   useLayoutEffect(() => {
-    const classes: string[] = [
-      liked ? 'liked' : undefined,
-      !liked ? 'unliked' : undefined,
-      loading ? 'loading' : undefined,
-    ].filter(Boolean) as string[];
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
 
-    setClasses(classes);
-  }, [loading, liked]);
+    if (loading) {
+      timer.current = setTimeout(() => {
+        setLongLoading(true);
+      }, 500);
+    } else {
+      setLongLoading(false);
+    }
+  }, [loading]);
 
   const handleClick = () => {
-    setClasses(['loading']);
-
-    // setTimeout(() => {
-    //   setClasses(['liked']);
-    // }, 1000);
-
-    setTimeout(() => {
-      setClasses(['loading', 'long-loading']);
-    }, 800);
+    onChange(!liked);
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className={[
-        styles['heart'],
-        classes.map((c) => styles[c]).join(' '),
-      ].join(' ')}
-    ></div>
+    <IconButtonStyled onClick={handleClick} disabled={loading}>
+      <div className={styles['heart-wrapper']}>
+        <div
+          className={[
+            styles['heart'],
+            classes.map((c) => styles[c]).join(' '),
+          ].join(' ')}
+        ></div>
+      </div>
+    </IconButtonStyled>
   );
 };
