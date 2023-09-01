@@ -1,6 +1,6 @@
 .heart,
 .heart-wrapper {
-    --size: 25px;
+    --size: 23px;
     --background: var(--nextui-colors-red600);
 
     --success-time: 0.2s;
@@ -33,7 +33,7 @@
 .heart-wrapper {
     --background: var(--nextui-colors-gray50);
     position: absolute;
-    top: 27%;
+    top: 30%;
 }
 
 .heart.liked {

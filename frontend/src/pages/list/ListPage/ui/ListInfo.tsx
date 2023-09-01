@@ -3,12 +3,13 @@ import { DeleteListModal } from '@/features/list/delete-list';
 import { UpdateListModal } from '@/features/list/update-list';
 import { List } from '@/shared/api/types/list.type';
 import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import { styled, Text } from '@nextui-org/react';
+import { Image, styled, Text } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
 import { Heart } from '@/shared/ui/Like';
+import CommentIcon from '@/shared/assets/img/comment.svg';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
