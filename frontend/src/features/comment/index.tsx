@@ -4,6 +4,7 @@ import { useLikeComment } from './utils/useLikeComment';
 import { useUnlikeComment } from './utils/useUnlikeComment';
 
 export * from './utils/useLikeComment';
+export * from './utils/useUnlikeComment';
 export * from './model';
 
 export interface CommentLikeProps {

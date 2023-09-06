@@ -1,14 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import {
-  LikeUnlikeCommentDto,
-  commentLikeService,
-} from '../api/comment-like.service';
+import { BasicCommentDto, commentService } from '../api/comment.service';
 import { commentLiked } from '../model';
 
 export const useLikeComment = () => {
   const mutation = useMutation({
-    mutationFn: (dto: LikeUnlikeCommentDto) =>
-      commentLikeService.likeComment(dto),
+    mutationFn: (dto: BasicCommentDto) => commentService.likeComment(dto),
     onSuccess(data, variables, context) {
       commentLiked({
         commentId: variables.commentId,
@@ -18,3 +14,4 @@ export const useLikeComment = () => {
   });
   return mutation;
 };
+
