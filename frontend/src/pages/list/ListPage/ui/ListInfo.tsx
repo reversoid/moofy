@@ -10,6 +10,7 @@ import { useDeleteList } from '../../../../features/list/delete-list/utils/useDe
 import { ListHeader } from './ListHeader';
 import { Heart } from '@/shared/ui/Like';
 import CommentIcon from '@/shared/assets/img/comment.svg';
+import { Comment } from '@/entities/comment';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -77,6 +78,17 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           Обновлен <Text as="span">{formatDate(list.updated_at)}</Text>
         </Text>
       </ListInfoContainer>
+
+      <Comment
+        text="some text ahhahh loool that is too fucking bad!"
+        user={{
+          id: 1,
+          image_url:
+            'https://img.a.transfermarkt.technology/portrait/big/20137-1603567042.jpeg?lm=1',
+          username: 'bobik666',
+        }}
+        createdAt={new Date()}
+      />
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}
