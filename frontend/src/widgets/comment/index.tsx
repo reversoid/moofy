@@ -1,10 +1,16 @@
 import { Comment } from '@/entities/comment';
 import { CommentLike } from '@/features/comment';
+import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
 import { Comment as IComment } from '@/shared/api/types/comment.type';
-import { Row, Text, styled } from '@nextui-org/react';
-import React, { FC } from 'react';
+import Textarea from '@/shared/ui/Textarea/Textarea';
+import { Button, Row, Text, styled } from '@nextui-org/react';
+import React, { FC, useState } from 'react';
 
 export { commentLiked, commentUnliked } from '@/features/comment';
+
+const AnswerWrapper = styled('form', {
+  mt: '$10',
+});
 
 export interface CommentWidgetProps {
   comment: IComment;
@@ -16,17 +22,14 @@ export interface CommentWidgetProps {
   listId: number;
 }
 
-const CommentControls = styled('div', {
-  position: 'relative',
-  top: 'calc(-$15 - $sm)',
-  left: '$sm',
-});
-
 export const CommentWidget: FC<CommentWidgetProps> = ({
   comment,
   additionalInfo,
   listId,
 }) => {
+  const [showTextField, setShowTextField] = useState(false);
+  const replyMutation = useReplyToComment();
+
   return (
     <>
       <Comment
@@ -47,10 +50,24 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
         <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
           Нравится: <Text as={'span'}>5675</Text>
         </Text>
-        <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
+        <Text
+          onClick={() => setShowTextField(true)}
+          css={{ fontWeight: 500 }}
+          as={'p'}
+          color="$neutral"
+        >
           Ответить
         </Text>
       </Row>
+
+      {showTextField && (
+        <AnswerWrapper>
+          <Textarea maxLength={400} placeholder="Ваш ответ" size="lg" />
+          <Button type="submit" css={{ mt: '$5' }} color={'primary'}>
+            Отправить
+          </Button>
+        </AnswerWrapper>
+      )}
 
       <Row css={{ pl: '$xs', mt: '$5', jc: 'center' }}>
         <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
