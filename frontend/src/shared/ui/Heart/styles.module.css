@@ -36,6 +36,10 @@
     top: 30%;
 }
 
+.heart-wrapper.black {
+    --background: black;
+}
+
 .heart.liked {
     animation: success-pulse var(--success-time) var(--animation);
 }

@@ -1,12 +1,14 @@
 import React, { FC, useLayoutEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 import { IconButton } from '../IconButton/IconButton';
-import { styled } from '@nextui-org/react';
+import { CSS, styled } from '@nextui-org/react';
 
 export interface HeartProps {
   loading: boolean;
   liked: boolean;
   onChange: (liked: boolean) => void;
+  css?: CSS;
+  isBlack?: boolean;
 }
 
 const IconButtonStyled = styled(IconButton, {
@@ -15,7 +17,13 @@ const IconButtonStyled = styled(IconButton, {
   position: 'relative',
 });
 
-export const Heart: FC<HeartProps> = ({ liked, loading, onChange }) => {
+export const Heart: FC<HeartProps> = ({
+  liked,
+  loading,
+  onChange,
+  css,
+  isBlack,
+}) => {
   const [longLoading, setLongLoading] = useState(false);
   const timer = useRef<NodeJS.Timeout>();
 
@@ -44,8 +52,13 @@ export const Heart: FC<HeartProps> = ({ liked, loading, onChange }) => {
   };
 
   return (
-    <IconButtonStyled onClick={handleClick} disabled={loading}>
-      <div className={styles['heart-wrapper']}>
+    <IconButtonStyled css={css} onClick={handleClick} disabled={loading}>
+      <div
+        className={[
+          styles['heart-wrapper'],
+          styles[isBlack ? 'black' : 'default'],
+        ].join(' ')}
+      >
         <div
           className={[
             styles['heart'],

@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import { CreateCommentDto, commentService } from '../api/comment.service';
+import { ReplyToCommentDto, commentService } from '../api/comment.service';
 import { commentCreated } from '../model';
 
-export const useCreateComment = () => {
+export const useReplyToComment = () => {
   const mutation = useMutation({
-    mutationFn: (dto: CreateCommentDto) => commentService.createComment(dto),
+    mutationFn: (dto: ReplyToCommentDto) => commentService.replyToComment(dto),
     onSuccess(data, variables, context) {
       commentCreated({
         comment: data,

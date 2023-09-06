@@ -9,13 +9,17 @@ export interface CommentProps {
   user: Pick<Profile, 'id' | 'image_url' | 'username'>;
   createdAt: Date;
   replyToCommentId?: number;
+  rightContent?: JSX.Element;
 }
 
 const CommentWrapper = styled(Card, {
-  px: '$sm',
-  py: '$xs',
+  pr: '$sm',
+  pt: '$xs',
+  pb: '$sm',
+  pl: '$md',
   display: 'flex',
   flexDirection: 'column',
+  position: 'relative',
   gap: '$1',
   variants: {
     reply: {
@@ -23,7 +27,19 @@ const CommentWrapper = styled(Card, {
         ml: '$5',
       },
     },
+    withRightContent: {
+      true: {
+        pr: 'calc(45px + $sm)',
+      },
+    },
   },
+});
+
+const RightContentWrapper = styled('div', {
+  position: 'absolute',
+  top: '50%',
+  right: '$sm',
+  transform: 'translateY(-50%)',
 });
 
 export const Comment: FC<CommentProps> = ({
@@ -31,11 +47,20 @@ export const Comment: FC<CommentProps> = ({
   user,
   createdAt,
   replyToCommentId,
+  rightContent,
 }) => {
   return (
-    <CommentWrapper reply={Boolean(replyToCommentId)}>
-      <User user={user} createdAt={createdAt} />
-      <Text>{text}</Text>
-    </CommentWrapper>
+    <>
+      <CommentWrapper
+        withRightContent={Boolean(rightContent)}
+        reply={Boolean(replyToCommentId)}
+      >
+        <User user={user} createdAt={createdAt} />
+        <Text>{text}</Text>
+        {rightContent && (
+          <RightContentWrapper>{rightContent}</RightContentWrapper>
+        )}
+      </CommentWrapper>
+    </>
   );
 };

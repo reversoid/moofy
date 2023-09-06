@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
+import { CommentWidget } from '@/widgets/comment';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -75,6 +76,22 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           Обновлен <Text as="span">{formatDate(list.updated_at)}</Text>
         </Text>
       </ListInfoContainer>
+
+      <CommentWidget
+        additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
+        comment={{
+          created_at: new Date().toISOString(),
+          id: 5,
+          reply_to: null,
+          text: 'good!',
+          user: {
+            id: 5,
+            image_url: null,
+            username: 'reversoid',
+          },
+        }}
+        listId={list.id}
+      />
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}
