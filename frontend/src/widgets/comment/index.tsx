@@ -48,7 +48,13 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           Нравится: <Text as={'span'}>5675</Text>
         </Text>
         <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
-          Ответы: <Text as={'span'}>66</Text>
+          Ответить
+        </Text>
+      </Row>
+
+      <Row css={{ pl: '$xs', mt: '$5', jc: 'center' }}>
+        <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
+          — Показать 77 ответов
         </Text>
       </Row>
     </>
