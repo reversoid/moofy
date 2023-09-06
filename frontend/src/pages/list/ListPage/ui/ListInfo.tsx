@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
 import { CommentWidget } from '@/widgets/comment';
+import { CommentsList } from './CommentsList/CommentsList';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -77,21 +78,7 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
         </Text>
       </ListInfoContainer>
 
-      <CommentWidget
-        additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
-        comment={{
-          created_at: new Date().toISOString(),
-          id: 5,
-          reply_to: null,
-          text: 'good!',
-          user: {
-            id: 5,
-            image_url: null,
-            username: 'reversoid',
-          },
-        }}
-        listId={list.id}
-      />
+      <CommentsList listId={list.id} comments={[]}/>
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}

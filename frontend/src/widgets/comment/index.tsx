@@ -3,7 +3,7 @@ import { CommentLike } from '@/features/comment';
 import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
 import { Comment as IComment } from '@/shared/api/types/comment.type';
 import Textarea from '@/shared/ui/Textarea/Textarea';
-import { Button, Row, Text, styled } from '@nextui-org/react';
+import { Button, Link, Row, Text, styled } from '@nextui-org/react';
 import React, { FC, useState } from 'react';
 
 export { commentLiked, commentUnliked } from '@/features/comment';
@@ -20,18 +20,20 @@ export interface CommentWidgetProps {
     repliesAmount: number;
   };
   listId: number;
+  onLoadReplies?: (commentId: number) => void;
 }
 
 export const CommentWidget: FC<CommentWidgetProps> = ({
   comment,
   additionalInfo,
   listId,
+  onLoadReplies,
 }) => {
   const [showTextField, setShowTextField] = useState(false);
   const replyMutation = useReplyToComment();
 
   return (
-    <>
+    <div>
       <Comment
         createdAt={new Date(comment.created_at)}
         text={comment.text}
@@ -46,34 +48,59 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
         }
       />
 
-      <Row css={{ pl: '$xs', mt: '$2', display: 'flex', gap: '$7' }}>
+      <Row
+        css={{ pl: '$xs', mt: '$2', display: 'flex', gap: '$7', ai: 'center' }}
+      >
         <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
           Нравится: <Text as={'span'}>5675</Text>
         </Text>
-        <Text
-          onClick={() => setShowTextField(true)}
-          css={{ fontWeight: 500 }}
-          as={'p'}
-          color="$neutral"
+        <Link
+          css={{
+            fontWeight: 500,
+            color: '$neutral !important',
+            '&:hover': { color: '$primary !important' },
+            cursor: 'pointer',
+          }}
+          onPress={() => setShowTextField((v) => !v)}
         >
           Ответить
-        </Text>
+        </Link>
       </Row>
 
       {showTextField && (
         <AnswerWrapper>
           <Textarea maxLength={400} placeholder="Ваш ответ" size="lg" />
-          <Button type="submit" css={{ mt: '$5' }} color={'primary'}>
+          <Button
+            type="submit"
+            css={{ mt: '$8', '@xsMax': { w: '100%' } }}
+            color={'primary'}
+            disabled={replyMutation.isLoading}
+            onClick={() =>
+              replyMutation.mutate({
+                commentId: comment.id,
+                listId: listId,
+                text: 'test reply',
+              })
+            }
+          >
             Отправить
           </Button>
         </AnswerWrapper>
       )}
 
-      <Row css={{ pl: '$xs', mt: '$5', jc: 'center' }}>
-        <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
+      <Row css={{ pl: '$xs', mt: '$8', jc: 'center' }}>
+        <Link
+          css={{
+            fontWeight: 500,
+            color: '$neutral !important',
+            '&:hover': { color: '$primary !important' },
+            cursor: 'pointer',
+          }}
+          onPress={() => onLoadReplies?.(comment.id)}
+        >
           — Показать 77 ответов
-        </Text>
+        </Link>
       </Row>
-    </>
+    </div>
   );
 };
