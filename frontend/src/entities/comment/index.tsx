@@ -16,6 +16,7 @@ export interface CommentProps {
     liked: boolean;
     loading: boolean;
   };
+  replyToCommentId?: number;
 }
 
 const UserBlock = styled('div', {
@@ -62,17 +63,30 @@ export const User: FC<UserProps> = ({ user, createdAt }) => {
   );
 };
 
-export const Comment: FC<CommentProps> = ({ text, user, like, createdAt }) => {
+const CommentWrapper = styled(Card, {
+  px: '$sm',
+  py: '$xs',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$1',
+  variants: {
+    reply: {
+      true: {
+        ml: '$5'
+      },
+    },
+  },
+});
+
+export const Comment: FC<CommentProps> = ({
+  text,
+  user,
+  like,
+  createdAt,
+  replyToCommentId,
+}) => {
   return (
-    <Card
-      css={{
-        px: '$sm',
-        py: '$xs',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '$1',
-      }}
-    >
+    <CommentWrapper reply={Boolean(replyToCommentId)}>
       <User user={user} createdAt={createdAt} />
       <Text>{text}</Text>
 
@@ -84,6 +98,6 @@ export const Comment: FC<CommentProps> = ({ text, user, like, createdAt }) => {
           onChange={like.onCommentLikeChange}
         />
       )}
-    </Card>
+    </CommentWrapper>
   );
 };

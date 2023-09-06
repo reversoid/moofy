@@ -90,6 +90,18 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
         createdAt={new Date()}
       />
 
+      <Comment
+        text="some text ahhahh loool that is too fucking bad!"
+        user={{
+          id: 1,
+          image_url:
+            'https://img.a.transfermarkt.technology/portrait/big/20137-1603567042.jpeg?lm=1',
+          username: 'bobik666',
+        }}
+        createdAt={new Date()}
+        replyToCommentId={1}
+      />
+
       <UpdateListModal
         isOpen={isUpdateDialogOpen}
         listId={list.id}
