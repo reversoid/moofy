@@ -41,15 +41,17 @@ interface UserProps {
 export const User: FC<UserProps> = ({ user, createdAt }) => {
   return (
     <UserBlock>
-      <Image
-        width={'2.75rem'}
-        height={'2.75rem'}
-        css={{
-          borderRadius: '50%',
-          objectFit: 'cover',
-        }}
-        src={user.image_url ?? profileIcon}
-      />
+      <Link to={`/profile/${user.id}`} css={{ width: 'fit-content' }}>
+        <Image
+          width={'2.75rem'}
+          height={'2.75rem'}
+          css={{
+            borderRadius: '50%',
+            objectFit: 'cover',
+          }}
+          src={user.image_url ?? profileIcon}
+        />
+      </Link>
 
       <UserInfo>
         <Link to={`/profile/${user.id}`} css={{ width: 'fit-content' }}>
@@ -72,7 +74,7 @@ const CommentWrapper = styled(Card, {
   variants: {
     reply: {
       true: {
-        ml: '$5'
+        ml: '$5',
       },
     },
   },
