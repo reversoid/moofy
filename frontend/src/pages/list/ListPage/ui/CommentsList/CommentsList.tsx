@@ -9,7 +9,7 @@ const CommentsWrapper = styled('div', {
   },
   d: 'flex',
   flexDirection: 'column',
-  gap: '$9'
+  gap: '$9',
 });
 
 export interface CommentsListProps {
@@ -21,6 +21,7 @@ export const CommentsList: FC<CommentsListProps> = ({ comments, listId }) => {
   return (
     <CommentsWrapper>
       <CommentWidget
+        colored={true}
         additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
         comment={{
           created_at: new Date().toISOString(),
@@ -62,7 +63,6 @@ export const CommentsList: FC<CommentsListProps> = ({ comments, listId }) => {
             image_url: null,
             username: 'reversoid',
           },
-
         }}
         listId={listId}
       />

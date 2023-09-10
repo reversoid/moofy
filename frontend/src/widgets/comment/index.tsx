@@ -4,9 +4,12 @@ import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
 import { Comment as IComment } from '@/shared/api/types/comment.type';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Button, Link, Row, Text, styled } from '@nextui-org/react';
+import ColorHash from 'color-hash';
 import React, { FC, useState } from 'react';
 
 export { commentLiked, commentUnliked } from '@/features/comment';
+
+export const colorHash = new ColorHash();
 
 const AnswerWrapper = styled('form', {
   mt: '$10',
@@ -21,6 +24,9 @@ export interface CommentWidgetProps {
   };
   listId: number;
   onLoadReplies?: (commentId: number) => void;
+  onHideReplies?: (commentId: number) => void;
+  /** Will hash comment ID and apply result color */
+  colored?: boolean;
 }
 
 export const CommentWidget: FC<CommentWidgetProps> = ({
@@ -28,6 +34,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
   additionalInfo,
   listId,
   onLoadReplies,
+  colored,
 }) => {
   const [showTextField, setShowTextField] = useState(false);
   const replyMutation = useReplyToComment();
@@ -35,6 +42,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
   return (
     <div>
       <Comment
+        borderColor={colored ? colorHash.hex(String(comment.id)) : undefined}
         createdAt={new Date(comment.created_at)}
         text={comment.text}
         user={comment.user}
@@ -68,9 +76,12 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
             '&:hover': { color: '$primary !important' },
             cursor: 'pointer',
           }}
-          onPress={() => setShowTextField((v) => !v)}
+          onPress={() => {
+            setShowTextField((v) => !v);
+            onLoadReplies?.(comment.id);
+          }}
         >
-          Ответить
+          Ответы:&nbsp;<Text as={'span'}>66</Text>
         </Link>
       </Row>
 
@@ -94,20 +105,6 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           </Button>
         </AnswerWrapper>
       )}
-
-      <Row css={{ pl: '$xs', mt: '$8', jc: 'center' }}>
-        <Link
-          css={{
-            fontWeight: 500,
-            color: '$neutral !important',
-            '&:hover': { color: '$primary !important' },
-            cursor: 'pointer',
-          }}
-          onPress={() => onLoadReplies?.(comment.id)}
-        >
-          — Показать 77 ответов
-        </Link>
-      </Row>
     </div>
   );
 };

@@ -10,6 +10,8 @@ export interface CommentProps {
   createdAt: Date;
   replyToCommentId?: number;
   rightContent?: JSX.Element;
+  /** This option will color left border */
+  borderColor?: string;
 }
 
 const CommentWrapper = styled(Card, {
@@ -33,6 +35,7 @@ const CommentWrapper = styled(Card, {
       },
     },
   },
+  borderLeft: '3px solid transparent',
 });
 
 const RightContentWrapper = styled('div', {
@@ -48,12 +51,14 @@ export const Comment: FC<CommentProps> = ({
   createdAt,
   replyToCommentId,
   rightContent,
+  borderColor,
 }) => {
   return (
     <>
       <CommentWrapper
         withRightContent={Boolean(rightContent)}
         reply={Boolean(replyToCommentId)}
+        css={{ borderColor: borderColor }}
       >
         <User user={user} createdAt={createdAt} />
         <Text>{text}</Text>
