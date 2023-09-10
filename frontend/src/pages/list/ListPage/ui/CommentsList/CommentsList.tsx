@@ -32,9 +32,9 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
           <CommentWidget
             colored={c.isColored}
             additionalInfo={{
-              liked: c.commentWithInfo!.stats.liked,
-              likesAmount: c.commentWithInfo!.stats.likesAmount,
-              repliesAmount: c.commentWithInfo!.stats.repliesAmount,
+              liked: c.commentWithInfo!.info.liked,
+              likesAmount: c.commentWithInfo!.info.likesAmount,
+              repliesAmount: c.commentWithInfo!.info.repliesAmount,
             }}
             comment={c.commentWithInfo!.comment}
             listId={listId}

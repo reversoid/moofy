@@ -9,7 +9,7 @@ export interface Comment {
   reply_to: number | null;
 }
 
-export interface CommentsStats {
+export interface CommentInfo {
   liked: boolean;
   likesAmount: number;
   repliesAmount: number;

@@ -1,8 +1,8 @@
-import { Comment, CommentsStats } from '@/shared/api/types/comment.type';
+import { Comment, CommentInfo } from '@/shared/api/types/comment.type';
 
 export interface CommentWithInfo {
   comment: Comment;
-  stats: CommentsStats;
+  info: CommentInfo;
 }
 
 /** Single node of comments tree */
