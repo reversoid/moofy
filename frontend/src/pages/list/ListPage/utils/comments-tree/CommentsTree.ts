@@ -3,14 +3,18 @@ import { CommentNode } from './CommentNode';
 
 /** Contains comments in tree structure */
 export class CommentsTree {
-  constructor(comments: Comment[]) {
+  constructor(public listId: number, comments: Comment[]) {
     this._tree = new CommentNode(null, comments);
   }
 
   private _tree: CommentNode;
 
-  public addReplies(replyToCommentId: number, replies: Comment[]): void {
-    this.getNodeByCommentId(replyToCommentId)?.addReplies(replies);
+  public addReplies(
+    replyToCommentId: number,
+    replies: Comment[],
+    loadNextKey: string | null,
+  ): void {
+    this.getNodeByCommentId(replyToCommentId)?.addReplies(replies, loadNextKey);
   }
 
   public removeReplies(replyToCommentId: number): void {

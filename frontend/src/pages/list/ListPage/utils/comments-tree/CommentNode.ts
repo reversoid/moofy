@@ -6,13 +6,16 @@ export class CommentNode {
     public comment: Comment | null,
     replies: Comment[] | null,
     public isColored: boolean = false,
+    public loadNextKey: string | null = null,
   ) {
     this.replies = replies?.map((r) => new CommentNode(r, null)) ?? null;
   }
 
   replies: CommentNode[] | null = null;
 
-  public addReplies(replies: Comment[]) {
+  public addReplies(replies: Comment[], loadNextKey: string | null) {
+    this.loadNextKey = loadNextKey;
+
     const isReplyToReply =
       this.comment !== null && this.comment.reply_to !== undefined;
 
@@ -28,6 +31,7 @@ export class CommentNode {
   }
 
   public removeReplies() {
+    this.loadNextKey = null;
     this.replies = null;
     this.isColored = false;
   }
