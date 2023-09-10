@@ -9,7 +9,7 @@ const CommentsWrapper = styled('div', {
   },
   d: 'flex',
   flexDirection: 'column',
-  gap: '$10'
+  gap: '$9'
 });
 
 export interface CommentsListProps {
@@ -55,13 +55,14 @@ export const CommentsList: FC<CommentsListProps> = ({ comments, listId }) => {
         comment={{
           created_at: new Date().toISOString(),
           id: 5,
-          reply_to: null,
+          reply_to: 2,
           text: 'good!',
           user: {
             id: 5,
             image_url: null,
             username: 'reversoid',
           },
+
         }}
         listId={listId}
       />

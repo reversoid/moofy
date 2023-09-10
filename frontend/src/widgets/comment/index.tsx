@@ -49,7 +49,14 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
       />
 
       <Row
-        css={{ pl: '$xs', mt: '$2', display: 'flex', gap: '$7', ai: 'center' }}
+        css={{
+          pl: '$xs',
+          mt: '$2',
+          display: 'flex',
+          gap: '$7',
+          ai: 'center',
+          ml: comment.reply_to !== null ? '$5' : 0,
+        }}
       >
         <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
           Нравится: <Text as={'span'}>5675</Text>

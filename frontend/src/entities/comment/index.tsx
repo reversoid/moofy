@@ -20,7 +20,7 @@ const CommentWrapper = styled(Card, {
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  gap: '$1',
+  gap: '$2',
   variants: {
     reply: {
       true: {
