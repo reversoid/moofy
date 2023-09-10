@@ -1,9 +1,9 @@
 import { Comment } from '@/shared/api/types/comment.type';
-import { CommentNode } from './CommentNode';
+import { CommentNode, CommentWithInfo } from './CommentNode';
 
 /** Contains comments in tree structure */
 export class CommentsTree {
-  constructor(public listId: number, comments: Comment[]) {
+  constructor(public listId: number, comments: CommentWithInfo[]) {
     this._tree = new CommentNode(null, comments);
   }
 
@@ -11,7 +11,7 @@ export class CommentsTree {
 
   public addReplies(
     replyToCommentId: number,
-    replies: Comment[],
+    replies: CommentWithInfo[],
     loadNextKey: string | null,
   ): void {
     this.getNodeByCommentId(replyToCommentId)?.addReplies(replies, loadNextKey);
@@ -21,18 +21,18 @@ export class CommentsTree {
     this.getNodeByCommentId(replyToCommentId)?.removeReplies();
   }
 
-  public toArray(): Comment[] {
-    const result: Comment[] = [];
+  public toArray(): CommentNode[] {
+    const result: CommentNode[] = [];
     this._dfs(this._tree, result);
     return result;
   }
 
-  private _dfs(node: CommentNode | null, accumulator: Comment[]): void {
-    if (!node || !node.comment) {
+  private _dfs(node: CommentNode | null, accumulator: CommentNode[]): void {
+    if (!node || !node.commentWithInfo) {
       return;
     }
 
-    accumulator.push(node.comment);
+    accumulator.push(node);
 
     if (!node.replies) {
       return;
@@ -55,7 +55,7 @@ export class CommentsTree {
     node: CommentNode,
     commentId: number,
   ): CommentNode | null => {
-    if (node.comment && node.comment.id === commentId) {
+    if (node.commentWithInfo && node.commentWithInfo.comment.id === commentId) {
       return node;
     }
 

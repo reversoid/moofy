@@ -78,7 +78,7 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
         </Text>
       </ListInfoContainer>
 
-      <CommentsList listId={list.id} comments={[]}/>
+      <CommentsList listId={list.id} />
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}

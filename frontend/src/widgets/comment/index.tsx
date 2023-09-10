@@ -1,7 +1,7 @@
 import { Comment } from '@/entities/comment';
 import { CommentLike } from '@/features/comment';
 import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
-import { Comment as IComment } from '@/shared/api/types/comment.type';
+import { CommentsStats, Comment as IComment } from '@/shared/api/types/comment.type';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Button, Link, Row, Text, styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
@@ -17,11 +17,7 @@ const AnswerWrapper = styled('form', {
 
 export interface CommentWidgetProps {
   comment: IComment;
-  additionalInfo: {
-    liked: boolean;
-    likesAmount: number;
-    repliesAmount: number;
-  };
+  additionalInfo: CommentsStats;
   listId: number;
   onLoadReplies?: (commentId: number) => void;
   onHideReplies?: (commentId: number) => void;

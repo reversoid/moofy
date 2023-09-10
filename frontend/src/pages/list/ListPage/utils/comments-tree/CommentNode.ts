@@ -1,10 +1,15 @@
-import { Comment } from '@/shared/api/types/comment.type';
+import { Comment, CommentsStats } from '@/shared/api/types/comment.type';
+
+export interface CommentWithInfo {
+  comment: Comment;
+  stats: CommentsStats;
+}
 
 /** Single node of comments tree */
 export class CommentNode {
   constructor(
-    public comment: Comment | null,
-    replies: Comment[] | null,
+    public commentWithInfo: CommentWithInfo | null,
+    replies: CommentWithInfo[] | null,
     public isColored: boolean = false,
     public loadNextKey: string | null = null,
   ) {
@@ -13,11 +18,12 @@ export class CommentNode {
 
   replies: CommentNode[] | null = null;
 
-  public addReplies(replies: Comment[], loadNextKey: string | null) {
+  public addReplies(replies: CommentWithInfo[], loadNextKey: string | null) {
     this.loadNextKey = loadNextKey;
 
     const isReplyToReply =
-      this.comment !== null && this.comment.reply_to !== undefined;
+      this.commentWithInfo !== null &&
+      this.commentWithInfo.comment.reply_to !== undefined;
 
     this.isColored = isReplyToReply;
 

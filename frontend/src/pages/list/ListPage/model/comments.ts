@@ -1,14 +1,14 @@
 import { createEvent, createStore } from 'effector';
 import { CommentsTree } from '../utils/comments-tree/CommentsTree';
-import { Comment } from '@/shared/api/types/comment.type';
+import { CommentWithInfo } from '../utils/comments-tree/CommentNode';
 
 export const $comments = createStore<CommentsTree | null>(null);
 
-const setupComments = createEvent<{ listId: number; comments: Comment[] }>();
+const setupComments = createEvent<{ listId: number; comments: CommentWithInfo[] }>();
 
 const addReplies = createEvent<{
   commentId: number;
-  comments: Comment[];
+  comments: CommentWithInfo[];
   nextKey: string | null;
 }>();
 

@@ -1,6 +1,8 @@
 import { CommentWidget } from '@/widgets/comment';
 import { styled } from '@nextui-org/react';
 import React, { FC } from 'react';
+import { CommentsTree } from '../../utils/comments-tree/CommentsTree';
+import { Comment } from '@/shared/api/types/comment.type';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -13,74 +15,30 @@ const CommentsWrapper = styled('div', {
 });
 
 export interface CommentsListProps {
-  comments?: Comment[];
+  comments?: CommentsTree;
   listId: number;
 }
 
 export const CommentsList: FC<CommentsListProps> = ({ comments, listId }) => {
+  if (!comments) {
+    return null;
+  }
+
   return (
     <CommentsWrapper>
-      <CommentWidget
-        colored={true}
-        additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
-        comment={{
-          created_at: new Date().toISOString(),
-          id: 5,
-          reply_to: null,
-          text: 'good!',
-          user: {
-            id: 5,
-            image_url: null,
-            username: 'reversoid',
-          },
-        }}
-        listId={listId}
-      />
-      <CommentWidget
-        additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
-        comment={{
-          created_at: new Date().toISOString(),
-          id: 5,
-          reply_to: null,
-          text: 'good!',
-          user: {
-            id: 5,
-            image_url: null,
-            username: 'reversoid',
-          },
-        }}
-        listId={listId}
-      />
-      <CommentWidget
-        additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
-        comment={{
-          created_at: new Date().toISOString(),
-          id: 5,
-          reply_to: 2,
-          text: 'good!',
-          user: {
-            id: 5,
-            image_url: null,
-            username: 'reversoid',
-          },
-        }}
-        listId={listId}
-      />
-      <CommentWidget
-        additionalInfo={{ liked: false, likesAmount: 5, repliesAmount: 6 }}
-        comment={{
-          created_at: new Date().toISOString(),
-          id: 5,
-          reply_to: null,
-          text: 'good!',
-          user: {
-            id: 5,
-            image_url: null,
-            username: 'reversoid',
-          },
-        }}
-        listId={listId}
-      />
+      {comments.listId == listId &&
+        comments.toArray()?.map((c) => (
+          <CommentWidget
+            colored={c.isColored}
+            additionalInfo={{
+              liked: c.commentWithInfo!.stats.liked,
+              likesAmount: c.commentWithInfo!.stats.likesAmount,
+              repliesAmount: c.commentWithInfo!.stats.repliesAmount,
+            }}
+            comment={c.commentWithInfo!.comment}
+            listId={listId}
+          />
+        ))}
     </CommentsWrapper>
   );
 };
