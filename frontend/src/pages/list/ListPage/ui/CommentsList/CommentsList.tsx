@@ -1,8 +1,8 @@
 import { CommentWidget } from '@/widgets/comment';
 import { styled } from '@nextui-org/react';
 import React, { FC } from 'react';
-import { CommentsTree } from '../../utils/comments-tree/CommentsTree';
-import { Comment } from '@/shared/api/types/comment.type';
+import { useStore } from 'effector-react';
+import { $comments } from '../../model/comments';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -15,11 +15,12 @@ const CommentsWrapper = styled('div', {
 });
 
 export interface CommentsListProps {
-  comments?: CommentsTree;
   listId: number;
 }
 
-export const CommentsList: FC<CommentsListProps> = ({ comments, listId }) => {
+export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
+  const comments = useStore($comments);
+
   if (!comments) {
     return null;
   }

@@ -3,8 +3,8 @@ import { CommentNode, CommentWithInfo } from './CommentNode';
 
 /** Contains comments in tree structure */
 export class CommentsTree {
-  constructor(public listId: number, comments: CommentWithInfo[]) {
-    this._tree = new CommentNode(null, comments);
+  constructor(public listId: number, comments: CommentWithInfo[], loadNextKey: string | null) {
+    this._tree = new CommentNode(null, comments, false, loadNextKey);
   }
 
   private _tree: CommentNode;

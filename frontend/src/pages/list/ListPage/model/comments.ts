@@ -4,20 +4,24 @@ import { CommentWithInfo } from '../utils/comments-tree/CommentNode';
 
 export const $comments = createStore<CommentsTree | null>(null);
 
-const setupComments = createEvent<{ listId: number; comments: CommentWithInfo[] }>();
+export const setupComments = createEvent<{
+  listId: number;
+  comments: CommentWithInfo[];
+  nextKey: string | null;
+}>();
 
-const addReplies = createEvent<{
+export const addReplies = createEvent<{
   commentId: number;
   comments: CommentWithInfo[];
   nextKey: string | null;
 }>();
 
-const removeReplies = createEvent<{
+export const removeReplies = createEvent<{
   commentId: number;
 }>();
 
 $comments.on(setupComments, (state, payload) => {
-  return new CommentsTree(payload.listId, payload.comments);
+  return new CommentsTree(payload.listId, payload.comments, payload.nextKey);
 });
 
 $comments.on(addReplies, (state, payload) => {

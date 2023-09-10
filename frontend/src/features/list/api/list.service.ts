@@ -1,3 +1,4 @@
+import { CommentWithInfo } from '@/pages/list/ListPage/utils/comments-tree/CommentNode';
 import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
@@ -163,6 +164,28 @@ export class ListService extends ApiService {
   public async getUpdatesAmount() {
     return this.get<{ updatesAmount: number }>('/list/updates/amount', {
       useJWT: true,
+    });
+  }
+
+  public async getListComments(
+    listId: number,
+    lowerBound?: string,
+    commentId?: number,
+  ) {
+    const limit = 20;
+    const searchParams: SearchParamsOption = {
+      limit,
+    };
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+    if (commentId) {
+      searchParams['commentId'] = commentId;
+    }
+
+    return this.get<IterableResponse<CommentWithInfo>>(`/list/${listId}/comments`, {
+      useJWT: true,
+      searchParams,
     });
   }
 }
