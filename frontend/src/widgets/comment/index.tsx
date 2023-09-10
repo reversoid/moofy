@@ -1,7 +1,10 @@
 import { Comment } from '@/entities/comment';
 import { CommentLike } from '@/features/comment';
 import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
-import { CommentInfo, Comment as IComment } from '@/shared/api/types/comment.type';
+import {
+  CommentInfo,
+  Comment as IComment,
+} from '@/shared/api/types/comment.type';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Button, Link, Row, Text, styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
@@ -63,7 +66,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
         }}
       >
         <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
-          Нравится: <Text as={'span'}>5675</Text>
+          Нравится: <Text as={'span'}>{additionalInfo.likesAmount}</Text>
         </Text>
         <Link
           css={{
@@ -77,7 +80,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
             onLoadReplies?.(comment.id);
           }}
         >
-          Ответы:&nbsp;<Text as={'span'}>66</Text>
+          Ответы:&nbsp;<Text as={'span'}>{additionalInfo.repliesAmount}</Text>
         </Link>
       </Row>
 
