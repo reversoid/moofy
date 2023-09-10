@@ -6,12 +6,9 @@ import { CommentNode } from '@/widgets/comment/utils/comments-tree/CommentNode';
 import { Button, Link, Row, Text, styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
+import { ReplyForm } from './ReplyForm';
 
 export const colorHash = new ColorHash();
-
-const AnswerWrapper = styled('form', {
-  mt: '$10',
-});
 
 const WidgetWrapper = styled('div');
 
@@ -29,7 +26,6 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
   onHideReplies,
 }) => {
   const [showReplies, setShowReplies] = useState(false);
-  const replyMutation = useReplyToComment();
 
   const comment = commentNode.commentWithInfo!.comment;
   const info = commentNode.commentWithInfo!.info;
@@ -53,6 +49,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
         }
       />
 
+      {/* TODO make separate component */}
       <Row
         css={{
           pl: '$xs',
@@ -88,25 +85,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
 
       {showReplies && (
         <>
-          {/* TODO make separate component */}
-          <AnswerWrapper>
-            <Textarea maxLength={400} placeholder="Ваш ответ" size="lg" />
-            <Button
-              type="submit"
-              css={{ mt: '$8', '@xsMax': { w: '100%' } }}
-              color={'primary'}
-              disabled={replyMutation.isLoading}
-              onClick={() =>
-                replyMutation.mutate({
-                  commentId: comment.id,
-                  listId: listId,
-                  text: 'test reply',
-                })
-              }
-            >
-              Отправить
-            </Button>
-          </AnswerWrapper>
+          <ReplyForm commentId={comment.id} listId={listId} />
 
           {commentNode.replies?.map((node) => (
             <CommentWidget
