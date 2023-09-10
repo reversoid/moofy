@@ -3,6 +3,8 @@ import { styled } from '@nextui-org/react';
 import React, { FC } from 'react';
 import { useStore } from 'effector-react';
 import { $comments } from '../../model/comments';
+import LoadMore from '@/shared/components/LoadMore';
+import { useReplies } from '../../utils/hooks/useReplies';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -28,18 +30,15 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
   return (
     <CommentsWrapper>
       {comments.listId == listId &&
-        comments.toArray()?.map((c) => (
-          <CommentWidget
-            colored={c.isColored}
-            additionalInfo={{
-              liked: c.commentWithInfo!.info.liked,
-              likesAmount: c.commentWithInfo!.info.likesAmount,
-              repliesAmount: c.commentWithInfo!.info.repliesAmount,
-            }}
-            comment={c.commentWithInfo!.comment}
-            listId={listId}
-          />
-        ))}
+        comments.toArray()?.map((c) => {
+          return (
+            <CommentWidget
+              commentNode={c!}
+              listId={listId}
+              key={c.commentWithInfo?.comment.id}
+            />
+          );
+        })}
     </CommentsWrapper>
   );
 };

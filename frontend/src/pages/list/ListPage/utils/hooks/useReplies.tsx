@@ -4,7 +4,7 @@ import { $comments } from '../../model/comments';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { listService } from '@/features/list/api/list.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
-import { CommentWithInfo } from '../comments-tree/CommentNode';
+import { CommentWithInfo } from '../../../../../widgets/comment/utils/comments-tree/CommentNode';
 import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
 import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
 

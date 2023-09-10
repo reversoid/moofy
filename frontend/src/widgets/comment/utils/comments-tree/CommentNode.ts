@@ -8,6 +8,7 @@ export interface CommentWithInfo {
 /** Single node of comments tree */
 export class CommentNode {
   constructor(
+    /** Nullable **only** for root element */
     public commentWithInfo: CommentWithInfo | null,
     replies: CommentWithInfo[] | null,
     public isColored: boolean = false,
@@ -18,9 +19,11 @@ export class CommentNode {
 
   replies: CommentNode[] | null = null;
 
-  public addReplies(replies: CommentWithInfo[], loadNextKey: string | null) {
+  public setLoadNextKey(loadNextKey: string | null) {
     this.loadNextKey = loadNextKey;
+  }
 
+  public addReplies(replies: CommentWithInfo[]) {
     const isReplyToReply =
       this.commentWithInfo !== null &&
       this.commentWithInfo.comment.reply_to !== undefined;

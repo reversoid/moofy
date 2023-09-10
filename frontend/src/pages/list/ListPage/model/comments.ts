@@ -1,6 +1,6 @@
 import { createEvent, createStore } from 'effector';
-import { CommentsTree } from '../utils/comments-tree/CommentsTree';
-import { CommentWithInfo } from '../utils/comments-tree/CommentNode';
+import { CommentsTree } from '../../../../widgets/comment/utils/comments-tree/CommentsTree';
+import { CommentWithInfo } from '../../../../widgets/comment/utils/comments-tree/CommentNode';
 
 export const $comments = createStore<CommentsTree | null>(null);
 

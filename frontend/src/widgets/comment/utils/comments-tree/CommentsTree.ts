@@ -1,7 +1,6 @@
-import { Comment } from '@/shared/api/types/comment.type';
 import { CommentNode, CommentWithInfo } from './CommentNode';
 
-/** Contains comments in tree structure */
+/** Tree structure of comments */
 export class CommentsTree {
   constructor(public listId: number, comments: CommentWithInfo[], loadNextKey: string | null) {
     this._tree = new CommentNode(null, comments, false, loadNextKey);
@@ -14,7 +13,9 @@ export class CommentsTree {
     replies: CommentWithInfo[],
     loadNextKey: string | null,
   ): void {
-    this.getNodeByCommentId(replyToCommentId)?.addReplies(replies, loadNextKey);
+    const node = this.getNodeByCommentId(replyToCommentId)
+    node?.addReplies(replies);
+    node?.setLoadNextKey(loadNextKey)
   }
 
   public removeReplies(replyToCommentId: number): void {

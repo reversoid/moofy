@@ -1,4 +1,4 @@
-import { CommentWithInfo } from '@/pages/list/ListPage/utils/comments-tree/CommentNode';
+import { CommentWithInfo } from '@/widgets/comment/comments-tree/CommentNode';
 import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
