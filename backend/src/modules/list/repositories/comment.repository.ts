@@ -4,10 +4,11 @@ import { DataSource } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
-export interface CommentWithRepliesAmount {
+export interface CommentWithInfo {
   comment: Comment;
   likesAmount: number;
   repliesAmount: number;
+  isLiked: boolean;
 }
 
 @Injectable()
@@ -18,10 +19,11 @@ export class CommentRepository extends PaginatedRepository<Comment> {
 
   async getComments(
     listId: number,
+    currentUserId?: number,
     commentId?: number,
     limit = 20,
     lowerBound?: Date,
-  ): Promise<IterableResponse<CommentWithRepliesAmount>> {
+  ): Promise<IterableResponse<CommentWithInfo>> {
     const query = this.createQueryBuilder('comment')
       .leftJoin('comment.user', 'user')
       .leftJoin('comment.list', 'list')
@@ -33,10 +35,20 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .leftJoin('comment.likes', 'likes')
       .addSelect('COUNT(likes.id)', 'likesCount')
 
+      .leftJoin(
+        'comment.likes',
+        'currentUserLike',
+        'currentUserLike.userId = :currentUserId',
+        { currentUserId },
+      )
+      .addSelect('currentUserLike.id', 'currentUserLikeId')
+
       .andWhere('comment.list = :listId', { listId })
       .groupBy('comment.id')
       .addGroupBy('user.id')
       .addGroupBy('list.id')
+      .addGroupBy('currentUserLike.id')
+
       .orderBy('comment.created_at', 'DESC')
       .take(limit + 1);
 
@@ -57,15 +69,14 @@ export class CommentRepository extends PaginatedRepository<Comment> {
 
     const comments = await query.getRawAndEntities();
 
-    const result = comments.entities.map<CommentWithRepliesAmount>(
-      (comment, index) => ({
-        comment,
-        repliesAmount: Number(comments.raw[index].repliesCount ?? 0),
-        likesAmount: Number(comments.raw[index].likesCount ?? 0),
-      }),
-    );
+    const result = comments.entities.map<CommentWithInfo>((comment, index) => ({
+      comment,
+      repliesAmount: Number(comments.raw[index].repliesCount ?? 0),
+      likesAmount: Number(comments.raw[index].likesCount ?? 0),
+      isLiked: Boolean(comments.raw[index].currentUserLikeId),
+    }));
 
-    return super.processPagination<CommentWithRepliesAmount>(
+    return super.processPagination<CommentWithInfo>(
       result,
       limit,
       'created_at',
