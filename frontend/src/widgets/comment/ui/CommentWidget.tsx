@@ -1,13 +1,11 @@
 import { Comment } from '@/entities/comment';
 import { CommentLike } from '@/features/comment';
-import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
-import Textarea from '@/shared/ui/Textarea/Textarea';
 import { CommentNode } from '@/widgets/comment/utils/comments-tree/CommentNode';
-import { Button, Link, Row, Text, styled } from '@nextui-org/react';
+import { styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
-import { ReplyForm } from './ReplyForm';
 import { CommentInfo } from './CommentInfo';
+import { ReplyForm } from './ReplyForm';
 
 export const colorHash = new ColorHash();
 
