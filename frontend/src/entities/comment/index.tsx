@@ -24,11 +24,6 @@ const CommentWrapper = styled(Card, {
   position: 'relative',
   gap: '$2',
   variants: {
-    reply: {
-      true: {
-        ml: '$5',
-      },
-    },
     withRightContent: {
       true: {
         pr: 'calc(45px + $sm)',
@@ -57,7 +52,6 @@ export const Comment: FC<CommentProps> = ({
     <>
       <CommentWrapper
         withRightContent={Boolean(rightContent)}
-        reply={Boolean(replyToCommentId)}
         css={{ borderColor: borderColor }}
       >
         <User user={user} createdAt={createdAt} />

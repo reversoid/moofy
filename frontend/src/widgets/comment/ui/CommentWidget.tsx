@@ -7,10 +7,19 @@ import { Button, Link, Row, Text, styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
 import { ReplyForm } from './ReplyForm';
+import { CommentInfo } from './CommentInfo';
 
 export const colorHash = new ColorHash();
 
-const WidgetWrapper = styled('div');
+const WidgetWrapper = styled('div', {
+  variants: {
+    reply: {
+      true: {
+        ml: '$5',
+      },
+    },
+  },
+});
 
 export interface CommentWidgetProps {
   commentNode: CommentNode;
@@ -30,78 +39,60 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
   const comment = commentNode.commentWithInfo!.comment;
   const info = commentNode.commentWithInfo!.info;
 
+  const showAndHideReplies = () => {
+    if (showReplies) {
+      onHideReplies?.(comment.id);
+    } else {
+      onLoadReplies?.(comment.id);
+    }
+    setShowReplies((v) => !v);
+  };
+
   return (
-    <WidgetWrapper>
-      <Comment
-        borderColor={
-          commentNode.isColored ? colorHash.hex(String(comment.id)) : undefined
-        }
-        createdAt={new Date(comment.created_at)}
-        text={comment.text}
-        user={comment.user}
-        replyToCommentId={comment.reply_to ?? undefined}
-        rightContent={
-          <CommentLike
-            commentId={comment.id}
-            liked={info.liked}
-            listId={listId}
-          />
-        }
-      />
-
-      {/* TODO make separate component */}
-      <Row
-        css={{
-          pl: '$xs',
-          mt: '$2',
-          display: 'flex',
-          gap: '$7',
-          ai: 'center',
-          ml: comment.reply_to !== null ? '$5' : 0,
-        }}
-      >
-        <Text css={{ fontWeight: 500 }} as={'p'} color="$neutral">
-          Нравится: <Text as={'span'}>{info.likesAmount}</Text>
-        </Text>
-        <Link
-          css={{
-            fontWeight: 500,
-            color: '$neutral !important',
-            '&:hover': { color: '$primary !important' },
-            cursor: 'pointer',
-          }}
-          onPress={() => {
-            if (showReplies) {
-              onHideReplies?.(comment.id);
-            } else {
-              onLoadReplies?.(comment.id);
-            }
-            setShowReplies((v) => !v);
-          }}
-        >
-          Ответы:&nbsp;<Text as={'span'}>{info.repliesAmount}</Text>
-        </Link>
-      </Row>
-
-      {showReplies && (
-        <>
-          <ReplyForm commentId={comment.id} listId={listId} />
-
-          {commentNode.replies?.map((node) => (
-            <CommentWidget
-              commentNode={node}
+    <>
+      <WidgetWrapper reply={comment.reply_to !== null}>
+        <Comment
+          borderColor={
+            commentNode.isColored
+              ? colorHash.hex(String(comment.id))
+              : undefined
+          }
+          createdAt={new Date(comment.created_at)}
+          text={comment.text}
+          user={comment.user}
+          replyToCommentId={comment.reply_to ?? undefined}
+          rightContent={
+            <CommentLike
+              commentId={comment.id}
+              liked={info.liked}
               listId={listId}
-              key={node.commentWithInfo?.comment.id}
-              onLoadReplies={() =>
-                onLoadReplies?.(node.commentWithInfo!.comment.id)
-              }
-              onHideReplies={() =>
-                onHideReplies?.(node.commentWithInfo!.comment.id)
-              }
             />
-          ))}
-        </>
-      )}
-    </WidgetWrapper>
+          }
+        />
+
+        <CommentInfo
+          likesAmount={info.likesAmount}
+          repliesAmount={info.repliesAmount}
+          onPressReplies={showAndHideReplies}
+        />
+
+        {showReplies && <ReplyForm commentId={comment.id} listId={listId} />}
+      </WidgetWrapper>
+
+      {showReplies &&
+        commentNode.replies?.map((node) => (
+          <CommentWidget
+            commentNode={node}
+            listId={listId}
+            key={node.commentWithInfo?.comment.id}
+            onLoadReplies={() =>
+              onLoadReplies?.(node.commentWithInfo!.comment.id)
+            }
+            onHideReplies={() =>
+              onHideReplies?.(node.commentWithInfo!.comment.id)
+            }
+          />
+        ))}
+    </>
   );
 };
