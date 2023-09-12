@@ -37,6 +37,8 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .leftJoin('comment.likes', 'likes')
       .addSelect('COUNT(likes.id)', 'likesCount')
 
+      .leftJoinAndSelect('comment.reply_to', 'reply_to')
+
       .leftJoin(
         'comment.likes',
         'currentUserLike',
@@ -49,6 +51,7 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .groupBy('comment.id')
       .addGroupBy('user.id')
       .addGroupBy('list.id')
+      .addGroupBy('reply_to.id')
       .addGroupBy('currentUserLike.id')
 
       .orderBy('comment.created_at', 'DESC')
