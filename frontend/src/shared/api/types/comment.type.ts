@@ -10,7 +10,7 @@ export interface Comment {
 }
 
 export interface CommentInfo {
-  liked: boolean;
+  isLiked: boolean;
   likesAmount: number;
   repliesAmount: number;
 }

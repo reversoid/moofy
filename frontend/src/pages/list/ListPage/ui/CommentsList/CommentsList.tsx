@@ -1,10 +1,13 @@
 import { CommentWidget } from '@/widgets/comment';
-import { styled } from '@nextui-org/react';
-import React, { FC } from 'react';
+import { Textarea, styled } from '@nextui-org/react';
+import React, { FC, useEffect } from 'react';
 import { useStore } from 'effector-react';
 import { $comments } from '../../model/comments';
 import LoadMore from '@/shared/components/LoadMore';
 import { useReplies } from '../../utils/hooks/useReplies';
+import { useCreateComment } from '@/features/comment/utils/useCreateComment';
+import { useComments } from '../../utils/hooks/useComments';
+import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -21,24 +24,25 @@ export interface CommentsListProps {
 }
 
 export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
-  const comments = useStore($comments);
+  const { data: comments, load } = useComments(listId);
+  const { load: loadReplies } = useReplies(listId, 8);
 
-  if (!comments) {
-    return null;
-  }
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
     <CommentsWrapper>
-      {comments.listId == listId &&
-        comments.toArray()?.map((c) => {
-          return (
-            <CommentWidget
-              commentNode={c!}
-              listId={listId}
-              key={c.commentWithInfo?.comment.id}
-            />
-          );
-        })}
+      {comments?.tree.replies?.map((c) => {
+        return (
+          <CommentWidget
+            commentNode={c!}
+            listId={listId}
+            key={c.commentWithInfo?.comment.id}
+            onLoadReplies={() => loadReplies()}
+          />
+        );
+      })}
     </CommentsWrapper>
   );
 };

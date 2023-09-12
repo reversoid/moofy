@@ -6,6 +6,7 @@ import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
 import { CommentInfo } from './CommentInfo';
 import { ReplyForm } from './ReplyForm';
+import { useReplies } from '@/pages/list/ListPage/utils/hooks/useReplies';
 
 export const colorHash = new ColorHash();
 
@@ -62,7 +63,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           rightContent={
             <CommentLike
               commentId={comment.id}
-              liked={info.liked}
+              liked={info.isLiked}
               listId={listId}
             />
           }

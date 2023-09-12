@@ -52,6 +52,6 @@ export const useComments = (listId: number) => {
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,
     isFetchingNextPage: result.isFetchingNextPage,
-    load: result.refetch(),
+    load: result.refetch,
   };
 };

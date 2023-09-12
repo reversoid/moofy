@@ -2,20 +2,24 @@ import { CommentNode, CommentWithInfo } from './CommentNode';
 
 /** Tree structure of comments */
 export class CommentsTree {
-  constructor(public listId: number, comments: CommentWithInfo[], loadNextKey: string | null) {
-    this._tree = new CommentNode(null, comments, false, loadNextKey);
+  constructor(
+    public listId: number,
+    comments: CommentWithInfo[],
+    loadNextKey: string | null,
+  ) {
+    this.tree = new CommentNode(null, comments, false, loadNextKey);
   }
 
-  private _tree: CommentNode;
+  public tree: CommentNode;
 
   public addReplies(
     replyToCommentId: number,
     replies: CommentWithInfo[],
     loadNextKey: string | null,
   ): void {
-    const node = this.getNodeByCommentId(replyToCommentId)
+    const node = this.getNodeByCommentId(replyToCommentId);
     node?.addReplies(replies);
-    node?.setLoadNextKey(loadNextKey)
+    node?.setLoadNextKey(loadNextKey);
   }
 
   public removeReplies(replyToCommentId: number): void {
@@ -24,7 +28,7 @@ export class CommentsTree {
 
   public toArray(): CommentNode[] {
     const result: CommentNode[] = [];
-    this._dfs(this._tree, result);
+    this._dfs(this.tree, result);
     return result;
   }
 
@@ -45,11 +49,11 @@ export class CommentsTree {
   }
 
   private getNodeByCommentId(commentId: number): CommentNode | null {
-    if (!this._tree) {
+    if (!this.tree) {
       return null;
     }
 
-    return this._getNodeByCommentId(this._tree, commentId);
+    return this._getNodeByCommentId(this.tree, commentId);
   }
 
   private _getNodeByCommentId = (

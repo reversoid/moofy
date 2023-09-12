@@ -1,6 +1,6 @@
 import { useStore } from 'effector-react';
 import React from 'react';
-import { $comments } from '../../model/comments';
+import { $comments, addReplies } from '../../model/comments';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { listService } from '@/features/list/api/list.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
@@ -28,11 +28,11 @@ export const useReplies = (listId: number, commentId: number) => {
       if (!comments) {
         return;
       }
-      comments.addReplies(
+      addReplies({
         commentId,
-        content,
-        result.data.pages.at(-1)?.nextKey ?? null,
-      );
+        comments: content,
+        nextKey: result.data.pages.at(-1)?.nextKey ?? null,
+      });
     }
   });
 
@@ -41,6 +41,6 @@ export const useReplies = (listId: number, commentId: number) => {
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,
     isFetchingNextPage: result.isFetchingNextPage,
-    load: result.refetch(),
+    load: result.refetch,
   };
 };
