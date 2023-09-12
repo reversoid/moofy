@@ -6,9 +6,11 @@ import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 export interface CommentWithInfo {
   comment: Comment;
-  likesAmount: number;
-  repliesAmount: number;
-  isLiked: boolean;
+  info: {
+    likesAmount: number;
+    repliesAmount: number;
+    isLiked: boolean;
+  };
 }
 
 @Injectable()
@@ -71,9 +73,11 @@ export class CommentRepository extends PaginatedRepository<Comment> {
 
     const result = comments.entities.map<CommentWithInfo>((comment, index) => ({
       comment,
-      repliesAmount: Number(comments.raw[index].repliesCount ?? 0),
-      likesAmount: Number(comments.raw[index].likesCount ?? 0),
-      isLiked: Boolean(comments.raw[index].currentUserLikeId),
+      info: {
+        repliesAmount: Number(comments.raw[index].repliesCount ?? 0),
+        likesAmount: Number(comments.raw[index].likesCount ?? 0),
+        isLiked: Boolean(comments.raw[index].currentUserLikeId),
+      },
     }));
 
     return super.processPagination<CommentWithInfo>(
