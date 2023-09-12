@@ -1,4 +1,4 @@
-import { composeValidators } from '@/shared/lib/forms/composeValidators';
+import { composeValidators } from '@/shared/utils/forms/composeValidators';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
 import { Loading } from '@nextui-org/react';
 import { Field, Form as FinalForm } from 'react-final-form';

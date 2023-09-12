@@ -25,7 +25,6 @@ export interface CommentsListProps {
 
 export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
   const { data: comments, load } = useComments(listId);
-  const { load: loadReplies } = useReplies(listId, 8);
 
   useEffect(() => {
     load();
@@ -38,8 +37,7 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
           <CommentWidget
             commentNode={c!}
             listId={listId}
-            key={c.commentWithInfo?.comment.id}
-            onLoadReplies={() => loadReplies()}
+            key={c.commentWithInfo!.comment.id}
           />
         );
       })}

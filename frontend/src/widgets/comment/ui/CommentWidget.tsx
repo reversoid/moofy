@@ -8,8 +8,6 @@ import { CommentInfo } from './CommentInfo';
 import { ReplyForm } from './ReplyForm';
 import { useReplies } from '@/pages/list/ListPage/utils/hooks/useReplies';
 
-export const colorHash = new ColorHash();
-
 const WidgetWrapper = styled('div', {
   variants: {
     reply: {
@@ -23,26 +21,23 @@ const WidgetWrapper = styled('div', {
 export interface CommentWidgetProps {
   commentNode: CommentNode;
   listId: number;
-  onLoadReplies?: (commentId: number) => void;
-  onHideReplies?: (commentId: number) => void;
 }
 
 export const CommentWidget: FC<CommentWidgetProps> = ({
   commentNode,
   listId,
-  onLoadReplies,
-  onHideReplies,
 }) => {
   const [showReplies, setShowReplies] = useState(false);
 
   const comment = commentNode.commentWithInfo!.comment;
   const info = commentNode.commentWithInfo!.info;
 
+  const { load: loadReplies } = useReplies(listId, comment.id);
+
   const showAndHideReplies = () => {
     if (showReplies) {
-      onHideReplies?.(comment.id);
     } else {
-      onLoadReplies?.(comment.id);
+      loadReplies();
     }
     setShowReplies((v) => !v);
   };
@@ -51,15 +46,11 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
     <>
       <WidgetWrapper reply={comment.reply_to !== null}>
         <Comment
-          borderColor={
-            commentNode.isColored
-              ? colorHash.hex(String(comment.id))
-              : undefined
-          }
+          borderColor={commentNode.hexColor ?? undefined}
           createdAt={new Date(comment.created_at)}
           text={comment.text}
           user={comment.user}
-          replyToCommentId={comment.reply_to ?? undefined}
+          replyToCommentId={comment.reply_to?.id ?? undefined}
           rightContent={
             <CommentLike
               commentId={comment.id}
@@ -84,12 +75,6 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
             commentNode={node}
             listId={listId}
             key={node.commentWithInfo?.comment.id}
-            onLoadReplies={() =>
-              onLoadReplies?.(node.commentWithInfo!.comment.id)
-            }
-            onHideReplies={() =>
-              onHideReplies?.(node.commentWithInfo!.comment.id)
-            }
           />
         ))}
     </>

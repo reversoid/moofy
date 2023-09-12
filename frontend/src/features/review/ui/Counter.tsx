@@ -1,6 +1,6 @@
 import down from '@/shared/assets/img/down.svg';
 import up from '@/shared/assets/img/up.svg';
-import { getColorsByScore } from '@/shared/lib/scoreColors';
+import { getColorsByScore } from '@/shared/utils/scoreColors';
 import { Button, styled } from '@nextui-org/react';
 import { memo, useState } from 'react';
 import { FieldInputProps } from 'react-final-form';

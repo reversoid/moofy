@@ -4,7 +4,7 @@ import {
   SUPPORTED_EXTENSIONS,
   getFileExtension,
 } from '@/shared/components/ImageUpload';
-import { composeValidators } from '@/shared/lib/forms/composeValidators';
+import { composeValidators } from '@/shared/utils/forms/composeValidators';
 import { Form } from '@/shared/ui/Form/Form';
 import { Input } from '@/shared/ui/Input/Input';
 import { ModalBody, ModalFooter } from '@/shared/ui/Modal';

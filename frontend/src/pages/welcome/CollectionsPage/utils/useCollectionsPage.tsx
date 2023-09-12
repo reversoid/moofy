@@ -2,8 +2,8 @@ import { $userLists, setUserLists } from '@/entities/user-lists';
 import { listService } from '@/features/list/api/list.service';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
-import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
-import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
+import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useStore } from 'effector-react';
 

@@ -3,7 +3,7 @@ import { Link } from '@/shared/ui/Link/Link';
 import { Image, Text, styled } from '@nextui-org/react';
 import { FC } from 'react';
 import profileIcon from '@/shared/assets/img/user-round.svg';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
+import { formatDate } from '@/shared/utils/formatDate/formatDate';
 
 const UserBlock = styled('div', {
   display: 'flex',

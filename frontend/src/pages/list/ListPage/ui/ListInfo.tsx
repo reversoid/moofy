@@ -2,7 +2,7 @@ import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
 import { DeleteListModal } from '@/features/list/delete-list';
 import { UpdateListModal } from '@/features/list/update-list';
 import { List } from '@/shared/api/types/list.type';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
+import { formatDate } from '@/shared/utils/formatDate/formatDate';
 import { styled, Text } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';

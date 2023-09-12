@@ -1,4 +1,3 @@
-import { CommentWithInfo } from '@/widgets/comment/comments-tree/CommentNode';
 import ApiService from '@/shared/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
@@ -8,6 +7,7 @@ import {
   IterableResponse,
   RankValue,
 } from '@/shared/api/types/shared';
+import { CommentWithInfo } from '@/widgets/comment/utils/comments-tree';
 import { SearchParamsOption } from 'ky';
 
 export interface CreateListDTO {
@@ -183,10 +183,13 @@ export class ListService extends ApiService {
       searchParams['commentId'] = commentId;
     }
 
-    return this.get<IterableResponse<CommentWithInfo>>(`/list/${listId}/comments`, {
-      useJWT: true,
-      searchParams,
-    });
+    return this.get<IterableResponse<CommentWithInfo>>(
+      `/list/${listId}/comments`,
+      {
+        useJWT: true,
+        searchParams,
+      },
+    );
   }
 }
 

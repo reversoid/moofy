@@ -5,8 +5,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { listService } from '@/features/list/api/list.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { CommentWithInfo } from '../../../../../widgets/comment/utils/comments-tree/CommentNode';
-import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
-import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
+import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
 
 export const useReplies = (listId: number, commentId: number) => {
   const comments = useStore($comments);
