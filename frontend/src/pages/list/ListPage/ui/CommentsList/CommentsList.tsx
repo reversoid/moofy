@@ -1,13 +1,7 @@
 import { CommentWidget } from '@/widgets/comment';
-import { Textarea, styled } from '@nextui-org/react';
-import React, { FC, useEffect } from 'react';
-import { useStore } from 'effector-react';
-import { $comments } from '../../model/comments';
-import LoadMore from '@/shared/components/LoadMore';
-import { useReplies } from '../../utils/hooks/useReplies';
-import { useCreateComment } from '@/features/comment/utils/useCreateComment';
+import { styled } from '@nextui-org/react';
+import { FC, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
-import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',

@@ -7,7 +7,7 @@ export class CommentsTree {
     comments: CommentWithInfo[],
     loadNextKey: string | null,
   ) {
-    this.tree = new CommentNode(null, comments, false, loadNextKey);
+    this.tree = new CommentNode(null, comments, null, loadNextKey);
   }
 
   public tree: CommentNode;

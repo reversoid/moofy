@@ -25,9 +25,10 @@ export const useReplies = (listId: number, commentId: number) => {
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      if (!comments) {
+      if (!comments) {        
         return;
       }
+      
       addReplies({
         commentId,
         comments: content,

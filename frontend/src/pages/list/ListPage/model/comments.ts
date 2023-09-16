@@ -28,6 +28,7 @@ $comments.on(addReplies, (state, payload) => {
   if (!state) {
     return state;
   }
+
   state.addReplies(payload.commentId, payload.comments, payload.nextKey);
   return state;
 });

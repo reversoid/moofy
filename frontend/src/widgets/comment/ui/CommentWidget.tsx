@@ -74,7 +74,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           <CommentWidget
             commentNode={node}
             listId={listId}
-            key={node.commentWithInfo?.comment.id}
+            key={node.commentWithInfo!.comment.id}
           />
         ))}
     </>
