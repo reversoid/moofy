@@ -1,6 +1,5 @@
 import { colorHash } from '@/shared/utils/colorHash';
 import { styled } from '@nextui-org/react';
-import ColorHash from 'color-hash';
 
 
 export const Background = styled('div', {
