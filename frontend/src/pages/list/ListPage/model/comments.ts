@@ -30,9 +30,7 @@ $comments.on(setupComments, (state, { comments, listId, nextKey }) => {
 $comments.on(addReplies, (state, payload) => {
   if (!state) {
     return state;
-  }
-  console.log('added replies');
-  
+  }  
 
   state.addReplies(payload.commentId, payload.comments, payload.nextKey);
   return state.copy();
@@ -43,7 +41,6 @@ $comments.on(removeReplies, (state, payload) => {
     return state;
   }
   state.removeReplies(payload.commentId);
-  console.log('removed replies');
 
   return state.copy();
 });
