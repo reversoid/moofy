@@ -1,5 +1,6 @@
 import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
 import Textarea from '@/shared/ui/Textarea/Textarea';
+import { required } from '@/shared/utils/forms/validators';
 import { Button, styled } from '@nextui-org/react';
 import React, { FC } from 'react';
 import { Field, Form } from 'react-final-form';
@@ -7,6 +8,10 @@ import { Field, Form } from 'react-final-form';
 const AnswerWrapper = styled('form', {
   mt: '$10',
 });
+
+interface ReplyFormValues {
+  text: string;
+}
 
 export interface ReplyFormProps {
   commentId: number;
@@ -17,14 +22,15 @@ export const ReplyForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
   const replyMutation = useReplyToComment();
 
   return (
-    <Form
-      onSubmit={() =>
-        replyMutation.mutate({ commentId, listId, text: 'some reply' })
-      }
+    <Form<ReplyFormValues>
+      onSubmit={async (value, form) => {
+        await replyMutation.mutateAsync({ commentId, listId, text: value.text });
+        form.reset()
+      }}
     >
-      {({}) => (
-        <AnswerWrapper>
-          <Field name="text">
+      {({ invalid, submitting, handleSubmit, form }) => (
+        <AnswerWrapper onSubmit={handleSubmit}>
+          <Field name="text" validate={required('Поле должно быть заполнено')}>
             {({ input }) => (
               <Textarea
                 {...input}
@@ -38,14 +44,7 @@ export const ReplyForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
             type="submit"
             css={{ mt: '$8', '@xsMax': { w: '100%' } }}
             color={'primary'}
-            disabled={replyMutation.isLoading}
-            onClick={() =>
-              replyMutation.mutate({
-                commentId: commentId,
-                listId: listId,
-                text: 'test reply',
-              })
-            }
+            disabled={submitting || invalid}
           >
             Отправить
           </Button>
