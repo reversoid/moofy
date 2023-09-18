@@ -1,16 +1,26 @@
 import { CommentNode, CommentWithInfo } from './CommentNode';
 
+interface Comments {
+  comments: CommentWithInfo[];
+  loadNextKey: string | null;
+}
+
 /** Tree structure of comments */
 export class CommentsTree {
-  constructor(
-    public listId: number,
-    comments: CommentWithInfo[],
-    loadNextKey: string | null,
-  ) {
+  constructor(public listId: number, commentsOrTree: Comments | CommentNode) {
+    if (commentsOrTree instanceof CommentNode) {
+      this.tree = commentsOrTree;
+      return;
+    }
+    const { comments, loadNextKey } = commentsOrTree;
     this.tree = new CommentNode(null, comments, null, loadNextKey);
   }
 
   public tree: CommentNode;
+
+  public copy(): CommentsTree {
+    return new CommentsTree(this.listId, this.tree);
+  }
 
   public addReplies(
     replyToCommentId: number,
@@ -24,28 +34,6 @@ export class CommentsTree {
 
   public removeReplies(replyToCommentId: number): void {
     this.getNodeByCommentId(replyToCommentId)?.removeReplies();
-  }
-
-  public toArray(): CommentNode[] {
-    const result: CommentNode[] = [];
-    this._dfs(this.tree, result);
-    return result;
-  }
-
-  private _dfs(node: CommentNode | null, accumulator: CommentNode[]): void {
-    if (!node || !node.commentWithInfo) {
-      return;
-    }
-
-    accumulator.push(node);
-
-    if (!node.replies) {
-      return;
-    }
-
-    for (const replyNode of node.replies) {
-      this._dfs(replyNode, accumulator);
-    }
   }
 
   private getNodeByCommentId(commentId: number): CommentNode | null {

@@ -20,17 +20,22 @@ export const removeReplies = createEvent<{
   commentId: number;
 }>();
 
-$comments.on(setupComments, (state, payload) => {
-  return new CommentsTree(payload.listId, payload.comments, payload.nextKey);
+$comments.on(setupComments, (state, { comments, listId, nextKey }) => {
+  return new CommentsTree(listId, {
+    comments,
+    loadNextKey: nextKey,
+  });
 });
 
 $comments.on(addReplies, (state, payload) => {
   if (!state) {
     return state;
   }
+  console.log('added replies');
+  
 
   state.addReplies(payload.commentId, payload.comments, payload.nextKey);
-  return state;
+  return state.copy();
 });
 
 $comments.on(removeReplies, (state, payload) => {
@@ -38,5 +43,7 @@ $comments.on(removeReplies, (state, payload) => {
     return state;
   }
   state.removeReplies(payload.commentId);
-  return state;
+  console.log('removed replies');
+
+  return state.copy();
 });

@@ -18,7 +18,9 @@ export interface CommentsListProps {
 }
 
 export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
-  const { data: comments, load } = useComments(listId);
+  const { load, data: comments } = useComments(listId);
+
+  console.log('rerender');
 
   useEffect(() => {
     load();
