@@ -26,7 +26,7 @@ export const LoginForm = () => {
       onSubmit={async (form) => {
         await mutation.mutateAsync(form);
       }}
-      render={({ handleSubmit, submitting, validating, invalid }) => (
+      render={({ handleSubmit, submitting, validating, invalid, pristine }) => (
         <>
           <Form id="login-form" onSubmit={handleSubmit}>
             <Field
@@ -81,7 +81,7 @@ export const LoginForm = () => {
           </Form>
 
           <SubmitContainer
-            buttonDisabled={invalid}
+            buttonDisabled={invalid || pristine}
             buttonSilentlyDisabled={validating}
             buttonLoading={submitting}
             buttonText="Войти"
