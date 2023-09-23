@@ -1,7 +1,7 @@
 import { createEvent, createStore } from 'effector';
 import { CommentsTree } from '../../../../widgets/comment/utils/comments-tree/CommentsTree';
 import { CommentWithInfo } from '../../../../widgets/comment/utils/comments-tree/CommentNode';
-import { commentCreated } from '@/features/comment';
+import { commentCreated, commentLiked, commentUnliked } from '@/features/comment';
 
 export const $comments = createStore<CommentsTree | null>(null);
 
@@ -31,7 +31,7 @@ $comments.on(setupComments, (state, { comments, listId, nextKey }) => {
 $comments.on(addReplies, (state, payload) => {
   if (!state) {
     return state;
-  }  
+  }
 
   state.addReplies(payload.commentId, payload.comments, payload.nextKey);
   return state.copy();
@@ -46,13 +46,35 @@ $comments.on(removeReplies, (state, payload) => {
   return state.copy();
 });
 
-$comments.on(commentCreated, (state, payload) => {  
+$comments.on(commentCreated, (state, payload) => {
+  if (!state) {
+    return state;
+  }
+  if (state.listId !== payload.listId) {
+    return state;
+  }
+  state.addComment(payload.comment);
+  return state.copy();
+});
+
+$comments.on(commentLiked, (state, payload) => {  
   if (!state) {    
     return state
   }
   if (state.listId !== payload.listId) {    
     return state
   }
-  state.addComment(payload.comment);
+  state.likeComment(payload.commentId);
+  return state.copy();
+})
+
+$comments.on(commentUnliked, (state, payload) => {  
+  if (!state) {    
+    return state
+  }
+  if (state.listId !== payload.listId) {    
+    return state
+  }
+  state.unlikeComment(payload.commentId);
   return state.copy();
 })

@@ -45,6 +45,14 @@ export class CommentsTree {
     node?.addNewComment(comment)
   }
 
+  public likeComment(commentId: number): void {
+    this.getNodeByCommentId(commentId)?.like();
+  }
+
+  public unlikeComment(commentId: number): void {
+    this.getNodeByCommentId(commentId)?.unlike();
+  }
+
   public removeReplies(replyToCommentId: number): void {
     this.getNodeByCommentId(replyToCommentId)?.removeReplies();
   }

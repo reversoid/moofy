@@ -6,6 +6,6 @@ export const listLiked = createEvent<{
 }>();
 
 /** This event is emitted when list is unliked */
-export const commentUnliked = createEvent<{
+export const listUnliked = createEvent<{
   listId: number;
 }>();

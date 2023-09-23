@@ -53,12 +53,28 @@ export class CommentNode {
       info: { isLiked: false, likesAmount: 0, repliesAmount: 0 },
     };
 
-    const newNode = new CommentNode(commentWithInfo, null, this.hexColor.copy())
-    
-    if (this.replies) {      
+    const newNode = new CommentNode(
+      commentWithInfo,
+      null,
+      this.hexColor.copy(),
+    );
+
+    if (this.replies) {
       this.replies.unshift(newNode);
     } else {
       this.replies = [newNode];
+    }
+  }
+
+  public like() {
+    if (this.commentWithInfo) {
+      this.commentWithInfo.info.isLiked = true;
+    }
+  }
+
+  public unlike() {
+    if (this.commentWithInfo) {
+      this.commentWithInfo.info.isLiked = false;
     }
   }
 
