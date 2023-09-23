@@ -304,7 +304,7 @@ export class ListService {
 
     if (dto.replyToId !== undefined) {
       comment.reply_to = this.commentRepository.create({
-        id: user.id,
+        id: dto.replyToId,
       });
     }
 
