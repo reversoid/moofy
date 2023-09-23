@@ -1,3 +1,5 @@
+const SPECIAL_FULL_TEXT_SEARCH_SYMBOLS_PATTERN = /[&|!<():*]/g;
+
 /** Get ready string to pass into **to_tsquery** function
  *
  *  Capabillities:
@@ -7,6 +9,7 @@
  */
 export const getTsQueryFromString = (searchString: string) =>
   searchString
+    .replace(SPECIAL_FULL_TEXT_SEARCH_SYMBOLS_PATTERN, '')
     .split(' ')
     .map((c) => c.trim())
     .filter(Boolean)

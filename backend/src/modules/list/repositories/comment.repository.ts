@@ -3,6 +3,7 @@ import { PaginatedRepository } from 'src/shared/pagination/paginated.repository'
 import { DataSource } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { CommentLike } from '../entities/comment-like.entity';
 
 export interface CommentWithInfo {
   comment: Comment;
@@ -31,11 +32,23 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .leftJoin('comment.list', 'list')
       .addSelect('list.id')
       .addSelect(['user.id', 'user.username', 'user.image_url'])
-      .leftJoin('comment.replies', 'replies')
-      .addSelect('COUNT(replies.id)', 'repliesCount')
 
-      .leftJoin('comment.likes', 'likes')
-      .addSelect('COUNT(likes.id)', 'likesCount')
+      .addSelect(
+        (subQuery) =>
+          subQuery
+            .select('COUNT(reply.id)')
+            .from(Comment, 'reply')
+            .where('reply.reply_to = comment.id'),
+        'repliesCount',
+      )
+      .addSelect(
+        (subQuery) =>
+          subQuery
+            .select('COUNT(likes.id)')
+            .from(CommentLike, 'likes')
+            .where('likes.commentId = comment.id'),
+        'likesCount',
+      )
 
       .leftJoinAndSelect('comment.reply_to', 'reply_to')
 
