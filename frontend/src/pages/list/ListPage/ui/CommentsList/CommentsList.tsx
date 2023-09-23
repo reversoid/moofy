@@ -1,5 +1,5 @@
 import { CommentWidget } from '@/widgets/comment';
-import { styled } from '@nextui-org/react';
+import { Button, styled } from '@nextui-org/react';
 import { FC, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
 
@@ -25,16 +25,18 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
   }, []);
 
   return (
-    <CommentsWrapper>
-      {comments?.tree.replies?.map((c) => {
-        return (
-          <CommentWidget
-            commentNode={c!}
-            listId={listId}
-            key={c.commentWithInfo!.comment.id}
-          />
-        );
-      })}
-    </CommentsWrapper>
+    <>
+      <CommentsWrapper>
+        {comments?.tree.replies?.map((c) => {
+          return (
+            <CommentWidget
+              commentNode={c!}
+              listId={listId}
+              key={c.commentWithInfo!.comment.id}
+            />
+          );
+        })}
+      </CommentsWrapper>
+    </>
   );
 };

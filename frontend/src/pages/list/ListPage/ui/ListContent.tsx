@@ -51,6 +51,7 @@ export const ListContent = ({
             flexDirection: 'column',
             ai: 'flex-start',
           },
+          mt: '$8'
         }}
       >
         <Text h2 css={{ mb: '$0' }}>
