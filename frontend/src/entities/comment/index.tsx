@@ -8,7 +8,6 @@ export interface CommentProps {
   text: string;
   user: Pick<Profile, 'id' | 'image_url' | 'username'>;
   createdAt: Date;
-  replyToCommentId?: number;
   rightContent?: JSX.Element;
   /** This option will color left border */
   borderColor?: string;
@@ -44,7 +43,6 @@ export const Comment: FC<CommentProps> = ({
   text,
   user,
   createdAt,
-  replyToCommentId,
   rightContent,
   borderColor,
 }) => {

@@ -50,7 +50,6 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           createdAt={new Date(comment.created_at)}
           text={comment.text}
           user={comment.user}
-          replyToCommentId={comment.reply_to?.id ?? undefined}
           rightContent={
             <CommentLike
               commentId={comment.id}
