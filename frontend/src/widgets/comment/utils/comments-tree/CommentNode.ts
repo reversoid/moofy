@@ -36,7 +36,9 @@ export class CommentNode {
       );
     }
 
-    const nodes = replies.map((r) => new CommentNode(r, null, this.hexColor.copy()));
+    const nodes = replies.map(
+      (r) => new CommentNode(r, null, this.hexColor.copy()),
+    );
 
     if (this.replies) {
       this.replies.push(...nodes);
@@ -45,8 +47,23 @@ export class CommentNode {
     }
   }
 
+  public addNewComment(comment: Comment) {
+    const commentWithInfo: CommentWithInfo = {
+      comment,
+      info: { isLiked: false, likesAmount: 0, repliesAmount: 0 },
+    };
+
+    const newNode = new CommentNode(commentWithInfo, null, this.hexColor.copy())
+    
+    if (this.replies) {      
+      this.replies.push(newNode);
+    } else {
+      this.replies = [newNode];
+    }
+  }
+
   public clearColor() {
-    this.hexColor.clearColor()
+    this.hexColor.clearColor();
   }
 
   public removeReplies() {

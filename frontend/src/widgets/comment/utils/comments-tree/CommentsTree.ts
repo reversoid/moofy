@@ -1,3 +1,4 @@
+import { Comment } from '@/shared/api/types/comment.type';
 import { CommentNode, CommentWithInfo } from './CommentNode';
 
 interface Comments {
@@ -30,6 +31,18 @@ export class CommentsTree {
     const node = this.getNodeByCommentId(replyToCommentId);
     node?.addReplies(replies);
     node?.setLoadNextKey(loadNextKey);
+  }
+
+  public addComment(comment: Comment) {
+    const replyToId = comment.reply_to?.id;    
+    if (!replyToId) {
+      this.tree.addNewComment(comment);
+      return;
+    }
+
+    const node = this.getNodeByCommentId(replyToId);
+    
+    node?.addNewComment(comment)
   }
 
   public removeReplies(replyToCommentId: number): void {

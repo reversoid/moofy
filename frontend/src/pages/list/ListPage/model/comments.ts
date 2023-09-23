@@ -1,6 +1,7 @@
 import { createEvent, createStore } from 'effector';
 import { CommentsTree } from '../../../../widgets/comment/utils/comments-tree/CommentsTree';
 import { CommentWithInfo } from '../../../../widgets/comment/utils/comments-tree/CommentNode';
+import { commentCreated } from '@/features/comment';
 
 export const $comments = createStore<CommentsTree | null>(null);
 
@@ -44,3 +45,14 @@ $comments.on(removeReplies, (state, payload) => {
 
   return state.copy();
 });
+
+$comments.on(commentCreated, (state, payload) => {  
+  if (!state) {    
+    return state
+  }
+  if (state.listId !== payload.listId) {    
+    return state
+  }
+  state.addComment(payload.comment);
+  return state.copy();
+})
