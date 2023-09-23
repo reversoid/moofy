@@ -64,17 +64,22 @@ export class CommentNode {
     } else {
       this.replies = [newNode];
     }
+    if (this.commentWithInfo) {
+      this.commentWithInfo.info.repliesAmount++;
+    }
   }
 
   public like() {
     if (this.commentWithInfo) {
       this.commentWithInfo.info.isLiked = true;
+      this.commentWithInfo.info.likesAmount++;
     }
   }
 
   public unlike() {
     if (this.commentWithInfo) {
       this.commentWithInfo.info.isLiked = false;
+      this.commentWithInfo.info.likesAmount--;
     }
   }
 
