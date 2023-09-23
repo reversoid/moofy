@@ -1,15 +1,18 @@
 import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
 import { DeleteListModal } from '@/features/list/delete-list';
 import { UpdateListModal } from '@/features/list/update-list';
-import { List } from '@/shared/api/types/list.type';
+import { AdditinalInfo, List } from '@/shared/api/types/list.type';
 import { formatDate } from '@/shared/utils/formatDate/formatDate';
-import { styled, Text } from '@nextui-org/react';
+import { Row, styled, Text } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
-import { CommentWidget } from '@/widgets/comment';
 import { CommentsList } from './CommentsList/CommentsList';
+import { ListLike } from '@/features/list-like';
+import { IconButton } from '@/shared/ui/IconButton/IconButton';
+import commentIcon from '@/shared/assets/img/comment.svg';
+import { Icon } from '@/shared/ui/Icon/Icon';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -19,9 +22,15 @@ interface ListInfoProps {
   list: List;
   isUserOwner: boolean;
   isFavorite?: boolean;
+  additionalInfo?: AdditinalInfo;
 }
 
-export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
+export const ListInfo = ({
+  list,
+  isUserOwner,
+  isFavorite,
+  additionalInfo,
+}: ListInfoProps) => {
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -77,6 +86,23 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           Обновлен <Text as="span">{formatDate(list.updated_at)}</Text>
         </Text>
       </ListInfoContainer>
+
+      <Row css={{ ai: 'center', gap: '$10', jc: 'flex-start' }}>
+        <Row css={{ ai: 'center', gap: '$3', w: 'auto' }}>
+          <ListLike liked={additionalInfo?.isLiked ?? false} listId={list.id} />
+          <Text css={{ fontWeight: 500 }} size={'$lg'} color="$neutral">
+            {additionalInfo?.likesAmount}
+          </Text>
+        </Row>
+        <Row css={{ ai: 'center', gap: '$5' }}>
+          <IconButton css={{ width: '2rem', height: '2rem' }}>
+            <Icon iconUrl={commentIcon} size="1.75rem" />
+          </IconButton>
+          <Text css={{ fontWeight: 500 }} size={'$lg'} color="$neutral">
+            {additionalInfo?.commentsAmount}
+          </Text>
+        </Row>
+      </Row>
 
       <CommentsList listId={list.id} />
 

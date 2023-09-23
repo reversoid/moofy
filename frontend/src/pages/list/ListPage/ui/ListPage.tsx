@@ -30,7 +30,6 @@ export const ListPage: FC = () => {
   const { earlierLoadedList } = useEarlierLoadedList(id);
 
   useLoadingBar(isLoading);
-
   if (data) {
     return (
       <ListPageContext.Provider value={{ id }}>
@@ -41,6 +40,7 @@ export const ListPage: FC = () => {
           loadMoreReviews={fetchNextPage}
           canLoadMoreReviews={hasNextPage}
           isFetchingMore={isFetchingNextPage}
+          
         />
       </ListPageContext.Provider>
     );
