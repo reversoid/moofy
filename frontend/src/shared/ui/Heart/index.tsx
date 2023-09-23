@@ -1,7 +1,29 @@
-import React, { FC, useLayoutEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from './styles.module.css';
 import { IconButton } from '../IconButton/IconButton';
 import { CSS, styled } from '@nextui-org/react';
+import { useMount } from '@/shared/hooks/useMount';
+
+/** Provides ref to disable animation on first render */
+const useHeartRef = (trigger: unknown) => {
+  const heartRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (heartRef.current) {
+      heartRef.current.classList.remove(styles['no-animation']);
+    }
+  }, [trigger]);
+
+  useLayoutEffect(() => {
+    if (heartRef.current) {
+      heartRef.current.classList.add(styles['no-animation']);
+    }
+  }, []);
+
+
+
+  return heartRef;
+};
 
 export interface HeartProps {
   loading: boolean;
@@ -26,6 +48,8 @@ export const Heart: FC<HeartProps> = ({
 }) => {
   const [longLoading, setLongLoading] = useState(false);
   const timer = useRef<NodeJS.Timeout>();
+
+  const heartRef = useHeartRef(loading);
 
   const classes = [
     liked ? 'liked' : 'unliked',
@@ -60,6 +84,7 @@ export const Heart: FC<HeartProps> = ({
         ].join(' ')}
       >
         <div
+          ref={heartRef}
           className={[
             styles['heart'],
             classes.map((c) => styles[c]).join(' '),
