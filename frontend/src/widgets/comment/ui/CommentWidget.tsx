@@ -7,6 +7,8 @@ import { FC, useState } from 'react';
 import { CommentInfo } from './CommentInfo';
 import { ReplyForm } from './ReplyForm';
 import { useReplies } from '@/pages/list/ListPage/utils/hooks/useReplies';
+import { removeReplies } from '@/pages/list/ListPage/model/comments';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 const WidgetWrapper = styled('div', {
   variants: {
@@ -32,21 +34,26 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
   const comment = commentNode.commentWithInfo!.comment;
   const info = commentNode.commentWithInfo!.info;
 
-  const { load: loadReplies } = useReplies(listId, comment.id);
+  const { load: loadReplies, isLoading } = useReplies(listId, comment.id);
+  
+  useLoadingBar(isLoading);
 
   const showAndHideReplies = () => {
-    if (showReplies) {
-    } else {
-      loadReplies();
-    }
-    setShowReplies((v) => !v);
+    setShowReplies((showReplies) => {
+      if (showReplies) {
+        removeReplies({ commentId: comment.id });
+      } else {
+        loadReplies();
+      }
+      return !showReplies;
+    });
   };
 
   return (
     <>
       <WidgetWrapper reply={comment.reply_to !== null}>
         <Comment
-          borderColor={commentNode.hexColor ?? undefined}
+          borderColor={commentNode.hexColor.currentColorHex ?? undefined}
           createdAt={new Date(comment.created_at)}
           text={comment.text}
           user={comment.user}

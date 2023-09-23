@@ -10,6 +10,7 @@ export const useNewInfiniteData = <T>(
     const isOutdated =
       !queryResult.data ||
       queryResult.isFetchingNextPage ||
+      queryResult.isFetching ||
       !queryResult.isFetchedAfterMount;
 
     if (isOutdated) {
@@ -17,5 +18,5 @@ export const useNewInfiniteData = <T>(
     }
 
     callback();
-  }, [queryResult.isFetchedAfterMount, queryResult.isFetchingNextPage]);
+  }, [queryResult.isFetching, queryResult.isFetchingNextPage]);
 };

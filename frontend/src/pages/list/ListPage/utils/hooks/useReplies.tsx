@@ -7,6 +7,7 @@ import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { CommentWithInfo } from '../../../../../widgets/comment/utils/comments-tree/CommentNode';
 import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
 import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
+import { useCachedInfiniteData } from '@/shared/utils/reactQueryAddons/useCachedInfiniteData';
 
 export const useReplies = (listId: number, commentId: number) => {
   const comments = useStore($comments);
@@ -25,10 +26,11 @@ export const useReplies = (listId: number, commentId: number) => {
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      if (!comments) {        
+
+      if (!comments) {
         return;
       }
-      
+
       addReplies({
         commentId,
         comments: content,
@@ -38,7 +40,7 @@ export const useReplies = (listId: number, commentId: number) => {
   });
 
   return {
-    isLoading: result.isLoading || result.isRefetching,
+    isLoading: result.isFetching || result.isRefetching,
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,
     isFetchingNextPage: result.isFetchingNextPage,

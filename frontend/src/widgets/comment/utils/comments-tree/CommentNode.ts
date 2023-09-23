@@ -1,5 +1,6 @@
 import { Comment, CommentInfo } from '@/shared/api/types/comment.type';
 import { colorHash } from '@/shared/utils/colorHash';
+import { CommentColor } from './CommentColor';
 
 export interface CommentWithInfo {
   comment: Comment;
@@ -12,7 +13,7 @@ export class CommentNode {
     /** Nullable **only** for root element */
     public commentWithInfo: CommentWithInfo | null,
     replies: CommentWithInfo[] | null,
-    public hexColor: string | null = null,
+    public hexColor: CommentColor = new CommentColor(),
     public loadNextKey: string | null = null,
   ) {
     this.replies = replies?.map((r) => new CommentNode(r, null)) ?? null;
@@ -29,11 +30,13 @@ export class CommentNode {
       this.commentWithInfo !== null &&
       this.commentWithInfo.comment.reply_to !== null;
 
-    this.hexColor = isReplyToReply
-      ? colorHash.hex(String(this.commentWithInfo!.comment.id))
-      : null;
+    if (isReplyToReply) {
+      this.hexColor.setColor(
+        colorHash.hex(String(this.commentWithInfo!.comment.id)),
+      );
+    }
 
-    const nodes = replies.map((r) => new CommentNode(r, null, this.hexColor));
+    const nodes = replies.map((r) => new CommentNode(r, null, this.hexColor.copy()));
 
     if (this.replies) {
       this.replies.push(...nodes);
@@ -42,9 +45,13 @@ export class CommentNode {
     }
   }
 
+  public clearColor() {
+    this.hexColor.clearColor()
+  }
+
   public removeReplies() {
     this.loadNextKey = null;
     this.replies = null;
-    this.hexColor = null;
+    this.hexColor.clearColor();
   }
 }

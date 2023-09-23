@@ -13,7 +13,7 @@ export class CommentsTree {
       return;
     }
     const { comments, loadNextKey } = commentsOrTree;
-    this.tree = new CommentNode(null, comments, null, loadNextKey);
+    this.tree = new CommentNode(null, comments, undefined, loadNextKey);
   }
 
   public tree: CommentNode;
