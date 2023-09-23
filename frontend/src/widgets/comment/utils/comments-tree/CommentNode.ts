@@ -56,7 +56,7 @@ export class CommentNode {
     const newNode = new CommentNode(commentWithInfo, null, this.hexColor.copy())
     
     if (this.replies) {      
-      this.replies.push(newNode);
+      this.replies.unshift(newNode);
     } else {
       this.replies = [newNode];
     }
