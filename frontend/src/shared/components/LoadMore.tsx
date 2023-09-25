@@ -41,7 +41,7 @@ const LoadMore: FC<LoadMoreProps> = ({ loadMore, loading, button }) => {
     >
       <Button
         css={buttonStyles}
-        color={button?.style}
+        color={button?.style ?? 'gradient'}
         onClick={() => loadMore && loadMore()}
       >
         {loading ? (
