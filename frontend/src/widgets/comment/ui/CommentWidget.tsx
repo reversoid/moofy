@@ -51,7 +51,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
 
   return (
     <>
-      <WidgetWrapper reply={comment.reply_to !== null}>
+      <WidgetWrapper reply={Boolean(comment.reply_to)}>
         <Comment
           borderColor={commentNode.hexColor.currentColorHex ?? undefined}
           createdAt={new Date(comment.created_at)}
