@@ -40,6 +40,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
     isLoading,
     fetchNextPage,
     hasNextPage,
+    isFetchingNextPage,
   } = useReplies(listId, comment.id);
 
   useLoadingBar(isLoading);
@@ -81,9 +82,6 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
         {showReplies && (
           <SendCommentForm commentId={comment.id} listId={listId} />
         )}
-        {hasNextPage && (
-          <LoadMore loadMore={fetchNextPage} loading={isLoading} />
-        )}
       </WidgetWrapper>
 
       {showReplies &&
@@ -94,6 +92,19 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
             key={node.commentWithInfo!.comment.id}
           />
         ))}
+
+      {hasNextPage && (
+        <LoadMore
+          button={{
+            color: commentNode.hexColor.currentColorHex ?? undefined,
+            style: commentNode.hexColor.currentColorHex ? 'primary' : undefined,
+            noMargin: true,
+            mb: true
+          }}
+          loading={isFetchingNextPage}
+          loadMore={fetchNextPage}
+        />
+      )}
     </>
   );
 };

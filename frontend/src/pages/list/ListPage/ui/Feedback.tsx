@@ -61,9 +61,7 @@ export const Feedback: FC<FeedbackProps> = ({ additionalInfo, listId }) => {
       />
 
       {showComments && (
-        <CommentsList listId={listId}>
-          <SendCommentForm listId={listId} />
-        </CommentsList>
+        <CommentsList listId={listId} />
       )}
     </>
   );

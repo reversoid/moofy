@@ -2,6 +2,8 @@ import { CommentWidget } from '@/widgets/comment';
 import { Button, styled } from '@nextui-org/react';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
+import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
+import LoadMore from '@/shared/components/LoadMore';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -11,15 +13,21 @@ const CommentsWrapper = styled('div', {
   d: 'flex',
   flexDirection: 'column',
   gap: '$9',
-  mt: '$6'
+  mt: '$6',
 });
 
 export interface CommentsListProps {
   listId: number;
 }
 
-export const CommentsList: FC<PropsWithChildren<CommentsListProps>> = ({ listId, children }) => {
-  const { load, data: comments } = useComments(listId);
+export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
+  const {
+    load,
+    data: comments,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useComments(listId);
 
   useEffect(() => {
     load();
@@ -28,7 +36,8 @@ export const CommentsList: FC<PropsWithChildren<CommentsListProps>> = ({ listId,
   return (
     <>
       <CommentsWrapper>
-        {children}
+        <SendCommentForm listId={listId} />
+
         {comments?.tree.replies?.map((c) => {
           return (
             <CommentWidget
@@ -38,6 +47,9 @@ export const CommentsList: FC<PropsWithChildren<CommentsListProps>> = ({ listId,
             />
           );
         })}
+        {hasNextPage && (
+          <LoadMore loadMore={fetchNextPage} loading={isFetchingNextPage} />
+        )}
       </CommentsWrapper>
     </>
   );
