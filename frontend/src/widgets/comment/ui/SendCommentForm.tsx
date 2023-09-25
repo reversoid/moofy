@@ -1,4 +1,4 @@
-import { useReplyToComment } from '@/features/comment/utils/useReplyToComment';
+import { useCreateComment } from '@/features/comment/utils/useCreateComment';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { required } from '@/shared/utils/forms/validators';
 import { Button, Loading, styled } from '@nextui-org/react';
@@ -15,17 +15,18 @@ interface ReplyFormValues {
 }
 
 export interface ReplyFormProps {
-  commentId: number;
+  /** If commentId is not set, will send comments to list */
+  commentId?: number;
   listId: number;
 }
 
-export const ReplyForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
-  const replyMutation = useReplyToComment();
+export const SendCommentForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
+  const commentMutation = useCreateComment();
 
   return (
     <Form<ReplyFormValues>
       onSubmit={async (value, form) => {
-        await replyMutation.mutateAsync({
+        await commentMutation.mutateAsync({
           commentId,
           listId,
           text: value.text,

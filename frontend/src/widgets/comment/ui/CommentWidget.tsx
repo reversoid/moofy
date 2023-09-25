@@ -5,7 +5,7 @@ import { styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
 import { CommentInfo } from './CommentInfo';
-import { ReplyForm } from './ReplyForm';
+import { SendCommentForm } from './SendCommentForm';
 import { useReplies } from '@/pages/list/ListPage/utils/hooks/useReplies';
 import { removeReplies } from '@/pages/list/ListPage/model/comments';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
@@ -72,7 +72,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           onPressReplies={showAndHideReplies}
         />
 
-        {showReplies && <ReplyForm commentId={comment.id} listId={listId} />}
+        {showReplies && <SendCommentForm commentId={comment.id} listId={listId} />}
       </WidgetWrapper>
 
       {showReplies &&

@@ -6,6 +6,7 @@ import { Row, Text } from '@nextui-org/react';
 import React, { FC, useState } from 'react';
 import commentIcon from '@/shared/assets/img/comment.svg';
 import { CommentsList } from './CommentsList/CommentsList';
+import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
 
 export interface FeedbackProps {
   additionalInfo: AdditinalInfo;
@@ -25,7 +26,11 @@ const FeedbackControls: FC<FeedbackControlsProps> = ({
     <Row css={{ ai: 'center', gap: '$5', jc: 'flex-start' }}>
       <Row css={{ ai: 'center', gap: '$4', w: 'auto' }}>
         <ListLike liked={additionalInfo.isLiked ?? false} listId={listId} />
-        <Text css={{ fontWeight: 500, minWidth: '1.5rem', }} size={'$lg'} color="$neutral">
+        <Text
+          css={{ fontWeight: 500, minWidth: '1.5rem' }}
+          size={'$lg'}
+          color="$neutral"
+        >
           {additionalInfo?.likesAmount}
         </Text>
       </Row>
@@ -54,7 +59,12 @@ export const Feedback: FC<FeedbackProps> = ({ additionalInfo, listId }) => {
         additionalInfo={additionalInfo}
         listId={listId}
       />
-      {showComments && <CommentsList listId={listId} />}
+
+      {showComments && (
+        <CommentsList listId={listId}>
+          <SendCommentForm listId={listId} />
+        </CommentsList>
+      )}
     </>
   );
 };

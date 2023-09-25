@@ -1,7 +1,7 @@
 import ApiService from '@/shared/api/api.service';
 import { Comment } from '@/shared/api/types/comment.type';
 
-export interface BasicCommentDto {
+export interface LikeCommentDto {
   listId: number;
   commentId: number;
 }
@@ -9,40 +9,29 @@ export interface BasicCommentDto {
 export interface CreateCommentDto {
   text: string;
   listId: number;
-}
-
-export interface ReplyToCommentDto extends BasicCommentDto {
-  text: string;
+  /** If commentId is specified, will reply to comment */
+  commentId?: number;
 }
 
 export class CommentService extends ApiService {
-  likeComment({ commentId, listId }: BasicCommentDto) {
+  likeComment({ commentId, listId }: LikeCommentDto) {
     return this.put<void>(`/list/${listId}/comments/${commentId}/likes`, {
       useJWT: true,
     });
   }
 
-  unlikeComment({ commentId, listId }: BasicCommentDto) {
+  unlikeComment({ commentId, listId }: LikeCommentDto) {
     return this.delete<void>(`/list/${listId}/comments/${commentId}/likes`, {
       useJWT: true,
     });
   }
 
-  createComment({ listId, text }: CreateCommentDto) {
+  createComment({ listId, text, commentId }: CreateCommentDto) {
     return this.post<Comment>(`/list/${listId}/comments`, {
       useJWT: true,
       json: {
         text,
-      },
-    });
-  }
-
-  replyToComment({ commentId, listId, text }: ReplyToCommentDto) {
-    return this.post<Comment>(`/list/${listId}/comments`, {
-      useJWT: true,
-      json: {
-        text,
-        replyToId: commentId,
+        replyToId: commentId
       },
     });
   }
