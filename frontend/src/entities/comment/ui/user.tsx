@@ -4,6 +4,7 @@ import { Image, Text, styled } from '@nextui-org/react';
 import { FC } from 'react';
 import profileIcon from '@/shared/assets/img/user-round.svg';
 import { formatDate } from '@/shared/utils/formatDate/formatDate';
+import { formatCommentDate } from '../utils/formatCommentDate';
 
 const UserBlock = styled('div', {
   display: 'flex',
@@ -46,8 +47,7 @@ export const User: FC<UserProps> = ({ user, createdAt }) => {
           </Text>
         </Link>
 
-        {/* TODO make better formatting with: 5 min ago. Just now... 15 min ago or 12:12 10.10.2023 */}
-        <Text color="$neutral">{formatDate(createdAt)}</Text>
+        <Text color="$neutral">{formatCommentDate(createdAt)}</Text>
       </UserInfo>
     </UserBlock>
   );
