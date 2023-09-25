@@ -1,7 +1,7 @@
 import { Comment } from '@/entities/comment';
 import { CommentLike } from '@/features/comment';
 import { CommentNode } from '@/widgets/comment/utils/comments-tree/CommentNode';
-import { styled } from '@nextui-org/react';
+import { Button, styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
 import { CommentInfo } from './CommentInfo';
@@ -9,6 +9,7 @@ import { SendCommentForm } from './SendCommentForm';
 import { useReplies } from '@/pages/list/ListPage/utils/hooks/useReplies';
 import { removeReplies } from '@/pages/list/ListPage/model/comments';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import LoadMore from '@/shared/components/LoadMore';
 
 const WidgetWrapper = styled('div', {
   variants: {
@@ -34,8 +35,13 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
   const comment = commentNode.commentWithInfo!.comment;
   const info = commentNode.commentWithInfo!.info;
 
-  const { load: loadReplies, isLoading } = useReplies(listId, comment.id);
-  
+  const {
+    load: loadReplies,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+  } = useReplies(listId, comment.id);
+
   useLoadingBar(isLoading);
 
   const showAndHideReplies = () => {
@@ -72,7 +78,12 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           onPressReplies={showAndHideReplies}
         />
 
-        {showReplies && <SendCommentForm commentId={comment.id} listId={listId} />}
+        {showReplies && (
+          <SendCommentForm commentId={comment.id} listId={listId} />
+        )}
+        {hasNextPage && (
+          <LoadMore loadMore={fetchNextPage} loading={isLoading} />
+        )}
       </WidgetWrapper>
 
       {showReplies &&
