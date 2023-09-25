@@ -11,6 +11,7 @@ const CommentsWrapper = styled('div', {
   d: 'flex',
   flexDirection: 'column',
   gap: '$9',
+  mt: '$6'
 });
 
 export interface CommentsListProps {

@@ -28,6 +28,7 @@ export const ListLike: FC<ListLikeProps> = ({ listId, liked }) => {
           unlikeMutation.mutate({ listId });
         }
       }}
+      isBlack={false}
     />
   );
 };

@@ -107,7 +107,7 @@
     background-color: var(--background);
 }
 .no-animation.unliked {
-    background-color: black;
+    background-color: var(--nextui-colors-gray50);
 }
 
 @keyframes success-pulse {

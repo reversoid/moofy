@@ -9,10 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
 import { CommentsList } from './CommentsList/CommentsList';
-import { ListLike } from '@/features/list-like';
-import { IconButton } from '@/shared/ui/IconButton/IconButton';
-import commentIcon from '@/shared/assets/img/comment.svg';
-import { Icon } from '@/shared/ui/Icon/Icon';
+import { Feedback } from './Feedback';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -87,24 +84,7 @@ export const ListInfo = ({
         </Text>
       </ListInfoContainer>
 
-      <Row css={{ ai: 'center', gap: '$10', jc: 'flex-start' }}>
-        <Row css={{ ai: 'center', gap: '$3', w: 'auto' }}>
-          <ListLike liked={additionalInfo?.isLiked ?? false} listId={list.id} />
-          <Text css={{ fontWeight: 500 }} size={'$lg'} color="$neutral">
-            {additionalInfo?.likesAmount}
-          </Text>
-        </Row>
-        <Row css={{ ai: 'center', gap: '$5' }}>
-          <IconButton css={{ width: '2rem', height: '2rem' }}>
-            <Icon iconUrl={commentIcon} size="1.75rem" />
-          </IconButton>
-          <Text css={{ fontWeight: 500 }} size={'$lg'} color="$neutral">
-            {additionalInfo?.commentsAmount}
-          </Text>
-        </Row>
-      </Row>
-
-      <CommentsList listId={list.id} />
+      {additionalInfo && <Feedback additionalInfo={additionalInfo} listId={list.id} />}
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}
