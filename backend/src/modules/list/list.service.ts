@@ -306,6 +306,8 @@ export class ListService {
       comment.reply_to = this.commentRepository.create({
         id: dto.replyToId,
       });
+    } else {
+      comment.reply_to = null;
     }
 
     return comment;
