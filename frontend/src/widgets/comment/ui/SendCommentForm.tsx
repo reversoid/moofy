@@ -41,7 +41,7 @@ export const SendCommentForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
               <Textarea
                 {...input}
                 maxLength={400}
-                placeholder="Ваш ответ"
+                placeholder={`Ваш ${commentId ? 'ответ' : 'комментарий'}`}
                 size="lg"
               />
             )}

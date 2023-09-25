@@ -28,7 +28,7 @@ export class CommentsTree {
     replies: CommentWithInfo[],
     loadNextKey: string | null,
   ): void {
-    const node = this.getNodeByCommentId(replyToCommentId);
+    const node = this.getNodeByCommentId(replyToCommentId);    
     node?.addReplies(replies);
     node?.setLoadNextKey(loadNextKey);
   }
