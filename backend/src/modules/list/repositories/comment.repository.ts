@@ -94,6 +94,7 @@ export class CommentRepository extends PaginatedRepository<Comment> {
         likesAmount: Number(comments.raw[index].likesCount ?? 0),
         isLiked: Boolean(comments.raw[index].currentUserLikeId),
       },
+      created_at: comment.created_at,
     }));
 
     return super.processPagination<CommentWithInfo>(
