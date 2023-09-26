@@ -56,6 +56,8 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
     });
   };
 
+  const showLoadMore = showReplies && hasNextPage && commentNode.replies;
+
   return (
     <>
       <WidgetWrapper reply={Boolean(comment.reply_to)}>
@@ -93,7 +95,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           />
         ))}
 
-      {hasNextPage && (
+      {showLoadMore && (
         <LoadMore
           button={{
             color: commentNode.hexColor.currentColorHex ?? undefined,
