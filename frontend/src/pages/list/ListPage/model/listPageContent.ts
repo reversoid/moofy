@@ -6,6 +6,7 @@ import { createReview } from '@/features/review/create-review';
 import { deleteReview } from '@/features/review/delete-review';
 import { updateList } from '@/features/list/update-list';
 import { listLiked, listUnliked } from '@/features/list-like';
+import { commentCreated } from '@/features/comment';
 
 export const setListPageContent = createEvent<{ data: ListPageContent }>();
 
@@ -102,6 +103,25 @@ $_listPageContent.on(listUnliked, (state, { listId }) => {
           ...state.additionalInfo,
           isLiked: false,
           likesAmount: state.additionalInfo.likesAmount - 1,
+        }
+      : undefined,
+  };
+});
+
+$_listPageContent.on(commentCreated, (state, { listId }) => {
+  if (!state) {
+    return state;
+  }
+  if (state.list.id !== listId) {
+    return state;
+  }
+
+  return {
+    ...state,
+    additionalInfo: state.additionalInfo
+      ? {
+          ...state.additionalInfo,
+          commentsAmount: state.additionalInfo.commentsAmount + 1
         }
       : undefined,
   };
