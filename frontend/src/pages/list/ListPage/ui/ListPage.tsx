@@ -40,14 +40,18 @@ export const ListPage: FC = () => {
           loadMoreReviews={fetchNextPage}
           canLoadMoreReviews={hasNextPage}
           isFetchingMore={isFetchingNextPage}
-          
         />
       </ListPageContext.Provider>
     );
   }
 
   if (earlierLoadedList) {
-    return <PageContent list={earlierLoadedList} />;
+    return (
+      <PageContent
+        list={earlierLoadedList.list}
+        additionalInfo={earlierLoadedList.additionalInfo}
+      />
+    );
   }
 
   if (error?.cause.message === 'NOT_ALLOWED') {

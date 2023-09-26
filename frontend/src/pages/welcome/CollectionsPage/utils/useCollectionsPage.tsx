@@ -23,7 +23,7 @@ export const useCollectionsPage = () => {
   useNewInfiniteData(result, () => {
     if (result.data) {
       const content = transformInfiniteIterableData(result.data);
-      setUserLists(content.map((c) => c.list));
+      setUserLists(content);
     }
   });
 
