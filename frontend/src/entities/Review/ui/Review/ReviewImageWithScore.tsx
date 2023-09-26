@@ -1,4 +1,4 @@
-import { getColorsByScore } from '@/shared/lib/scoreColors';
+import { getColorsByScore } from '@/shared/utils/scoreColors';
 import { styled, Image } from '@nextui-org/react';
 import { FC, memo } from 'react';
 

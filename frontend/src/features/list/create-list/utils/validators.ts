@@ -1,4 +1,4 @@
-import { maxLength, required } from "@/shared/lib/forms/validators";
+import { maxLength, required } from "@/shared/utils/forms/validators";
 
 export const requiredName = required('Поле не должно быть пустым')
 

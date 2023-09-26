@@ -1,13 +1,15 @@
 import { HEADING_STYLES } from '@/app/providers/UIProvider/headingStyles';
 import { DeleteListModal } from '@/features/list/delete-list';
 import { UpdateListModal } from '@/features/list/update-list';
-import { List } from '@/shared/api/types/list.type';
-import { formatDate } from '@/shared/lib/formatDate/formatDate';
-import { styled, Text } from '@nextui-org/react';
+import { AdditinalInfo, List } from '@/shared/api/types/list.type';
+import { formatDate } from '@/shared/utils/formatDate/formatDate';
+import { Row, styled, Text } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteList } from '../../../../features/list/delete-list/utils/useDeleteList';
 import { ListHeader } from './ListHeader';
+import { CommentsList } from './CommentsList/CommentsList';
+import { Feedback } from './Feedback';
 
 const ListInfoContainer = styled('div', {
   mb: '$10',
@@ -17,9 +19,15 @@ interface ListInfoProps {
   list: List;
   isUserOwner: boolean;
   isFavorite?: boolean;
+  additionalInfo?: AdditinalInfo;
 }
 
-export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
+export const ListInfo = ({
+  list,
+  isUserOwner,
+  isFavorite,
+  additionalInfo,
+}: ListInfoProps) => {
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -75,6 +83,8 @@ export const ListInfo = ({ list, isUserOwner, isFavorite }: ListInfoProps) => {
           Обновлен <Text as="span">{formatDate(list.updated_at)}</Text>
         </Text>
       </ListInfoContainer>
+
+      {additionalInfo && <Feedback additionalInfo={additionalInfo} listId={list.id} />}
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}

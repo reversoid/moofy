@@ -3,7 +3,7 @@ import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { subscriptionsService } from '../../api/subscriptions.service';
-import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
+import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
 
 export const useSearchFollowers = (userId: number) => {
   const [search, setSearch] = useState('');
