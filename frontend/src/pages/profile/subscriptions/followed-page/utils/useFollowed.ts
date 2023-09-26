@@ -2,9 +2,9 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { subscriptionsService } from '../../api/subscriptions.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { ProfileShort } from '@/shared/api/types/profile.type';
-import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
-import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
-import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
+import { useCachedInfiniteData } from '@/shared/utils/reactQueryAddons/useCachedInfiniteData';
+import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
 import { useStore } from 'effector-react';
 import {
   $userFollowed,

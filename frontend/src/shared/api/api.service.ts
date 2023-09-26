@@ -9,7 +9,7 @@ interface CustomOptions extends Options {
   useJWT?: boolean;
 }
 
-type HttpMethods = 'get' | 'post' | 'patch' | 'delete';
+type HttpMethods = 'get' | 'post' | 'patch' | 'delete' | 'put';
 
 /** This base class provides apiUrl and fetch methods with JWT support*/
 export default class ApiService {
@@ -20,6 +20,13 @@ export default class ApiService {
     options?: CustomOptions,
   ) {
     return this.fetch<Response>(this.apiUrl + relativeUrl, 'post', options);
+  }
+
+  protected async put<Response = unknown>(
+    relativeUrl: `/${string}`,
+    options?: CustomOptions,
+  ) {
+    return this.fetch<Response>(this.apiUrl + relativeUrl, 'put', options);
   }
 
   protected async get<Response = unknown>(

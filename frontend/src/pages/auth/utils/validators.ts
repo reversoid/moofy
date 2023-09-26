@@ -3,7 +3,7 @@ import {
   minLength,
   pattern,
   required,
-} from '@/shared/lib/forms/validators';
+} from '@/shared/utils/forms/validators';
 import { MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH } from './constants';
 import { NO_WHITESPACES, USERNAME_PATTERN } from './patterns';
 

@@ -15,7 +15,7 @@ const CollectionsPage = () => {
   return (
     <>
       <ListGrid
-        items={data}
+        items={data.map(i => i.list)}
         canLoadMore={hasNextPage}
         loadMore={fetchNextPage}
         loadingMore={isFetchingNextPage}

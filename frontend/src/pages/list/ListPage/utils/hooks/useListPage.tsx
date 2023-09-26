@@ -8,8 +8,8 @@ import { FetchError } from '@/shared/api/types/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useStore } from 'effector-react';
 import { transformResponse } from '../helpers/transformResponse';
-import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
-import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
+import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
+import { useCachedInfiniteData } from '@/shared/utils/reactQueryAddons/useCachedInfiniteData';
 import {
   $singleListPage,
   setListPageContent,

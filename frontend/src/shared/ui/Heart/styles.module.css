@@ -36,6 +36,10 @@
     top: 30%;
 }
 
+.heart-wrapper.black {
+    --background: black;
+}
+
 .heart.liked {
     animation: success-pulse var(--success-time) var(--animation);
 }
@@ -95,6 +99,20 @@
     height: var(--size);
     width: var(--size);
 }
+
+.no-animation {
+    animation: none !important;
+}
+.no-animation.liked {
+    background-color: var(--background);
+}
+.no-animation.unliked {
+    background-color: var(--nextui-colors-gray50);
+}
+.black .no-animation.unliked {
+    background-color: black;
+}
+
 
 @keyframes success-pulse {
 

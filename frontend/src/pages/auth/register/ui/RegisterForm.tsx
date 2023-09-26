@@ -1,4 +1,4 @@
-import { composeValidators } from '@/shared/lib/forms/composeValidators';
+import { composeValidators } from '@/shared/utils/forms/composeValidators';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
 import { Loading } from '@nextui-org/react';
 import { Field, Form as FinalForm } from 'react-final-form';
@@ -27,7 +27,7 @@ export const RegisterForm = () => {
       onSubmit={async (form) => {
         await mutation.mutateAsync(form)
       }}
-      render={({ handleSubmit, submitting, validating, invalid }) => (
+      render={({ handleSubmit, submitting, validating, invalid, pristine }) => (
         <>
           <Form id="register-form" onSubmit={handleSubmit}>
             <Field
@@ -86,7 +86,7 @@ export const RegisterForm = () => {
           </Form>
 
           <SubmitContainer
-            buttonDisabled={invalid}
+            buttonDisabled={invalid || pristine}
             buttonSilentlyDisabled={validating}
             buttonLoading={submitting}
             buttonText="Зарегистрироваться"
