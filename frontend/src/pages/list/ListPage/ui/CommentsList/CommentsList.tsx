@@ -4,6 +4,7 @@ import { FC, PropsWithChildren, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
 import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
 import LoadMore from '@/shared/components/LoadMore';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -27,11 +28,14 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    isLoading
   } = useComments(listId);
 
   useEffect(() => {
     load();
   }, []);
+
+  useLoadingBar(isLoading);
 
   return (
     <>

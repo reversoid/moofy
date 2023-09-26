@@ -48,7 +48,7 @@ export const useComments = (listId: number) => {
 
   return {
     data: comments?.listId === listId ? comments : undefined,
-    isLoading: result.isLoading || result.isRefetching,
+    isLoading: result.isFetching,
     fetchNextPage: result.fetchNextPage,
     hasNextPage: result.hasNextPage,
     isFetchingNextPage: result.isFetchingNextPage,
