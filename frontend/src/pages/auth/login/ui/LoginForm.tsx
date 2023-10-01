@@ -1,94 +1,64 @@
-import { composeValidators } from '@/shared/utils/forms/composeValidators';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
-import { Field, Form as FinalForm } from 'react-final-form';
 import { Form } from '../../ui/Form';
 import { SubmitContainer } from '../../ui/SubmitContainer';
-import {
-  passwordMaxLength,
-  registerFieldRequired,
-  usernameMaxLength,
-  usernamePattern,
-} from '../../utils/validators';
 import InfoIconWithTooltip from '../../ui/InfoIconWithTooltip';
-import { useMutation } from '@tanstack/react-query';
 import { useLogin } from '@/features/auth';
+import { useForm } from 'react-hook-form';
+import { passwordLoginOptions, usernameLoginOptions } from '../../utils/validators';
 
 export interface LoginFormData {
   username: string;
   password: string;
 }
 
+
 export const LoginForm = () => {
   const mutation = useLogin();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid: isFormValid },
+  } = useForm<LoginFormData>({ mode: 'onChange' });
 
   return (
-    <FinalForm<LoginFormData>
-      onSubmit={async (form) => {
-        await mutation.mutateAsync(form);
-      }}
-      render={({ handleSubmit, submitting, validating, invalid, pristine }) => (
-        <>
-          <Form id="login-form" onSubmit={handleSubmit}>
-            <Field
-              name="username"
-              validate={composeValidators(
-                registerFieldRequired,
-                usernameMaxLength,
-                usernamePattern,
-              )}
-              validateFields={[]}
-            >
-              {({ input, meta }) => (
-                <Input
-                  {...input}
-                  label="Имя пользователя"
-                  placeholder="username123"
-                  fullWidth
-                  size="xl"
-                  status={meta.modified && meta.error ? 'error' : 'default'}
-                  contentRight={
-                    meta.modified && meta.error ? (
-                      <InfoIconWithTooltip message={meta.error} />
-                    ) : undefined
-                  }
-                />
-              )}
-            </Field>
+    <>
+      <Form id="login-form" onSubmit={handleSubmit((e) => mutation.mutate(e))}>
+        <Input
+          {...register('username', usernameLoginOptions)}
+          label="Имя пользователя"
+          placeholder="username123"
+          fullWidth
+          size="xl"
+          status={errors['username']?.message ? 'error' : 'default'}
+          contentRight={
+            errors['username']?.message ? (
+              <InfoIconWithTooltip message={errors['username']?.message} />
+            ) : undefined
+          }
+        />
 
-            <Field
-              name="password"
-              validate={composeValidators(
-                registerFieldRequired,
-                passwordMaxLength,
-              )}
-              validateFields={[]}
-            >
-              {({ input, meta }) => (
-                <InputPassword
-                  {...input}
-                  label="Пароль"
-                  placeholder="Пароль"
-                  fullWidth
-                  size="xl"
-                  status={meta.modified && meta.error ? 'error' : 'default'}
-                  contentRight={
-                    meta.modified &&
-                    meta.error && <InfoIconWithTooltip message={meta.error} />
-                  }
-                />
-              )}
-            </Field>
-          </Form>
+        <InputPassword
+          {...register('password', passwordLoginOptions)}
+          label="Пароль"
+          placeholder="Пароль"
+          fullWidth
+          size="xl"
+          status={errors['password'] ? 'error' : 'default'}
+          contentRight={
+            errors['password']?.message && (
+              <InfoIconWithTooltip message={errors['password']?.message} />
+            )
+          }
+        />
+      </Form>
 
-          <SubmitContainer
-            buttonDisabled={invalid || pristine}
-            buttonSilentlyDisabled={validating}
-            buttonLoading={submitting}
-            buttonText="Войти"
-            formId="login-form"
-          />
-        </>
-      )}
-    />
+      <SubmitContainer
+        buttonDisabled={!isFormValid}
+        buttonSilentlyDisabled={mutation.isLoading}
+        buttonLoading={mutation.isLoading}
+        buttonText="Войти"
+        formId="login-form"
+      />
+    </>
   );
 };
