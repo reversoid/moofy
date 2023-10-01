@@ -84,7 +84,8 @@ export const ListInfo = ({
         </Text>
       </ListInfoContainer>
 
-      {additionalInfo && <Feedback additionalInfo={additionalInfo} listId={list.id} />}
+          {/* TODO uncomment when feedback is complete */}
+      {/* {additionalInfo && <Feedback additionalInfo={additionalInfo} listId={list.id} />} */}
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}
