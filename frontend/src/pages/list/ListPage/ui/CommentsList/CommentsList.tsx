@@ -2,9 +2,13 @@ import { CommentWidget } from '@/widgets/comment';
 import { Button, styled } from '@nextui-org/react';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
-import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
+import {
+  SendCommentForm,
+  SendCommentFormWrapper,
+} from '@/widgets/comment/ui/SendCommentForm';
 import LoadMore from '@/shared/components/LoadMore';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { useAuth } from '@/app';
 
 const CommentsWrapper = styled('div', {
   maxWidth: '60%',
@@ -14,7 +18,7 @@ const CommentsWrapper = styled('div', {
   d: 'flex',
   flexDirection: 'column',
   gap: '$9',
-  mt: '$6',
+  mt: '$10',
 });
 
 export interface CommentsListProps {
@@ -28,7 +32,7 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-    isLoading
+    isLoading,
   } = useComments(listId);
 
   useEffect(() => {
@@ -36,11 +40,16 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
   }, []);
 
   useLoadingBar(isLoading);
+  const { isLoggedIn } = useAuth();
 
   return (
     <>
       <CommentsWrapper>
-        <SendCommentForm listId={listId} />
+        {isLoggedIn && (
+          <SendCommentFormWrapper css={{ mt: 0 }}>
+            <SendCommentForm listId={listId} />
+          </SendCommentFormWrapper>
+        )}
 
         {comments?.tree.replies?.map((c) => {
           return (

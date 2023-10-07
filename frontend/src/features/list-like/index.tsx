@@ -3,6 +3,7 @@ import { useLikeList } from './utils/useLikeList';
 import { useUnlikeList } from './utils/useUnlikeList';
 import { Button, Row, Text } from '@nextui-org/react';
 import { HeartIcon } from './HeartIcon';
+import { useAuth } from '@/app';
 export * from './utils/useLikeList';
 export * from './model';
 
@@ -13,6 +14,7 @@ export interface ListLikeProps {
 }
 
 export const ListLike: FC<ListLikeProps> = ({ listId, liked, likesAmount }) => {
+  const { isLoggedIn } = useAuth();
   const likeMutation = useLikeList();
   const unlikeMutation = useUnlikeList();
 
@@ -28,7 +30,7 @@ export const ListLike: FC<ListLikeProps> = ({ listId, liked, likesAmount }) => {
 
   return (
     <Button
-      disabled={loading}
+      disabled={!isLoggedIn || loading}
       auto
       color="error"
       bordered={!liked}

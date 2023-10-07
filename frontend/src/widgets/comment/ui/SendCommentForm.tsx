@@ -5,10 +5,7 @@ import { Button, Loading, styled } from '@nextui-org/react';
 import React, { FC } from 'react';
 import { Field, Form } from 'react-final-form';
 
-const AnswerWrapper = styled('form', {
-  mt: '$7',
-  mb: '$5',
-});
+const AnswerWrapper = styled('form');
 
 interface ReplyFormValues {
   text: string;
@@ -59,3 +56,8 @@ export const SendCommentForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
     </Form>
   );
 };
+
+export const SendCommentFormWrapper = styled('div', {
+  mb: '$2',
+  mt: '$6',
+});
