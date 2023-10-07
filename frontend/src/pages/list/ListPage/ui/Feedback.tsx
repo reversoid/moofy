@@ -1,12 +1,9 @@
+import { CommentButton } from '@/features/comment/ui/CommentButton';
 import { ListLike } from '@/features/list-like';
 import { AdditinalInfo } from '@/shared/api/types/list.type';
-import { Icon } from '@/shared/ui/Icon/Icon';
-import { IconButton } from '@/shared/ui/IconButton/IconButton';
-import { Row, Text } from '@nextui-org/react';
-import React, { FC, useState } from 'react';
-import commentIcon from '@/shared/assets/img/comment.svg';
+import { Row } from '@nextui-org/react';
+import { FC, useState } from 'react';
 import { CommentsList } from './CommentsList/CommentsList';
-import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
 
 export interface FeedbackProps {
   additionalInfo: AdditinalInfo;
@@ -23,28 +20,23 @@ const FeedbackControls: FC<FeedbackControlsProps> = ({
   onToggleComments,
 }) => {
   return (
-    <Row css={{ ai: 'center', gap: '$5', jc: 'flex-start' }}>
-      <Row css={{ ai: 'center', gap: '$4', w: 'auto' }}>
-        <ListLike liked={additionalInfo.isLiked ?? false} listId={listId} />
-        <Text
-          css={{ fontWeight: 500, minWidth: '1.5rem' }}
-          size={'$lg'}
-          color="$neutral"
-        >
-          {additionalInfo?.likesAmount}
-        </Text>
-      </Row>
-      <Row css={{ ai: 'center', gap: '$5', w: 'auto' }}>
-        <IconButton
-          onClick={onToggleComments}
-          css={{ width: '2rem', height: '2rem' }}
-        >
-          <Icon iconUrl={commentIcon} size="1.75rem" />
-        </IconButton>
-        <Text css={{ fontWeight: 500 }} size={'$lg'} color="$neutral">
-          {additionalInfo?.commentsAmount}
-        </Text>
-      </Row>
+    <Row
+      css={{
+        ai: 'center',
+        gap: '$5',
+        jc: 'flex-start',
+        '@xsMax': { flexDirection: 'column', ai: 'stretch', gap: '$6' },
+      }}
+    >
+      <ListLike
+        likesAmount={additionalInfo.likesAmount}
+        liked={additionalInfo.isLiked ?? false}
+        listId={listId}
+      />
+      <CommentButton
+        commentsAmount={additionalInfo.commentsAmount}
+        onClick={onToggleComments}
+      />
     </Row>
   );
 };
@@ -60,9 +52,7 @@ export const Feedback: FC<FeedbackProps> = ({ additionalInfo, listId }) => {
         listId={listId}
       />
 
-      {showComments && (
-        <CommentsList listId={listId} />
-      )}
+      {showComments && <CommentsList listId={listId} />}
     </>
   );
 };
