@@ -5,11 +5,12 @@ import { Button, styled } from '@nextui-org/react';
 import ColorHash from 'color-hash';
 import { FC, useState } from 'react';
 import { CommentInfo } from './CommentInfo';
-import { SendCommentForm } from './SendCommentForm';
+import { SendCommentForm, SendCommentFormWrapper } from './SendCommentForm';
 import { useReplies } from '@/pages/list/ListPage/utils/hooks/useReplies';
 import { removeReplies } from '@/pages/list/ListPage/model/comments';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import LoadMore from '@/shared/components/LoadMore';
+import { useAuth } from '@/app';
 
 const WidgetWrapper = styled('div', {
   variants: {
@@ -56,6 +57,8 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
     });
   };
 
+  const { isLoggedIn } = useAuth();
+
   const showLoadMore = showReplies && hasNextPage && commentNode.replies;
 
   return (
@@ -81,8 +84,10 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
           onPressReplies={showAndHideReplies}
         />
 
-        {showReplies && (
-          <SendCommentForm commentId={comment.id} listId={listId} />
+        {showReplies && isLoggedIn && (
+          <SendCommentFormWrapper>
+            <SendCommentForm commentId={comment.id} listId={listId} />
+          </SendCommentFormWrapper>
         )}
       </WidgetWrapper>
 
@@ -101,7 +106,7 @@ export const CommentWidget: FC<CommentWidgetProps> = ({
             color: commentNode.hexColor.currentColorHex ?? undefined,
             style: commentNode.hexColor.currentColorHex ? 'primary' : undefined,
             noMargin: true,
-            mb: true
+            mb: true,
           }}
           loading={isFetchingNextPage}
           loadMore={fetchNextPage}

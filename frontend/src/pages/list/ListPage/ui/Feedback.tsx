@@ -4,6 +4,7 @@ import { AdditinalInfo } from '@/shared/api/types/list.type';
 import { Row } from '@nextui-org/react';
 import { FC, useState } from 'react';
 import { CommentsList } from './CommentsList/CommentsList';
+import { useAuth } from '@/app';
 
 export interface FeedbackProps {
   additionalInfo: AdditinalInfo;
