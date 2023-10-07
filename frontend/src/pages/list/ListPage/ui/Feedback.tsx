@@ -24,20 +24,23 @@ const FeedbackControls: FC<FeedbackControlsProps> = ({
   onToggleComments,
 }) => {
   return (
-    <Row css={{ ai: 'center', gap: '$5', jc: 'flex-start' }}>
-      <Row css={{ ai: 'center', gap: '$4', w: 'auto' }}>
-        <ListLike
-          likesAmount={additionalInfo.likesAmount}
-          liked={additionalInfo.isLiked ?? false}
-          listId={listId}
-        />
-      </Row>
-      <Row css={{ ai: 'center', gap: '$5', w: 'auto' }}>
-        <CommentButton
-          commentsAmount={additionalInfo.commentsAmount}
-          onClick={onToggleComments}
-        />
-      </Row>
+    <Row
+      css={{
+        ai: 'center',
+        gap: '$5',
+        jc: 'flex-start',
+        '@xsMax': { flexDirection: 'column', ai: 'stretch', gap: '$6' },
+      }}
+    >
+      <ListLike
+        likesAmount={additionalInfo.likesAmount}
+        liked={additionalInfo.isLiked ?? false}
+        listId={listId}
+      />
+      <CommentButton
+        commentsAmount={additionalInfo.commentsAmount}
+        onClick={onToggleComments}
+      />
     </Row>
   );
 };
