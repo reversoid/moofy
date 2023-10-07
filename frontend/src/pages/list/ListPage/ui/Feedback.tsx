@@ -1,13 +1,9 @@
+import { CommentButton } from '@/features/comment/ui/CommentButton';
 import { ListLike } from '@/features/list-like';
 import { AdditinalInfo } from '@/shared/api/types/list.type';
-import { Icon } from '@/shared/ui/Icon/Icon';
-import { IconButton } from '@/shared/ui/IconButton/IconButton';
-import { Row, Text } from '@nextui-org/react';
-import React, { FC, useState } from 'react';
-import commentIcon from '@/shared/assets/img/comment.svg';
+import { Row } from '@nextui-org/react';
+import { FC, useState } from 'react';
 import { CommentsList } from './CommentsList/CommentsList';
-import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
-import { CommentButton } from '@/features/comment/ui/CommentButton';
 
 export interface FeedbackProps {
   additionalInfo: AdditinalInfo;
