@@ -7,6 +7,7 @@ import React, { FC, useState } from 'react';
 import commentIcon from '@/shared/assets/img/comment.svg';
 import { CommentsList } from './CommentsList/CommentsList';
 import { SendCommentForm } from '@/widgets/comment/ui/SendCommentForm';
+import { CommentButton } from '@/features/comment/ui/CommentButton';
 
 export interface FeedbackProps {
   additionalInfo: AdditinalInfo;
@@ -25,25 +26,17 @@ const FeedbackControls: FC<FeedbackControlsProps> = ({
   return (
     <Row css={{ ai: 'center', gap: '$5', jc: 'flex-start' }}>
       <Row css={{ ai: 'center', gap: '$4', w: 'auto' }}>
-        <ListLike liked={additionalInfo.isLiked ?? false} listId={listId} />
-        <Text
-          css={{ fontWeight: 500, minWidth: '1.5rem' }}
-          size={'$lg'}
-          color="$neutral"
-        >
-          {additionalInfo?.likesAmount}
-        </Text>
+        <ListLike
+          likesAmount={additionalInfo.likesAmount}
+          liked={additionalInfo.isLiked ?? false}
+          listId={listId}
+        />
       </Row>
       <Row css={{ ai: 'center', gap: '$5', w: 'auto' }}>
-        <IconButton
+        <CommentButton
+          commentsAmount={additionalInfo.commentsAmount}
           onClick={onToggleComments}
-          css={{ width: '2rem', height: '2rem' }}
-        >
-          <Icon iconUrl={commentIcon} size="1.75rem" />
-        </IconButton>
-        <Text css={{ fontWeight: 500 }} size={'$lg'} color="$neutral">
-          {additionalInfo?.commentsAmount}
-        </Text>
+        />
       </Row>
     </Row>
   );
@@ -60,9 +53,7 @@ export const Feedback: FC<FeedbackProps> = ({ additionalInfo, listId }) => {
         listId={listId}
       />
 
-      {showComments && (
-        <CommentsList listId={listId} />
-      )}
+      {showComments && <CommentsList listId={listId} />}
     </>
   );
 };
