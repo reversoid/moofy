@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button, Text } from '@nextui-org/react';
 import React, { FC } from 'react';
 import { CommentIcon } from './CommentIcon';
 
@@ -13,7 +13,18 @@ export const CommentButton: FC<CommentButtonProps> = ({
 }) => {
   return (
     <Button onClick={onClick} auto bordered icon={<CommentIcon />}>
-      Комментарии {commentsAmount}
+      <Text
+        css={{
+          '@xsMax': { display: 'none' },
+          color: 'inherit',
+          fontSize: 'inherit',
+          fontWeight: 'inherit',
+        }}
+      >
+        Комментарии
+      </Text>
+      &nbsp;
+      {commentsAmount}
     </Button>
   );
 };

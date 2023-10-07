@@ -25,7 +25,6 @@ const FeedbackControls: FC<FeedbackControlsProps> = ({
         ai: 'center',
         gap: '$5',
         jc: 'flex-start',
-        '@xsMax': { flexDirection: 'column', ai: 'stretch', gap: '$6' },
       }}
     >
       <ListLike

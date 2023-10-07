@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useLikeList } from './utils/useLikeList';
 import { useUnlikeList } from './utils/useUnlikeList';
-import { Button } from '@nextui-org/react';
+import { Button, Row, Text } from '@nextui-org/react';
 import { HeartIcon } from './HeartIcon';
 export * from './utils/useLikeList';
 export * from './model';
@@ -36,7 +36,18 @@ export const ListLike: FC<ListLikeProps> = ({ listId, liked, likesAmount }) => {
       onClick={handleClick}
       css={{ border: liked ? '2px solid transparent' : undefined }}
     >
-      Нравится {likesAmount}
+      <Text
+        css={{
+          '@xsMax': { display: 'none' },
+          color: 'inherit',
+          fontSize: 'inherit',
+          fontWeight: 'inherit',
+        }}
+      >
+        Нравится
+      </Text>
+      &nbsp;
+      {likesAmount}
     </Button>
   );
 };
