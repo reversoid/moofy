@@ -229,7 +229,7 @@ export class ListController {
   ) {
     return this.listService.getComments(
       id,
-      user.id,
+      user?.id,
       commentId,
       limit,
       lowerBound,
