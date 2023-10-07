@@ -5,6 +5,7 @@ import { catchError, lastValueFrom, map, of } from 'rxjs';
 import { Film } from 'src/modules/film/entities/film.entity';
 import apiKeysConfig from 'src/config/apiKeys.config';
 import { ConfigType } from '@nestjs/config';
+import { ApiKeyRotator } from '../utils/ApiKeyRotator';
 
 @Injectable()
 export class UnofficialKpService {
@@ -15,6 +16,8 @@ export class UnofficialKpService {
   ) {}
 
   private baseUrl = 'https://kinopoiskapiunofficial.tech/api';
+
+  private keyRotator = new ApiKeyRotator(['a', 'b', 'c']);
 
   async searchFilmsByName(name: string): Promise<Film[] | null> {
     return lastValueFrom(
@@ -37,6 +40,10 @@ export class UnofficialKpService {
         )
         .pipe(catchError(() => of(null))),
     );
+  }
+
+  private _getKey() {
+    return this.keyRotator.getCurrentKey();
   }
 
   async getFilmById(id: number): Promise<Film | null> {
