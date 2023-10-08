@@ -52,14 +52,6 @@ export class CommentRepository extends PaginatedRepository<Comment> {
 
       .leftJoinAndSelect('comment.reply_to', 'reply_to')
 
-      .leftJoin(
-        'comment.likes',
-        'currentUserLike',
-        'currentUserLike.userId = :currentUserId',
-        { currentUserId },
-      )
-      .addSelect('currentUserLike.id', 'currentUserLikeId')
-
       .andWhere('comment.list = :listId', { listId })
       .groupBy('comment.id')
       .addGroupBy('user.id')
@@ -83,6 +75,17 @@ export class CommentRepository extends PaginatedRepository<Comment> {
 
     if (commentId === undefined) {
       query.andWhere('comment.reply_to IS NULL', { listId });
+    }
+
+    if (currentUserId !== undefined) {
+      query
+        .leftJoin(
+          'comment.likes',
+          'currentUserLike',
+          'currentUserLike.userId = :currentUserId',
+          { currentUserId },
+        )
+        .addSelect('currentUserLike.id', 'currentUserLikeId');
     }
 
     const comments = await query.getRawAndEntities();
