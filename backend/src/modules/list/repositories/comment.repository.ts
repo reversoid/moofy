@@ -57,7 +57,6 @@ export class CommentRepository extends PaginatedRepository<Comment> {
       .addGroupBy('user.id')
       .addGroupBy('list.id')
       .addGroupBy('reply_to.id')
-      .addGroupBy('currentUserLike.id')
 
       .orderBy('comment.created_at', 'DESC')
       .take(limit + 1);
@@ -85,7 +84,8 @@ export class CommentRepository extends PaginatedRepository<Comment> {
           'currentUserLike.userId = :currentUserId',
           { currentUserId },
         )
-        .addSelect('currentUserLike.id', 'currentUserLikeId');
+        .addSelect('currentUserLike.id', 'currentUserLikeId')
+        .addGroupBy('currentUserLike.id');
     }
 
     const comments = await query.getRawAndEntities();
