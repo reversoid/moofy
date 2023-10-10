@@ -12,7 +12,18 @@ export const CommentButton: FC<CommentButtonProps> = ({
   commentsAmount,
 }) => {
   return (
-    <Button onClick={onClick} auto bordered icon={<CommentIcon />}>
+    <Button
+      onClick={onClick}
+      auto
+      bordered
+      icon={<CommentIcon />}
+      css={{
+        minWidth: '10rem',
+        '@xsMax': {
+          minWidth: '6.5rem',
+        },
+      }}
+    >
       <Text
         css={{
           '@xsMax': { display: 'none' },

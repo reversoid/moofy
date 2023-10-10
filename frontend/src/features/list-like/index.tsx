@@ -36,7 +36,13 @@ export const ListLike: FC<ListLikeProps> = ({ listId, liked, likesAmount }) => {
       bordered={!liked}
       icon={<HeartIcon fill="currentColor" filled />}
       onClick={handleClick}
-      css={{ border: liked ? '2px solid transparent' : undefined }}
+      css={{
+        border: liked ? '2px solid transparent' : undefined,
+        minWidth: '10rem',
+        '@xsMax': {
+          minWidth: '6.5rem',
+        },
+      }}
     >
       <Text
         css={{
