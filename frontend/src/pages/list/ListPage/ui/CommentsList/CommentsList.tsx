@@ -1,5 +1,5 @@
 import { CommentWidget } from '@/widgets/comment';
-import { Button, styled } from '@nextui-org/react';
+import { Button, Text, styled } from '@nextui-org/react';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
 import {
@@ -50,7 +50,6 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
             <SendCommentForm listId={listId} />
           </SendCommentFormWrapper>
         )}
-
         {comments?.tree.replies?.map((c) => {
           return (
             <CommentWidget
@@ -60,6 +59,9 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
             />
           );
         })}
+        {comments?.tree.replies?.length === 0 && (
+          <Text color="$neutral">Комментариев пока нет</Text>
+        )}
         {hasNextPage && (
           <LoadMore loadMore={fetchNextPage} loading={isFetchingNextPage} />
         )}
