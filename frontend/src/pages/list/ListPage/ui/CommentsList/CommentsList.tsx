@@ -42,6 +42,9 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
   useLoadingBar(isLoading);
   const { isLoggedIn } = useAuth();
 
+  const showNoComments =
+    isLoggedIn === false && comments?.tree.replies?.length === 0;
+
   return (
     <>
       <CommentsWrapper>
@@ -50,6 +53,9 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
             <SendCommentForm listId={listId} />
           </SendCommentFormWrapper>
         )}
+
+        {showNoComments && <Text color="$neutral">Комментариев пока нет</Text>}
+
         {comments?.tree.replies?.map((c) => {
           return (
             <CommentWidget
@@ -59,9 +65,6 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
             />
           );
         })}
-        {comments?.tree.replies?.length === 0 && (
-          <Text color="$neutral">Комментариев пока нет</Text>
-        )}
         {hasNextPage && (
           <LoadMore loadMore={fetchNextPage} loading={isFetchingNextPage} />
         )}
