@@ -1,5 +1,5 @@
 import { CommentWidget } from '@/widgets/comment';
-import { Button, styled } from '@nextui-org/react';
+import { Button, Text, styled } from '@nextui-org/react';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { useComments } from '../../utils/hooks/useComments';
 import {
@@ -42,6 +42,9 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
   useLoadingBar(isLoading);
   const { isLoggedIn } = useAuth();
 
+  const showNoComments =
+    isLoggedIn === false && comments?.tree.replies?.length === 0;
+
   return (
     <>
       <CommentsWrapper>
@@ -50,6 +53,8 @@ export const CommentsList: FC<CommentsListProps> = ({ listId }) => {
             <SendCommentForm listId={listId} />
           </SendCommentFormWrapper>
         )}
+
+        {showNoComments && <Text color="$neutral">Комментариев пока нет</Text>}
 
         {comments?.tree.replies?.map((c) => {
           return (
