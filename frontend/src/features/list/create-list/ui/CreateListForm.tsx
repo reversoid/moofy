@@ -1,13 +1,7 @@
 import React, { FC, useEffect } from 'react';
-import { Field, Form as FinalForm } from 'react-final-form';
 import { useUploadImage } from '../../update-list/utils/useUploadImage';
 import { useCreateListModal } from '../utils/useCreateListModal';
-import { composeValidators } from '@/shared/utils/forms/composeValidators';
-import {
-  maxLengthDescription,
-  maxLengthName,
-  requiredName,
-} from '../utils/validators';
+import { DESCRIPTION_OPTIONS, NAME_OPTIONS } from '../utils/fieldOptions';
 import { Input } from '@/shared/ui/Input/Input';
 import { Form } from '@/shared/ui/Form/Form';
 import Textarea from '@/shared/ui/Textarea/Textarea';
@@ -19,8 +13,9 @@ import {
 } from '@/shared/components/ImageUpload';
 import { setAppError } from '@/app';
 import { ModalBody, ModalFooter } from '@/shared/ui/Modal';
+import { useForm } from 'react-hook-form';
 
-interface FormData {
+export interface FormData {
   name: string;
   description: string;
   isPrivate: boolean;
@@ -55,122 +50,102 @@ export const CreateListForm: FC<CreateListFormProps> = ({ onSuccess }) => {
     onSuccess();
   }, [createListMutation.isSuccess]);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting },
+    setValue,
+  } = useForm<FormData>({ mode: 'onChange' });
+
+  const handleFormSubmit = handleSubmit((form) => {
+    return createListMutation.mutateAsync({
+      isPublic: !form.isPrivate,
+      description: form.description,
+      name: form.name,
+      imageUrl: uploadListImageMutation.data?.link,
+    });
+  });
+
+  const _registerCheckbox = register('isPrivate');
+
   return (
     <>
-      <FinalForm<FormData>
-        onSubmit={async (form) => {
-          await createListMutation.mutateAsync({
-            isPublic: !form.isPrivate,
-            description: form.description,
-            name: form.name,
-            imageUrl: uploadListImageMutation.data?.link,
-          });
-        }}
-        render={({ handleSubmit, submitting, invalid }) => (
-          <>
-            <ModalBody>
-              <Form
-                css={{ mb: '$10' }}
-                id="create-list-form"
-                onSubmit={handleSubmit}
-              >
-                <Field
-                  name="name"
-                  validate={composeValidators(requiredName, maxLengthName)}
-                  validateFields={[]}
-                >
-                  {({ input, meta }) => (
-                    <Input
-                      {...input}
-                      bordered
-                      fullWidth
-                      label="Название"
-                      size="xl"
-                      placeholder="Название123"
-                      status={meta.modified && meta.error ? 'error' : 'default'}
-                    />
-                  )}
-                </Field>
-              </Form>
+      <ModalBody>
+        <Form
+          css={{ mb: '$10' }}
+          id="create-list-form"
+          onSubmit={handleFormSubmit}
+        >
+          <Input
+            {...register('name', NAME_OPTIONS)}
+            bordered
+            fullWidth
+            label="Название"
+            size="xl"
+            placeholder="Название123"
+            status={errors.name ? 'error' : 'default'}
+          />
 
-              <Field
-                name="description"
-                validate={maxLengthDescription}
-                validateFields={[]}
-              >
-                {({ input, meta }) => (
-                  <Textarea
-                    {...input}
-                    maxLength={400}
-                    bordered
-                    size="xl"
-                    label="Описание"
-                    placeholder="Ваше описание коллекции"
-                    maxRows={Infinity}
-                  />
-                )}
-              </Field>
+          <Textarea
+            {...register('description', DESCRIPTION_OPTIONS)}
+            maxLength={400}
+            bordered
+            size="xl"
+            label="Описание"
+            placeholder="Ваше описание коллекции"
+            maxRows={Infinity}
+          />
 
-              <Field name="isPrivate" validateFields={[]}>
-                {({ input }) => (
-                  <Checkbox
-                    name={input.name}
-                    onBlur={(e) =>
-                      input.onBlur(e as React.FocusEvent<HTMLElement, Element>)
-                    }
-                    onFocus={(e) =>
-                      input.onFocus(e as React.FocusEvent<HTMLElement, Element>)
-                    }
-                    onChange={(e) => input.onChange(e)}
-                    value={input.value}
-                    color="gradient"
-                    label="Сделать коллекцию приватной"
-                    css={{
-                      '& .nextui-checkbox-text': {
-                        fontSize: '$lg',
-                      },
-                    }}
-                    size="lg"
-                  />
-                )}
-              </Field>
+          <Checkbox
+            name={_registerCheckbox.name}
+            onChange={(selected) => {
+              setValue('isPrivate', selected);
+            }}
+            defaultSelected={false}
+            color="gradient"
+            label="Сделать коллекцию приватной"
+            css={{
+              '& .nextui-checkbox-text': {
+                fontSize: '$lg',
+              },
+            }}
+            size="lg"
+          />
+        </Form>
 
-              <ImageUpload
-                text="Загрузить обложку"
-                loading={uploadListImageMutation.isLoading}
-                loadedImageSrc={
-                  uploadListImageMutation?.data?.link ?? undefined
-                }
-                onChange={handleUploadImage}
-              />
-            </ModalBody>
+        <ImageUpload
+          text="Загрузить обложку"
+          loading={uploadListImageMutation.isLoading}
+          loadedImageSrc={uploadListImageMutation?.data?.link ?? undefined}
+          onChange={handleUploadImage}
+        />
+      </ModalBody>
 
-            <ModalFooter>
-              <Button
-                form="create-list-form"
-                type="submit"
-                size="lg"
-                disabled={invalid || uploadListImageMutation?.isLoading}
-                color={'gradient'}
-                auto
-                css={{
-                  minWidth: '7.5rem',
-                  m: 0,
-                  '@xsMax': {
-                    width: '100%',
-                  },
-                }}
-              >
-                {submitting ? (
-                  <Loading size="lg" type="points" color="white" />
-                ) : (
-                  'Добавить'
-                )}
-              </Button>
-            </ModalFooter>
-          </>
-        )}
-      />
+      <ModalFooter>
+        <Button
+          form="create-list-form"
+          type="submit"
+          size="lg"
+          disabled={
+            !isValid || isSubmitting || uploadListImageMutation.isLoading
+          }
+          color={'gradient'}
+          auto
+          css={{
+            minWidth: '7.5rem',
+            m: 0,
+            '@xsMax': {
+              width: '100%',
+            },
+          }}
+        >
+          {isSubmitting ? (
+            <Loading size="lg" type="points" color="white" />
+          ) : (
+            'Добавить'
+          )}
+        </Button>
+      </ModalFooter>
     </>
   );
 };
