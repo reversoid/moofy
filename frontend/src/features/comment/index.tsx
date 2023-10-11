@@ -7,6 +7,7 @@ import { CSS } from '@nextui-org/react';
 export * from './utils/useLikeComment';
 export * from './utils/useUnlikeComment';
 export * from './model';
+export * from './ui/CommentButton';
 
 export interface CommentLikeProps {
   commentId: number;

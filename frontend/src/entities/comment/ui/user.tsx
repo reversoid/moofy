@@ -47,7 +47,9 @@ export const User: FC<UserProps> = ({ user, createdAt }) => {
           </Text>
         </Link>
 
-        <Text color="$neutral">{formatCommentDate(createdAt)}</Text>
+        <Text size={'$sm'} color="$neutral">
+          {formatCommentDate(createdAt)}
+        </Text>
       </UserInfo>
     </UserBlock>
   );

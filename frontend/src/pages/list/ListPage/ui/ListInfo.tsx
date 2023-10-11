@@ -12,7 +12,7 @@ import { CommentsList } from './CommentsList/CommentsList';
 import { Feedback } from './Feedback';
 
 const ListInfoContainer = styled('div', {
-  mb: '$10',
+  mb: '$9',
 });
 
 interface ListInfoProps {
@@ -84,8 +84,9 @@ export const ListInfo = ({
         </Text>
       </ListInfoContainer>
 
-          {/* TODO uncomment when feedback is complete */}
-      {/* {additionalInfo && <Feedback additionalInfo={additionalInfo} listId={list.id} />} */}
+      {additionalInfo && (
+        <Feedback additionalInfo={additionalInfo} listId={list.id} />
+      )}
 
       <UpdateListModal
         isOpen={isUpdateDialogOpen}

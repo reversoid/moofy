@@ -20,8 +20,6 @@ const useHeartRef = (trigger: unknown) => {
     }
   }, []);
 
-
-
   return heartRef;
 };
 
