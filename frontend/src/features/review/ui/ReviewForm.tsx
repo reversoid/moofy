@@ -47,7 +47,7 @@ export const ReviewForm: FC<ReviewFormProps> = ({
     getValues,
     setValue,
   } = useForm<ReviewFormData>({
-    defaultValues: form,
+    defaultValues: { ...form, score: form?.score ?? DEFAULT_SCORE },
   });
 
   return (
