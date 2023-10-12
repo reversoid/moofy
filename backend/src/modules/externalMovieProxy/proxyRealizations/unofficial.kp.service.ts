@@ -17,7 +17,7 @@ export class UnofficialKpService {
 
   private baseUrl = 'https://kinopoiskapiunofficial.tech/api';
 
-  private keyRotator = new ApiKeyRotator(['a', 'b', 'c']);
+  private keyRotator = new ApiKeyRotator(this.config.unofficialKpApiKeys);
 
   async searchFilmsByName(name: string): Promise<Film[] | null> {
     return lastValueFrom(
@@ -29,7 +29,7 @@ export class UnofficialKpService {
               keyword: name,
             },
             headers: {
-              'X-API-KEY': this.config.unofficialKpApiKey,
+              'X-API-KEY': this._getKey(),
             },
           },
         )
@@ -51,7 +51,7 @@ export class UnofficialKpService {
       this.httpService
         .get<UnofficalKinopoisk.FilmDTO>(`${this.baseUrl}/v2.2/films/${id}`, {
           headers: {
-            'X-API-KEY': this.config.unofficialKpApiKey,
+            'X-API-KEY': this._getKey(),
           },
         })
         .pipe(map(({ data: filmDto }) => this.toFilm(filmDto)))

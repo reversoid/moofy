@@ -1,3 +1,4 @@
+/** Provides logic for rotating api keys */
 export class ApiKeyRotator {
   constructor(private keys: string[]) {}
 
