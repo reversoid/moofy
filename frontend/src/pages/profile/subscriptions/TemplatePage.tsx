@@ -26,7 +26,7 @@ export const SubscriptionsTemplatePage: FC<SubscriptionsTemplatePage> = ({
   return (
     <>
       <Text h1>{title}</Text>
-      <SearchInput onChange={setSearch} />
+      <SearchInput debouncedOnChange={setSearch} />
       <Stack css={{ mt: '$8' }}>
         {profiles?.length === 0 && <Text color="$neutral">Список пуст</Text>}
         {profiles?.map((profile) => (

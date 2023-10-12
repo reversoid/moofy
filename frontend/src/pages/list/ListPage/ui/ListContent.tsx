@@ -38,7 +38,7 @@ export const ListContent = ({
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
-  useLoadingBar(loadingSearch)
+  useLoadingBar(loadingSearch);
 
   return (
     <>
@@ -51,7 +51,7 @@ export const ListContent = ({
             flexDirection: 'column',
             ai: 'flex-start',
           },
-          mt: '$8'
+          mt: '$8',
         }}
       >
         <Text h2 css={{ mb: '$0' }}>
@@ -72,7 +72,7 @@ export const ListContent = ({
       <>
         {Boolean(reviews?.length) && (
           <Row css={{ mb: '$8', mt: '$8' }}>
-            <SearchInput onChange={handleSearchInput} />
+            <SearchInput debouncedOnChange={handleSearchInput} />
           </Row>
         )}
 
