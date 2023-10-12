@@ -11,6 +11,6 @@ export class ApiKeyRotator {
   }
 
   private getNextIndex() {
-    return ++this._currentKeyIndex % this.keys.length;
+    return this._currentKeyIndex++ % this.keys.length;
   }
 }
