@@ -1,4 +1,3 @@
-import { composeValidators } from '@/shared/utils/forms/composeValidators';
 import { Input, InputPassword } from '@/shared/ui/Input/Input';
 import { Loading } from '@nextui-org/react';
 import { Form } from '../../ui/Form';
@@ -22,7 +21,7 @@ export const RegisterForm = () => {
     register,
     handleSubmit,
     formState: { errors, isValid: isFormValid, isValidating },
-  } = useForm<RegisterFormData>({ mode: 'onChange' });  
+  } = useForm<RegisterFormData>({ mode: 'onChange' });
 
   return (
     <>
