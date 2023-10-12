@@ -7,5 +7,4 @@ export const checkUsernameDebounced = AwesomeDebouncePromise(
     return exists ? 'Имя пользователя уже занято' : undefined;
   },
   250,
-  { accumulate: false, onlyResolvesLast: false },
 );

@@ -1,12 +1,11 @@
 import React, { FC } from 'react';
-import { Form } from '@/shared/ui/Form/Form';
-import { Button, Checkbox, Loading, Text, styled } from '@nextui-org/react';
-import { memo, useEffect, useState } from 'react';
-import { Field, Form as FinalForm } from 'react-final-form';
+import { Button, Checkbox, Loading, styled } from '@nextui-org/react';
+import { useEffect, useState } from 'react';
 import Counter from './Counter';
 import Textarea from '@/shared/ui/Textarea/Textarea';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import { ReviewFormData } from './ReviewModal';
+import { useForm } from 'react-hook-form';
 
 const ScoreContainer = styled('div', {
   display: 'flex',
@@ -41,90 +40,83 @@ export const ReviewForm: FC<ReviewFormProps> = ({
     setIncludeScore(shouldIncludeScore);
   }, [form?.score]);
 
+  const {
+    register,
+    formState: { isValid },
+    handleSubmit,
+    getValues,
+    setValue,
+  } = useForm<ReviewFormData>({
+    defaultValues: { ...form, score: form?.score ?? DEFAULT_SCORE },
+  });
+
   return (
     <>
-      <FinalForm<ReviewFormData>
-        initialValues={form}
-        onSubmit={(data) =>
+      <form
+        onSubmit={handleSubmit((form) =>
           onSubmit({
-            score: includeScore ? data.score : null,
-            description: data.description,
-          })
-        }
-        render={({ handleSubmit, invalid }) => (
-          <form onSubmit={handleSubmit}>
-            <ModalBody>
-              <Field
-                name="description"
-                validate={(value) =>
-                  value && value.length > 400
-                    ? 'Слишком длинное описание'
-                    : undefined
-                }
-              >
-                {({ input }) => (
-                  <Textarea
-                    maxLength={400}
-                    bordered
-                    size="xl"
-                    label="Описание"
-                    placeholder="Ваше описание фильма"
-                    {...input}
-                    maxRows={Infinity}
-                  />
-                )}
-              </Field>
-
-              <Checkbox
-                color="gradient"
-                label="Включить оценку"
-                css={{
-                  '& .nextui-checkbox-text': {
-                    fontSize: '$lg',
-                  },
-                }}
-                size="lg"
-                isSelected={includeScore}
-                onChange={setIncludeScore}
-              />
-
-              <Field
-                initialValue={form?.score ?? DEFAULT_SCORE}
-                component={ScoreContainer}
-                name="score"
-              >
-                {({ input }) => (
-                  <ScoreContainer>
-                    <StyledLabel htmlFor="slider">Оценка</StyledLabel>
-                    <Counter fieldInputProps={input} disabled={!includeScore} />
-                  </ScoreContainer>
-                )}
-              </Field>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button
-                disabled={invalid}
-                type="submit"
-                color={'gradient'}
-                css={{
-                  minWidth: '7.5rem',
-                  margin: 0,
-                  '@xsMax': { width: '100%' },
-                }}
-                auto
-                size="lg"
-              >
-                {loading ? (
-                  <Loading size="lg" type="points" color="white" />
-                ) : (
-                  'Добавить'
-                )}
-              </Button>
-            </ModalFooter>
-          </form>
+            score: includeScore ? form.score : null,
+            description: form.description,
+          }),
         )}
-      />
+      >
+        <ModalBody>
+          <Textarea
+            maxLength={400}
+            bordered
+            size="xl"
+            label="Описание"
+            placeholder="Ваше описание фильма"
+            initialValue={form?.description}
+            {...register('description', { maxLength: 400 })}
+            maxRows={Infinity}
+          />
+
+          <Checkbox
+            color="gradient"
+            label="Включить оценку"
+            css={{
+              '& .nextui-checkbox-text': {
+                fontSize: '$lg',
+              },
+            }}
+            size="lg"
+            isSelected={includeScore}
+            onChange={setIncludeScore}
+          />
+
+          <ScoreContainer>
+            <StyledLabel>Оценка</StyledLabel>
+            <Counter
+              getValue={() => Number(getValues('score'))}
+              registerReturn={register('score')}
+              setValue={(newValue) => setValue('score', newValue)}
+              disabled={!includeScore}
+            />
+          </ScoreContainer>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            disabled={!isValid || loading}
+            type="submit"
+            color={'gradient'}
+            css={{
+              minWidth: '7.5rem',
+              margin: 0,
+              '@xsMax': { width: '100%' },
+            }}
+            auto
+            size="lg"
+          >
+            {loading ? (
+              <Loading size="lg" type="points" color="white" />
+            ) : (
+              'Добавить'
+            )}
+          </Button>
+        </ModalFooter>
+      </form>
     </>
   );
 };

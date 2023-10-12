@@ -1,9 +1,8 @@
 import { useCreateComment } from '@/features/comment/utils/useCreateComment';
 import Textarea from '@/shared/ui/Textarea/Textarea';
-import { required } from '@/shared/utils/forms/validators';
 import { Button, Loading, styled } from '@nextui-org/react';
 import React, { FC } from 'react';
-import { Field, Form } from 'react-final-form';
+import { useForm } from 'react-hook-form';
 
 const AnswerWrapper = styled('form');
 
@@ -19,41 +18,40 @@ export interface ReplyFormProps {
 
 export const SendCommentForm: FC<ReplyFormProps> = ({ commentId, listId }) => {
   const commentMutation = useCreateComment();
+  const {
+    register,
+    formState: { isValid, isSubmitting },
+    handleSubmit,
+    reset,
+  } = useForm<ReplyFormValues>();
 
   return (
-    <Form<ReplyFormValues>
-      onSubmit={async (value, form) => {
+    <AnswerWrapper
+      onSubmit={handleSubmit(async ({ text }) => {
         await commentMutation.mutateAsync({
           commentId,
           listId,
-          text: value.text,
+          text: text,
         });
-        form.reset();
-      }}
+        reset();
+      })}
     >
-      {({ invalid, submitting, handleSubmit, pristine }) => (
-        <AnswerWrapper onSubmit={handleSubmit}>
-          <Field name="text" validate={required('Поле должно быть заполнено')}>
-            {({ input }) => (
-              <Textarea
-                {...input}
-                maxLength={400}
-                placeholder={`Ваш ${commentId ? 'ответ' : 'комментарий'}`}
-                size="lg"
-              />
-            )}
-          </Field>
-          <Button
-            type="submit"
-            css={{ mt: '$8', '@xsMax': { w: '100%' } }}
-            color={'primary'}
-            disabled={submitting || invalid || pristine}
-          >
-            {submitting ? <Loading type="points" /> : 'Отправить'}
-          </Button>
-        </AnswerWrapper>
-      )}
-    </Form>
+      <Textarea
+        {...register('text', { required: true })}
+        maxLength={400}
+        placeholder={`Ваш ${commentId ? 'ответ' : 'комментарий'}`}
+        size="lg"
+      />
+
+      <Button
+        type="submit"
+        css={{ mt: '$8', '@xsMax': { w: '100%' } }}
+        color={'primary'}
+        disabled={isSubmitting || !isValid}
+      >
+        {isSubmitting ? <Loading type="points" /> : 'Отправить'}
+      </Button>
+    </AnswerWrapper>
   );
 };
 
