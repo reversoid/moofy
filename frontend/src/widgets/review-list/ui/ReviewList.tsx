@@ -17,6 +17,7 @@ interface ReviewListProps {
   canLoadMore?: boolean;
   loadingMore?: boolean;
   noReviewsText: string;
+  onDeleteReview?: (reviewId: number) => void;
 }
 
 export const ReviewList = memo(
@@ -27,12 +28,18 @@ export const ReviewList = memo(
     loadMore,
     canLoadMore,
     noReviewsText,
+    onDeleteReview,
   }: ReviewListProps) => {
     return (
       <>
         <ReviewsContainer>
           {reviews?.map((review) => (
-            <Review key={review.id} isUserOwner={isUserOwner} review={review} />
+            <Review
+              key={review.id}
+              isUserOwner={isUserOwner}
+              review={review}
+              onDeleteReview={onDeleteReview}
+            />
           ))}
 
           {reviews?.length === 0 ? (

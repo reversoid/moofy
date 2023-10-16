@@ -36,9 +36,17 @@ export const ListContent = ({
     isSearchFinished,
   } = useSearchReviews(id!);
 
+  const handleDeleteReview = (reviewId: number) => {
+    setSearch((prevData) =>
+      Array.isArray(prevData)
+        ? prevData.filter((review) => review.id !== reviewId).toString()
+        : '',
+    );
+  };
+
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
-  useLoadingBar(loadingSearch)
+  useLoadingBar(loadingSearch);
 
   return (
     <>
@@ -83,6 +91,7 @@ export const ListContent = ({
             loadingMore={searchLoadingMore}
             reviews={searchData ?? []}
             noReviewsText="Обзоров не найдено"
+            onDeleteReview={handleDeleteReview}
           />
         ) : (
           <ReviewList
@@ -92,6 +101,7 @@ export const ListContent = ({
             loadingMore={isFetchingMore}
             reviews={reviews}
             noReviewsText="Коллекция пуста"
+            onDeleteReview={handleDeleteReview}
           />
         )}
       </>

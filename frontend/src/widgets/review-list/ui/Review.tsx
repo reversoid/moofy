@@ -8,32 +8,38 @@ import { FC, memo, useState } from 'react';
 export interface ReviewProps {
   review: IReview;
   isUserOwner: boolean;
+  onDeleteReview?: (reviewId: number) => void;
 }
 
-export const Review: FC<ReviewProps> = memo(({ review, isUserOwner }) => {
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const deleteMutation = useDeleteReview();
+export const Review: FC<ReviewProps> = memo(
+  ({ review, isUserOwner, onDeleteReview }) => {
+    const [updateModalOpen, setUpdateModalOpen] = useState(false);
+    const deleteMutation = useDeleteReview();
 
-  return (
-    <>
-      <UpdateReviewModal
-        formData={{ description: review.description, score: review.score }}
-        reviewId={review.id}
-        isOpen={updateModalOpen}
-        setIsOpen={setUpdateModalOpen}
-      />
+    return (
+      <>
+        <UpdateReviewModal
+          formData={{ description: review.description, score: review.score }}
+          reviewId={review.id}
+          isOpen={updateModalOpen}
+          setIsOpen={setUpdateModalOpen}
+        />
 
-      <ReviewItem
-        review={review}
-        topRightButton={
-          isUserOwner ? (
-            <ReviewOwnerActions
-              onClickDelete={() => deleteMutation.mutate(review.id)}
-              onClickUpdate={() => setUpdateModalOpen(true)}
-            />
-          ) : undefined
-        }
-      />
-    </>
-  );
-});
+        <ReviewItem
+          review={review}
+          topRightButton={
+            isUserOwner ? (
+              <ReviewOwnerActions
+                onClickDelete={() => {
+                  deleteMutation.mutate(review.id);
+                  onDeleteReview?.(review.id);
+                }}
+                onClickUpdate={() => setUpdateModalOpen(true)}
+              />
+            ) : undefined
+          }
+        />
+      </>
+    );
+  },
+);
