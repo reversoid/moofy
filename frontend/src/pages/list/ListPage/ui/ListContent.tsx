@@ -1,12 +1,14 @@
 import { Review } from '@/shared/api/types/review.type';
 import { ReviewList } from '@/widgets/review-list';
 import { Button, Row, Text } from '@nextui-org/react';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
 import { SearchInput } from '../../../../shared/components/SearchInput';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { $_searchStore, setSearchList } from '../model/listSearchContent';
+import { useStore } from 'effector-react';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -36,18 +38,20 @@ export const ListContent = ({
     isSearchFinished,
   } = useSearchReviews(id!);
 
-  const handleDeleteReview = (reviewId: number) => {
-    setSearch((prevData) =>
-      Array.isArray(prevData)
-        ? prevData.filter((review) => review.id !== reviewId).toString()
-        : '',
-    );
-  };
+  const searchList = useStore($_searchStore);
+
+  const prevSearchValueRef = useRef<string>('');
+
+  useEffect(() => {
+    if (searchData && searchValue !== prevSearchValueRef.current) {
+      setSearchList({ listId: id!, reviews: searchData });
+      prevSearchValueRef.current = searchValue;
+    }
+  }, [searchValue, searchData]);
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
-
   return (
     <>
       <Row
@@ -89,9 +93,8 @@ export const ListContent = ({
             canLoadMore={canLoadMoreSearch}
             loadMore={loadMoreSearch}
             loadingMore={searchLoadingMore}
-            reviews={searchData ?? []}
+            reviews={searchList[id!] ?? []}
             noReviewsText="Обзоров не найдено"
-            onDeleteReview={handleDeleteReview}
           />
         ) : (
           <ReviewList
@@ -101,7 +104,6 @@ export const ListContent = ({
             loadingMore={isFetchingMore}
             reviews={reviews}
             noReviewsText="Коллекция пуста"
-            onDeleteReview={handleDeleteReview}
           />
         )}
       </>
