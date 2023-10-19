@@ -7,6 +7,8 @@ import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
 import { SearchInput } from '../../../../shared/components/SearchInput';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { clearSearchReviews } from '../model/listSearchContent';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -39,6 +41,10 @@ export const ListContent = ({
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
+
+  useUnmount(() => {
+    clearSearchReviews();
+  });
 
   return (
     <>
