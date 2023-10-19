@@ -10,7 +10,7 @@ import {
   $searchReviews,
   setSearchReviews,
 } from '../../model/listSearchContent';
-import { useNewData } from '@/shared/lib/reactQueryAddons/useNewData';
+import { useNewData } from '@/shared/utils/reactQueryAddons/useNewData';
 import { useStore } from 'effector-react';
 
 interface ListWithContentResponseWithSearch extends ListWithContentResponse {
