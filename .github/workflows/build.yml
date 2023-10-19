@@ -22,11 +22,8 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Go to frontend folder
-        run: cd ./frontend
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build project
-        run: yarn build
+      - name: Install dependencies and build in frontend directory
+        run: |
+          cd frontend &&
+          yarn install &&
+          yarn build
