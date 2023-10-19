@@ -8,12 +8,12 @@ export const setSearchReviews = createEvent<{
 
 export const clearSearchReviews = createEvent<void>();
 
-export const $searchReviews = createStore<Review[]>([]);
+export const $searchReviews = createStore<Review[] | null>(null);
 
 $searchReviews.on(setSearchReviews, (state, { reviews }) => reviews);
 
 $searchReviews.on(deleteReview, (state, { reviewId }) => {
-  return state.filter((review) => review.id !== reviewId);
+  return state?.filter((review) => review.id !== reviewId);
 });
 
-$searchReviews.on(clearSearchReviews, () => []);
+$searchReviews.on(clearSearchReviews, () => null);

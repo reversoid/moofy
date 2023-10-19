@@ -1,16 +1,13 @@
 import { Review } from '@/shared/api/types/review.type';
 import { ReviewList } from '@/widgets/review-list';
 import { Button, Row, Text } from '@nextui-org/react';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
 import { SearchInput } from '../../../../shared/components/SearchInput';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import {
-  clearSearchReviews,
-  setSearchReviews,
-} from '../model/listSearchContent';
+import { clearSearchReviews } from '../model/listSearchContent';
 import { useUnmount } from '@/shared/hooks/useUnmount';
 
 interface ReviewListProps {
@@ -40,15 +37,6 @@ export const ListContent = ({
     loadingMore: searchLoadingMore,
     isSearchFinished,
   } = useSearchReviews(id!);
-
-  const prevSearchValueRef = useRef<string>('');
-
-  useEffect(() => {
-    if (searchData && searchValue !== prevSearchValueRef.current) {
-      setSearchReviews({ reviews: searchData });
-      prevSearchValueRef.current = searchValue;
-    }
-  }, [searchValue, searchData]);
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 

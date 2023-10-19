@@ -44,7 +44,7 @@ export const useSearchReviews = (listId: number) => {
   }, [search]);
 
   useNewData(result, () => {
-    if (result.data) {
+    if (result.data && isSearchFinished) {
       const updatedSearchData = transformResponse(result.data)?.reviews;
       setSearchReviews({ reviews: updatedSearchData });
     }
