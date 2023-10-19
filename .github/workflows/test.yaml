@@ -34,6 +34,7 @@ jobs:
 
           echo KP_API_KEY=${{ secrets.KP_API_KEY }} >> .env
           echo UNOFFICIAL_KP_API_KEY=${{ secrets.UNOFFICIAL_KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEYS=${{ secrets.UNOFFICIAL_KP_API_KEYS }} >> .env
           echo PG_ADMIN_TEST_EMAIL=${{ secrets.PG_ADMIN_TEST_EMAIL }} >> .env
           echo PG_ADMIN_TEST_PASSWORD=${{ secrets.PG_ADMIN_TEST_PASSWORD }} >> .env
           echo S3_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env

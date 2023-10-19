@@ -1,6 +1,6 @@
 import { Text, Textarea as _Textarea, styled } from '@nextui-org/react';
 import { TextareaProps } from '@nextui-org/react/types/textarea';
-import { forwardRef, memo, useEffect, useState } from 'react';
+import { forwardRef, memo, useEffect, useRef, useState } from 'react';
 
 const TextAreaWrapper = styled('div', {
   position: 'relative',

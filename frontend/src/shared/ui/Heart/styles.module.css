@@ -1,0 +1,178 @@
+.heart,
+.heart-wrapper {
+  --size: 23px;
+  --background: var(--nextui-colors-red600);
+
+  --success-time: 0.2s;
+  /* IF EDIT LOADING TIME, EDIT .TSX CODE AS WELL */
+  --loading-time: 0.5s;
+  --long-loading-time: 3s;
+  --unlike-time: 0.2s;
+
+  --animation: cubic-bezier(0.27, 0.44, 0.38, 0.77);
+
+  --largest-loading-scale: 0.7;
+  --smallest-loading-scale: 0.6;
+  --scale-between-loading: calc(
+    (var(--smallest-loading-scale) + var(--largest-loading-scale)) / 2
+  );
+
+  position: relative;
+  background: var(--background);
+  height: var(--size);
+  width: var(--size);
+
+  transform: rotate(-45deg) scale(1);
+  transition: all 0.2s linear;
+}
+
+.heart {
+  transform: rotate(0) scale(1);
+  z-index: 1;
+}
+
+.heart-wrapper {
+  --background: var(--nextui-colors-gray50);
+  position: absolute;
+  top: 30%;
+}
+
+.heart-wrapper.black {
+  --background: black;
+}
+
+.heart.liked {
+  animation: success-pulse var(--success-time) var(--animation);
+}
+
+.heart.unliked {
+  animation: remove-pulse var(--unlike-time) var(--animation);
+  animation-fill-mode: forwards;
+}
+
+.heart.loading {
+  background: var(--nextui-colors-red400);
+}
+
+.heart.loading.liked {
+  animation: loading-unlike var(--loading-time) var(--animation);
+  animation-fill-mode: forwards;
+}
+
+.heart.loading.unliked {
+  animation: loading-like var(--loading-time) var(--animation);
+  animation-fill-mode: forwards;
+}
+
+.heart.long-loading.liked,
+.heart.long-loading.unliked {
+  animation: long-loading-pulse var(--long-loading-time) infinite alternate;
+}
+
+.heart::after,
+.heart-wrapper::after {
+  background: inherit;
+  border-radius: 50%;
+  /* To make circle */
+  content: '';
+  position: absolute;
+  /* top: -20px;*/
+  top: -50%;
+  /* Inherit properties of parent */
+  /* left: -20px; */
+  left: 0;
+  height: var(--size);
+  width: var(--size);
+}
+
+.heart::before,
+.heart-wrapper::before {
+  background: inherit;
+  border-radius: 50%;
+  /* To make circle */
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -50%;
+
+  height: var(--size);
+  width: var(--size);
+}
+
+.no-animation {
+  animation: none !important;
+}
+.no-animation.liked {
+  background-color: var(--background);
+}
+.no-animation.unliked {
+  background-color: var(--nextui-colors-gray50);
+}
+.black .no-animation.unliked {
+  background-color: black;
+}
+
+@keyframes success-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes loading-unlike {
+  0% {
+    transform: scale(1);
+  }
+
+  80% {
+    transform: scale(var(--largest-loading-scale));
+  }
+
+  100% {
+    transform: scale(var(--smallest-loading-scale));
+  }
+}
+
+@keyframes loading-like {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(var(--smallest-loading-scale));
+  }
+
+  100% {
+    transform: scale(var(--largest-loading-scale));
+  }
+}
+
+@keyframes long-loading-pulse {
+  0% {
+    transform: scale(var(--scale-between-loading));
+  }
+
+  50% {
+    transform: scale(var(--largest-loading-scale));
+  }
+
+  100% {
+    transform: scale(var(--smallest-loading-scale));
+  }
+}
+
+@keyframes remove-pulse {
+  0% {
+    transform: scale(var(--scale-between-loading));
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

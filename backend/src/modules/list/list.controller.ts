@@ -214,8 +214,10 @@ export class ListController {
   @ApiOperation({
     description: 'Get list comments',
   })
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':id/comments')
   getComments(
+    @Request() { user }: { user?: User },
     @Param() { id }: ListIdParamsDTO,
     @Query(
       new ValidationPipe({
@@ -225,7 +227,13 @@ export class ListController {
     )
     { limit = 20, commentId, lowerBound }: GetCommentsQueryDTO,
   ) {
-    return this.listService.getComments(id, commentId, limit, lowerBound);
+    return this.listService.getComments(
+      id,
+      user?.id,
+      commentId,
+      limit,
+      lowerBound,
+    );
   }
 
   @ApiOperation({

@@ -1,16 +1,14 @@
-import { StorageService, storageService } from './storage.service';
-
 /** Provides features to get and set access_token */
 export class TokenService {
-  constructor(private readonly storageService: StorageService) {}
+  private accessToken: string | null = null;
 
   public getAccessToken(): string | null {
-    return this.storageService.getData('access_token');
+    return this.accessToken;
   }
 
   public setAccessToken(token: string): void {
-    return this.storageService.setData<string>('access_token', token);
+    this.accessToken = token;
   }
 }
 
-export const tokenService = new TokenService(storageService);
+export const tokenService = new TokenService();

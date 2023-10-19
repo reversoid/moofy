@@ -1,4 +1,3 @@
-import { colorHash } from '@/entities/List/ui/List/ListBackground';
 import {
   Img,
   ImgPlaceholder,
@@ -8,6 +7,7 @@ import { List } from '@/shared/api/types/list.type';
 import { Link } from '@/shared/ui/Link/Link';
 import { Text } from '@nextui-org/react';
 import { FC } from 'react';
+import { colorHash } from '@/shared/utils/colorHash';
 
 export interface SearchListItemProps {
   list: List;

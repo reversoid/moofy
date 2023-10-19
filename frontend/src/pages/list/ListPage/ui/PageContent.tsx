@@ -1,7 +1,7 @@
 import { ListContent } from './ListContent';
 import { ListInfo } from './ListInfo';
 import { Review } from '@/shared/api/types/review.type';
-import { List } from '@/shared/api/types/list.type';
+import { AdditinalInfo, List } from '@/shared/api/types/list.type';
 import { useAuth } from '@/app';
 
 interface ListPageProps {
@@ -9,9 +9,7 @@ interface ListPageProps {
   reviews?: Review[];
   canLoadMoreReviews?: boolean;
   loadMoreReviews?: () => void;
-  additionalInfo?: {
-    isFavorite?: boolean;
-  };
+  additionalInfo?: AdditinalInfo;
   isFetchingMore?: boolean;
 }
 
@@ -31,6 +29,7 @@ export const PageContent = ({
         list={list}
         isUserOwner={userId === list.user.id}
         isFavorite={additionalInfo?.isFavorite}
+        additionalInfo={additionalInfo}
       />
       <ListContent
         isUserOwner={userId === list.user.id}
