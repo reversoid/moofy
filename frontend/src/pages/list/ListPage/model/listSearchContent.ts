@@ -1,27 +1,19 @@
 import { createEvent, createStore } from 'effector';
 import { Review } from '@/shared/api/types/review.type';
+import { deleteReview } from '@/features/review/delete-review';
 
-export const setSearchList = createEvent<{
-  listId: number;
+export const setSearchReviews = createEvent<{
   reviews: Review[];
 }>();
-export const deleteSearchItem = createEvent<{
-  listId: number;
-  reviewId: number;
-}>();
 
-export const $_searchStore = createStore<{ [key: string]: Review[] }>({});
+export const clearSearchReviews = createEvent<void>();
 
-$_searchStore.on(setSearchList, (state, { listId, reviews }) => ({
-  ...state,
-  [listId]: reviews,
-}));
+export const $searchReviews = createStore<Review[]>([]);
 
-$_searchStore.on(deleteSearchItem, (state, { listId, reviewId }) => ({
-  ...Object.fromEntries(
-    Object.entries(state).map(([key, value]) => [
-      key,
-      value.filter((l) => l.id !== reviewId),
-    ]),
-  ),
-}));
+$searchReviews.on(setSearchReviews, (state, { reviews }) => reviews);
+
+$searchReviews.on(deleteReview, (state, { reviewId }) => {
+  return state.filter((review) => review.id !== reviewId);
+});
+
+$searchReviews.on(clearSearchReviews, () => []);

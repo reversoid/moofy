@@ -6,7 +6,12 @@ import { FetchError } from '@/shared/api/types/shared';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { transformResponse } from '../helpers/transformResponse';
-import { setSearchList } from '../../model/listSearchContent';
+import {
+  $searchReviews,
+  setSearchReviews,
+} from '../../model/listSearchContent';
+import { useNewData } from '@/shared/lib/reactQueryAddons/useNewData';
+import { useStore } from 'effector-react';
 
 interface ListWithContentResponseWithSearch extends ListWithContentResponse {
   search: string;
@@ -14,6 +19,7 @@ interface ListWithContentResponseWithSearch extends ListWithContentResponse {
 
 export const useSearchReviews = (listId: number) => {
   const [search, setSearch] = useState('');
+  const reviews = useStore($searchReviews);
 
   const result = useInfiniteQuery<
     ListWithContentResponseWithSearch,
@@ -37,21 +43,20 @@ export const useSearchReviews = (listId: number) => {
     }
   }, [search]);
 
-  useEffect(() => {
-    if (result.data && search) {
+  useNewData(result, () => {
+    if (result.data) {
       const updatedSearchData = transformResponse(result.data)?.reviews;
-      setSearchList({ listId, reviews: updatedSearchData });
+      setSearchReviews({ reviews: updatedSearchData });
     }
-  }, [result.data]);
-
-  const data = result.data ? transformResponse(result.data) : undefined;
+  });
 
   const isSearchFinished = result.data?.pages.at(-1)?.search === search;
+
   return {
     loading: result.isFetching,
     searchValue: search,
     setSearch,
-    data: data?.reviews,
+    data: reviews,
     loadMore: result.fetchNextPage,
     canLoadMore: result.hasNextPage,
     loadingMore: result.isFetchingNextPage,

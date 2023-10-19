@@ -7,8 +7,11 @@ import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
 import { SearchInput } from '../../../../shared/components/SearchInput';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { $_searchStore, setSearchList } from '../model/listSearchContent';
-import { useStore } from 'effector-react';
+import {
+  clearSearchReviews,
+  setSearchReviews,
+} from '../model/listSearchContent';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -38,13 +41,11 @@ export const ListContent = ({
     isSearchFinished,
   } = useSearchReviews(id!);
 
-  const searchList = useStore($_searchStore);
-
   const prevSearchValueRef = useRef<string>('');
 
   useEffect(() => {
     if (searchData && searchValue !== prevSearchValueRef.current) {
-      setSearchList({ listId: id!, reviews: searchData });
+      setSearchReviews({ reviews: searchData });
       prevSearchValueRef.current = searchValue;
     }
   }, [searchValue, searchData]);
@@ -52,6 +53,11 @@ export const ListContent = ({
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
+
+  useUnmount(() => {
+    clearSearchReviews();
+  });
+
   return (
     <>
       <Row
@@ -93,7 +99,7 @@ export const ListContent = ({
             canLoadMore={canLoadMoreSearch}
             loadMore={loadMoreSearch}
             loadingMore={searchLoadingMore}
-            reviews={searchList[id!] ?? []}
+            reviews={searchData ?? []}
             noReviewsText="Обзоров не найдено"
           />
         ) : (
