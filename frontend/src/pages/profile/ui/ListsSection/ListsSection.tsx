@@ -30,7 +30,7 @@ export const ListsSection: FC<ListsSectionProps> = ({ profile, isOwner }) => {
         css={{ mb: '0.75rem', pt: '1rem' }}
       />
 
-      <Lists profile={profile} tab={tab} />
+      <Lists profile={profile} tab={tab} isOwner={isOwner} />
     </>
   );
 };
