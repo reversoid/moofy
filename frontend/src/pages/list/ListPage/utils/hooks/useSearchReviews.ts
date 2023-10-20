@@ -11,7 +11,6 @@ import {
   setSearchReviews,
 } from '../../model/listSearchContent';
 
-import { useNewData } from '@/shared/utils/reactQueryAddons/useNewData';
 
 import { useStore } from 'effector-react';
 import { useNewData } from '@/shared/utils/reactQueryAddons/useNewData';
