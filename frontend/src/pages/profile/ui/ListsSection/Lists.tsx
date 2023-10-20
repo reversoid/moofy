@@ -38,10 +38,6 @@ export const Lists: FC<ListsProps> = ({ profile, tab, isOwner }) => {
   useListsRefetch(tab, PageTabs.collections, lists.refetch);
   useListsRefetch(tab, PageTabs.favorites, favLists.refetch);
 
-  useEffect(() => {
-    lists.refetch();
-  }, [createListModal]);
-
   if (tab === PageTabs.collections) {
     if (lists.result.length === 0) {
       return <NoCollections />;
