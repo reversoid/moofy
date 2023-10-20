@@ -28,7 +28,9 @@ export const Review: FC<ReviewProps> = memo(({ review, isUserOwner }) => {
         topRightButton={
           isUserOwner ? (
             <ReviewOwnerActions
-              onClickDelete={() => deleteMutation.mutate(review.id)}
+              onClickDelete={() => {
+                deleteMutation.mutate(review.id);
+              }}
               onClickUpdate={() => setUpdateModalOpen(true)}
             />
           ) : undefined

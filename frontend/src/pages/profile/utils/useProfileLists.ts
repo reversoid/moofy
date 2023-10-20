@@ -9,9 +9,9 @@ import {
 import { FetchError, Id, IterableResponse } from '@/shared/api/types/shared';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { listService } from '@/features/list/api/list.service';
-import { useCachedInfiniteData } from '@/shared/lib/reactQueryAddons/useCachedInfiniteData';
-import { transformInfiniteIterableData } from '@/shared/lib/reactQueryAddons/transformInfiniteData';
-import { useNewInfiniteData } from '@/shared/lib/reactQueryAddons/useNewInfiniteData';
+import { useCachedInfiniteData } from '@/shared/utils/reactQueryAddons/useCachedInfiniteData';
+import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
+import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
 import { useAuth } from '@/app';
 
 const useFnToFetch = (

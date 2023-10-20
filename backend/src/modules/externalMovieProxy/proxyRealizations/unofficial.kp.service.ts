@@ -5,6 +5,7 @@ import { catchError, lastValueFrom, map, of } from 'rxjs';
 import { Film } from 'src/modules/film/entities/film.entity';
 import apiKeysConfig from 'src/config/apiKeys.config';
 import { ConfigType } from '@nestjs/config';
+import { ApiKeyRotator } from '../utils/ApiKeyRotator';
 
 @Injectable()
 export class UnofficialKpService {
@@ -16,6 +17,8 @@ export class UnofficialKpService {
 
   private baseUrl = 'https://kinopoiskapiunofficial.tech/api';
 
+  private keyRotator = new ApiKeyRotator(this.config.unofficialKpApiKeys);
+
   async searchFilmsByName(name: string): Promise<Film[] | null> {
     return lastValueFrom(
       this.httpService
@@ -26,7 +29,7 @@ export class UnofficialKpService {
               keyword: name,
             },
             headers: {
-              'X-API-KEY': this.config.unofficialKpApiKey,
+              'X-API-KEY': this._getKey(),
             },
           },
         )
@@ -39,12 +42,16 @@ export class UnofficialKpService {
     );
   }
 
+  private _getKey() {
+    return this.keyRotator.getCurrentKey();
+  }
+
   async getFilmById(id: number): Promise<Film | null> {
     return lastValueFrom(
       this.httpService
         .get<UnofficalKinopoisk.FilmDTO>(`${this.baseUrl}/v2.2/films/${id}`, {
           headers: {
-            'X-API-KEY': this.config.unofficialKpApiKey,
+            'X-API-KEY': this._getKey(),
           },
         })
         .pipe(map(({ data: filmDto }) => this.toFilm(filmDto)))

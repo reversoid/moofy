@@ -14,7 +14,7 @@ import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { SendCommentDTO } from './dtos/send-comment.dto';
 import {
   CommentRepository,
-  CommentWithRepliesAmount,
+  CommentWithInfo,
 } from './repositories/comment.repository';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 import { ListLike } from './entities/list-like.entity';
@@ -304,8 +304,10 @@ export class ListService {
 
     if (dto.replyToId !== undefined) {
       comment.reply_to = this.commentRepository.create({
-        id: user.id,
+        id: dto.replyToId,
       });
+    } else {
+      comment.reply_to = null;
     }
 
     return comment;
@@ -313,12 +315,14 @@ export class ListService {
 
   async getComments(
     listId: number,
+    currentUserId?: number,
     commentId?: number,
     limit = 20,
     lowerBound?: Date,
-  ): Promise<IterableResponse<CommentWithRepliesAmount>> {
+  ): Promise<IterableResponse<CommentWithInfo>> {
     return this.commentRepository.getComments(
       listId,
+      currentUserId,
       commentId,
       limit,
       lowerBound,

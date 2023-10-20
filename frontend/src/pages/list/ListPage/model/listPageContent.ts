@@ -5,6 +5,8 @@ import { updateReview } from '@/features/review/update-review';
 import { createReview } from '@/features/review/create-review';
 import { deleteReview } from '@/features/review/delete-review';
 import { updateList } from '@/features/list/update-list';
+import { listLiked, listUnliked } from '@/features/list-like';
+import { commentCreated } from '@/features/comment';
 
 export const setListPageContent = createEvent<{ data: ListPageContent }>();
 
@@ -66,6 +68,65 @@ $_listPageContent.on(deleteReview, (state, { reviewId, list }) => {
   };
 });
 
+$_listPageContent.on(listLiked, (state, { listId }) => {
+  if (!state) {
+    return state;
+  }
+  if (state.list.id !== listId) {
+    return state;
+  }
+
+  return {
+    ...state,
+    additionalInfo: state.additionalInfo
+      ? {
+          ...state.additionalInfo,
+          isLiked: true,
+          likesAmount: state.additionalInfo.likesAmount + 1,
+        }
+      : undefined,
+  };
+});
+
+$_listPageContent.on(listUnliked, (state, { listId }) => {
+  if (!state) {
+    return state;
+  }
+  if (state.list.id !== listId) {
+    return state;
+  }
+
+  return {
+    ...state,
+    additionalInfo: state.additionalInfo
+      ? {
+          ...state.additionalInfo,
+          isLiked: false,
+          likesAmount: state.additionalInfo.likesAmount - 1,
+        }
+      : undefined,
+  };
+});
+
+$_listPageContent.on(commentCreated, (state, { listId }) => {
+  if (!state) {
+    return state;
+  }
+  if (state.list.id !== listId) {
+    return state;
+  }
+
+  return {
+    ...state,
+    additionalInfo: state.additionalInfo
+      ? {
+          ...state.additionalInfo,
+          commentsAmount: state.additionalInfo.commentsAmount + 1
+        }
+      : undefined,
+  };
+});
+
 /** Provides reactive list page info */
 export const $singleListPage = combine([
   $_listPageContent,
@@ -84,10 +145,12 @@ export const $singleListPage = combine([
 
   const result: ListPageContent = {
     ...listData,
-    additionalInfo: listData.additionalInfo ? {
-      ...listData.additionalInfo,
-      isFavorite: newIsFaved,
-    } : undefined,
+    additionalInfo: listData.additionalInfo
+      ? {
+          ...listData.additionalInfo,
+          isFavorite: newIsFaved,
+        }
+      : undefined,
   };
   return result;
 });

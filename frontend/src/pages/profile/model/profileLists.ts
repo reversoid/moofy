@@ -1,4 +1,5 @@
 import { addToFavorites, removeFromFavorites } from '@/entities/user-fav-lists';
+import { addList } from '@/entities/user-lists';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List } from '@/shared/api/types/list.type';
 import { createEvent, createStore } from 'effector';
@@ -12,6 +13,8 @@ export const setProfileLists = createEvent<List[]>();
 export const setProfileFavLists = createEvent<FavoriteList[]>();
 
 $profileLists.on(setProfileLists, (state, newLists) => newLists);
+
+$profileLists.on(addList, (state, list) => [list, ...(state ?? [])]);
 
 $profileFavLists.on(setProfileFavLists, (state, newLists) => newLists);
 

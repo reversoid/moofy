@@ -7,6 +7,7 @@ import {
   IterableResponse,
   RankValue,
 } from '@/shared/api/types/shared';
+import { CommentWithInfo } from '@/widgets/comment/utils/comments-tree';
 import { SearchParamsOption } from 'ky';
 
 export interface CreateListDTO {
@@ -164,6 +165,31 @@ export class ListService extends ApiService {
     return this.get<{ updatesAmount: number }>('/list/updates/amount', {
       useJWT: true,
     });
+  }
+
+  public async getListComments(
+    listId: number,
+    lowerBound?: string,
+    commentId?: number,
+  ) {
+    const limit = 20;
+    const searchParams: SearchParamsOption = {
+      limit,
+    };
+    if (lowerBound) {
+      searchParams['lowerBound'] = lowerBound;
+    }
+    if (commentId) {
+      searchParams['commentId'] = commentId;
+    }
+
+    return this.get<IterableResponse<CommentWithInfo>>(
+      `/list/${listId}/comments`,
+      {
+        useJWT: true,
+        searchParams,
+      },
+    );
   }
 }
 

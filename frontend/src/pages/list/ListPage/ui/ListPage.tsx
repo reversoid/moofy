@@ -30,7 +30,6 @@ export const ListPage: FC = () => {
   const { earlierLoadedList } = useEarlierLoadedList(id);
 
   useLoadingBar(isLoading);
-
   if (data) {
     return (
       <ListPageContext.Provider value={{ id }}>
@@ -47,7 +46,12 @@ export const ListPage: FC = () => {
   }
 
   if (earlierLoadedList) {
-    return <PageContent list={earlierLoadedList} />;
+    return (
+      <PageContent
+        list={earlierLoadedList.list}
+        additionalInfo={earlierLoadedList.additionalInfo}
+      />
+    );
   }
 
   if (error?.cause.message === 'NOT_ALLOWED') {

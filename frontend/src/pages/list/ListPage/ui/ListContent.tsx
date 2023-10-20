@@ -7,6 +7,8 @@ import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
 import { SearchInput } from '../../../../shared/components/SearchInput';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { clearSearchReviews } from '../model/listSearchContent';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -38,7 +40,11 @@ export const ListContent = ({
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
-  useLoadingBar(loadingSearch)
+  useLoadingBar(loadingSearch);
+
+  useUnmount(() => {
+    clearSearchReviews();
+  });
 
   return (
     <>
@@ -51,6 +57,7 @@ export const ListContent = ({
             flexDirection: 'column',
             ai: 'flex-start',
           },
+          mt: '$8',
         }}
       >
         <Text h2 css={{ mb: '$0' }}>
@@ -71,7 +78,7 @@ export const ListContent = ({
       <>
         {Boolean(reviews?.length) && (
           <Row css={{ mb: '$8', mt: '$8' }}>
-            <SearchInput onChange={handleSearchInput} />
+            <SearchInput debouncedOnChange={handleSearchInput} />
           </Row>
         )}
 

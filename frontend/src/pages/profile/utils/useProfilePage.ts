@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { profileService } from '../api/profile.service';
 import { useStore } from 'effector-react';
 import { $profile, setProfile } from '../model';
-import { useNewData } from '@/shared/lib/reactQueryAddons/useNewData';
-import { useCachedData } from '@/shared/lib/reactQueryAddons/useCachedData';
+import { useNewData } from '@/shared/utils/reactQueryAddons/useNewData';
+import { useCachedData } from '@/shared/utils/reactQueryAddons/useCachedData';
 
 export const useProfilePage = (id: number) => {
   const profile = useStore($profile);
