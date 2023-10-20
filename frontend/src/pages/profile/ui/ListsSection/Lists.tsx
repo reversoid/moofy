@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useProfileLists } from '../../utils/useProfileLists';
 import { useProfileFavLists } from '../../utils/useProfileFavLists';
 import { Profile } from '@/shared/api/types/profile.type';
@@ -6,6 +6,7 @@ import { useListsRefetch } from '../../utils/useListsRefetch';
 import { Text } from '@nextui-org/react';
 import ListGrid from '@/widgets/list-grid/ui/ListGrid';
 import { PageTabs } from './ListsSection';
+import { CreateListItem, CreateListModal } from '@/features/list/create-list';
 
 const NoCollections = () => {
   return (
@@ -26,14 +27,20 @@ const NoFavCollections = () => {
 interface ListsProps {
   tab: PageTabs;
   profile: Profile;
+  isOwner: boolean;
 }
 
-export const Lists: FC<ListsProps> = ({ profile, tab }) => {
+export const Lists: FC<ListsProps> = ({ profile, tab, isOwner }) => {
+  const [createListModal, setCreateListModal] = useState(false);
   const lists = useProfileLists(profile);
   const favLists = useProfileFavLists(profile);
-  
+
   useListsRefetch(tab, PageTabs.collections, lists.refetch);
   useListsRefetch(tab, PageTabs.favorites, favLists.refetch);
+
+  useEffect(() => {
+    lists.refetch();
+  }, [createListModal]);
 
   if (tab === PageTabs.collections) {
     if (lists.result.length === 0) {
@@ -41,12 +48,23 @@ export const Lists: FC<ListsProps> = ({ profile, tab }) => {
     }
 
     return (
-      <ListGrid
-        items={lists.result}
-        loadMore={lists.loadNextPage}
-        loadingMore={lists.isLoadingMore}
-        canLoadMore={lists.hasNextPage}
-      />
+      <>
+        <ListGrid
+          items={lists.result}
+          loadMore={lists.loadNextPage}
+          loadingMore={lists.isLoadingMore}
+          canLoadMore={lists.hasNextPage}
+          firstItem={
+            isOwner ? (
+              <CreateListItem onClick={() => setCreateListModal(true)} />
+            ) : undefined
+          }
+        />
+        <CreateListModal
+          isOpen={createListModal}
+          setIsOpen={setCreateListModal}
+        />
+      </>
     );
   }
 

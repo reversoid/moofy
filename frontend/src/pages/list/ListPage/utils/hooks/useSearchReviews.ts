@@ -10,6 +10,8 @@ import {
   $searchReviews,
   setSearchReviews,
 } from '../../model/listSearchContent';
+
+
 import { useStore } from 'effector-react';
 import { useNewData } from '@/shared/utils/reactQueryAddons/useNewData';
 
