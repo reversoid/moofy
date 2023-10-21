@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { searchCollectionsService } from '../api/search-collections.service';
 import { useEffect, useState } from 'react';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
-import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
+import { ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 
 export const useCollectionsSearch = () => {
   const [search, setSearch] = useState('');
@@ -12,9 +12,9 @@ export const useCollectionsSearch = () => {
     FetchError
   >({
     queryKey: ['Search collections', search ?? ''],
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       searchCollectionsService
-        .searchCollections(search)
+        .searchCollections(search, signal)
         .then((r) => ({ ...r, search })),
     keepPreviousData: true,
   });
@@ -23,13 +23,9 @@ export const useCollectionsSearch = () => {
     result.refetch();
   }, [search]);
 
-  const isSearchFinished = result.data?.search === search;
-
   return {
     loading: result.isFetching,
-    search,
     setSearch,
     result: result.data?.items,
-    isSearchFinished,
   };
 };
