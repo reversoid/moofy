@@ -10,7 +10,6 @@ import {
   setSearchReviews,
 } from '../../model/listSearchContent';
 
-import { useAbortRequest } from '@/shared/hooks/useAbortRequest';
 import { useNewData } from '@/shared/utils/reactQueryAddons/useNewData';
 import { useStore } from 'effector-react';
 
@@ -21,11 +20,10 @@ interface ListWithContentResponseWithSearch extends ListWithContentResponse {
 export const useSearchReviews = (listId: number) => {
   const [search, setSearch] = useState('');
   const reviews = useStore($searchReviews);
-  const { cancelRequest, signal } = useAbortRequest();
 
   const result = useQuery<ListWithContentResponseWithSearch, FetchError>({
     queryKey: ['Search reviews', listId, search],
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam, signal }) =>
       listService
         .getMyListWithContent(listId, pageParam, search, signal)
         .then((r) => ({ ...r, search })),
@@ -34,7 +32,6 @@ export const useSearchReviews = (listId: number) => {
 
   useEffect(() => {
     if (search) {
-      cancelRequest();
       result.refetch();
     } else {
       result.remove();
