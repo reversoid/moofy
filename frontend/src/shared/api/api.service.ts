@@ -13,7 +13,7 @@ type HttpMethods = 'get' | 'post' | 'patch' | 'delete' | 'put';
 
 /** This base class provides apiUrl and fetch methods with JWT support*/
 export default class ApiService {
-  protected apiUrl =  environment.apiUrl;
+  protected apiUrl = environment.apiUrl;
 
   protected async post<Response = unknown>(
     relativeUrl: `/${string}`,

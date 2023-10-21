@@ -32,10 +32,6 @@ export const ListContent = ({
     searchValue,
     setSearch,
     data: searchData,
-    loadMore: loadMoreSearch,
-    canLoadMore: canLoadMoreSearch,
-    loadingMore: searchLoadingMore,
-    isSearchFinished,
   } = useSearchReviews(id!);
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
@@ -82,12 +78,9 @@ export const ListContent = ({
           </Row>
         )}
 
-        {isSearchFinished || (searchValue && searchData) ? (
+        {searchValue && searchData ? (
           <ReviewList
             isUserOwner={isUserOwner}
-            canLoadMore={canLoadMoreSearch}
-            loadMore={loadMoreSearch}
-            loadingMore={searchLoadingMore}
             reviews={searchData ?? []}
             noReviewsText="Обзоров не найдено"
           />
