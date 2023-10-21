@@ -1,6 +1,7 @@
 import { Navigate, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import AuthOnly from '@/shared/guards/AuthOnly';
+import WaitForAuth from '@/shared/guards/WaitForAuth';
 
 const ListPage = lazy(() => import('./ListPage'));
 const SearchFilmPage = lazy(() => import('./AddReviewPage'));
@@ -15,14 +16,21 @@ export const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <ListPage />,
+        element: (
+          <WaitForAuth>
+            <ListPage />
+          </WaitForAuth>
+        ),
       },
       {
         path: 'add',
         // TODO shoul create authOnly with mathing id guard
-        element: <AuthOnly redirect='/auth'><SearchFilmPage /></AuthOnly>,
+        element: (
+          <AuthOnly redirect="/auth">
+            <SearchFilmPage />
+          </AuthOnly>
+        ),
       },
     ],
   },
-  
 ];
