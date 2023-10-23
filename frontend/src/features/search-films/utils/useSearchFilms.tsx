@@ -5,22 +5,14 @@ import debounce from 'lodash.debounce';
 
 export const useSearchFilms = () => {
   const [filmName, setFilmName] = useState('');
-
   const debouncedSearchFilm = useCallback(debounce(setFilmName, 250), []);
 
   const result = useQuery({
     queryKey: ['Search films', filmName],
-    enabled: false,
-    queryFn: ({ queryKey }) =>
-      filmService.getFilmsByName(queryKey.at(-1) ?? ''),
+    enabled: Boolean(filmName),
+    queryFn: ({ queryKey, signal }) =>
+      filmService.getFilmsByName(queryKey.at(-1) ?? '', signal),
   });
-
-  useEffect(() => {
-    if (!filmName) {
-      return;
-    }
-    result.refetch();
-  }, [filmName]);
 
   return {
     films: result.data?.items,

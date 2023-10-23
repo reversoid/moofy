@@ -23,7 +23,8 @@ export class SubscriptionsService extends ApiService {
     toId: number,
     lowerBound?: DateAsString,
     limit = 20,
-    search?: string
+    search?: string,
+    signal?: AbortSignal,
   ) {
     const searchParams: SearchParamsOption = {
       limit,
@@ -40,6 +41,7 @@ export class SubscriptionsService extends ApiService {
       {
         useJWT: true,
         searchParams,
+        signal,
       },
     );
   }
@@ -48,7 +50,8 @@ export class SubscriptionsService extends ApiService {
     toId: number,
     lowerBound?: DateAsString,
     limit = 20,
-    search?: string
+    search?: string,
+    signal?: AbortSignal,
   ) {
     const searchParams: SearchParamsOption = {
       limit,
@@ -65,6 +68,7 @@ export class SubscriptionsService extends ApiService {
       {
         useJWT: true,
         searchParams,
+        signal,
       },
     );
   }

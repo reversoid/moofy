@@ -13,7 +13,7 @@ type HttpMethods = 'get' | 'post' | 'patch' | 'delete' | 'put';
 
 /** This base class provides apiUrl and fetch methods with JWT support*/
 export default class ApiService {
-  protected apiUrl =  environment.apiUrl;
+  protected apiUrl = environment.apiUrl;
 
   protected async post<Response = unknown>(
     relativeUrl: `/${string}`,
@@ -130,6 +130,11 @@ export default class ApiService {
         setAppError(errorJson.message ?? 'NETWORK_ERROR');
         throw new Error('Http Error', { cause: errorJson });
       }
+
+      if (error.name === 'AbortError') {
+        throw new Error('Abort Error');
+      }
+
       setAppError('NETWORK_ERROR');
       throw new Error('Unknown Http Error', { cause: error });
     }

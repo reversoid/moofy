@@ -12,13 +12,12 @@ export const FollowedPage = () => {
 
   const {
     data: searchedProfiles,
-    isSearchFinished,
     loading: searching,
     searchValue,
     setSearch,
   } = useSearchFollowed(id);
 
-  const isSearch = !!isSearchFinished || (!!searchValue && !!searchedProfiles)
+  const isSearch = Boolean(searchValue);
 
   useLoadingBar(isLoading, searching);
 

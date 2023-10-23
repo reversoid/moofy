@@ -4,16 +4,16 @@ import { IterableResponse } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';
 
 class SearchCollectionsService extends ApiService {
-  searchCollections(search?: string) {
-    const queryParams: SearchParamsOption = {}
+  searchCollections(search?: string, signal?: AbortSignal) {
+    const queryParams: SearchParamsOption = {};
     if (search) {
-        queryParams['search'] = search
+      queryParams['search'] = search;
     }
 
     return super.get<IterableResponse<ListWithAdditionalInfo>>('/list/public', {
-      searchParams: queryParams
+      searchParams: queryParams,
     });
   }
 }
 
-export const searchCollectionsService = new SearchCollectionsService()
+export const searchCollectionsService = new SearchCollectionsService();

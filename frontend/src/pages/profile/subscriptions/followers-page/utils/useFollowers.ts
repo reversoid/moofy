@@ -15,7 +15,7 @@ export const useFollowers = (userId: number) => {
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 
-  const [profiles, setProfiles] = useState<ProfileShort[]>()
+  const [profiles, setProfiles] = useState<ProfileShort[]>();
 
   useCachedInfiniteData(result, () => {
     if (result.data) {

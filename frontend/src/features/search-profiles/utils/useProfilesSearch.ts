@@ -8,27 +8,24 @@ export const useProfilesSearch = () => {
   const [search, setSearch] = useState('');
 
   const result = useQuery<
-    {profiles: ProfileShort[]} & { search: string },
+    { profiles: ProfileShort[] } & { search: string },
     FetchError
   >({
     queryKey: ['Search profiles', search ?? ''],
-    queryFn: () =>
-      searchProfilesService.searchUsers(search).then((r) => ({ profiles: r, search })),
+    queryFn: ({ signal }) =>
+      searchProfilesService
+        .searchUsers(search, signal)
+        .then((r) => ({ profiles: r, search })),
     keepPreviousData: true,
-    enabled: false,
   });
 
   useEffect(() => {
     result.refetch();
   }, [search]);
 
-  const isSearchFinished = result.data?.search === search;
-
   return {
     loading: result.isFetching,
-    search,
     setSearch,
     result: result.data?.profiles,
-    isSearchFinished,
   };
 };

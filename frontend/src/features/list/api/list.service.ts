@@ -74,6 +74,7 @@ export class ListService extends ApiService {
     listId: number,
     lowerBound?: DateAsString | RankValue,
     search?: string,
+    signal?: AbortSignal,
   ) {
     const searchParams: SearchParamsOption = {
       listId,
@@ -90,6 +91,7 @@ export class ListService extends ApiService {
     return this.get<ListWithContentResponse>('/review', {
       useJWT: true,
       searchParams,
+      signal,
     });
   }
 
