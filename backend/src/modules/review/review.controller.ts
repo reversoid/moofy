@@ -10,21 +10,22 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
+import { List } from '../list/entities/list.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateReviewDTO } from './dtos/createReview.dto';
 import { DeleteReviewDTO } from './dtos/deleteReview.dto';
+import { GetRandomReviewDTO } from './dtos/get-random-review.dto';
 import { GetAllUserReviewsDTO } from './dtos/getAllUserReviews.dto';
 import { GetReviewsDTO } from './dtos/getPublicReviews.dto';
 import { UpdateReviewDTO } from './dtos/updateReview.dto';
 import { Review } from './entities/review.entity';
+import { PrivateListGuard } from './guards/private-list.guard';
 import { ReviewService } from './review.service';
-import { ApiTags, ApiHeader, ApiOperation } from '@nestjs/swagger';
-import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
-import { ListService } from '../list/list.service';
-import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
-import { List } from '../list/entities/list.entity';
-import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 export interface AdditionalListInfo {
   isFavorite: boolean;
@@ -38,10 +39,7 @@ export interface AdditionalListInfo {
 @ApiTags('Review')
 @Controller('review')
 export class ReviewController {
-  constructor(
-    private readonly reviewService: ReviewService,
-    private readonly listService: ListService,
-  ) {}
+  constructor(private readonly reviewService: ReviewService) {}
 
   @ApiOperation({ description: 'Creates review on film' })
   @ApiHeader(SwaggerAuthHeader)
@@ -98,8 +96,7 @@ export class ReviewController {
   }
 
   @ApiOperation({
-    description:
-      'Update user review. The following actions are allowed: deleteFrom, copyTo, moveTo',
+    description: 'Update review',
   })
   @ApiHeader(SwaggerAuthHeader)
   @UseGuards(JwtAuthGuard)
@@ -122,5 +119,29 @@ export class ReviewController {
     @Body() { reviewId }: DeleteReviewDTO,
   ): Promise<{ reviewId: number; list?: List }> {
     return this.reviewService.deleteReview(user, reviewId);
+  }
+
+  @ApiOperation({
+    description: 'Get random reviews from list',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(OptionalJwtAuthGuard, PrivateListGuard)
+  @Get('random')
+  async getRandomReviews(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    { listId, limit, type }: GetRandomReviewDTO,
+  ): Promise<{ reviews: Review[] }> {
+    const reviews = await this.reviewService.getRandomReviews(
+      listId,
+      limit,
+      type,
+    );
+
+    return { reviews };
   }
 }
