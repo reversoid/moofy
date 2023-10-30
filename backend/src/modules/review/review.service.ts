@@ -12,8 +12,7 @@ import { List } from '../list/entities/list.entity';
 import { Review } from './entities/review.entity';
 import { ListService } from '../list/list.service';
 import { ListErrors } from 'src/errors/list.errors';
-import { FavoriteListRepository } from '../list/repositories/favoriteList.repository';
-import { ListViewRepository } from '../list/repositories/list-view.repository';
+import { GetRandomReviewType } from './dtos/get-random-review.dto';
 
 export const ORDER_INITIAL_VALUE = 1984;
 export const ORDER_INCREMENT_VALUE = 8;
@@ -23,8 +22,6 @@ export class ReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
     private readonly listRepository: ListRepository,
-    private readonly listViewRepository: ListViewRepository,
-    private readonly favListRepository: FavoriteListRepository,
     private readonly filmRepository: FilmRepository,
     private readonly listService: ListService,
 
@@ -252,5 +249,22 @@ export class ReviewService {
         user: { id: user.id, username: user.username } as User,
       },
     };
+  }
+
+  async getRandomReviews(
+    listId: number,
+    limit: number,
+    type: GetRandomReviewType,
+  ) {
+    const getRandomType =
+      type === GetRandomReviewType.ALL
+        ? 'all'
+        : type === GetRandomReviewType.RANKED
+        ? 'ranked'
+        : type === GetRandomReviewType.UNRANKED
+        ? 'unranked'
+        : 'all';
+
+    return this.reviewRepository.getRandomReviews(listId, limit, getRandomType);
   }
 }

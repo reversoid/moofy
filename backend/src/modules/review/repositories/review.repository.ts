@@ -232,6 +232,44 @@ export class ReviewRepository extends PaginatedRepository<Review> {
     });
   }
 
+  async getRandomReviews(
+    listId: number,
+    limit: number,
+    type: 'all' | 'ranked' | 'unranked',
+  ) {
+    const query = this.createQueryBuilder('review')
+      .leftJoinAndSelect('review.list', 'list')
+      .leftJoinAndSelect('review.film', 'film')
+      .select([
+        'review.created_at',
+        'review.description',
+        'review.id',
+        'review.score',
+        'review.updated_at',
+        'film.filmLength',
+        'film.genres',
+        'film.id',
+        'film.name',
+        'film.posterPreviewUrl',
+        'film.posterUrl',
+        'film.type',
+        'film.year',
+      ])
+      .addSelect('RANDOM()', 'rand')
+      .orderBy('rand')
+      .where('list.id = :listId', { listId })
+      .take(limit);
+
+    if (type === 'unranked') {
+      query.andWhere('review.score is NULL');
+    }
+    if (type === 'ranked') {
+      query.andWhere('review.score is NOT NULL');
+    }
+
+    return query.getMany();
+  }
+
   /** Wraps film properties into one film object*/
   private _wrapFilmProps(review: any) {
     const film = new Film();
