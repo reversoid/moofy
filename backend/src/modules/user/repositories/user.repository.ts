@@ -3,6 +3,10 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 import { ProfileShort } from 'src/modules/profile/types/profile-short.type';
+import { Review } from 'src/modules/review/entities/review.entity';
+import { Subscription } from '../entities/subscription.entity';
+
+const TOP_USER_COEFFS = { followers: 4, reviews: 2 } as const;
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -134,5 +138,32 @@ export class UserRepository extends Repository<User> {
       .orderBy('rank', 'DESC')
       .take(limit)
       .getMany();
+  }
+
+  async getTopUsers(limit: number) {
+    const users = await this.createQueryBuilder('user')
+      .leftJoinAndSelect(Subscription, 'subs', 'subs.followed_id = user.id')
+      .leftJoinAndSelect(
+        Review,
+        'review',
+        'review.user = user.id AND review.score IS NOT NULL',
+      )
+      .select([
+        'user.id',
+        'user.username',
+        'user.image_url',
+        'user.description',
+      ])
+      .addSelect(
+        `COUNT(DISTINCT subs.id) * ${TOP_USER_COEFFS.followers} + COUNT(DISTINCT review.id) * ${TOP_USER_COEFFS.reviews}`,
+        'rating',
+      )
+      .groupBy('user.username')
+      .addGroupBy('user.id')
+      .orderBy('rating', 'DESC')
+      .take(limit)
+      .getMany();
+
+    return users;
   }
 }

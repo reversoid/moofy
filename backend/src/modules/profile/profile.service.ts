@@ -292,6 +292,11 @@ export class ProfileService {
     };
   }
 
+  async getRecommendedUsers(userId: number, limit: number) {
+    const users = await this.userRepository.getTopUsers(limit);
+    return this.getShortProfileFromUsers(users, userId);
+  }
+
   private async getShortProfileFromUsers<
     T extends Omit<ProfileShort, 'additionalInfo'>,
   >(users: T[], requesterUserId?: number) {

@@ -14,6 +14,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "start": "nest start",
+    "dev": "yarn start:dev",
     "start:dev": "docker compose --env-file ./config/.env -f docker-compose.dev.yml up -d && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

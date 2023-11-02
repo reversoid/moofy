@@ -14,22 +14,22 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserErrors } from 'src/errors/user.errors';
-import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
-import { User } from '../user/entities/user.entity';
-import { ProfileService } from './profile.service';
-import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
-import { EditProfileDTO } from './dtos/EditProfile.dto';
-import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ImageErrors } from 'src/errors/image.errors';
+import { UserErrors } from 'src/errors/user.errors';
+import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { SwaggerAuthHeader } from 'src/shared/swagger-auth-header';
+import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
+import { User } from '../user/entities/user.entity';
+import { EditProfileDTO } from './dtos/EditProfile.dto';
+import { GetSubscriptionsDTO } from './dtos/GetSubscriptions';
 import { SearchProfileDTO } from './dtos/SearchProfile.dto';
+import { ProfileService } from './profile.service';
 import { ProfileShort } from './types/profile-short.type';
 import { Profile, SubscriptionsInfo } from './types/profile.type';
-import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
-import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
-import { GetSubscriptionsDTO } from './dtos/GetSubscriptions';
+import { GetRecommendedUsersDTO } from './dtos/get-recommended-users.dto';
 
 const LISTS_LIMIT = 20;
 
@@ -98,6 +98,24 @@ export class ProfileController {
     { username, limit = 20 }: SearchProfileDTO,
   ): Promise<ProfileShort[]> {
     return this.profileService.searchUserProfiles(username, limit, user.id);
+  }
+
+  @ApiOperation({
+    description: 'Get recommended users',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get('recommendations')
+  async getRecommendedUsers(
+    @Request() { user }: { user: User },
+    @Query()
+    { limit }: GetRecommendedUsersDTO,
+  ): Promise<{ profiles: ProfileShort[] }> {
+    const profiles = await this.profileService.getRecommendedUsers(
+      user.id,
+      limit,
+    );
+    return { profiles };
   }
 
   @ApiOperation({
