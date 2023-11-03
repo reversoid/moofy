@@ -67,4 +67,17 @@ export class EventRepository extends PaginatedRepository<Event> {
   async removeEvent(eventId: string) {
     await this.softRemove({ id: eventId });
   }
+
+  async markAllEventsSeen(userId: number) {
+    const events = await this.find({
+      where: { seen_at: IsNull(), user_to_id: userId },
+      select: { id: true, seen_at: true },
+    });
+
+    for (const event of events) {
+      event.seen_at = new Date();
+    }
+
+    await this.save(events);
+  }
 }

@@ -42,6 +42,12 @@ export class NotificationsController {
     );
   }
 
+  @Patch('unseen/all')
+  @UseGuards(JwtAuthGuard)
+  async markAllEventsAsSeen(@Request() { user }: { user: User }) {
+    await this.notificationsService.markAllEventsSeen(user.id);
+  }
+
   @Get('unseen-amount')
   @UseGuards(JwtAuthGuard)
   async getUnseenAmount(@Request() { user }: { user: User }) {
@@ -52,7 +58,7 @@ export class NotificationsController {
     return { unseen: amount };
   }
 
-  @Patch(':id')
+  @Patch('unseen/:id')
   @UseGuards(JwtAuthGuard)
   async markEventAsSeen(
     @Request() { user }: { user: User },

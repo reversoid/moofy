@@ -44,4 +44,8 @@ export class NotificationsService {
   async removeEvent(eventId: string) {
     await this.eventRepository.removeEvent(eventId);
   }
+
+  async markAllEventsSeen(userId: number) {
+    await this.eventRepository.markAllEventsSeen(userId);
+  }
 }
