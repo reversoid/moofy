@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EventRepository } from './repositories/event.repository';
+import { CreateEventDTO } from './utils/event.service';
 
 @Injectable()
 export class NotificationsService {
@@ -47,5 +48,14 @@ export class NotificationsService {
 
   async markAllEventsSeen(userId: number) {
     await this.eventRepository.markAllEventsSeen(userId);
+  }
+
+  async createEvent(data: CreateEventDTO) {
+    return await this.eventRepository.save({
+      user_from_id: data.fromUserId,
+      user_to_id: data.toUserId,
+      target_id: data.targetId,
+      type: data.type,
+    });
   }
 }

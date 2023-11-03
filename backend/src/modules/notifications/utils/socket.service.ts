@@ -20,7 +20,7 @@ export class SocketService {
     await this.redis.srem(key, socketId);
   }
 
-  async getUserSocketIDs(userId: number) {
+  async getUserSocketIDs(userId: number): Promise<string[] | null> {
     const key = this.getRedisKey(userId);
     return this.redis.smembers(key);
   }
