@@ -127,6 +127,7 @@ export class AuthService {
       throw new HttpException(AuthErrors.INVALID_REFRESH_TOKEN, 401);
   }
 
+  // TODO use conventional notation: user:123:tokens
   private async isTokenValid(userId: number, token: string) {
     return Boolean(await this.redis.sismember(`${userId}`, token));
   }

@@ -11,6 +11,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { getRedisConfig } from './config/modulesConfigs/getRedisConfig';
 import { FilmModule } from './modules/film/film.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import postgresConfig from './config/postgres.config';
 import redisConfig from './config/redis.config';
 import secretsConfig from './config/secrets.config';
@@ -44,6 +45,7 @@ import s3Config from './config/s3.config';
     // TaskModule, TODO: use if it and fix it if necessary
     FilmModule,
     ProfileModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],
