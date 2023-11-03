@@ -23,8 +23,8 @@ services:
     image: 'rabbitmq:3-management'
     restart: no
     environment:
-      RABBITMQ_DEFAULT_USER: '${RABBITMQ_DEFAULT_USER}'
-      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_DEFAULT_PASS}'
+      RABBITMQ_DEFAULT_USER: '${RABBITMQ_USER}'
+      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASS}'
     ports:
       - '5672:5672'
       - '15672:15672'
