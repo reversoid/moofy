@@ -63,4 +63,8 @@ export class EventRepository extends PaginatedRepository<Event> {
   async getAmountOfUnseenEvents(userId: number) {
     return this.count({ where: { user_to_id: userId, seen_at: IsNull() } });
   }
+
+  async removeEvent(eventId: string) {
+    await this.softRemove({ id: eventId });
+  }
 }

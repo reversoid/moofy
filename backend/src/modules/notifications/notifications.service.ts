@@ -40,4 +40,8 @@ export class NotificationsService {
   async getAmountOfUnseenEvents(userId: number) {
     return this.eventRepository.getAmountOfUnseenEvents(userId);
   }
+
+  async removeEvent(eventId: string) {
+    await this.eventRepository.removeEvent(eventId);
+  }
 }
