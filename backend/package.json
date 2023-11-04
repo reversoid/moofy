@@ -54,7 +54,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "easy-yandex-s3": "^2.0.0",
-    "ioredis": "^5.2.4",
+    "ioredis": "^5.3.2",
     "lodash": "^4.17.21",
     "nestjs-rmq": "^2.12.0",
     "npm": "^9.1.1",

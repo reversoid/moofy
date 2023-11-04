@@ -9,11 +9,18 @@ import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { UserRepository } from '../user/repositories/user.repository';
 import globalConfig, { AppEnvironments } from 'src/config/global.config';
 import { ConfigType } from '@nestjs/config';
+import {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+} from './passport/token-payload.type';
 
 interface Tokens {
   access: string;
   refresh: string;
 }
+
+const geRefreshTokenRedisKey = (userId: number) =>
+  `user:${userId}:refresh_tokens`;
 
 @Injectable()
 export class AuthService {
@@ -63,20 +70,16 @@ export class AuthService {
   }
 
   async generateTokens(userId: number): Promise<Tokens> {
-    const access = await this.jwtService.signAsync(
-      { id: userId },
-      {
-        expiresIn:
-          this.config.environment === AppEnvironments.prod ? '15m' : '300d',
-      },
-    );
+    const accessTokenPayload: AccessTokenPayload = { id: userId };
+    const access = await this.jwtService.signAsync(accessTokenPayload, {
+      expiresIn:
+        this.config.environment === AppEnvironments.prod ? '15m' : '300d',
+    });
 
-    const refresh = await this.jwtService.signAsync(
-      {
-        id: userId,
-      },
-      { expiresIn: '60d' },
-    );
+    const refreshTokenPayload: RefreshTokenPayload = { id: userId };
+    const refresh = await this.jwtService.signAsync(refreshTokenPayload, {
+      expiresIn: '60d',
+    });
 
     await this.makeTokenValid(userId, refresh);
 
@@ -85,7 +88,9 @@ export class AuthService {
 
   async decodeRefreshToken(token: string): Promise<{ id: number }> {
     try {
-      const data = await this.jwtService.verifyAsync<{ id: number }>(token);
+      const data = await this.jwtService.verifyAsync<RefreshTokenPayload>(
+        token,
+      );
       return data;
     } catch (error) {
       throw new HttpException(AuthErrors.INVALID_REFRESH_TOKEN, 401);
@@ -127,16 +132,18 @@ export class AuthService {
       throw new HttpException(AuthErrors.INVALID_REFRESH_TOKEN, 401);
   }
 
-  // TODO use conventional notation: user:123:tokens
   private async isTokenValid(userId: number, token: string) {
-    return Boolean(await this.redis.sismember(`${userId}`, token));
+    const key = geRefreshTokenRedisKey(userId);
+    return Boolean(await this.redis.sismember(key, token));
   }
 
   private async makeTokenValid(userId: number, token: string) {
-    return this.redis.sadd(`${userId}`, token);
+    const key = geRefreshTokenRedisKey(userId);
+    return this.redis.sadd(key, token);
   }
 
   private async makeTokenInvalid(userId: number, token: string) {
-    return this.redis.srem(`${userId}`, token);
+    const key = geRefreshTokenRedisKey(userId);
+    return this.redis.srem(key, token);
   }
 }

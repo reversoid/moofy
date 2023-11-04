@@ -1,17 +1,19 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { WsException } from '@nestjs/websockets';
+import { ValidationService } from 'src/modules/auth/utils/validation.service';
 
 @Injectable()
 export class WsGuard implements CanActivate {
+  constructor(private readonly validationService: ValidationService) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const client = context.switchToWs().getClient();
-    const token = client.handshake?.query?.token;
+    const token: string | undefined = client.handshake?.query?.token;
 
     if (!token) {
       return false;
     }
 
-    const userId = await this.validateToken(token);
+    const userId = await this.validateAccessToken(token);
 
     if (!userId) {
       return false;
@@ -22,12 +24,12 @@ export class WsGuard implements CanActivate {
     return true;
   }
 
-  private async validateToken(token: string): Promise<number> {
-    // TODO check token and make async request
-    if (true === !!false) {
+  async validateAccessToken(token: string): Promise<number | null> {
+    try {
+      const { id } = await this.validationService.validateAccessToken(token);
+      return id;
+    } catch {
       return null;
     }
-
-    return 123;
   }
 }
