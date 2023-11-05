@@ -10,6 +10,7 @@ import { NotificationsGateway } from './profile-notifications.gateway';
 import { ProfileNotificationsService } from './profile-notifications.service';
 import { ProfileEventRepository } from './repositories/profile-event.repository';
 import { SocketService } from './utils/socket.service';
+import { EventModule } from '../event/event.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SocketService } from './utils/socket.service';
     AuthModule,
     UserModule,
     ListModule,
+    EventModule,
   ],
   controllers: [ProfileNotificationsController],
   providers: [

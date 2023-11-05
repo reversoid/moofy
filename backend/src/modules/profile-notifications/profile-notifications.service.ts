@@ -10,6 +10,7 @@ import { UserService } from '../user/user.service';
 import { ProfileEventType } from './entities/profile-event.entity';
 import { ProfileEventRepository } from './repositories/profile-event.repository';
 import { ProfileCounterEventDTO, ProfileDirectEventDTO } from './utils/types';
+import { EventService } from '../event/event.service';
 
 @Injectable()
 export class ProfileNotificationsService {
@@ -22,6 +23,7 @@ export class ProfileNotificationsService {
     private readonly listLikeReposotory: ListLikeRepository,
     private readonly commentLikeRepository: CommentLikeRepository,
     private readonly subscriptionRepository: SubscriptionRepository,
+    private readonly eventService: EventService,
   ) {}
 
   async getUnseenEventsForUser(userId: number, limit = 20, lowerBound?: Date) {
@@ -53,7 +55,9 @@ export class ProfileNotificationsService {
   }
 
   async markEventAsSeen(userId: number, eventId: string) {
-    return this.eventRepository.markEventAsSeen(userId, eventId);
+    const result = await this.eventRepository.markEventAsSeen(userId, eventId);
+    this.eventService.emitProfileEvent({ type: 'seen' });
+    return result;
   }
 
   async getAmountOfUnseenEvents(userId: number) {
@@ -65,6 +69,10 @@ export class ProfileNotificationsService {
   }
 
   async createEvent(data: SendProfileEventDTO): Promise<ProfileDirectEventDTO> {
+    if (data.type === 'seen' || data.type === 'counter') {
+      throw new Error('On create event the type must be direct');
+    }
+
     const event = await this.eventRepository.createEvent(data);
     return {
       created_at: event.created_at,
@@ -80,7 +88,7 @@ export class ProfileNotificationsService {
   }
 
   private async getCommentPayload(
-    data: SendProfileEventDTO,
+    data: SendProfileEventDTO & { type: 'direct' | 'counter' },
   ): Promise<ProfileDirectEventDTO['payload']['comment']> {
     if (data.eventType !== ProfileEventType.COMMENT) {
       return;
@@ -108,7 +116,7 @@ export class ProfileNotificationsService {
   }
 
   private async getCommentLikePayload(
-    data: SendProfileEventDTO,
+    data: SendProfileEventDTO & { type: 'direct' | 'counter' },
   ): Promise<ProfileDirectEventDTO['payload']['comment_like']> {
     if (data.eventType !== ProfileEventType.COMMENT_LIKE) {
       return;
@@ -140,7 +148,7 @@ export class ProfileNotificationsService {
   }
 
   private async getListLikePayload(
-    data: SendProfileEventDTO,
+    data: SendProfileEventDTO & { type: 'direct' | 'counter' },
   ): Promise<ProfileDirectEventDTO['payload']['list_like']> {
     if (data.eventType !== ProfileEventType.LIST_LIKE) {
       return;
@@ -167,7 +175,7 @@ export class ProfileNotificationsService {
   }
 
   private async getReplyPayload(
-    data: SendProfileEventDTO,
+    data: SendProfileEventDTO & { type: 'direct' | 'counter' },
   ): Promise<ProfileDirectEventDTO['payload']['reply']> {
     if (data.eventType !== ProfileEventType.REPLY) {
       return;
@@ -200,7 +208,7 @@ export class ProfileNotificationsService {
   }
 
   private async getSubscribePayload(
-    data: SendProfileEventDTO,
+    data: SendProfileEventDTO & { type: 'direct' | 'counter' },
   ): Promise<ProfileDirectEventDTO['payload']['subscribe']> {
     if (data.eventType !== ProfileEventType.SUBSCRIBE) {
       return;
