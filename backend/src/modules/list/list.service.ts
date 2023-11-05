@@ -329,6 +329,10 @@ export class ListService {
     );
   }
 
+  async getCommentById(id: number) {
+    return this.commentRepository.findBy({ id });
+  }
+
   async likeList(listId: number, userId: number): Promise<ListLike> {
     const [list, existingLike] = await Promise.all([
       this.listRepository.getListById(listId),

@@ -8,13 +8,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
-import { NotificationsService } from './notifications.service';
+import { ProfileNotificationsService } from './profile-notifications.service';
 import { User } from '../user/entities/user.entity';
 import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 
-@Controller('notifications')
-export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+@Controller('profile-notifications')
+export class ProfileNotificationsController {
+  constructor(
+    private readonly notificationsService: ProfileNotificationsService,
+  ) {}
 
   @Get('unseen')
   @UseGuards(JwtAuthGuard)

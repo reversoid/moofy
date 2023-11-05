@@ -11,7 +11,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { getRedisConfig } from './config/modulesConfigs/getRedisConfig';
 import { FilmModule } from './modules/film/film.module';
 import { ProfileModule } from './modules/profile/profile.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
 import postgresConfig from './config/postgres.config';
 import redisConfig from './config/redis.config';
 import secretsConfig from './config/secrets.config';
@@ -20,6 +20,7 @@ import apiKeysConfig from './config/apiKeys.config';
 import s3Config from './config/s3.config';
 import { RMQModule } from 'nestjs-rmq';
 import { getRMQConfig } from './config/modulesConfigs/get-rmq-config';
+import { EventModule } from './modules/event/event.module';
 import rmqConfig from './config/rmq.config';
 
 @Module({
@@ -51,7 +52,8 @@ import rmqConfig from './config/rmq.config';
     // TaskModule, TODO: use if it and fix it if necessary
     FilmModule,
     ProfileModule,
-    NotificationsModule,
+    ProfileNotificationsModule,
+    EventModule,
   ],
   controllers: [],
   providers: [],

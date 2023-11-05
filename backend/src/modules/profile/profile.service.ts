@@ -15,6 +15,8 @@ import { SubscriptionRepository } from '../user/repositories/subscription.reposi
 import { SubscribeErrors } from 'src/errors/subscribe.errors';
 import { In } from 'typeorm';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
+import { EventService } from '../event/event.service';
+import { ProfileEventType } from '../profile-notifications/entities/profile-event.entity';
 
 @Injectable()
 export class ProfileService {
@@ -23,7 +25,9 @@ export class ProfileService {
     private readonly subcriptionRepository: SubscriptionRepository,
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
+    private readonly eventService: EventService,
   ) {}
+
   /** Get full data of profile, including private and favorite lists */
   async getOwnerProfile(id: number, listsLimit: number): Promise<Profile> {
     const user = await this.userRepository.getUserInfoById(id);
@@ -199,13 +203,21 @@ export class ProfileService {
       throw new HttpException(SubscribeErrors.ALREADY_SUBSCRIBED, 400);
     }
 
-    await this.subcriptionRepository.save({
+    const { id } = await this.subcriptionRepository.save({
       follower: {
         id: fromId,
       },
       followed: {
         id: toId,
       },
+    });
+
+    this.eventService.notify({
+      type: 'direct',
+      fromUserId: fromId,
+      toUserId: toId,
+      eventType: ProfileEventType.SUBSCRIBE,
+      targetId: id,
     });
 
     return this.subcriptionRepository.getSubscriptionsInfo(toId);
@@ -219,7 +231,7 @@ export class ProfileService {
       throw new HttpException(SubscribeErrors.NOT_SUBSCRIBED, 400);
     }
 
-    await this.subcriptionRepository.softDelete({
+    const { id } = await this.subcriptionRepository.softRemove({
       follower: {
         id: fromId,
       },
@@ -227,6 +239,15 @@ export class ProfileService {
         id: toId,
       },
     });
+
+    this.eventService.emitProfileEvent({
+      type: 'counter',
+      fromUserId: fromId,
+      toUserId: toId,
+      eventType: ProfileEventType.SUBSCRIBE,
+      targetId: id,
+    });
+
     return this.subcriptionRepository.getSubscriptionsInfo(toId);
   }
 

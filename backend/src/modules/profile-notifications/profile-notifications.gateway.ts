@@ -7,18 +7,19 @@ import {
 } from '@nestjs/websockets';
 import { RMQRoute } from 'nestjs-rmq';
 import { Server, Socket } from 'socket.io';
-import { Event } from './entities/event.entity';
+import { PROFILE_NOTIFICATION_TOPIC } from '../event/utils/TOPICS';
+import { SendProfileEventDTO } from '../event/utils/types';
 import { WsGuard } from './guards/ws-guard';
-import { NotificationsService } from './notifications.service';
-import { CreateEventDTO, USER_NOTIFICATION_TOPIC } from './utils/event.service';
+import { ProfileNotificationsService } from './profile-notifications.service';
 import { SocketService } from './utils/socket.service';
+import { ProfileCounterEventDTO, ProfileDirectEventDTO } from './utils/types';
 
-@WebSocketGateway({ path: 'notifications' })
+@WebSocketGateway({ path: 'profile-notifications' })
 export class NotificationsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private readonly notificationService: NotificationsService,
+    private readonly notificationService: ProfileNotificationsService,
     private readonly socketService: SocketService,
     private readonly wsGuard: WsGuard,
   ) {}
@@ -45,17 +46,41 @@ export class NotificationsGateway
     }
   }
 
-  @RMQRoute(USER_NOTIFICATION_TOPIC)
-  async handleUserEventNotification(message: CreateEventDTO) {
-    const event = await this.notificationService.createEvent(message);
-    await this.sendEventToUsers(message.toUserId, event);
+  @RMQRoute(PROFILE_NOTIFICATION_TOPIC)
+  async handleUserEventNotification(message: SendProfileEventDTO) {
+    if (message.type === 'direct') {
+      const directEvent = await this.notificationService.createEvent(message);
+      return await this.sendDirectEventToUser(message.toUserId, directEvent);
+    }
+    if (message.type === 'counter') {
+      const counterEvent = await this.notificationService.removeEvents(message);
+      return await this.sendCounterEventToUser(message.toUserId, counterEvent);
+    }
   }
 
-  private async sendEventToUsers(userId: number, event: Event) {
+  private async sendDirectEventToUser(
+    userId: number,
+    event: ProfileDirectEventDTO,
+  ) {
+    return this.sendEventToUser('notification:direct', userId, event);
+  }
+
+  private async sendCounterEventToUser(
+    userId: number,
+    event: ProfileCounterEventDTO,
+  ) {
+    return this.sendEventToUser('notification:counter', userId, event);
+  }
+
+  private async sendEventToUser(
+    eventName: string,
+    userId: number,
+    event: unknown,
+  ) {
     const ids = await this.socketService.getUserSocketIDs(userId);
     for (const id of ids) {
       const client = this.server.sockets.sockets.get(id);
-      client?.emit('notification', event);
+      client?.emit(eventName, event);
     }
   }
 

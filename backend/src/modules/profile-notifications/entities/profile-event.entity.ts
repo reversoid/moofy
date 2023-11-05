@@ -7,16 +7,16 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum EventType {
-  LIKE = 'LIKE',
+export enum ProfileEventType {
+  LIST_LIKE = 'LIST_LIKE',
+  COMMENT_LIKE = 'COMMENT_LIKE',
   COMMENT = 'COMMENT',
   REPLY = 'REPLY',
-  LIKE_TO_COMMENT = 'LIKE_TO_COMMENT',
   SUBSCRIBE = 'SUBSCRIBE',
 }
 
 @Entity()
-export class Event {
+export class ProfileEvent {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -30,8 +30,8 @@ export class Event {
   @Column({ type: 'int', nullable: true })
   target_id?: number;
 
-  @Column({ type: 'enum', nullable: false, enum: EventType })
-  type: EventType;
+  @Column({ type: 'enum', nullable: false, enum: ProfileEventType })
+  type: ProfileEventType;
 
   @Index()
   @CreateDateColumn({ type: 'timestamptz' })

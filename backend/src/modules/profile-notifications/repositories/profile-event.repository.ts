@@ -1,12 +1,13 @@
 import { DataSource, IsNull } from 'typeorm';
-import { Event } from '../entities/event.entity';
+import { ProfileEvent } from '../entities/profile-event.entity';
 import { Injectable } from '@nestjs/common';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
+import { SendProfileEventDTO } from 'src/modules/event/utils/types';
 
 @Injectable()
-export class EventRepository extends PaginatedRepository<Event> {
+export class ProfileEventRepository extends PaginatedRepository<ProfileEvent> {
   constructor(dataSource: DataSource) {
-    super(Event, dataSource.createEntityManager());
+    super(ProfileEvent, dataSource.createEntityManager());
   }
 
   async getUnreadEvents(userId: number, limit: number, lowerBound?: Date) {
@@ -79,5 +80,26 @@ export class EventRepository extends PaginatedRepository<Event> {
     }
 
     await this.save(events);
+  }
+
+  async createEvent(dto: Omit<SendProfileEventDTO, 'type'>) {
+    const event: ProfileEvent = await this.save({
+      user_from_id: dto.fromUserId,
+      user_to_id: dto.toUserId,
+      target_id: dto.targetId,
+      type: dto.eventType,
+    });
+    return event;
+  }
+
+  async removeEvents(dto: Omit<SendProfileEventDTO, 'type'>) {
+    const events = await this.findBy({
+      target_id: dto.targetId,
+      user_from_id: dto.fromUserId,
+      user_to_id: dto.toUserId,
+      type: dto.eventType,
+    });
+    await this.softRemove(events);
+    return events.map((e) => e.id);
   }
 }
