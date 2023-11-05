@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { ListErrors } from 'src/errors/list.errors';
 import { User } from '../user/entities/user.entity';
 import { CreateListDTO } from './dtos/createList.dto';
@@ -322,6 +322,37 @@ export class ListService {
     });
 
     return comment;
+  }
+
+  async removeComment(user: User, commentId: number) {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: {
+        user: true,
+      },
+    });
+    if (comment.user.id !== user.id) {
+      throw new ForbiddenException('NOT_OWNER');
+    }
+
+    const { id } = await this.commentRepository.softRemove({ id: commentId });
+
+    const fullComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: {
+        list: {
+          user: true,
+        },
+      },
+    });
+
+    this.eventService.emitProfileEvent({
+      type: 'counter',
+      fromUserId: user.id,
+      toUserId: fullComment.list.user.id,
+      eventType: ProfileEventType.COMMENT,
+      targetId: id,
+    });
   }
 
   async getComments(
