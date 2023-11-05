@@ -82,7 +82,10 @@ export class ProfileEventRepository extends PaginatedRepository<ProfileEvent> {
     await this.save(events);
   }
 
-  async createEvent(dto: Omit<SendProfileEventDTO, 'type'>) {
+  async createEvent(dto: SendProfileEventDTO) {
+    if (dto.type !== 'direct') {
+      throw new Error('Only direct type is allowed on create event');
+    }
     const event: ProfileEvent = await this.save({
       user_from_id: dto.fromUserId,
       user_to_id: dto.toUserId,
@@ -92,7 +95,10 @@ export class ProfileEventRepository extends PaginatedRepository<ProfileEvent> {
     return event;
   }
 
-  async removeEvents(dto: Omit<SendProfileEventDTO, 'type'>) {
+  async removeEvents(dto: SendProfileEventDTO) {
+    if (dto.type !== 'counter') {
+      throw new Error('Only counter type is allowed on remove events');
+    }
     const events = await this.findBy({
       target_id: dto.targetId,
       user_from_id: dto.fromUserId,
