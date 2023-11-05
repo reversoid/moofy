@@ -212,7 +212,7 @@ export class ProfileService {
       },
     });
 
-    this.eventService.notify({
+    this.eventService.emitProfileEvent({
       type: 'direct',
       fromUserId: fromId,
       toUserId: toId,
