@@ -36,3 +36,7 @@ export type ProfileDirectEventDTO = {
 export type ProfileCounterEventDTO = {
   eventIds: string[];
 };
+
+export type ProfileSeenEventDto = {
+  eventId: string;
+};

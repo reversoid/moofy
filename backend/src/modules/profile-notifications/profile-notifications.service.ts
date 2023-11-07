@@ -9,7 +9,11 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { UserService } from '../user/user.service';
 import { ProfileEventType } from './entities/profile-event.entity';
 import { ProfileEventRepository } from './repositories/profile-event.repository';
-import { ProfileCounterEventDTO, ProfileDirectEventDTO } from './utils/types';
+import {
+  ProfileCounterEventDTO,
+  ProfileDirectEventDTO,
+  ProfileSeenEventDto,
+} from './utils/types';
 import { EventService } from '../event/event.service';
 
 @Injectable()
@@ -54,10 +58,17 @@ export class ProfileNotificationsService {
     return { events, unseen };
   }
 
-  async markEventAsSeen(userId: number, eventId: string) {
-    const result = await this.eventRepository.markEventAsSeen(userId, eventId);
-    this.eventService.emitProfileEvent({ type: 'seen' });
-    return result;
+  async markEventAsSeen(
+    userId: number,
+    eventId: string,
+  ): Promise<ProfileSeenEventDto> {
+    await this.eventRepository.markEventAsSeen(userId, eventId);
+    this.eventService.emitProfileEvent({
+      type: 'seen',
+      eventId,
+      toUserId: userId,
+    });
+    return { eventId };
   }
 
   async getAmountOfUnseenEvents(userId: number) {

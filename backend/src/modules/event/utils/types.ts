@@ -14,4 +14,6 @@ type DirectAndCounterDto = {
 
 type SeenDto = {
   type: 'seen';
+  toUserId: number;
+  eventId: string;
 };

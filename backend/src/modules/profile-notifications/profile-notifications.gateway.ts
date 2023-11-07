@@ -12,7 +12,11 @@ import { SendProfileEventDTO } from '../event/utils/types';
 import { WsGuard } from './guards/ws-guard';
 import { ProfileNotificationsService } from './profile-notifications.service';
 import { SocketService } from './utils/socket.service';
-import { ProfileCounterEventDTO, ProfileDirectEventDTO } from './utils/types';
+import {
+  ProfileCounterEventDTO,
+  ProfileDirectEventDTO,
+  ProfileSeenEventDto,
+} from './utils/types';
 
 @WebSocketGateway()
 export class NotificationsGateway
@@ -60,6 +64,13 @@ export class NotificationsGateway
       const counterEvent = await this.notificationService.removeEvents(message);
       return await this.sendCounterEventToUser(message.toUserId, counterEvent);
     }
+    if (message.type === 'seen') {
+      const seenEvent = await this.notificationService.markEventAsSeen(
+        message.toUserId,
+        message.eventId,
+      );
+      return await this.sendSeenEventToUser(message.toUserId, seenEvent);
+    }
   }
 
   private async sendDirectEventToUser(
@@ -74,6 +85,13 @@ export class NotificationsGateway
     event: ProfileCounterEventDTO,
   ) {
     return this.sendEventToUser('notification:counter', userId, event);
+  }
+
+  private async sendSeenEventToUser(
+    userId: number,
+    event: ProfileSeenEventDto,
+  ) {
+    return this.sendEventToUser('notification:seen', userId, event);
   }
 
   private async sendEventToUser(
