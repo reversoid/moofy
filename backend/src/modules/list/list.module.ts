@@ -16,6 +16,7 @@ import { CommentLikeRepository } from './repositories/comment-like.repository';
 import { ListLikeRepository } from './repositories/list-like.repository';
 import { ListView } from './entities/list-view.entity';
 import { ListViewRepository } from './repositories/list-view.repository';
+import { EventModule } from '../event/event.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ListViewRepository } from './repositories/list-view.repository';
       ListLike,
       CommentLike,
     ]),
+    EventModule,
   ],
   exports: [
     TypeOrmModule,

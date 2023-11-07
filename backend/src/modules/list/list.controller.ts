@@ -41,6 +41,7 @@ import { GetUpdatesQueryDTO } from './dtos/get-updates.query.dto';
 import { NumericIDParamDTO } from 'src/shared/dto/NumericParam.dto';
 import { AdditionalListInfo } from '../review/review.controller';
 import { OptionalJwtAuthGuard } from '../auth/passport/jwt-optional-auth.guard';
+import { CommentAndListIdParamsDTO } from './dtos/comment-and-list-id.param.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -248,6 +249,19 @@ export class ListController {
     @Body() dto: SendCommentDTO,
   ) {
     return this.listService.sendComment(user, id, dto);
+  }
+
+  @ApiOperation({
+    description: 'Remove comment',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/comments/:commentId')
+  removeComment(
+    @Request() { user }: { user: User },
+    @Param() { commentId }: CommentAndListIdParamsDTO,
+  ) {
+    return this.listService.removeComment(user, commentId);
   }
 
   @ApiOperation({

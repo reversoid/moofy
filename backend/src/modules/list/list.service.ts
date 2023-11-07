@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { ListErrors } from 'src/errors/list.errors';
 import { User } from '../user/entities/user.entity';
 import { CreateListDTO } from './dtos/createList.dto';
@@ -25,6 +25,8 @@ import { CommentLike } from './entities/comment-like.entity';
 import { Order } from './dtos/get-updates.query.dto';
 import { ListViewRepository } from './repositories/list-view.repository';
 import { AdditionalListInfo } from '../review/review.controller';
+import { EventService } from '../event/event.service';
+import { ProfileEventType } from '../profile-notifications/entities/profile-event.entity';
 
 export enum GetListsStrategy {
   ALL = 'ALL',
@@ -48,6 +50,7 @@ export class ListService {
     private readonly listLikeRepository: ListLikeRepository,
     private readonly commentLikeRepository: CommentLikeRepository,
     private readonly listViewRepository: ListViewRepository,
+    private readonly eventService: EventService,
   ) {}
 
   async createList(
@@ -310,7 +313,46 @@ export class ListService {
       comment.reply_to = null;
     }
 
+    this.eventService.emitProfileEvent({
+      type: 'direct',
+      fromUserId: user.id,
+      toUserId: list.user.id,
+      eventType: ProfileEventType.COMMENT,
+      targetId: comment.id,
+    });
+
     return comment;
+  }
+
+  async removeComment(user: User, commentId: number) {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: {
+        user: true,
+      },
+    });
+    if (comment.user.id !== user.id) {
+      throw new ForbiddenException('NOT_OWNER');
+    }
+
+    const { id } = await this.commentRepository.softRemove({ id: commentId });
+
+    const fullComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: {
+        list: {
+          user: true,
+        },
+      },
+    });
+
+    this.eventService.emitProfileEvent({
+      type: 'counter',
+      fromUserId: user.id,
+      toUserId: fullComment.list.user.id,
+      eventType: ProfileEventType.COMMENT,
+      targetId: id,
+    });
   }
 
   async getComments(
@@ -327,6 +369,10 @@ export class ListService {
       limit,
       lowerBound,
     );
+  }
+
+  async getCommentById(id: number) {
+    return this.commentRepository.findBy({ id });
   }
 
   async likeList(listId: number, userId: number): Promise<ListLike> {
@@ -351,7 +397,17 @@ export class ListService {
       user: { id: userId },
     });
 
-    return this.listLikeRepository.save(newLike);
+    const result = await this.listLikeRepository.save(newLike);
+
+    this.eventService.emitProfileEvent({
+      type: 'direct',
+      fromUserId: userId,
+      toUserId: list.user.id,
+      eventType: ProfileEventType.LIST_LIKE,
+      targetId: result.id,
+    });
+
+    return result;
   }
 
   async unlikeList(listId: number, userId: number): Promise<ListLike> {
@@ -371,7 +427,17 @@ export class ListService {
       throw new HttpException(LikeErrors.NOT_LIKED, 400);
     }
 
-    return this.listLikeRepository.softRemove(existingLike);
+    const result = await this.listLikeRepository.softRemove(existingLike);
+
+    this.eventService.emitProfileEvent({
+      type: 'counter',
+      fromUserId: userId,
+      toUserId: list.user.id,
+      eventType: ProfileEventType.LIST_LIKE,
+      targetId: result.id,
+    });
+
+    return result;
   }
 
   async likeComment(commentId: number, userId: number): Promise<CommentLike> {
@@ -398,7 +464,26 @@ export class ListService {
       user: { id: userId },
     });
 
-    return this.commentLikeRepository.save(newLike);
+    const result = await this.commentLikeRepository.save(newLike);
+
+    const fullComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: {
+        list: {
+          user: true,
+        },
+      },
+    });
+
+    this.eventService.emitProfileEvent({
+      type: 'direct',
+      fromUserId: userId,
+      toUserId: fullComment.list.user.id,
+      eventType: ProfileEventType.COMMENT_LIKE,
+      targetId: result.id,
+    });
+
+    return result;
   }
 
   async unlikeComment(commentId: number, userId: number): Promise<CommentLike> {
@@ -420,7 +505,26 @@ export class ListService {
       throw new HttpException(LikeErrors.NOT_LIKED, 400);
     }
 
-    return this.commentLikeRepository.softRemove(existingLike);
+    const result = await this.commentLikeRepository.softRemove(existingLike);
+
+    const fullComment = await this.commentRepository.findOne({
+      where: { id: commentId },
+      relations: {
+        list: {
+          user: true,
+        },
+      },
+    });
+
+    this.eventService.emitProfileEvent({
+      type: 'counter',
+      fromUserId: userId,
+      toUserId: fullComment.list.user.id,
+      eventType: ProfileEventType.COMMENT_LIKE,
+      targetId: result.id,
+    });
+
+    return result;
   }
 
   async getLatestUpdates(

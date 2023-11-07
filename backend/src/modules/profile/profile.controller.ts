@@ -208,7 +208,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/subscriptions')
   async subscribeToUser(
-    @Request() { user }: { user: User | undefined },
+    @Request() { user }: { user: User },
     @Param('id') id: string,
   ): Promise<SubscriptionsInfo> {
     const numericId = Number(id);

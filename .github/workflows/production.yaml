@@ -41,11 +41,19 @@ jobs:
           echo S3_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env
           echo S3_KEY_SECRET=${{ secrets.S3_KEY_SECRET }} >> .env
           echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+
           echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
-          echo POSTGRES_KNOWN_HOST=${{ secrets.POSTGRES_HOST }} >> .env
+          echo RMQ_USER=${{ secrets.RMQ_USER }} >> .env
+          echo RMQ_PASS=${{ secrets.RMQ_PASS }} >> .env
+          echo RMQ_PORT=${{ secrets.RMQ_PORT }} >> .env
+          echo RMQ_EXCHANGE=${{ secrets.RMQ_EXCHANGE }} >> .env
+          echo RMQ_QUEUE_NAME=${{ secrets.RMQ_QUEUE_NAME }} >> .env
+          echo RMQ_HOST=${{ secrets.RMQ_HOST }} >> .env
 
+          echo POSTGRES_KNOWN_HOST=${{ secrets.POSTGRES_HOST }} >> .env
           echo REDIS_KNOWN_HOST=redis-db >> .env
+          echo RMQ_KNOWN_HOST=rmq >> .env
 
           mkdir ./backend/config
           cp .env ./backend/config
