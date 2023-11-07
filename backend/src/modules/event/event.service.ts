@@ -8,7 +8,6 @@ export class EventService {
   constructor(private rmqService: RMQService) {}
 
   emitProfileEvent(event: SendProfileEventDTO) {
-    console.log('emit profile event', event);
     return this.rmqService.notify(PROFILE_NOTIFICATION_TOPIC, event);
   }
 }
