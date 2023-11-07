@@ -22,9 +22,9 @@ import { EventModule } from '../event/event.module';
   ],
   controllers: [ProfileNotificationsController],
   providers: [
+    NotificationsGateway,
     ProfileNotificationsService,
     ProfileEventRepository,
-    NotificationsGateway,
     SocketService,
     WsGuard,
   ],

@@ -17,6 +17,7 @@ export const getRMQConfig = (): IRMQServiceAsyncOptions => {
             host: config.host,
           },
         ],
+        queueName: config.queueName,
       };
     },
   };

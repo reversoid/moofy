@@ -6,4 +6,5 @@ export default registerAs('rmq', () => ({
   port: parseInt(process.env.RABBITMQ_PORT?.trim()),
   exchangeName: process.env.RABBITMQ_EXCHANGE?.trim(),
   host: process.env.RABBITMQ_HOST?.trim(),
+  queueName: process.env.RABBITMQ_QUEUE_NAME?.trim(),
 }));

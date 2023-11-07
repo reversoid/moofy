@@ -1,4 +1,4 @@
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, OnModuleInit } from '@nestjs/common';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -14,15 +14,19 @@ import { ProfileNotificationsService } from './profile-notifications.service';
 import { SocketService } from './utils/socket.service';
 import { ProfileCounterEventDTO, ProfileDirectEventDTO } from './utils/types';
 
-@WebSocketGateway({ path: 'profile-notifications' })
+@WebSocketGateway()
 export class NotificationsGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
+  implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
   constructor(
     private readonly notificationService: ProfileNotificationsService,
     private readonly socketService: SocketService,
     private readonly wsGuard: WsGuard,
   ) {}
+
+  async onModuleInit() {
+    await this.socketService.clearAllSocketIds();
+  }
 
   @WebSocketServer()
   server: Server;
