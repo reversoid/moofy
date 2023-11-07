@@ -30,6 +30,7 @@
     "ky": "^0.33.2",
     "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
+    "react-confetti-explosion": "^2.1.2",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.2",
     "react-router-dom": "^6.8.0"

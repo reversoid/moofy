@@ -12,23 +12,24 @@ const ButtonContainer = styled('div', {
   right: '$sm',
 });
 
-
 export interface ReviewItemProps {
   review: IReview;
   topRightButton?: JSX.Element;
+  horizontal?: boolean;
 }
 
 export const ReviewItem = memo(
-  ({ review, topRightButton }: ReviewItemProps) => {
+  ({ review, topRightButton, horizontal = true }: ReviewItemProps) => {
     return (
       <>
-        <Card horizontal>
+        <Card horizontal={horizontal}>
           <ReviewImageWithScore
             imgSrc={review.film.posterPreviewUrl}
             score={review.score}
           />
 
           <ReviewContent
+            horizontal={horizontal}
             description={review.description}
             filmId={review.film.id}
             filmName={review.film.name}

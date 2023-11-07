@@ -13,6 +13,7 @@ interface ReviewContentProps {
   filmYear: number;
   description: string;
   filmId: string;
+  horizontal?: boolean;
 }
 
 const ReviewContent: FC<ReviewContentProps> = ({
@@ -20,9 +21,10 @@ const ReviewContent: FC<ReviewContentProps> = ({
   filmName,
   filmYear,
   filmId,
+  horizontal,
 }) => {
   return (
-    <FilmInfo>
+    <FilmInfo css={{ textAlign: horizontal ? 'left' : 'center' }}>
       <Text h4 css={{ mb: '$1', lineHeight: '$sm' }}>
         <Link
           href={`https://kinopoisk.ru/film/${filmId}`}
@@ -33,13 +35,15 @@ const ReviewContent: FC<ReviewContentProps> = ({
         </Link>
       </Text>
       <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
-        {filmYear}
+        {filmYear > 0 && filmYear}
       </Text>
-      <Text
-        as={'p'}
-        css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$md' }}
-        dangerouslySetInnerHTML={{ __html: description }}
-      ></Text>
+      {horizontal && (
+        <Text
+          as={'p'}
+          css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$md' }}
+          dangerouslySetInnerHTML={{ __html: description }}
+        ></Text>
+      )}
     </FilmInfo>
   );
 };

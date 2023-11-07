@@ -1,7 +1,7 @@
 import { Review } from '@/shared/api/types/review.type';
 import { ReviewList } from '@/widgets/review-list';
 import { Button, Row, Text } from '@nextui-org/react';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
@@ -9,6 +9,8 @@ import { SearchInput } from '../../../../shared/components/SearchInput';
 import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { clearSearchReviews } from '../model/listSearchContent';
 import { useUnmount } from '@/shared/hooks/useUnmount';
+import RandomReviewModal from '@/features/search-random-review/ui/RandomReviewModal';
+import { Shuffle } from '@/shared/Icons/Shuffle.icon';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -27,6 +29,7 @@ export const ListContent = ({
 }: ReviewListProps) => {
   const navigate = useNavigate();
   const { id } = useContext(ListPageContext);
+  const [isOpen, setIsOpen] = useState(false);
   const {
     loading: loadingSearch,
     searchValue,
@@ -59,6 +62,19 @@ export const ListContent = ({
         <Text h2 css={{ mb: '$0' }}>
           Обзоры
         </Text>
+        <Button
+          color="primary"
+          aria-label="Random review"
+          css={{
+            mr: 'auto',
+            '@xsMax': { width: '20%' },
+            minWidth: '40px',
+            minHeight: '40px',
+          }}
+          onPress={() => setIsOpen(true)}
+        >
+          <Shuffle width="30px" height="30px" />
+        </Button>
         {isUserOwner && reviews && (
           <Button
             color={'gradient'}
@@ -70,6 +86,7 @@ export const ListContent = ({
           </Button>
         )}
       </Row>
+      {isOpen && <RandomReviewModal isOpen={isOpen} setIsOpen={setIsOpen} />}
 
       <>
         {Boolean(reviews?.length) && (
