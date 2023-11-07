@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
-import { PROFILE_NOTIFICATION_TOPIC } from './utils/TOPICS';
+import { PROFILE_NOTIFICATION_TOPIC } from './utils/topics';
 import { SendProfileEventDTO } from './utils/types';
 
 @Injectable()

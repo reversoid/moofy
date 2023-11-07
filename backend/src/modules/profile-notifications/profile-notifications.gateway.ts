@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { RMQRoute } from 'nestjs-rmq';
 import { Server, Socket } from 'socket.io';
-import { PROFILE_NOTIFICATION_TOPIC } from '../event/utils/TOPICS';
+import { PROFILE_NOTIFICATION_TOPIC } from '../event/utils/topics';
 import { SendProfileEventDTO } from '../event/utils/types';
 import { WsGuard } from './guards/ws-guard';
 import { ProfileNotificationsService } from './profile-notifications.service';

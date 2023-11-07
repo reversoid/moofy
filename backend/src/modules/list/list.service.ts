@@ -555,9 +555,8 @@ export class ListService {
   async getAmountOfUpdatesForUser(
     userId: number,
   ): Promise<{ updatesAmount: number }> {
-    const updatesAmount = await this.listRepository.getLatestUpdatesAmount(
-      userId,
-    );
+    const updatesAmount =
+      await this.listRepository.getLatestUpdatesAmount(userId);
 
     return { updatesAmount };
   }
