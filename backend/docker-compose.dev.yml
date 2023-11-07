@@ -21,10 +21,10 @@ services:
 
   rabbitmq:
     image: 'rabbitmq:3-management'
-    restart: no
+    restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: '${RABBITMQ_USER}'
-      RABBITMQ_DEFAULT_PASS: '${RABBITMQ_PASS}'
+      RABBITMQ_DEFAULT_USER: '${RMQ_USER}'
+      RABBITMQ_DEFAULT_PASS: '${RMQ_PASS}'
     ports:
       - '5672:5672'
       - '15672:15672'

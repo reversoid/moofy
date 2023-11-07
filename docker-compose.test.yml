@@ -99,10 +99,23 @@ services:
     networks:
       - moofy-test-network
 
+  rmq-test:
+    image: 'rabbitmq:3-management'
+    restart: no
+    environment:
+      RABBITMQ_DEFAULT_USER: '${RMQ_USER}'
+      RABBITMQ_DEFAULT_PASS: '${RMQ_PASS}'
+    networks:
+      - moofy-test-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   redis-db:
     driver: local
   test-redis-db:
+    driver: local
+  rabbitmq-data:
     driver: local
 
 networks:
