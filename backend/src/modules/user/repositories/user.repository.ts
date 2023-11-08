@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common/decorators';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-query-from-string';
 import { ProfileShort } from 'src/modules/profile/types/profile-short.type';
 import { Review } from 'src/modules/review/entities/review.entity';
 import { Subscription } from '../entities/subscription.entity';
+import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
 
 const TOP_USER_COEFFS = { followers: 4, reviews: 2 } as const;
 
 @Injectable()
-export class UserRepository extends Repository<User> {
-  constructor(private dataSource: DataSource) {
+export class UserRepository extends PaginatedRepository<User> {
+  constructor(dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
 

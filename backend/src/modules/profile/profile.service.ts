@@ -17,6 +17,7 @@ import { In } from 'typeorm';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 import { EventService } from '../event/event.service';
 import { ProfileEventType } from '../profile-notifications/entities/profile-event.entity';
+import { ReviewRepository } from '../review/repositories/review.repository';
 
 @Injectable()
 export class ProfileService {
@@ -26,6 +27,7 @@ export class ProfileService {
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
     private readonly eventService: EventService,
+    private readonly reviewRepository: ReviewRepository,
   ) {}
 
   /** Get full data of profile, including private and favorite lists */
@@ -36,14 +38,21 @@ export class ProfileService {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
 
-    const [lists, favLists, listsCount, favListsCount, subscriptionsInfo] =
-      await Promise.all([
-        this.listRepository.getUserLists(id, listsLimit),
-        this.favListRepository.getUserFavoriteLists(id, listsLimit),
-        this.listRepository.getAmountOfUserLists(id),
-        this.favListRepository.getAmountOfUserFavLists(id),
-        this.subcriptionRepository.getSubscriptionsInfo(id),
-      ]);
+    const [
+      lists,
+      favLists,
+      listsCount,
+      favListsCount,
+      subscriptionsInfo,
+      reviewsAmount,
+    ] = await Promise.all([
+      this.listRepository.getUserLists(id, listsLimit),
+      this.favListRepository.getUserFavoriteLists(id, listsLimit),
+      this.listRepository.getAmountOfUserLists(id),
+      this.favListRepository.getAmountOfUserFavLists(id),
+      this.subcriptionRepository.getSubscriptionsInfo(id),
+      this.reviewRepository.getPublicReviewsAmount(id),
+    ]);
 
     return {
       id,
@@ -63,6 +72,7 @@ export class ProfileService {
       additionalInfo: {
         isSubscribed: false,
       },
+      reviewsAmount: reviewsAmount,
     };
   }
 
@@ -76,12 +86,13 @@ export class ProfileService {
     if (!user) {
       throw new HttpException(UserErrors.WRONG_USER_ID, 400);
     }
-    const [lists, listsCount, subscriptionsInfo, isSubscribed] =
+    const [lists, listsCount, subscriptionsInfo, isSubscribed, reviewsAmount] =
       await Promise.all([
         this.listRepository.getUserLists(id, listsLimit, { isPublic: true }),
         this.listRepository.getAmountOfUserLists(id, true),
         this.subcriptionRepository.getSubscriptionsInfo(id),
         this.subcriptionRepository.isSubscribed(requesterUserId, id),
+        this.reviewRepository.getPublicReviewsAmount(id),
       ]);
 
     return {
@@ -98,6 +109,7 @@ export class ProfileService {
       additionalInfo: {
         isSubscribed,
       },
+      reviewsAmount: reviewsAmount,
     };
   }
 
@@ -107,7 +119,11 @@ export class ProfileService {
   ): Promise<
     Omit<
       Profile,
-      'allLists' | 'favLists' | 'subscriptionsInfo' | 'additionalInfo'
+      | 'allLists'
+      | 'favLists'
+      | 'subscriptionsInfo'
+      | 'additionalInfo'
+      | 'reviewsAmount'
     >
   > {
     const user = await this.userRepository.getUserInfoById(userId);
@@ -316,6 +332,14 @@ export class ProfileService {
   async getRecommendedUsers(userId: number, limit: number) {
     const users = await this.userRepository.getTopUsers(limit);
     return this.getShortProfileFromUsers(users, userId);
+  }
+
+  async getUserPublicReviews(userId: number, limit = 20, lowerBound?: Date) {
+    return this.reviewRepository.getUserPublicReviews(
+      userId,
+      limit,
+      lowerBound,
+    );
   }
 
   private async getShortProfileFromUsers<
