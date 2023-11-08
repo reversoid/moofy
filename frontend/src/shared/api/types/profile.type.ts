@@ -25,7 +25,10 @@ export interface Profile {
   additionalInfo: {
     isSubscribed: boolean;
   };
+  reviewsAmount: number;
 }
 
-export type ProfileShort = Pick<Profile, 'id' | 'image_url' | 'username' | 'description' | 'additionalInfo'>;
-
+export type ProfileShort = Pick<
+  Profile,
+  'id' | 'image_url' | 'username' | 'description' | 'additionalInfo'
+>;

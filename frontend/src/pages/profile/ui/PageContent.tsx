@@ -14,7 +14,7 @@ interface PageContentProps {
 const PageContent: FC<PageContentProps> = ({ profile }) => {
   const { userId } = useAuth();
   const isOwner = userId === profile.id;
-  const mutation = useLogout()
+  const mutation = useLogout();
 
   return (
     <>
@@ -23,12 +23,10 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
         imageUrl={profile.image_url}
         isOwner={isOwner}
         subscriptionsInfo={profile.subscriptionsInfo}
+        reviewsAmount={profile.reviewsAmount}
       />
 
-      <ProfileInfo
-        isOwner={isOwner}
-        profile={profile}
-      />
+      <ProfileInfo isOwner={isOwner} profile={profile} />
 
       <ListsSection profile={profile} isOwner={isOwner} />
 
@@ -42,7 +40,6 @@ const PageContent: FC<PageContentProps> = ({ profile }) => {
             },
           }}
           color="gradient"
-
           onPress={() => mutation.mutate()}
         >
           Выйти

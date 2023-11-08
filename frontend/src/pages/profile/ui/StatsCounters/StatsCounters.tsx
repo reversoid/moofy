@@ -11,11 +11,13 @@ const Wrapper = styled('div', {
 interface StatsCountersProps {
   followers: number;
   followed: number;
+  reviewsAmount: number;
 }
 
 export const StatsCounters: FC<StatsCountersProps> = ({
   followed,
   followers,
+  reviewsAmount,
 }) => {
   return (
     <>
@@ -30,10 +32,18 @@ export const StatsCounters: FC<StatsCountersProps> = ({
             borderRadius: '$lg',
             py: '$4',
             px: '$10',
+            '@xsMax': {
+              px: '$7',
+            },
           }}
         >
-          <StatCounter amount={followers} title="Подписчики" link='followers' />
-          <StatCounter amount={followed} title="Подписки" link='followed' />
+          <StatCounter amount={followers} title="Подписчики" link="followers" />
+          <StatCounter amount={followed} title="Подписки" link="followed" />
+          <StatCounter
+            amount={reviewsAmount}
+            title="Обзоры"
+            link="public-reviews"
+          />
         </Row>
       </Wrapper>
     </>

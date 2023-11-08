@@ -1,17 +1,17 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { subscriptionsService } from '../../api/subscriptions.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
 import { useCachedInfiniteData } from '@/shared/utils/reactQueryAddons/useCachedInfiniteData';
 import { useState } from 'react';
 import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
+import { profileService } from '@/pages/profile/api/profile.service';
 
 export const useFollowers = (userId: number) => {
   const result = useInfiniteQuery<IterableResponse<ProfileShort>, FetchError>({
     queryKey: ['Profile followers', userId],
     queryFn: ({ pageParam }) =>
-      subscriptionsService.getFollowers(userId, pageParam, 20),
+      profileService.getFollowers(userId, pageParam, 20),
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 

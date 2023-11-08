@@ -1,6 +1,7 @@
 import { RouteObject } from 'react-router-dom';
 import ProfilePage from './ui/ProfilePage';
 import { routes as subscriptionsRoutes } from './subscriptions/routes';
+import { publicReviewsRoutes } from './public-reviews/routes';
 
 export const routes: RouteObject[] = [
   {
@@ -8,4 +9,5 @@ export const routes: RouteObject[] = [
     element: <ProfilePage />,
   },
   ...subscriptionsRoutes,
+  ...publicReviewsRoutes,
 ];
