@@ -1,5 +1,5 @@
 import { addFollowed } from '@/entities/user-subscriptions';
-import { subscriptionsService } from '@/pages/profile/subscriptions/api/subscriptions.service';
+import { profileService } from '@/pages/profile/api/profile.service';
 import {
   ProfileShort,
   SubscriptionsInfo,
@@ -13,7 +13,7 @@ interface UseFollowProps {
 
 export const useFollow = (props?: UseFollowProps) => {
   const mutation = useMutation({
-    mutationFn: (id: number) => subscriptionsService.subscribe(id),
+    mutationFn: (id: number) => profileService.subscribe(id),
     onSuccess(data) {
       if (props?.profile) {
         addFollowed({
