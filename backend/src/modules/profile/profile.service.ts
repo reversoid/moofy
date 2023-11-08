@@ -51,7 +51,7 @@ export class ProfileService {
       this.listRepository.getAmountOfUserLists(id),
       this.favListRepository.getAmountOfUserFavLists(id),
       this.subcriptionRepository.getSubscriptionsInfo(id),
-      this.userRepository.getReviewsAmount(id),
+      this.reviewRepository.getPublicReviewsAmount(id),
     ]);
 
     return {
@@ -92,7 +92,7 @@ export class ProfileService {
         this.listRepository.getAmountOfUserLists(id, true),
         this.subcriptionRepository.getSubscriptionsInfo(id),
         this.subcriptionRepository.isSubscribed(requesterUserId, id),
-        this.userRepository.getReviewsAmount(id),
+        this.reviewRepository.getPublicReviewsAmount(id),
       ]);
 
     return {

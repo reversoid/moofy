@@ -331,4 +331,16 @@ export class ReviewRepository extends PaginatedRepository<Review> {
 
     return result;
   }
+
+  async getPublicReviewsAmount(userId: number): Promise<number> {
+    return this.createQueryBuilder('review')
+      .leftJoinAndSelect(List, 'list', 'review.listId = list.id')
+      .select(['review.id'])
+      .where('review.userId = :userId', { userId })
+      .andWhere('review.score IS NOT NULL')
+      .andWhere('review.description IS NOT NULL')
+      .andWhere("review.description <> ''")
+      .andWhere('list.is_public = TRUE')
+      .getCount();
+  }
 }
