@@ -28,14 +28,16 @@ export const PublicReviewsPage: FC = () => {
           {profileUsername}
         </Link>
       </Text>
-      <ReviewList
-        isUserOwner={false}
-        noReviewsText="Нет публичных обзоров"
-        canLoadMore={canLoadMore}
-        loadingMore={isLoadingMore}
-        reviews={data?.map((d) => d.review)}
-        loadMore={loadMore}
-      />
+      {data && (
+        <ReviewList
+          isUserOwner={false}
+          noReviewsText="Нет публичных обзоров"
+          canLoadMore={canLoadMore}
+          loadingMore={isLoadingMore}
+          reviews={data?.map((d) => d.review)}
+          loadMore={loadMore}
+        />
+      )}
     </div>
   );
 };

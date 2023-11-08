@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useNewInfiniteData } from '@/shared/utils/reactQueryAddons/useNewInfiniteData';
 import { useId } from '../../ui/ProfilePage';
 import { useProfileUsername } from './use-profile-username';
+import { useCachedInfiniteData } from '@/shared/utils/reactQueryAddons/useCachedInfiniteData';
 
 export const usePublicReviews = () => {
   const id = useId();
@@ -25,8 +26,15 @@ export const usePublicReviews = () => {
   >({
     queryKey: ['Public reviews', id],
     queryFn: ({ pageParam, signal }) =>
-      profileService.getPublicUserReviews(id, pageParam, 5, signal),
+      profileService.getPublicUserReviews(id, pageParam, 20, signal),
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
+  });
+
+  useCachedInfiniteData(result, () => {
+    if (!result.data) return;
+
+    const transformedResponse = transformInfiniteIterableData(result.data);
+    setReviewsWithLists(transformedResponse);
   });
 
   useNewInfiniteData(result, () => {
