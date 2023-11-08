@@ -14,6 +14,7 @@ interface RandomReviewModalProps {
   isOpen: boolean;
   setIsOpen: (newState: boolean) => void;
   review: Review;
+  getRandomReview: () => void;
 }
 
 const ConfettiConfig = {
@@ -45,7 +46,13 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
   isOpen,
   setIsOpen,
   review,
+  getRandomReview,
 }) => {
+  const [exploded, setExploded] = useState(false);
+  useEffect(() => {
+    setExploded(true);
+  }, [review]);
+
   return (
     <Modal
       closeButton
@@ -63,14 +70,18 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       </ModalHeader>
       <ModalBody css={ModalBodyCss}>
         <>
-          <ConfettiExplosion
-            style={{
-              position: 'absolute',
-              top: '0',
-              left: '50%',
-            }}
-            {...ConfettiConfig}
-          />
+          {exploded && (
+            <ConfettiExplosion
+              style={{
+                position: 'absolute',
+                top: '0',
+                left: '50%',
+              }}
+              onComplete={() => setExploded(false)}
+              {...ConfettiConfig}
+            />
+          )}
+
           <ReviewItem review={review} horizontal={false} />
           <Text
             css={{
@@ -84,8 +95,14 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
         </>
       </ModalBody>
       <ModalFooter css={{ width: '100%', justifyContent: 'center' }}>
-        <Button color={'gradient'} size={'lg'}>
-          Заново
+        <Button
+          onPress={() => {
+            getRandomReview();
+          }}
+          color={'gradient'}
+          size={'lg'}
+        >
+          Повторить
         </Button>
       </ModalFooter>
     </Modal>

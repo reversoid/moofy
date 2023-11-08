@@ -85,28 +85,17 @@ export const ListContent = ({
             Обзоры
           </Text>
 
-          <Dropdown>
-            <Dropdown.Trigger>
-              <Btn color="secondary" aria-label="Random review">
-                {isLoading ? (
-                  <Loading size="sm" color={'white'} />
-                ) : (
-                  <Shuffle width="1.75rem" height="1.75rem" />
-                )}
-              </Btn>
-            </Dropdown.Trigger>
-            <Dropdown.Menu
-              onAction={() => {
-                refetch();
-              }}
-              variant="solid"
-              css={{ background: '$gray200' }}
-            >
-              <Dropdown.Item key="all">Любой обзор</Dropdown.Item>
-              <Dropdown.Item key="unranked">Обзор без оценки</Dropdown.Item>
-              <Dropdown.Item key="ranked">Обзор с оценкой</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <Btn
+            onPress={() => refetch()}
+            color="secondary"
+            aria-label="Random review"
+          >
+            {isLoading ? (
+              <Loading size="sm" color={'white'} />
+            ) : (
+              <Shuffle width="1.75rem" height="1.75rem" />
+            )}
+          </Btn>
         </Row>
 
         {review && (
@@ -114,6 +103,7 @@ export const ListContent = ({
             review={review}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            getRandomReview={refetch}
           />
         )}
 
