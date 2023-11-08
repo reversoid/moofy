@@ -1,5 +1,5 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
-import { Text } from '@nextui-org/react';
+import { Button, Text } from '@nextui-org/react';
 import ConfettiExplosion from 'react-confetti-explosion';
 import { useEffect, useState } from 'react';
 import { ReviewItem } from '@/entities/Review';
@@ -8,10 +8,12 @@ import RandomDropDown from './RandomDropdown';
 import { Critarea } from '../api';
 import FakeReview from './FakeReview';
 import { NoReviewsAlert } from './NoReviewsAlert';
+import { Review } from '@/shared/api/types/review.type';
 
 interface RandomReviewModalProps {
   isOpen: boolean;
   setIsOpen: (newState: boolean) => void;
+  review: Review;
 }
 
 const ConfettiConfig = {
@@ -42,26 +44,14 @@ const ModalBodyCss = {
 const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
   isOpen,
   setIsOpen,
+  review,
 }) => {
-  const [type, setType] = useState<Critarea>('');
-  const { review, isLoading, refetch, setIsExploded } =
-    useControllRandomReview(type);
-
-  const hasReview = review && review[0];
-
-  const handleClose = () => {
-    setIsOpen(false);
-    setIsExploded(false);
-    document.body.style.overflow = 'auto';
-  };
-
   return (
     <Modal
-      scroll={false}
       closeButton
       aria-labelledby="modal-title"
       open={isOpen}
-      onClose={handleClose}
+      onClose={() => setIsOpen(false)}
       css={{
         minHeight: '30rem',
         display: 'flex',
@@ -69,40 +59,34 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       }}
     >
       <ModalHeader css={ModalHeaderCss}>
-        <Text h3>Найти случайный обзор</Text>
+        <Text h3>Случайный обзор</Text>
       </ModalHeader>
       <ModalBody css={ModalBodyCss}>
-        {!isLoading && hasReview && (
-          <>
-            <ConfettiExplosion
-              style={{
-                position: 'absolute',
-                top: '0',
-                left: '50%',
-              }}
-              {...ConfettiConfig}
-            />
-            <ReviewItem review={review[0]} horizontal={false} />
-            <Text
-              css={{
-                textAlign: 'center',
-                wordBreak: 'break-word',
-                width: '100%',
-              }}
-            >
-              {review[0].description}
-            </Text>
-          </>
-        )}
-        {isLoading || (!hasReview && <FakeReview />)}
+        <>
+          <ConfettiExplosion
+            style={{
+              position: 'absolute',
+              top: '0',
+              left: '50%',
+            }}
+            {...ConfettiConfig}
+          />
+          <ReviewItem review={review} horizontal={false} />
+          <Text
+            css={{
+              textAlign: 'center',
+              wordBreak: 'break-word',
+              width: '100%',
+            }}
+          >
+            {review.description}
+          </Text>
+        </>
       </ModalBody>
       <ModalFooter css={{ width: '100%', justifyContent: 'center' }}>
-        <RandomDropDown
-          handleSearch={refetch}
-          setType={setType}
-          isLoading={isLoading}
-        />
-        <NoReviewsAlert review={review} refetch={refetch} />
+        <Button color={'gradient'} size={'lg'}>
+          Заново
+        </Button>
       </ModalFooter>
     </Modal>
   );

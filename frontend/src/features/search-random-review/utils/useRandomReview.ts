@@ -7,11 +7,12 @@ export const useRandomReview = (type: Critarea) => {
 
   const result = useQuery({
     queryKey: ['Random review', type, listId],
+    enabled: false,
     queryFn: () =>
       searchRandomReviewService.searchRandomReviews(type, Number(listId)),
   });
   return {
-    review: result.data?.reviews,
+    review: result.data?.reviews?.[0],
     isLoading: result.isFetching,
     refetch: result.refetch,
   };
