@@ -35,7 +35,7 @@ const ReviewContent: FC<ReviewContentProps> = ({
         </Link>
       </Text>
       <Text b color="$neutral" css={{ mb: '$4', lineHeight: 1 }}>
-        {filmYear > 0 && filmYear}
+        {filmYear}
       </Text>
       {horizontal && (
         <Text

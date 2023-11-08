@@ -14,7 +14,7 @@ const ImageContainer = styled('div', {
   },
 });
 
-const ImgWrapper = styled('object');
+const ImgWrapper = styled('div');
 
 const Score = styled('div', {
   width: '1.5rem',
@@ -33,12 +33,8 @@ const ReviewImageWithScore: FC<{
   return (
     <ImageContainer>
       <ImgWrapper
-        data={imgSrc}
-        type="image/jpeg"
         css={{
           position: 'relative',
-          width: '6.75rem',
-          height: '10rem',
         }}
       >
         <Image
@@ -46,9 +42,10 @@ const ReviewImageWithScore: FC<{
           src={imgSrc}
           objectFit="cover"
           css={{
+            width: '6.75rem',
+            height: '10rem',
             flexShrink: 0,
             aspectRatio: '27 / 40',
-            border: '1px solid white',
           }}
         />
         {score && (
@@ -59,6 +56,7 @@ const ReviewImageWithScore: FC<{
               right: 0,
               background: colors?.main ?? '',
               color: colors?.contrast ?? '',
+              zIndex: 100000,
             }}
           >
             {score}

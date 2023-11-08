@@ -1,24 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRandomReview } from './useRandomReview';
-import { Critarea } from '../api';
+import { Criteria } from '../api';
 import { Option } from '@/shared/ui/Dropdown/Dropdown';
 
-export const useControllRandomReview = (type: Critarea) => {
-  const [isExploded, setIsExploded] = useState(false);
+export const useControllRandomReview = () => {
+  const type: Criteria = 'ALL';
   const { review, isLoading, refetch } = useRandomReview(type);
-
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    if (isExploded) {
-      setIsExploded(false);
+    if (review) {
+      setIsOpen(true);
     }
-  }, [isExploded]);
-
+  }, [review]);
 
   return {
     refetch,
     review,
     isLoading,
-    isExploded,
-    setIsExploded,
+    isOpen,
+    setIsOpen
   };
 };

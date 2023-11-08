@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { Critarea, searchRandomReviewService } from '../api';
+import { Criteria, searchRandomReviewService } from '../api';
 import { useParams } from 'react-router-dom';
 
-export const useRandomReview = (type: Critarea) => {
+export const useRandomReview = (type: Criteria) => {
   const { id: listId } = useParams();
 
   const result = useQuery({

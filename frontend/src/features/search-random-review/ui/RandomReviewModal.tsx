@@ -1,20 +1,16 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import { Button, Text } from '@nextui-org/react';
 import ConfettiExplosion from 'react-confetti-explosion';
-import { useEffect, useState } from 'react';
 import { ReviewItem } from '@/entities/Review';
-import { useControllRandomReview } from '../utils/useControllSearch';
-import RandomDropDown from './RandomDropdown';
-import { Critarea } from '../api';
-import FakeReview from './FakeReview';
-import { NoReviewsAlert } from './NoReviewsAlert';
 import { Review } from '@/shared/api/types/review.type';
 
 interface RandomReviewModalProps {
   isOpen: boolean;
   setIsOpen: (newState: boolean) => void;
   review: Review;
-  getRandomReview: () => void;
+  pickRandom: () => void;
+  isLoading: boolean;
+  exploded: boolean;
 }
 
 const ConfettiConfig = {
@@ -46,13 +42,10 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
   isOpen,
   setIsOpen,
   review,
-  getRandomReview,
+  pickRandom,
+  isLoading,
+  exploded,
 }) => {
-  const [exploded, setExploded] = useState(false);
-  useEffect(() => {
-    setExploded(true);
-  }, [review]);
-
   return (
     <Modal
       closeButton
@@ -70,14 +63,13 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       </ModalHeader>
       <ModalBody css={ModalBodyCss}>
         <>
-          {exploded && (
+          {!isLoading && exploded && (
             <ConfettiExplosion
               style={{
                 position: 'absolute',
                 top: '0',
                 left: '50%',
               }}
-              onComplete={() => setExploded(false)}
               {...ConfettiConfig}
             />
           )}
@@ -97,7 +89,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       <ModalFooter css={{ width: '100%', justifyContent: 'center' }}>
         <Button
           onPress={() => {
-            getRandomReview();
+            pickRandom();
           }}
           color={'gradient'}
           size={'lg'}

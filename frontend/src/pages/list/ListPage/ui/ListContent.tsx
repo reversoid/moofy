@@ -8,7 +8,7 @@ import {
   Text,
   styled,
 } from '@nextui-org/react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
@@ -18,8 +18,7 @@ import { clearSearchReviews } from '../model/listSearchContent';
 import { useUnmount } from '@/shared/hooks/useUnmount';
 import RandomReviewModal from '@/features/search-random-review/ui/RandomReviewModal';
 import { Shuffle } from '@/shared/Icons/Shuffle.icon';
-import { useControllRandomReview } from '@/features/search-random-review/utils/useControllSearch';
-import { Critarea } from '@/features/search-random-review/api';
+import { useControllRandomReview } from '@/features/search-random-review/utils/useRandomModal';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -50,22 +49,25 @@ export const ListContent = ({
     data: searchData,
   } = useSearchReviews(id!);
 
+  const { review, isLoading, refetch, isOpen, setIsOpen } =
+    useControllRandomReview();
+
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
 
+  const [exploded, setExploded] = useState(false);
+
+  const handlePickRandom = () => {
+    setExploded(false);
+    refetch();
+    setExploded(true);
+  };
+
   useUnmount(() => {
     clearSearchReviews();
   });
-  const type: Critarea = 'ALL';
-  const { review, isLoading, refetch, setIsExploded } =
-    useControllRandomReview(type);
-  const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    if (review) {
-      setIsOpen(true);
-    }
-  }, [review]);
+
   return (
     <>
       <Row
@@ -86,7 +88,10 @@ export const ListContent = ({
           </Text>
 
           <Btn
-            onPress={() => refetch()}
+            onPress={() => {
+              setExploded(true);
+              refetch();
+            }}
             color="secondary"
             aria-label="Random review"
           >
@@ -97,13 +102,14 @@ export const ListContent = ({
             )}
           </Btn>
         </Row>
-
         {review && (
           <RandomReviewModal
             review={review}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-            getRandomReview={refetch}
+            pickRandom={handlePickRandom}
+            isLoading={isLoading}
+            exploded={exploded}
           />
         )}
 
