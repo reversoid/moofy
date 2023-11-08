@@ -5,6 +5,7 @@ import { getTsQueryFromString } from 'src/shared/libs/full-text-search/get-ts-qu
 import { ProfileShort } from 'src/modules/profile/types/profile-short.type';
 import { Review } from 'src/modules/review/entities/review.entity';
 import { Subscription } from '../entities/subscription.entity';
+import { List } from 'src/modules/list/entities/list.entity';
 
 const TOP_USER_COEFFS = { followers: 4, reviews: 2 } as const;
 
@@ -170,10 +171,13 @@ export class UserRepository extends Repository<User> {
   async getReviewsAmount(userId: number): Promise<number> {
     return this.createQueryBuilder()
       .from(Review, 'review')
+      .leftJoinAndSelect(List, 'list', 'review.listId = list.id')
       .select(['review.id'])
-      .where('review.user_id = :userId', { userId })
+      .where('review.userId = :userId', { userId })
       .andWhere('review.score IS NOT NULL')
       .andWhere('review.description IS NOT NULL')
+      .andWhere("review.description <> ''")
+      .andWhere('list.is_public = TRUE')
       .getCount();
   }
 }
