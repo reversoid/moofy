@@ -76,7 +76,7 @@ export class ReviewService {
       film: existingFilm,
       user,
       score: score ?? null,
-      description: sanitizeHtml(description),
+      description: description?.trim() ? sanitizeHtml(description) : undefined,
       list,
       tags,
       order_in_list: orderInList,
