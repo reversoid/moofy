@@ -1,8 +1,9 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
-import { Button, Text } from '@nextui-org/react';
+import { Button, Loading, Text } from '@nextui-org/react';
 import ConfettiExplosion from 'react-confetti-explosion';
 import { ReviewItem } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
+import RefereshIcon from './refresh.icon';
 
 interface RandomReviewModalProps {
   isOpen: boolean;
@@ -52,10 +53,13 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       aria-labelledby="modal-title"
       open={isOpen}
       onClose={() => setIsOpen(false)}
+      width="20rem"
       css={{
-        minHeight: '30rem',
         display: 'flex',
         alignItems: 'stretch',
+        '@xsMax': {
+          width: '100% !important',
+        },
       }}
     >
       <ModalHeader css={ModalHeaderCss}>
@@ -92,9 +96,16 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
             pickRandom();
           }}
           color={'gradient'}
+          disabled={isLoading}
+          auto
+          css={{ width: '100%' }}
           size={'lg'}
         >
-          Повторить
+          {isLoading ? (
+            <Loading color={'white'} type="points" size="lg" />
+          ) : (
+            <RefereshIcon />
+          )}
         </Button>
       </ModalFooter>
     </Modal>
