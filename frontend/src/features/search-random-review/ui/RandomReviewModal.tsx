@@ -92,9 +92,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       </ModalBody>
       <ModalFooter css={{ width: '100%', justifyContent: 'center' }}>
         <Button
-          onPress={() => {
-            pickRandom();
-          }}
+          onPress={pickRandom}
           color={'gradient'}
           disabled={isLoading}
           auto
