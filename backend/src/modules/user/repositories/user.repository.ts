@@ -166,4 +166,14 @@ export class UserRepository extends Repository<User> {
 
     return users;
   }
+
+  async getReviewsAmount(userId: number): Promise<number> {
+    return this.createQueryBuilder()
+      .from(Review, 'review')
+      .select(['review.id'])
+      .where('review.user_id = :userId', { userId })
+      .andWhere('review.score IS NOT NULL')
+      .andWhere('review.description IS NOT NULL')
+      .getCount();
+  }
 }

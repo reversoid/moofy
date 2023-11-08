@@ -62,7 +62,11 @@ export class ProfileController {
   ): Promise<
     Omit<
       Profile,
-      'allLists' | 'favLists' | 'subscriptionsInfo' | 'additionalInfo'
+      | 'allLists'
+      | 'favLists'
+      | 'subscriptionsInfo'
+      | 'additionalInfo'
+      | 'reviewsAmount'
     >
   > {
     return this.profileService.editProfile(user.id, dto);
