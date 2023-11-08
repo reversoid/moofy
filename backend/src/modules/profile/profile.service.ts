@@ -332,6 +332,10 @@ export class ProfileService {
     return this.getShortProfileFromUsers(users, userId);
   }
 
+  async getUserReviews(userId: number, limit = 20, lowerBound?: Date) {
+    return this.userRepository.getUserPublicReviews(userId, limit, lowerBound);
+  }
+
   private async getShortProfileFromUsers<
     T extends Omit<ProfileShort, 'additionalInfo'>,
   >(users: T[], requesterUserId?: number) {

@@ -30,6 +30,9 @@ import { ProfileService } from './profile.service';
 import { ProfileShort } from './types/profile-short.type';
 import { Profile, SubscriptionsInfo } from './types/profile.type';
 import { GetRecommendedUsersDTO } from './dtos/get-recommended-users.dto';
+import { Review } from '../review/entities/review.entity';
+import { List } from '../list/entities/list.entity';
+import { PaginationQueryDTO } from 'src/shared/pagination/pagination.dto';
 
 const LISTS_LIMIT = 20;
 
@@ -239,5 +242,23 @@ export class ProfileController {
     }
 
     return this.profileService.unSubscribeFromUser(user.id, numericId);
+  }
+
+  @ApiOperation({
+    description: 'Get user public reviews',
+  })
+  @ApiHeader(SwaggerAuthHeader)
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/public-reviews')
+  async getUserPublicReviews(
+    @Param('id') id: string,
+    @Query() { limit, lowerBound }: PaginationQueryDTO,
+  ): Promise<IterableResponse<{ review: Review; list: List }>> {
+    const numericId = Number(id);
+    if (Number.isNaN(numericId)) {
+      throw new HttpException(UserErrors.WRONG_USER_ID, 400);
+    }
+
+    return this.profileService.getUserReviews(numericId, limit, lowerBound);
   }
 }
