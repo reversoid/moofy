@@ -7,7 +7,6 @@ import { Review } from 'src/modules/review/entities/review.entity';
 import { Subscription } from '../entities/subscription.entity';
 import { List } from 'src/modules/list/entities/list.entity';
 import { PaginatedRepository } from 'src/shared/pagination/paginated.repository';
-import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 
 const TOP_USER_COEFFS = { followers: 4, reviews: 2 } as const;
 
@@ -181,43 +180,5 @@ export class UserRepository extends PaginatedRepository<User> {
       .andWhere("review.description <> ''")
       .andWhere('list.is_public = TRUE')
       .getCount();
-  }
-
-  async getUserPublicReviews(
-    userId: number,
-    limit: number,
-    lowerBound?: Date,
-  ): Promise<IterableResponse<{ review: Review; list: List }>> {
-    const { date, operator } = super.getRAWDatesCompareString(lowerBound);
-
-    const reviews = await this.createQueryBuilder()
-      .from(Review, 'review')
-      .select(['review'])
-      .addSelect('review.list')
-      .leftJoinAndSelect('review.list', 'list')
-      .leftJoinAndSelect('review.film', 'film')
-      .where('review.userId = :userId', { userId })
-      .andWhere('list.is_public = TRUE')
-      .andWhere(`list.updated_at ${operator} :date`, { date })
-      .take(limit + 1)
-      .orderBy('review.updated_at', 'DESC')
-      .getMany();
-
-    const paginatedResult = super.processPagination(
-      reviews,
-      limit,
-      'updated_at',
-    );
-
-    const result: IterableResponse<{ review: Review; list: List }> = {
-      items: paginatedResult.items.map((review) => {
-        const list = review.list;
-        delete review.list;
-        return { list, review: review };
-      }),
-      nextKey: paginatedResult.nextKey,
-    };
-
-    return result;
   }
 }

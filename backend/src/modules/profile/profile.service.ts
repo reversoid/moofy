@@ -17,6 +17,7 @@ import { In } from 'typeorm';
 import { IterableResponse } from 'src/shared/pagination/IterableResponse.type';
 import { EventService } from '../event/event.service';
 import { ProfileEventType } from '../profile-notifications/entities/profile-event.entity';
+import { ReviewRepository } from '../review/repositories/review.repository';
 
 @Injectable()
 export class ProfileService {
@@ -26,6 +27,7 @@ export class ProfileService {
     private readonly listRepository: ListRepository,
     private readonly favListRepository: FavoriteListRepository,
     private readonly eventService: EventService,
+    private readonly reviewRepository: ReviewRepository,
   ) {}
 
   /** Get full data of profile, including private and favorite lists */
@@ -332,8 +334,12 @@ export class ProfileService {
     return this.getShortProfileFromUsers(users, userId);
   }
 
-  async getUserReviews(userId: number, limit = 20, lowerBound?: Date) {
-    return this.userRepository.getUserPublicReviews(userId, limit, lowerBound);
+  async getUserPublicReviews(userId: number, limit = 20, lowerBound?: Date) {
+    return this.reviewRepository.getUserPublicReviews(
+      userId,
+      limit,
+      lowerBound,
+    );
   }
 
   private async getShortProfileFromUsers<
