@@ -7,6 +7,8 @@ import Footer from './Footer';
 import { NotifySnackbar } from './Snackbar/NotifySnackbar';
 import { ScrollToTop } from '@/app/utils/scrollToTop';
 import { HEADER_HEIGHT } from '@/app/utils/layoutConstants';
+import { useFilmModal } from '@/app/utils/use-film-modal';
+import { SharedFilmModal } from './shared-film-modal';
 
 interface LayoutProps {
   fullWidth?: boolean;
@@ -63,6 +65,7 @@ export const Layout = ({ fullWidth }: LayoutProps) => {
 
       <ErrorSnackbar />
       <NotifySnackbar />
+      <SharedFilmModal />
     </>
   );
 };

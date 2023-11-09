@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { FavoriteList } from '@/shared/api/types/favoriteList.type';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';

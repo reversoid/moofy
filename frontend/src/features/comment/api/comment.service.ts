@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { Comment } from '@/shared/api/types/comment.type';
 
 export interface LikeCommentDto {
@@ -31,7 +31,7 @@ export class CommentService extends ApiService {
       useJWT: true,
       json: {
         text,
-        replyToId: commentId
+        replyToId: commentId,
       },
     });
   }

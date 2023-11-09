@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { List, ListWithAdditionalInfo } from '@/shared/api/types/list.type';
 import { IterableResponse } from '@/shared/api/types/shared';
 import { SearchParamsOption } from 'ky';

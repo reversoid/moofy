@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 
 export interface LikeUnlikeListDto {
   listId: number;

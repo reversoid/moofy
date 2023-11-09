@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { Film } from '@/shared/api/types/film.type';
 
 export class FilmService extends ApiService {

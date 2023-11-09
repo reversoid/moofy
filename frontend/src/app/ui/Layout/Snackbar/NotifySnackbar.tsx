@@ -18,7 +18,7 @@ export const NotifySnackbar = () => {
     <SnackBarStyled
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       open={isSnackbarOpen}
-      autoHideDuration={4000}
+      autoHideDuration={1500}
       onClose={handleSnackbarClose}
     >
       <Alert severity="success" onClose={handleSnackbarClose} variant="filled">

@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { List } from '@/shared/api/types/list.type';
 import { Profile } from '@/shared/api/types/profile.type';
 import { SearchParamsOption } from 'ky';

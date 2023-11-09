@@ -1,8 +1,8 @@
 import ky, { Options } from 'ky';
 import { setAppError } from '@/app';
-import { tokenService } from '../services/token.service';
+import { tokenService } from '../../shared/services/token.service';
 import environment from '@/app/environment';
-import { AuthResponse } from './types/authResponse.type';
+import { AuthResponse } from '../../shared/api/types/authResponse.type';
 
 interface CustomOptions extends Options {
   /** With this option enabled all logic about JWT tokens on client is proceeded automatically */
@@ -15,35 +15,35 @@ type HttpMethods = 'get' | 'post' | 'patch' | 'delete' | 'put';
 export default class ApiService {
   protected apiUrl = environment.apiUrl;
 
-  protected async post<Response = unknown>(
+  async post<Response = unknown>(
     relativeUrl: `/${string}`,
     options?: CustomOptions,
   ) {
     return this.fetch<Response>(this.apiUrl + relativeUrl, 'post', options);
   }
 
-  protected async put<Response = unknown>(
+  async put<Response = unknown>(
     relativeUrl: `/${string}`,
     options?: CustomOptions,
   ) {
     return this.fetch<Response>(this.apiUrl + relativeUrl, 'put', options);
   }
 
-  protected async get<Response = unknown>(
+  async get<Response = unknown>(
     relativeUrl: `/${string}`,
     options?: CustomOptions,
   ) {
     return this.fetch<Response>(this.apiUrl + relativeUrl, 'get', options);
   }
 
-  protected async patch<Response = unknown>(
+  async patch<Response = unknown>(
     relativeUrl: `/${string}`,
     options?: CustomOptions,
   ) {
     return this.fetch<Response>(this.apiUrl + relativeUrl, 'patch', options);
   }
 
-  protected async delete<Response = unknown>(
+  async delete<Response = unknown>(
     relativeUrl: `/${string}`,
     options?: CustomOptions,
   ) {
@@ -140,3 +140,5 @@ export default class ApiService {
     }
   }
 }
+
+export const apiService = new ApiService();

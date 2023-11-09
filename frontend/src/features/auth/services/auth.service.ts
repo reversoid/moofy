@@ -1,5 +1,5 @@
 import { RetryOptions } from 'ky';
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { tokenService } from '@/shared/services/token.service';
 import { AuthResponse } from '@/shared/api/types/authResponse.type';
 

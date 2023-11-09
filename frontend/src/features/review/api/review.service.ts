@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { List } from '@/shared/api/types/list.type';
 import { Review } from '@/shared/api/types/review.type';
 
@@ -35,7 +35,7 @@ export class ReviewService extends ApiService {
   }
 
   public deleteReview(reviewId: number) {
-    return this.delete<{ reviewId: number, list: List }>('/review', {
+    return this.delete<{ reviewId: number; list: List }>('/review', {
       useJWT: true,
       json: { reviewId },
     });

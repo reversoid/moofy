@@ -6,6 +6,7 @@ import { FC } from 'react';
 export interface OwnerActionsProps {
   onClickUpdate: () => void;
   onClickDelete: () => void;
+  onClickShare: () => void;
   buttonProps?: ButtonProps;
 }
 
@@ -13,8 +14,14 @@ export const ReviewOwnerActions: FC<OwnerActionsProps> = ({
   onClickDelete,
   onClickUpdate,
   buttonProps,
+  onClickShare,
 }) => {
   const dropdownOptions: Option[] = [
+    {
+      key: 'share-film',
+      callback: onClickShare,
+      label: 'Поделиться фильмом',
+    },
     {
       key: 'update',
       callback: onClickUpdate,

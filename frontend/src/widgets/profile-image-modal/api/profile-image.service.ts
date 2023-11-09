@@ -1,4 +1,4 @@
-import ApiService from '@/shared/api/api.service';
+import ApiService from '@/app/api/api.service';
 import { Profile } from '@/shared/api/types/profile.type';
 
 class ProfileImageService extends ApiService {
