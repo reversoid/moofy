@@ -44,7 +44,7 @@ export const FilmItem: FC<FilmItemProps> = ({ film }) => {
         </ImgWrapper>
       </ImageContainer>
 
-      <Text h4 css={{ mb: '$1', lineHeight: '$sm', ta: 'center', mt: '$4' }}>
+      <Text h4 css={{ mb: '$1', lineHeight: '$sm', ta: 'center', mt: '$5' }}>
         <Link
           href={`https://kinopoisk.ru/film/${film.id}`}
           target="_blank"

@@ -1,5 +1,7 @@
 import { useFilmModal } from '@/app/utils/use-film-modal';
 import { FilmItem } from '@/entities/film';
+import { SmallList } from '@/entities/small-list';
+import { List } from '@/shared/api/types/list.type';
 import { useMount } from '@/shared/hooks/useMount';
 import { useUnmount } from '@/shared/hooks/useUnmount';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
@@ -16,22 +18,18 @@ export const SharedFilmModal: FC = () => {
     body.style.overflow = 'hidden';
   });
 
-  useUnmount(() => {
+  const onClose = () => {
+    setIsModalOpen(false);
     const body = document.getElementsByTagName('body')[0];
-    body.style.overflow = '';
-  });
+    body.style.overflow = 'auto';
+  };
 
   if (!film) {
     return null;
   }
 
   return (
-    <Modal
-      width="20rem"
-      closeButton
-      open={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-    >
+    <Modal width="20rem" open={isModalOpen} onClose={onClose}>
       <ModalHeader>
         <Text h3>Добавить фильм в коллекцию</Text>
       </ModalHeader>
@@ -57,12 +55,11 @@ export const SharedFilmModal: FC = () => {
             }
           >
             <Dropdown.Item css={{ h: 'auto' }} key="text">
-              <Image
-                src={film.posterPreviewUrl}
-                width={'3rem'}
-                height={'3rem'}
+              <SmallList
+                list={
+                  { name: 'О живом', image_url: film.posterPreviewUrl } as List
+                }
               />
-              <Text>Some text</Text>
             </Dropdown.Item>
             <Dropdown.Item key="number">Как много ты знаешь</Dropdown.Item>
             <Dropdown.Item key="date">О чем ты, майкл?</Dropdown.Item>
