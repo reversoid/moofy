@@ -46,7 +46,7 @@ export class UnofficialKpService {
     return this.keyRotator.getCurrentKey();
   }
 
-  async getFilmById(id: number): Promise<Film | null> {
+  async getFilmById(id: string): Promise<Film | null> {
     return lastValueFrom(
       this.httpService
         .get<UnofficalKinopoisk.FilmDTO>(`${this.baseUrl}/v2.2/films/${id}`, {

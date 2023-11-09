@@ -10,7 +10,7 @@ export class ExternalMovieProxyService {
     return this.kpService.searchFilmsByName(name);
   }
 
-  getFilmById(id: number): Promise<Film | null> {
+  getFilmById(id: string): Promise<Film | null> {
     return this.kpService.getFilmById(id);
   }
 }
