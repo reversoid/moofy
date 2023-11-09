@@ -1,14 +1,7 @@
 import { Review } from '@/shared/api/types/review.type';
 import { ReviewList } from '@/widgets/review-list';
-import {
-  Button,
-  Dropdown,
-  Loading,
-  Row,
-  Text,
-  styled,
-} from '@nextui-org/react';
-import { useCallback, useContext, useState } from 'react';
+import { Button, Loading, Row, Text, styled } from '@nextui-org/react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
@@ -17,8 +10,8 @@ import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
 import { clearSearchReviews } from '../model/listSearchContent';
 import { useUnmount } from '@/shared/hooks/useUnmount';
 import RandomReviewModal from '@/features/search-random-review/ui/RandomReviewModal';
-import { Shuffle } from '@/shared/Icons/Shuffle.icon';
-import { useControllRandomReview } from '@/features/search-random-review/utils/useRandomModal';
+import { useRandomModal } from '@/features/search-random-review/utils/useRandomModal';
+import RandomReviewBtn from '@/features/search-random-review/ui/RandomReviewBtn';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -49,24 +42,27 @@ export const ListContent = ({
     data: searchData,
   } = useSearchReviews(id!);
 
-  const { review, isLoading, refetch, isOpen, setIsOpen } =
-    useControllRandomReview();
+  const { review, isLoading, refetch, isModalOpen, setIsOpen } =
+    useRandomModal();
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
 
-  const [exploded, setExploded] = useState(false);
-
-  const handlePickRandom = () => {
-    setExploded(false);
-    refetch();
-    setExploded(true);
-  };
+  useEffect(() => {
+    if (review && isModalOpen) {
+      refetch();
+    }
+  }, [isModalOpen]);
 
   useUnmount(() => {
     clearSearchReviews();
   });
+
+  const handleModal = () => {
+    setIsOpen(!isModalOpen);
+    refetch();
+  };
 
   return (
     <>
@@ -86,30 +82,17 @@ export const ListContent = ({
           <Text h2 css={{ mb: '$0' }}>
             Обзоры
           </Text>
-
-          <Btn
-            onPress={() => {
-              setExploded(true);
-              refetch();
-            }}
-            color="secondary"
-            aria-label="Random review"
-          >
-            {isLoading ? (
-              <Loading size="sm" color={'white'} />
-            ) : (
-              <Shuffle width="1.75rem" height="1.75rem" />
-            )}
-          </Btn>
+          {reviews && reviews.length > 0 && (
+            <RandomReviewBtn pickRandom={handleModal} isLoading={isLoading} />
+          )}
         </Row>
         {review && (
           <RandomReviewModal
+            isModalOpen={isModalOpen}
             review={review}
-            isOpen={isOpen}
             setIsOpen={setIsOpen}
-            pickRandom={handlePickRandom}
+            pickRandom={refetch}
             isLoading={isLoading}
-            exploded={exploded}
           />
         )}
 

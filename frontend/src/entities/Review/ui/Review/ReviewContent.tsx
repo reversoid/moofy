@@ -40,7 +40,12 @@ const ReviewContent: FC<ReviewContentProps> = ({
       {horizontal && (
         <Text
           as={'p'}
-          css={{ flexShrink: 1, lineHeight: '$md', fontSize: '$md' }}
+          css={{
+            flexShrink: 1,
+            lineHeight: '$md',
+            fontSize: '$md',
+            wordBreak: 'break-word',
+          }}
           dangerouslySetInnerHTML={{ __html: description }}
         ></Text>
       )}

@@ -24,6 +24,7 @@ export const ReviewItem = memo(
       <>
         <Card horizontal={horizontal}>
           <ReviewImageWithScore
+            horizontal={horizontal}
             imgSrc={review.film.posterPreviewUrl}
             score={review.score}
           />

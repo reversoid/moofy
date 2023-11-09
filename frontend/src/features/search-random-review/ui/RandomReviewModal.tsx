@@ -4,20 +4,21 @@ import ConfettiExplosion from 'react-confetti-explosion';
 import { ReviewItem } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
 import RefereshIcon from './refresh.icon';
+import { useState, useEffect, useCallback } from 'react';
+import { useConfetti } from '../utils/useConfetti';
 
 interface RandomReviewModalProps {
-  isOpen: boolean;
+  isModalOpen: boolean;
   setIsOpen: (newState: boolean) => void;
   review: Review;
   pickRandom: () => void;
   isLoading: boolean;
-  exploded: boolean;
 }
 
 const ConfettiConfig = {
   zIndex: 10000,
   force: 1,
-  duration: 3000,
+  duration: 2000,
   particleCount: 150,
   width: 800,
   height: 800,
@@ -40,19 +41,27 @@ const ModalBodyCss = {
 };
 
 const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
-  isOpen,
+  isModalOpen,
   setIsOpen,
   review,
   pickRandom,
   isLoading,
-  exploded,
 }) => {
+  const { confettiArray, setConfettiArray } = useConfetti(
+    isLoading,
+    isModalOpen,
+  );
+
+  const handleClose = () => {
+    setConfettiArray(() => []);
+    setIsOpen(false);
+  };
+
   return (
     <Modal
-      closeButton
       aria-labelledby="modal-title"
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
+      open={isModalOpen}
+      onClose={handleClose}
       width="20rem"
       css={{
         display: 'flex',
@@ -67,16 +76,18 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       </ModalHeader>
       <ModalBody css={ModalBodyCss}>
         <>
-          {!isLoading && exploded && (
+          {confettiArray.map((key) => (
             <ConfettiExplosion
+              key={key}
               style={{
                 position: 'absolute',
                 top: '0',
                 left: '50%',
               }}
+              onComplete={() => setConfettiArray([])}
               {...ConfettiConfig}
             />
-          )}
+          ))}
 
           <ReviewItem review={review} horizontal={false} />
           <Text

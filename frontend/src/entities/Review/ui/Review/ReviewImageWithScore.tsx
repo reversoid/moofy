@@ -5,7 +5,6 @@ import { FC, memo } from 'react';
 
 const ImageContainer = styled('div', {
   display: 'flex',
-  justifyContent: 'flex-start',
   '@xsMax': {
     justifyContent: 'center',
   },
@@ -14,7 +13,10 @@ const ImageContainer = styled('div', {
   },
 });
 
-const ImgWrapper = styled('div');
+const ImgWrapper = styled('div', {
+  display: 'flex',
+  justifyContent: 'center',
+});
 
 const Score = styled('div', {
   width: '1.5rem',
@@ -27,23 +29,29 @@ const Score = styled('div', {
 const ReviewImageWithScore: FC<{
   imgSrc: string;
   score: number | null;
-}> = ({ imgSrc, score }) => {
+  horizontal?: boolean;
+}> = ({ imgSrc, score, horizontal }) => {
   const colors = getColorsByScore(score);
 
   return (
-    <ImageContainer>
+    <ImageContainer
+      css={{ justifyContent: horizontal ? 'flex-start' : 'center' }}
+    >
       <ImgWrapper
         css={{
+          display: 'flex',
+          alignItems: 'center',
           position: 'relative',
+          justifyContent: 'center',
         }}
       >
         <Image
           showSkeleton
           src={imgSrc}
           objectFit="cover"
+          width={'6.75rem'}
+          height={'10rem'}
           css={{
-            width: '6.75rem',
-            height: '10rem',
             flexShrink: 0,
             aspectRatio: '27 / 40',
           }}
