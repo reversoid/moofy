@@ -11,6 +11,7 @@ export interface ProfileHeaderProps {
   imageUrl: string | null;
   isOwner: boolean;
   subscriptionsInfo: SubscriptionsInfo;
+  reviewsAmount: number;
 }
 
 const UserImg = styled('img', {
@@ -25,6 +26,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({
   imageUrl,
   isOwner,
   subscriptionsInfo,
+  reviewsAmount,
 }) => {
   const [imageModalOpen, setImageModalOpen] = useState(false);
 
@@ -52,6 +54,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({
         <StatsCounters
           followed={subscriptionsInfo.followedAmount}
           followers={subscriptionsInfo.followersAmount}
+          reviewsAmount={reviewsAmount}
         />
       </Row>
     </>

@@ -1,8 +1,8 @@
+import { profileService } from '@/pages/profile/api/profile.service';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { subscriptionsService } from '../../api/subscriptions.service';
 
 export const useSearchFollowers = (userId: number) => {
   const [search, setSearch] = useState('');
@@ -13,7 +13,7 @@ export const useSearchFollowers = (userId: number) => {
   >({
     queryKey: ['Search followers', userId, search],
     queryFn: ({ pageParam, signal }) =>
-      subscriptionsService
+      profileService
         .getFollowers(userId, pageParam, 20, search, signal)
         .then((r) => ({ ...r, search })),
     enabled: false,

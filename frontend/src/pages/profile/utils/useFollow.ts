@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { setProfileWithoutLists } from '../model';
-import { subscriptionsService } from '../subscriptions/api/subscriptions.service';
 import { addFollowed } from '@/entities/user-subscriptions';
 import { ProfileShort } from '@/shared/api/types/profile.type';
+import { profileService } from '../api/profile.service';
 
 export const useFollow = (profile: ProfileShort) => {
   const mutation = useMutation({
-    mutationFn: () => subscriptionsService.subscribe(profile.id),
+    mutationFn: () => profileService.subscribe(profile.id),
 
     onSuccess(subscriptionsInfo) {
       addFollowed({

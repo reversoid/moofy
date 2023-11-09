@@ -1,5 +1,4 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { subscriptionsService } from '../../api/subscriptions.service';
 import { FetchError, IterableResponse } from '@/shared/api/types/shared';
 import { ProfileShort } from '@/shared/api/types/profile.type';
 import { transformInfiniteIterableData } from '@/shared/utils/reactQueryAddons/transformInfiniteData';
@@ -13,6 +12,7 @@ import {
 } from '@/entities/user-subscriptions';
 import { useAuth } from '@/app';
 import { useEffect, useState } from 'react';
+import { profileService } from '@/pages/profile/api/profile.service';
 
 export const useFollowed = (userId: number) => {
   const { userId: currentUserID } = useAuth();
@@ -21,7 +21,7 @@ export const useFollowed = (userId: number) => {
   const result = useInfiniteQuery<IterableResponse<ProfileShort>, FetchError>({
     queryKey: ['Profile followed', userId],
     queryFn: ({ pageParam }) =>
-      subscriptionsService.getFollowed(userId, pageParam, 20),
+      profileService.getFollowed(userId, pageParam, 20),
     getNextPageParam: (lastPage) => lastPage.nextKey ?? undefined,
   });
 
