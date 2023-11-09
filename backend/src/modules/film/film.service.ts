@@ -10,7 +10,7 @@ export class FilmService {
   ) {}
 
   async saveFilmById(filmId: string) {
-    const film = await this.externalMovieProxy.getFilmById(Number(filmId));
+    const film = await this.externalMovieProxy.getFilmById(filmId);
     if (!film) {
       throw new HttpException('WRONG_FILM_ID_GIVEN', 400);
     }
