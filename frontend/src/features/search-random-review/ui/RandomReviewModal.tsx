@@ -1,10 +1,11 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
-import { Button, Loading, Text } from '@nextui-org/react';
+import { Button, Collapse, Loading, Text } from '@nextui-org/react';
 import { ReviewItem } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
 import RefereshIcon from './refresh.icon';
 import { useConfetti } from '../utils/useConfetti';
 import { Confetti } from './Confetti';
+import DescriptionCollapse from './DescriptionCollapse';
 
 interface RandomReviewModalProps {
   isModalOpen: boolean;
@@ -27,6 +28,14 @@ const ModalBodyCss = {
   '& .nextui-c-iLyjkd': {
     overflow: 'visible !important',
     border: 'none !important',
+  },
+};
+
+const ModalContainerCss = {
+  display: 'flex',
+  alignItems: 'stretch',
+  '@xsMax': {
+    width: '100% !important',
   },
 };
 
@@ -53,13 +62,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       open={isModalOpen}
       onClose={handleClose}
       width="20rem"
-      css={{
-        display: 'flex',
-        alignItems: 'stretch',
-        '@xsMax': {
-          width: '100% !important',
-        },
-      }}
+      css={ModalContainerCss}
     >
       <ModalHeader css={ModalHeaderCss}>
         <Text h3>Случайный обзор</Text>
@@ -72,15 +75,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
           />
 
           <ReviewItem review={review} horizontal={false} />
-          <Text
-            css={{
-              textAlign: 'center',
-              wordBreak: 'break-word',
-              width: '100%',
-            }}
-          >
-            {review.description}
-          </Text>
+          <DescriptionCollapse description={review.description} />
         </>
       </ModalBody>
       <ModalFooter css={{ width: '100%', justifyContent: 'center' }}>
