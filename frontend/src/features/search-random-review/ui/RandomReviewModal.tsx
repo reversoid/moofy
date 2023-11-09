@@ -1,11 +1,10 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
 import { Button, Loading, Text } from '@nextui-org/react';
-import ConfettiExplosion from 'react-confetti-explosion';
 import { ReviewItem } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
 import RefereshIcon from './refresh.icon';
-import { useState, useEffect, useCallback } from 'react';
 import { useConfetti } from '../utils/useConfetti';
+import { Confetti } from './Confetti';
 
 interface RandomReviewModalProps {
   isModalOpen: boolean;
@@ -14,15 +13,6 @@ interface RandomReviewModalProps {
   pickRandom: () => void;
   isLoading: boolean;
 }
-
-const ConfettiConfig = {
-  zIndex: 10000,
-  force: 1,
-  duration: 2000,
-  particleCount: 150,
-  width: 800,
-  height: 800,
-};
 
 const ModalHeaderCss = {
   paddingBottom: '$3',
@@ -47,13 +37,13 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
   pickRandom,
   isLoading,
 }) => {
-  const { confettiArray, setConfettiArray } = useConfetti(
+  const { confettiArray, removeConfettiByKey, clearAllConfetti } = useConfetti(
     isLoading,
     isModalOpen,
   );
 
   const handleClose = () => {
-    setConfettiArray(() => []);
+    clearAllConfetti();
     setIsOpen(false);
   };
 
@@ -76,18 +66,10 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       </ModalHeader>
       <ModalBody css={ModalBodyCss}>
         <>
-          {confettiArray.map((key) => (
-            <ConfettiExplosion
-              key={key}
-              style={{
-                position: 'absolute',
-                top: '0',
-                left: '50%',
-              }}
-              onComplete={() => setConfettiArray([])}
-              {...ConfettiConfig}
-            />
-          ))}
+          <Confetti
+            confettiArray={confettiArray}
+            onComplete={removeConfettiByKey}
+          />
 
           <ReviewItem review={review} horizontal={false} />
           <Text
