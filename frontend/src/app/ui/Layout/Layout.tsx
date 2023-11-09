@@ -63,9 +63,9 @@ export const Layout = ({ fullWidth }: LayoutProps) => {
         <Footer />
       </AppWrapper>
 
+      <SharedFilmModal />
       <ErrorSnackbar />
       <NotifySnackbar />
-      <SharedFilmModal />
     </>
   );
 };
