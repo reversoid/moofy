@@ -38,7 +38,12 @@ export const SharedFilmModal: FC = () => {
       <ModalBody>
         <FilmItem film={film} />
         <Dropdown>
-          <Dropdown.Button flat color="secondary" css={{ tt: 'capitalize' }}>
+          <Dropdown.Button
+            size={'lg'}
+            flat
+            color="secondary"
+            css={{ tt: 'capitalize', mt: '$5' }}
+          >
             Выберите коллекцию
           </Dropdown.Button>
           <Dropdown.Menu
@@ -51,7 +56,14 @@ export const SharedFilmModal: FC = () => {
               setSelected([...(v as unknown as string[])])
             }
           >
-            <Dropdown.Item key="text">Имя мое</Dropdown.Item>
+            <Dropdown.Item css={{ h: 'auto' }} key="text">
+              <Image
+                src={film.posterPreviewUrl}
+                width={'3rem'}
+                height={'3rem'}
+              />
+              <Text>Some text</Text>
+            </Dropdown.Item>
             <Dropdown.Item key="number">Как много ты знаешь</Dropdown.Item>
             <Dropdown.Item key="date">О чем ты, майкл?</Dropdown.Item>
             <Dropdown.Item key="single_date">to watch</Dropdown.Item>
