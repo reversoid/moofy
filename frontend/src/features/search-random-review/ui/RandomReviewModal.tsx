@@ -30,10 +30,6 @@ const ModalBody = styled(_ModalBody, {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  '& .nextui-c-iLyjkd': {
-    overflow: 'visible !important',
-    border: 'none !important',
-  },
 });
 
 const Modal = styled(_Modal, {
