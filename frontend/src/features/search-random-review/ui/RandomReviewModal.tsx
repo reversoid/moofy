@@ -5,7 +5,7 @@ import {
   ModalHeader as _ModalHeader,
 } from '@/shared/ui/Modal';
 import { Button, Loading, styled, Text } from '@nextui-org/react';
-import { FullReview, ReviewFilm } from '@/entities/Review';
+import { ReviewFilm } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
 import RefereshIcon from './refresh.icon';
 import { useConfetti } from '../utils/useConfetti';
@@ -39,9 +39,6 @@ const ModalBody = styled(_ModalBody, {
 const Modal = styled(_Modal, {
   display: 'flex',
   alignItems: 'stretch',
-  '@xsMax': {
-    width: '100% !important',
-  },
 });
 
 const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
