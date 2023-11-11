@@ -12,36 +12,38 @@ const Description = styled(Text, {
 });
 
 const Collapse = styled(_Collapse, {
+  width: '100%',
   '.nextui-collapse-title': {
     fontSize: '$lg',
-    minWidth: '250px',
   },
-  '.nextui-c-lfcDHB': {
-    padding: '$2 0 $1 0',
+  '.nextui-collapse-view': {
+    py: '$2',
   },
   '.nextui-collapse-content': {
-    padding: '$1 0',
+    pb: '$1',
   },
+  '.nextui-collapse-title-content': {
+    // subtract with of arrow size
+    width: 'calc(100% - 20px)',
+  },
+});
+
+const Subtitle = styled('div', {
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
 });
 
 const DescriptionCollapse: React.FC<DescriptionCollapseProps> = ({
   description,
 }) => {
-  const makeSubtitle = (string: string) => {
-    const descriptionArr = string.split(' ');
-    return descriptionArr.length > 3
-      ? descriptionArr.slice(0, 3).join(' ') + '...'
-      : descriptionArr.slice(0, 3).join(' ');
-  };
   return (
     <Collapse
       showArrow={Boolean(description.length)}
       expanded={false}
       title="Описание"
       disabled={!Boolean(description.length)}
-      subtitle={
-        description ? makeSubtitle(description) : 'Описание отсутствует'
-      }
+      subtitle={<Subtitle>{description || 'Описание отсутствует'}</Subtitle>}
     >
       <Description>{description}</Description>
     </Collapse>
