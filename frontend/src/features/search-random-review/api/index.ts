@@ -9,15 +9,29 @@ interface SearchRandomReviewDTO {
 }
 
 class SearchRandomReviewService extends ApiService {
-  searchRandomReviews(type: Criteria, listId: number) {
+  searchRandomReviews(
+    type: Criteria,
+    listId: number,
+    signal?: AbortSignal,
+    ignoreReviewsIds?: Set<number>,
+  ) {
+    const ids = ignoreReviewsIds
+      ? JSON.stringify(Array.from(ignoreReviewsIds))
+      : undefined;
+
     const searchParams: SearchParamsOption = {
       listId,
       type,
     };
 
+    if (ids) {
+      searchParams['ignore'] = ids;
+    }
+
     return super.get<SearchRandomReviewDTO>('/review/random', {
       searchParams,
       useJWT: true,
+      signal,
     });
   }
 }
