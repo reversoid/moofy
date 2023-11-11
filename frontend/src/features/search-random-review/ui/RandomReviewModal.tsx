@@ -1,5 +1,10 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from '@/shared/ui/Modal';
-import { Button, Collapse, Loading, Text } from '@nextui-org/react';
+import {
+  Modal as _Modal,
+  ModalBody as _ModalBody,
+  ModalFooter,
+  ModalHeader as _ModalHeader,
+} from '@/shared/ui/Modal';
+import { Button, Loading, styled, Text } from '@nextui-org/react';
 import { ReviewItem } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
 import RefereshIcon from './refresh.icon';
@@ -15,13 +20,13 @@ interface RandomReviewModalProps {
   isLoading: boolean;
 }
 
-const ModalHeaderCss = {
+const ModalHeader = styled(_ModalHeader, {
   paddingBottom: '$3',
   display: 'flex',
   flexDirection: 'column',
-};
+});
 
-const ModalBodyCss = {
+const ModalBody = styled(_ModalBody, {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -29,15 +34,15 @@ const ModalBodyCss = {
     overflow: 'visible !important',
     border: 'none !important',
   },
-};
+});
 
-const ModalContainerCss = {
+const Modal = styled(_Modal, {
   display: 'flex',
   alignItems: 'stretch',
   '@xsMax': {
     width: '100% !important',
   },
-};
+});
 
 const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
   isModalOpen,
@@ -62,12 +67,11 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       open={isModalOpen}
       onClose={handleClose}
       width="20rem"
-      css={ModalContainerCss}
     >
-      <ModalHeader css={ModalHeaderCss}>
+      <ModalHeader>
         <Text h3>Случайный обзор</Text>
       </ModalHeader>
-      <ModalBody css={ModalBodyCss}>
+      <ModalBody>
         <>
           <Confetti
             confettiArray={confettiArray}
@@ -88,7 +92,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
           size={'lg'}
         >
           {isLoading ? (
-            <Loading color={'white'} type="points" size="lg" />
+            <Loading color="white" type="points" size="lg" />
           ) : (
             <RefereshIcon />
           )}
