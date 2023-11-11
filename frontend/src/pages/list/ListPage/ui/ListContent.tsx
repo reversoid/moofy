@@ -1,17 +1,17 @@
+import RandomReviewModal from '@/features/search-random-review';
+import { useRandomModal } from '@/features/search-random-review/';
+import RandomReviewBtn from '@/features/search-random-review/ui/RandomReviewBtn';
 import { Review } from '@/shared/api/types/review.type';
+import { SearchInput } from '@/shared/components/SearchInput';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 import { ReviewList } from '@/widgets/review-list';
-import { Button, Loading, Row, Text, styled } from '@nextui-org/react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Button, Row, Text, styled } from '@nextui-org/react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { clearSearchReviews } from '../model/listSearchContent';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
-import { SearchInput } from '../../../../shared/components/SearchInput';
-import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { clearSearchReviews } from '../model/listSearchContent';
-import { useUnmount } from '@/shared/hooks/useUnmount';
-import RandomReviewModal from '@/features/search-random-review/ui/RandomReviewModal';
-import { useRandomModal } from '@/features/search-random-review/utils/useRandomModal';
-import RandomReviewBtn from '@/features/search-random-review/ui/RandomReviewBtn';
 
 interface ReviewListProps {
   reviews?: Review[];
