@@ -26,6 +26,7 @@ const Collapse = styled(_Collapse, {
     // subtract with of arrow size
     width: 'calc(100% - 20px)',
   },
+  mt: '$4',
 });
 
 const Subtitle = styled('div', {

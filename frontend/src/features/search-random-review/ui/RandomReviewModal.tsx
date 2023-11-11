@@ -5,7 +5,7 @@ import {
   ModalHeader as _ModalHeader,
 } from '@/shared/ui/Modal';
 import { Button, Loading, styled, Text } from '@nextui-org/react';
-import { ReviewItem } from '@/entities/Review';
+import { FullReview, ReviewFilm } from '@/entities/Review';
 import { Review } from '@/shared/api/types/review.type';
 import RefereshIcon from './refresh.icon';
 import { useConfetti } from '../utils/useConfetti';
@@ -78,7 +78,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
             onComplete={removeConfettiByKey}
           />
 
-          <ReviewItem review={review} horizontal={false} />
+          <ReviewFilm score={review.score} film={review.film} />
           <DescriptionCollapse description={review.description} />
         </>
       </ModalBody>

@@ -34,5 +34,14 @@ export const Card = styled('div', {
         position: 'relative',
       },
     },
+
+    vertical: {
+      true: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '$6',
+        p: '$7 $6',
+      },
+    },
   },
 });

@@ -1,6 +1,5 @@
 import { getColorsByScore } from '@/shared/utils/scoreColors';
 import { styled, Image } from '@nextui-org/react';
-import { NONAME } from 'dns';
 import { FC, memo } from 'react';
 
 const ImageContainer = styled('div', {
@@ -29,14 +28,12 @@ const Score = styled('div', {
 const ReviewImageWithScore: FC<{
   imgSrc: string;
   score: number | null;
-  horizontal?: boolean;
-}> = ({ imgSrc, score, horizontal }) => {
+  centered?: boolean;
+}> = ({ imgSrc, score, centered }) => {
   const colors = getColorsByScore(score);
 
   return (
-    <ImageContainer
-      css={{ justifyContent: horizontal ? 'flex-start' : 'center' }}
-    >
+    <ImageContainer css={{ jc: centered ? 'center' : undefined }}>
       <ImgWrapper
         css={{
           display: 'flex',

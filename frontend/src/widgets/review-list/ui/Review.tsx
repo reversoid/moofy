@@ -1,4 +1,4 @@
-import { ReviewItem } from '@/entities/Review';
+import { FullReview } from '@/entities/Review';
 import { deleteReview, useDeleteReview } from '@/features/review/delete-review';
 import { ReviewOwnerActions } from '@/features/review/review-owner-actions';
 import UpdateReviewModal from '@/features/review/update-review/ui/UpdateReviewModal';
@@ -23,7 +23,7 @@ export const Review: FC<ReviewProps> = memo(({ review, isUserOwner }) => {
         setIsOpen={setUpdateModalOpen}
       />
 
-      <ReviewItem
+      <FullReview
         review={review}
         topRightButton={
           isUserOwner ? (
