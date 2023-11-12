@@ -16,7 +16,7 @@ class SearchRandomReviewService extends ApiService {
     ignoreReviewsIds?: Set<number>,
   ) {
     const ids = ignoreReviewsIds
-      ? JSON.stringify(Array.from(ignoreReviewsIds))
+      ? Array.from(ignoreReviewsIds).join(',')
       : undefined;
 
     const searchParams: SearchParamsOption = {

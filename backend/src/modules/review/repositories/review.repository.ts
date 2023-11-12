@@ -238,6 +238,7 @@ export class ReviewRepository extends PaginatedRepository<Review> {
     listId: number,
     limit: number,
     type: 'all' | 'ranked' | 'unranked',
+    ignoreIds?: number[],
   ) {
     const query = this.createQueryBuilder('review')
       .leftJoinAndSelect('review.list', 'list')
@@ -261,6 +262,10 @@ export class ReviewRepository extends PaginatedRepository<Review> {
       .orderBy('rand')
       .where('list.id = :listId', { listId })
       .take(limit);
+
+    if (ignoreIds && ignoreIds.length > 0) {
+      query.andWhere('review.id NOT IN(:...ignoreIds)', { ignoreIds });
+    }
 
     if (type === 'unranked') {
       query.andWhere('review.score is NULL');

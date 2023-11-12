@@ -134,12 +134,13 @@ export class ReviewController {
         forbidNonWhitelisted: true,
       }),
     )
-    { listId, limit, type }: GetRandomReviewDTO,
+    { listId, limit, type, ignore: ignoreIds }: GetRandomReviewDTO,
   ): Promise<{ reviews: Review[] }> {
     const reviews = await this.reviewService.getRandomReviews(
       listId,
       limit,
       type,
+      ignoreIds,
     );
 
     return { reviews };

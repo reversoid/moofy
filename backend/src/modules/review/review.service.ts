@@ -255,8 +255,9 @@ export class ReviewService {
     listId: number,
     limit: number,
     type: GetRandomReviewType,
+    ignoreIds?: number[],
   ) {
-    const getRandomType =
+    const randomType =
       type === GetRandomReviewType.ALL
         ? 'all'
         : type === GetRandomReviewType.RANKED
@@ -265,6 +266,11 @@ export class ReviewService {
         ? 'unranked'
         : 'all';
 
-    return this.reviewRepository.getRandomReviews(listId, limit, getRandomType);
+    return this.reviewRepository.getRandomReviews(
+      listId,
+      limit,
+      randomType,
+      ignoreIds,
+    );
   }
 }
