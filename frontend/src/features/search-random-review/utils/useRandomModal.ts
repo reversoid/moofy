@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useRandomReview } from '@/features/search-random-review/utils/useRandomReview';
-import { Criteria } from '@/features/search-random-review/api';
 import { notify } from '@/app';
+import { useRandomReview } from '@/features/search-random-review/utils/useRandomReview';
+import { useEffect, useState } from 'react';
 
 export const useRandomModal = (listId: number) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -14,5 +14,5 @@ export const useNewData = (
     }
 
     callback();
-  }, [queryResult.isFetchedAfterMount, queryResult.isLoading]);
+  }, [queryResult.isFetchedAfterMount, queryResult.isFetching]);
 };

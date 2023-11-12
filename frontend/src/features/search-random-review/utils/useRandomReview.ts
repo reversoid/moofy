@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { Criteria, searchRandomReviewService } from '../api';
 import { useSeenReviewsIds } from './use-seen-reviews-ids';
+import { useEffect, useState } from 'react';
+import { Review } from '@/shared/api/types/review.type';
 
 export interface UseRandomReviewProps {
   onSeenAllReviews?: VoidFunction;
@@ -15,6 +17,8 @@ export const useRandomReview = ({
 }: UseRandomReviewProps) => {
   const type: Criteria = 'ALL';
   const { addToSeen, seenReviewsIds, clearSeen } = useSeenReviewsIds();
+
+  const [review, setReview] = useState<Review | null>(null);
 
   const result = useQuery({
     queryKey: ['Random review', type, listId],
@@ -33,15 +37,17 @@ export const useRandomReview = ({
 
     const review = result.data.reviews[0];
     if (review) {
+      setReview(review);
       addToSeen(review.id);
     } else {
+      setReview(null);
       clearSeen();
       onSeenAllReviews?.();
     }
   });
 
   return {
-    review: result.data?.reviews?.[0],
+    review: review,
     isLoading: result.isFetching,
     getRandomReview: result.refetch,
   };
