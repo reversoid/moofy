@@ -1,14 +1,17 @@
+import RandomReviewModal from '@/features/search-random-review';
+import { useRandomModal } from '@/features/search-random-review/';
+import RandomReviewBtn from '@/features/search-random-review/ui/RandomReviewBtn';
 import { Review } from '@/shared/api/types/review.type';
+import { SearchInput } from '@/shared/components/SearchInput';
+import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
+import { useUnmount } from '@/shared/hooks/useUnmount';
 import { ReviewList } from '@/widgets/review-list';
-import { Button, Row, Text } from '@nextui-org/react';
-import { useCallback, useContext } from 'react';
+import { Button, Row, Text, styled } from '@nextui-org/react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { clearSearchReviews } from '../model/listSearchContent';
 import { useSearchReviews } from '../utils/hooks/useSearchReviews';
 import { ListPageContext } from './ListPage';
-import { SearchInput } from '../../../../shared/components/SearchInput';
-import { useLoadingBar } from '@/shared/hooks/useLoadingBar';
-import { clearSearchReviews } from '../model/listSearchContent';
-import { useUnmount } from '@/shared/hooks/useUnmount';
 
 interface ReviewListProps {
   reviews?: Review[];
@@ -17,6 +20,11 @@ interface ReviewListProps {
   isFetchingMore: boolean;
   loadMoreReviews?: () => void;
 }
+
+const Btn = styled(Button, {
+  px: '0 !important',
+  minWidth: '4.25rem !important',
+});
 
 export const ListContent = ({
   reviews,
@@ -34,6 +42,9 @@ export const ListContent = ({
     data: searchData,
   } = useSearchReviews(id!);
 
+  const { review, isLoading, getRandomReview, isModalOpen, setIsModalOpen } =
+    useRandomModal(Number(id));
+
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
@@ -41,6 +52,11 @@ export const ListContent = ({
   useUnmount(() => {
     clearSearchReviews();
   });
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    getRandomReview();
+  };
 
   return (
     <>
@@ -56,9 +72,24 @@ export const ListContent = ({
           mt: '$8',
         }}
       >
-        <Text h2 css={{ mb: '$0' }}>
-          Обзоры
-        </Text>
+        <Row css={{ flexGrow: 2, jc: 'space-between', ai: 'center' }}>
+          <Text h2 css={{ mb: '$0' }}>
+            Обзоры
+          </Text>
+          {reviews && reviews.length > 0 && (
+            <RandomReviewBtn onPress={openModal} isLoading={isLoading} />
+          )}
+        </Row>
+        {review && (
+          <RandomReviewModal
+            isModalOpen={isModalOpen}
+            review={review}
+            setIsModalOpen={setIsModalOpen}
+            onPickRandom={getRandomReview}
+            isLoading={isLoading}
+          />
+        )}
+
         {isUserOwner && reviews && (
           <Button
             color={'gradient'}
