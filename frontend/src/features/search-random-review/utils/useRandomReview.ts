@@ -5,15 +5,15 @@ import { Criteria, searchRandomReviewService } from '../api';
 import { useSeenReviewsIds } from './use-seen-reviews-ids';
 
 export interface UseRandomReviewProps {
-  type: Criteria;
   onSeenAllReviews?: VoidFunction;
+  listId: number;
 }
 
 export const useRandomReview = ({
   onSeenAllReviews,
-  type,
+  listId,
 }: UseRandomReviewProps) => {
-  const { id: listId } = useParams();
+  const type: Criteria = 'ALL';
   const { addToSeen, seenReviewsIds, clearSeen } = useSeenReviewsIds();
 
   const result = useQuery({
@@ -43,6 +43,6 @@ export const useRandomReview = ({
   return {
     review: result.data?.reviews?.[0],
     isLoading: result.isFetching,
-    refetch: result.refetch,
+    getRandomReview: result.refetch,
   };
 };

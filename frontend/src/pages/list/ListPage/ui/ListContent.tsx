@@ -42,26 +42,20 @@ export const ListContent = ({
     data: searchData,
   } = useSearchReviews(id!);
 
-  const { review, isLoading, refetch, isModalOpen, setIsOpen } =
-    useRandomModal();
+  const { review, isLoading, getRandomReview, isModalOpen, setIsModalOpen } =
+    useRandomModal(Number(id));
 
   const handleSearchInput = useCallback((v: string) => setSearch(v), []);
 
   useLoadingBar(loadingSearch);
 
-  useEffect(() => {
-    if (review && isModalOpen) {
-      refetch();
-    }
-  }, [isModalOpen]);
-
   useUnmount(() => {
     clearSearchReviews();
   });
 
-  const handleModal = () => {
-    setIsOpen(!isModalOpen);
-    refetch();
+  const openModal = () => {
+    setIsModalOpen(true);
+    getRandomReview();
   };
 
   return (
@@ -83,15 +77,15 @@ export const ListContent = ({
             Обзоры
           </Text>
           {reviews && reviews.length > 0 && (
-            <RandomReviewBtn pickRandom={handleModal} isLoading={isLoading} />
+            <RandomReviewBtn onPress={openModal} isLoading={isLoading} />
           )}
         </Row>
         {review && (
           <RandomReviewModal
             isModalOpen={isModalOpen}
             review={review}
-            setIsOpen={setIsOpen}
-            pickRandom={refetch}
+            setIsModalOpen={setIsModalOpen}
+            onPickRandom={getRandomReview}
             isLoading={isLoading}
           />
         )}

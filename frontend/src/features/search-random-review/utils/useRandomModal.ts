@@ -3,34 +3,28 @@ import { useRandomReview } from '@/features/search-random-review/utils/useRandom
 import { Criteria } from '@/features/search-random-review/api';
 import { notify } from '@/app';
 
-export const useRandomModal = () => {
-  const type: Criteria = 'ALL';
-
+export const useRandomModal = (listId: number) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { review, isLoading, refetch } = useRandomReview({
-    type,
+  const { review, isLoading, getRandomReview } = useRandomReview({
+    listId,
     onSeenAllReviews: () => {
       setIsModalOpen(false);
       notify('Все обзоры просмотрены');
     },
   });
 
-  const handleOpenModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
-
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  useEffect(() => {
+    if (review && isModalOpen) {
+      getRandomReview();
+    }
+  }, [isModalOpen]);
 
   return {
-    refetch,
+    getRandomReview,
     review,
     isLoading,
     isModalOpen,
-    setIsOpen: setIsModalOpen,
-    handleOpenModal,
-    handleCloseModal,
+    setIsModalOpen,
   };
 };

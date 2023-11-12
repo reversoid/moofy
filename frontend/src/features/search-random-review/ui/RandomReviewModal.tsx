@@ -14,9 +14,9 @@ import DescriptionCollapse from './DescriptionCollapse';
 
 interface RandomReviewModalProps {
   isModalOpen: boolean;
-  setIsOpen: (newState: boolean) => void;
+  setIsModalOpen: (newState: boolean) => void;
   review: Review;
-  pickRandom: () => void;
+  onPickRandom: () => void;
   isLoading: boolean;
 }
 
@@ -39,9 +39,9 @@ const Modal = styled(_Modal, {
 
 const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
   isModalOpen,
-  setIsOpen,
+  setIsModalOpen,
   review,
-  pickRandom,
+  onPickRandom,
   isLoading,
 }) => {
   const { confettiArray, removeConfettiByKey, clearAllConfetti } = useConfetti(
@@ -51,7 +51,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
 
   const handleClose = () => {
     clearAllConfetti();
-    setIsOpen(false);
+    setIsModalOpen(false);
   };
 
   return (
@@ -77,7 +77,7 @@ const RandomReviewModal: React.FC<RandomReviewModalProps> = ({
       </ModalBody>
       <ModalFooter css={{ width: '100%', justifyContent: 'center' }}>
         <Button
-          onPress={pickRandom}
+          onPress={onPickRandom}
           color={'gradient'}
           disabled={isLoading}
           auto

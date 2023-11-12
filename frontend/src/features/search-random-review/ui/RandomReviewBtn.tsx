@@ -2,7 +2,7 @@ import { Button, Loading, styled } from '@nextui-org/react';
 import { Shuffle } from '@/shared/Icons/Shuffle.icon';
 
 interface RandomReviewBtnProps {
-  pickRandom: () => void;
+  onPress: () => void;
   isLoading: boolean;
 }
 
@@ -12,17 +12,11 @@ const Btn = styled(Button, {
 });
 
 const RandomReviewBtn: React.FC<RandomReviewBtnProps> = ({
-  pickRandom,
+  onPress,
   isLoading,
 }) => {
   return (
-    <Btn
-      onPress={() => {
-        pickRandom();
-      }}
-      color="secondary"
-      aria-label="Random review"
-    >
+    <Btn onPress={onPress} color="secondary" aria-label="Random review">
       {isLoading ? (
         <Loading size="sm" color={'white'} />
       ) : (
