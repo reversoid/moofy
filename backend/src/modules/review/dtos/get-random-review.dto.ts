@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
 
 export enum GetRandomReviewType {
   ALL = 'ALL',
@@ -20,4 +27,11 @@ export class GetRandomReviewDTO {
   @IsEnum(GetRandomReviewType)
   @IsOptional()
   type: GetRandomReviewType = GetRandomReviewType.ALL;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  @IsOptional()
+  ignore?: number[];
 }
