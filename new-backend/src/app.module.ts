@@ -10,6 +10,7 @@ import { MovieProxyModule } from './modules/movie-proxy/movie-proxy.module';
 import { UserModule } from './modules/user/user.module';
 import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
 import { EventsModule } from './modules/events/events.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EventsModule } from './modules/events/events.module';
     UserModule,
     ProfileNotificationsModule,
     EventsModule,
+    ProfileModule,
   ],
   providers: [
     {
