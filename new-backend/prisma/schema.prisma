@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model comment {
+  id            Int            @id(map: "PK_0b0e4bbc8415ec426f87f3a88e2") @default(autoincrement())
+  text          String         @db.VarChar(400)
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime?      @db.Timestamptz(6)
+  userId        Int
+  replyToId     Int?
+  listId        Int?
+  users         users          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0354a9a009d3bb45a08655ce3b")
+  comment       comment?       @relation("commentTocomment", fields: [replyToId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_cfc14dc2cafa339954de748ebf3")
+  other_comment comment[]      @relation("commentTocomment")
+  list          list?          @relation(fields: [listId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_fc8455c31a9e1a7cfeb0ead49a9")
+  comment_like  comment_like[]
+
+  @@index([deleted_at], map: "IDX_1f7c693bc26ed21008acead3b3")
+  @@index([text], map: "IDX_84eaa1e0d08e574fb78fd3c9b3")
+  @@index([created_at], map: "IDX_9611a099501597c519429f2595")
+}
+
+model comment_like {
+  id         Int       @id(map: "PK_04f93e6f1ace5dbc1d8c562ccbf") @default(autoincrement())
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  userId     Int
+  commentId  Int
+  comment    comment   @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_a253dba95eab8659c027bbace44")
+  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b")
+
+  @@index([created_at], map: "IDX_15eb3b90a408e3222e1ef34035")
+  @@index([deleted_at], map: "IDX_2e9f9d450d42a53a579dd00c38")
+}
+
+model favorite_list {
+  id         Int       @id(map: "PK_298ea5adef17b30abd7df2d3a1d") @default(autoincrement())
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  userId     Int
+  listId     Int?
+  list       list?     @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_21938075574309780e33688b0a5")
+  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_fbbb4b0b4654357a4bd1138ccbd")
+
+  @@index([created_at], map: "IDX_4d2005680706ade52516a9b24b")
+  @@index([deleted_at], map: "IDX_bcfc7a2063b16b9532c482ea27")
+}
+
+model film {
+  id               String                  @id(map: "PK_37ec0ffe0011ccbe438a65e3c6e") @db.VarChar(32)
+  name             String                  @db.VarChar(128)
+  year             Int                     @db.SmallInt
+  type             film_type_enum
+  filmLength       String?                 @db.Char(6)
+  posterPreviewUrl String?                 @db.VarChar(120)
+  posterUrl        String?                 @db.VarChar(120)
+  genres           String[]                @db.VarChar(32)
+  search_document  Unsupported("tsvector")
+  review           review[]
+  to_watch         to_watch[]
+
+  @@index([year], map: "IDX_5a82570b7c5f8d77972f7ef76a")
+  @@index([genres], map: "IDX_5aa49498820d9f4e5afb35254b")
+  @@index([name], map: "IDX_70c253d5411a4abf1c752a4699")
+  @@index([type], map: "IDX_c1b1047b4293e41323a080e220")
+  @@index([filmLength], map: "IDX_ff4c1609981279c3df153fda3c")
+  @@index([search_document], map: "search_film_document_idx", type: Gin)
+}
+
+model list {
+  id               Int                     @id(map: "PK_d8feafd203525d5f9c37b3ed3b9") @default(autoincrement())
+  name             String                  @db.VarChar(32)
+  description      String?                 @db.VarChar(400)
+  is_public        Boolean                 @default(false)
+  show_rating      Boolean                 @default(false)
+  show_description Boolean                 @default(true)
+  image_url        String?                 @db.VarChar(120)
+  created_at       DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at       DateTime?               @db.Timestamptz(6)
+  userId           Int
+  search_document  Unsupported("tsvector")
+  comment          comment[]
+  favorite_list    favorite_list[]
+  users            users                   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_46ded14b26382088c9f032f8953")
+  list_like        list_like[]
+  list_view        list_view[]
+  review           review[]
+
+  @@index([deleted_at], map: "IDX_0e35629d588558a1871982f2d2")
+  @@index([updated_at], map: "IDX_77b6e8e786643c3e78280800e1")
+  @@index([created_at], map: "IDX_80b7c880992ddf646c03674f80")
+  @@index([name], map: "IDX_d7ff6872c82ac4a87ff986a38d")
+  @@index([search_document], map: "search_list_document_idx", type: Gin)
+}
+
+model list_like {
+  id         Int       @id(map: "PK_08d899a0a4870c8959ddf52a604") @default(autoincrement())
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  userId     Int
+  listId     Int
+  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_2f7811183028e0c3b9a66f34957")
+  list       list      @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_36bbfd04f2ebcc31a9c42450c36")
+
+  @@index([deleted_at], map: "IDX_0d47abc4c0e4671f5bf00af599")
+  @@index([created_at], map: "IDX_72bcd910d3caf258faded7e777")
+}
+
+model list_view {
+  id         Int       @id(map: "PK_4d9833b647fd9eacd77ed374854") @default(autoincrement())
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  userId     Int
+  listId     Int
+  list       list      @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_4217d199530fdd010220d8d473a")
+  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_a8a0aa213e144f932c9793a6953")
+}
+
+model migrations {
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model profile_event {
+  id           String                  @id(map: "PK_2515098fbdaa581436013ab7a60") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_from_id Int?
+  user_to_id   Int
+  target_id    Int?
+  type         profile_event_type_enum
+  created_at   DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at   DateTime?               @db.Timestamptz(6)
+  seen_at      DateTime?               @db.Timestamptz(6)
+
+  @@index([seen_at], map: "IDX_8309c84989285fe1c67372c6d5")
+  @@index([user_to_id], map: "IDX_8b030364dc2366e22513c8b521")
+  @@index([created_at], map: "IDX_c13216c673eef88943fdc684e3")
+}
+
+model review {
+  id              Int                     @id(map: "PK_2e4299a343a81574217255c00ca") @default(autoincrement())
+  score           Int?                    @db.SmallInt
+  description     String?                 @db.VarChar(400)
+  tags            String[]                @db.VarChar(32)
+  order_in_list   Decimal                 @db.Decimal(20, 16)
+  created_at      DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at      DateTime?               @db.Timestamptz(6)
+  updated_at      DateTime                @default(now()) @db.Timestamptz(6)
+  filmId          String                  @db.VarChar(32)
+  userId          Int
+  listId          Int
+  search_document Unsupported("tsvector")
+  users           users                   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
+  list            list                    @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_37e516b0d42e6a177cbbb15da8c")
+  film            film                    @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f1a2e33731808a7c6fcd644ca7c")
+
+  @@index([created_at], map: "IDX_004547e1fee5af6fc9fd3de095")
+  @@index([deleted_at], map: "IDX_5fc50495948dd3c91bfec4276a")
+  @@index([updated_at], map: "IDX_e045ebbb33ef7af0d13176f55b")
+  @@index([search_document], map: "search_review_document_idx", type: Gin)
+}
+
+model subscription {
+  id          Int       @id(map: "PK_8c3e00ebd02103caa1174cd5d9d") @default(autoincrement())
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  follower_id Int?
+  followed_id Int?
+
+  @@index([deleted_at], map: "IDX_8b52b9aae50d89a98d3ef92c8d")
+  @@index([created_at], map: "IDX_9a97c3ebf1bef5345852963e4c")
+}
+
+model task {
+  id        Int                 @id(map: "PK_fb213f79ee45060ba925ecd576e") @default(autoincrement())
+  task_date DateTime            @db.Timestamptz(6)
+  task_type task_task_type_enum
+  task_name String              @unique(map: "IDX_33394d9f1edb8dada30dd4c903") @db.VarChar(32)
+
+  @@index([task_type], map: "IDX_4bec8d4c2bb9e78f4eadc80830")
+  @@index([task_date], map: "IDX_939fa09e877d128e141e49f716")
+}
+
+model to_watch {
+  id      Int     @id(map: "PK_0fd820af7972ef612ea0e17ae21") @default(autoincrement())
+  watched Boolean @default(false)
+  userId  Int
+  filmId  String  @db.VarChar(32)
+  users   users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_9e1aabc3453a7c955553f498c6e")
+  film    film    @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b678c932a26ad586d6afd5ee42c")
+
+  @@index([watched], map: "IDX_2a0b9c4cf6de3f70c174a9a4c9")
+  @@index([userId], map: "IDX_9e1aabc3453a7c955553f498c6")
+  @@index([filmId], map: "IDX_b678c932a26ad586d6afd5ee42")
+}
+
+model users {
+  id                       Int                     @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  username                 String                  @unique(map: "UQ_78a916df40e02a9deb1c4b75edb") @db.VarChar(32)
+  email                    String?                 @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(256)
+  description              String?                 @db.VarChar(400)
+  image_url                String?                 @db.VarChar(120)
+  password_hash            String                  @db.Char(60)
+  created_at               DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at               DateTime?               @db.Timestamptz(6)
+  username_search_document Unsupported("tsvector")
+  comment                  comment[]
+  comment_like             comment_like[]
+  favorite_list            favorite_list[]
+  list                     list[]
+  list_like                list_like[]
+  list_view                list_view[]
+  review                   review[]
+  to_watch                 to_watch[]
+
+  @@index([deleted_at], map: "IDX_22b81d3ed19a0bffcb660800f4")
+  @@index([updated_at], map: "IDX_9cdce43fa0043c794281aa0905")
+  @@index([created_at], map: "IDX_d091f1d36f18bbece2a9eabc6e")
+  @@index([username_search_document], map: "username_search_document_idx", type: Gin)
+}
+
+enum film_type_enum {
+  FILM
+  TV_SERIES
+  TV_SHOW
+  MINI_SERIES
+  VIDEO
+}
+
+enum profile_event_type_enum {
+  LIST_LIKE
+  COMMENT_LIKE
+  COMMENT
+  REPLY
+  SUBSCRIBE
+}
+
+enum task_task_type_enum {
+  AUTH
+  REVIEW
+  LIST
+}
