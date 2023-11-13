@@ -7,12 +7,15 @@ export const useNewData = (
   callback: () => void,
 ) => {
   useEffect(() => {
-    const isOutdated = !queryResult.data || !queryResult.isFetchedAfterMount;
+    const isOutdated =
+      !queryResult.data ||
+      queryResult.isFetching ||
+      !queryResult.isFetchedAfterMount;
 
     if (isOutdated) {
       return;
     }
 
     callback();
-  }, [queryResult.isFetchedAfterMount, queryResult.isLoading]);
+  }, [queryResult.isFetching]);
 };
