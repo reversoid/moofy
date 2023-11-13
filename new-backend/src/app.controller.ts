@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { HelloDto } from './dto';
 import { z } from 'zod';
 import { ZodSerializerDto, createZodDto, zodToOpenAPI } from 'nestjs-zod';
@@ -10,7 +10,7 @@ class K extends createZodDto(someResponse) {}
 
 @Controller()
 export class AppController {
-  @Get('hello')
+  @Post('hello')
   @ZodSerializerDto(K)
   @ApiOkResponse({ schema: zodToOpenAPI(someResponse) })
   async getHello(@Body() data: HelloDto) {
