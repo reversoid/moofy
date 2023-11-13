@@ -141,13 +141,19 @@ export class UserRepository extends PaginatedRepository<User> {
       .getMany();
   }
 
-  async getTopUsers(limit: number) {
+  async getTopUsersForUser(userId: number, limit: number) {
     const users = await this.createQueryBuilder('user')
       .leftJoinAndSelect(Subscription, 'subs', 'subs.followed_id = user.id')
       .leftJoinAndSelect(
         Review,
         'review',
         'review.user = user.id AND review.score IS NOT NULL',
+      )
+      .leftJoin(
+        Subscription,
+        'sub_filter',
+        'sub_filter.followed_id = user.id AND sub_filter.follower_id = :userId',
+        { userId },
       )
       .select([
         'user.id',
@@ -159,6 +165,7 @@ export class UserRepository extends PaginatedRepository<User> {
         `COUNT(DISTINCT subs.id) * ${TOP_USER_COEFFS.followers} + COUNT(DISTINCT review.id) * ${TOP_USER_COEFFS.reviews}`,
         'rating',
       )
+      .where('sub_filter.id IS NULL')
       .groupBy('user.username')
       .addGroupBy('user.id')
       .orderBy('rating', 'DESC')

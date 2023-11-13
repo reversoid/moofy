@@ -330,7 +330,7 @@ export class ProfileService {
   }
 
   async getRecommendedUsers(userId: number, limit: number) {
-    const users = await this.userRepository.getTopUsers(limit);
+    const users = await this.userRepository.getTopUsersForUser(userId, limit);
     return this.getShortProfileFromUsers(users, userId);
   }
 
