@@ -11,9 +11,30 @@ import { UserModule } from './modules/user/user.module';
 import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
 import { EventsModule } from './modules/events/events.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { ConfigModule } from '@nestjs/config';
+import redisConfig from './config/redis.config';
+import secretsConfig from './config/secrets.config';
+import globalConfig from './config/global.config';
+import apiKeysConfig from './config/apiKeys.config';
+import s3Config from './config/s3.config';
+import rmqConfig from './config/rmq.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [
+        redisConfig,
+        secretsConfig,
+        globalConfig,
+        apiKeysConfig,
+        s3Config,
+        rmqConfig,
+      ],
+      ignoreEnvFile: false,
+      envFilePath: ['config/.env'],
+      cache: true,
+    }),
     ReviewModule,
     ListModule,
     FilmModule,

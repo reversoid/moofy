@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { HelloDto } from './dto';
 import { z } from 'zod';
 import { ZodSerializerDto, createZodDto, zodToOpenAPI } from 'nestjs-zod';
