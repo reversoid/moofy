@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './models/user';
+import { User, userSchema } from './models/user';
 import { PrismaService } from 'src/shared/utils/prisma-service';
-
+import { CreateUserProps } from './types';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {}
@@ -16,6 +18,18 @@ export class UserService {
         image_url: true,
       },
     });
-    return user;
+
+    if (!user) {
+      return null;
+    }
+
+    return userSchema.parse(user);
+  }
+
+  async createUser(props: CreateUserProps): Promise<User | null> {
+    const r = await this.prismaService
+      .$queryRaw`INSERT INTO "users" (username, password_hash) VALUES (${props.username}, ${props.passwordHash})`;
+
+    return userSchema.parse(r);
   }
 }
