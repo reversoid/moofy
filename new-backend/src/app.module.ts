@@ -15,7 +15,7 @@ import { ConfigModule } from '@nestjs/config';
 import redisConfig from './config/redis.config';
 import secretsConfig from './config/secrets.config';
 import globalConfig from './config/global.config';
-import apiKeysConfig from './config/apiKeys.config';
+import apiKeysConfig from './config/api-keys.config';
 import s3Config from './config/s3.config';
 import rmqConfig from './config/rmq.config';
 

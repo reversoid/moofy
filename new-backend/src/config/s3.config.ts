@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { S3Options } from 'src/shared/libs/S3/s3';
+import { S3Options } from 'src/shared/utils/s3/s3';
 import { z } from 'zod';
 
 export type S3Config = Pick<S3Options, 'Bucket' | 'auth'>;
