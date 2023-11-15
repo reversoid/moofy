@@ -27,9 +27,6 @@ export class UserService {
   }
 
   async createUser(props: CreateUserProps): Promise<User | null> {
-    const r = await this.prismaService
-      .$queryRaw`INSERT INTO "users" (username, password_hash) VALUES (${props.username}, ${props.passwordHash})`;
-
-    return userSchema.parse(r);
+    return userSchema.parse({});
   }
 }

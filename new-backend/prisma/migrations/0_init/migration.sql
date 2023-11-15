@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- CreateEnum
 CREATE TYPE "film_type_enum" AS ENUM (
     'FILM',
@@ -409,11 +411,11 @@ ADD
     CONSTRAINT "FK_b678c932a26ad586d6afd5ee42c" FOREIGN KEY ("filmId") REFERENCES "film"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- Review triggers
-CREATE FUNCTION to_review_tsvector() RETURNS trigger as $ $ begin new.search_document := to_tsvector('simple', coalesce(new.description, ''));
+CREATE FUNCTION to_review_tsvector() RETURNS trigger as $$ begin new.search_document := to_tsvector('simple', coalesce(new.description, ''));
 
 return new;
 
-end $ $ LANGUAGE plpgsql;
+end $$ LANGUAGE plpgsql;
 
 UPDATE
     "review"
@@ -427,11 +429,11 @@ UPDATE
     ON review FOR EACH ROW EXECUTE PROCEDURE to_review_tsvector();
 
 -- Film triggers
-CREATE FUNCTION to_film_tsvector() RETURNS trigger as $ $ begin new.search_document := to_tsvector('simple', coalesce(new.name, ''));
+CREATE FUNCTION to_film_tsvector() RETURNS trigger as $$ begin new.search_document := to_tsvector('simple', coalesce(new.name, ''));
 
 return new;
 
-end $ $ LANGUAGE plpgsql;
+end $$ LANGUAGE plpgsql;
 
 UPDATE
     "film"
@@ -445,7 +447,7 @@ UPDATE
     ON film FOR EACH ROW EXECUTE PROCEDURE to_film_tsvector();
 
 -- list triggers
-CREATE FUNCTION to_list_tsvector() RETURNS trigger as $ $ begin new.search_document := setweight(
+CREATE FUNCTION to_list_tsvector() RETURNS trigger as $$ begin new.search_document := setweight(
     to_tsvector('simple', coalesce(new.name, '')),
     'A'
 ) || setweight(
@@ -455,7 +457,7 @@ CREATE FUNCTION to_list_tsvector() RETURNS trigger as $ $ begin new.search_docum
 
 return new;
 
-end $ $ LANGUAGE plpgsql;
+end $$ LANGUAGE plpgsql;
 
 UPDATE
     "list"
@@ -472,14 +474,14 @@ UPDATE
     ON list FOR EACH ROW EXECUTE PROCEDURE to_list_tsvector();
 
 -- user triggers
-CREATE FUNCTION to_username_tsvector() RETURNS trigger as $ $ begin new.username_search_document := to_tsvector('simple', coalesce(new.username, ''));
+CREATE FUNCTION to_username_tsvector() RETURNS trigger as $$ begin new.username_search_document := to_tsvector('simple', coalesce(new.username, ''));
 
 return new;
 
-end $ $ LANGUAGE plpgsql;
+end $$ LANGUAGE plpgsql;
 
 UPDATE
-    "public"."user"
+    "users"
 SET
     username_search_document = to_tsvector('simple', coalesce(username, ''));
 
@@ -487,4 +489,4 @@ CREATE TRIGGER username_tsvector_update BEFORE
 INSERT
     OR
 UPDATE
-    ON "public"."user" FOR EACH ROW EXECUTE PROCEDURE to_username_tsvector();
+    ON "users" FOR EACH ROW EXECUTE PROCEDURE to_username_tsvector();

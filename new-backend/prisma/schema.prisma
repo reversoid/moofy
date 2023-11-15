@@ -53,50 +53,64 @@ model favorite_list {
 }
 
 model film {
-  id               String                  @id(map: "PK_37ec0ffe0011ccbe438a65e3c6e") @db.VarChar(32)
-  name             String                  @db.VarChar(128)
-  year             Int                     @db.SmallInt
+  id               String         @id(map: "PK_37ec0ffe0011ccbe438a65e3c6e") @db.VarChar(32)
+  name             String         @db.VarChar(128)
+  year             Int            @db.SmallInt
   type             film_type_enum
-  filmLength       String?                 @db.Char(6)
-  posterPreviewUrl String?                 @db.VarChar(120)
-  posterUrl        String?                 @db.VarChar(120)
-  genres           String[]                @db.VarChar(32)
-  search_document  Unsupported("tsvector")
+  filmLength       String?        @db.Char(6)
+  posterPreviewUrl String?        @db.VarChar(120)
+  posterUrl        String?        @db.VarChar(120)
+  genres           String[]       @db.VarChar(32)
   review           review[]
   to_watch         to_watch[]
+  metadata         film_metadata?
 
   @@index([year], map: "IDX_5a82570b7c5f8d77972f7ef76a")
   @@index([genres], map: "IDX_5aa49498820d9f4e5afb35254b")
   @@index([name], map: "IDX_70c253d5411a4abf1c752a4699")
   @@index([type], map: "IDX_c1b1047b4293e41323a080e220")
   @@index([filmLength], map: "IDX_ff4c1609981279c3df153fda3c")
+}
+
+model film_metadata {
+  search_document Unsupported("tsvector")
+  film            film                    @relation(fields: [filmId], references: [id])
+  filmId          String                  @id @db.VarChar(32)
+
   @@index([search_document], map: "search_film_document_idx", type: Gin)
 }
 
 model list {
-  id               Int                     @id(map: "PK_d8feafd203525d5f9c37b3ed3b9") @default(autoincrement())
-  name             String                  @db.VarChar(32)
-  description      String?                 @db.VarChar(400)
-  is_public        Boolean                 @default(false)
-  show_rating      Boolean                 @default(false)
-  show_description Boolean                 @default(true)
-  image_url        String?                 @db.VarChar(120)
-  created_at       DateTime                @default(now()) @db.Timestamptz(6)
-  updated_at       DateTime                @default(now()) @db.Timestamptz(6)
-  deleted_at       DateTime?               @db.Timestamptz(6)
+  id               Int             @id(map: "PK_d8feafd203525d5f9c37b3ed3b9") @default(autoincrement())
+  name             String          @db.VarChar(32)
+  description      String?         @db.VarChar(400)
+  is_public        Boolean         @default(false)
+  show_rating      Boolean         @default(false)
+  show_description Boolean         @default(true)
+  image_url        String?         @db.VarChar(120)
+  created_at       DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime        @default(now()) @db.Timestamptz(6)
+  deleted_at       DateTime?       @db.Timestamptz(6)
   userId           Int
-  search_document  Unsupported("tsvector")
   comment          comment[]
   favorite_list    favorite_list[]
-  users            users                   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_46ded14b26382088c9f032f8953")
+  users            users           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_46ded14b26382088c9f032f8953")
   list_like        list_like[]
   list_view        list_view[]
   review           review[]
+  metadata         list_metadata?
 
   @@index([deleted_at], map: "IDX_0e35629d588558a1871982f2d2")
   @@index([updated_at], map: "IDX_77b6e8e786643c3e78280800e1")
   @@index([created_at], map: "IDX_80b7c880992ddf646c03674f80")
   @@index([name], map: "IDX_d7ff6872c82ac4a87ff986a38d")
+}
+
+model list_metadata {
+  search_document Unsupported("tsvector")
+  list            list                    @relation(fields: [listId], references: [id])
+  listId          Int                     @id
+
   @@index([search_document], map: "search_list_document_idx", type: Gin)
 }
 
@@ -145,25 +159,32 @@ model profile_event {
 }
 
 model review {
-  id              Int                     @id(map: "PK_2e4299a343a81574217255c00ca") @default(autoincrement())
-  score           Int?                    @db.SmallInt
-  description     String?                 @db.VarChar(400)
-  tags            String[]                @db.VarChar(32)
-  order_in_list   Decimal                 @db.Decimal(20, 16)
-  created_at      DateTime                @default(now()) @db.Timestamptz(6)
-  deleted_at      DateTime?               @db.Timestamptz(6)
-  updated_at      DateTime                @default(now()) @db.Timestamptz(6)
-  filmId          String                  @db.VarChar(32)
-  userId          Int
-  listId          Int
-  search_document Unsupported("tsvector")
-  users           users                   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
-  list            list                    @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_37e516b0d42e6a177cbbb15da8c")
-  film            film                    @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f1a2e33731808a7c6fcd644ca7c")
+  id            Int              @id(map: "PK_2e4299a343a81574217255c00ca") @default(autoincrement())
+  score         Int?             @db.SmallInt
+  description   String?          @db.VarChar(400)
+  tags          String[]         @db.VarChar(32)
+  order_in_list Decimal          @db.Decimal(20, 16)
+  created_at    DateTime         @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime?        @db.Timestamptz(6)
+  updated_at    DateTime         @default(now()) @db.Timestamptz(6)
+  filmId        String           @db.VarChar(32)
+  userId        Int
+  listId        Int
+  users         users            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
+  list          list             @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_37e516b0d42e6a177cbbb15da8c")
+  film          film             @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f1a2e33731808a7c6fcd644ca7c")
+  metadata      review_metadata?
 
   @@index([created_at], map: "IDX_004547e1fee5af6fc9fd3de095")
   @@index([deleted_at], map: "IDX_5fc50495948dd3c91bfec4276a")
   @@index([updated_at], map: "IDX_e045ebbb33ef7af0d13176f55b")
+}
+
+model review_metadata {
+  search_document Unsupported("tsvector")
+  review          review                  @relation(fields: [reviewId], references: [id])
+  reviewId        Int                     @id
+
   @@index([search_document], map: "search_review_document_idx", type: Gin)
 }
 
@@ -202,28 +223,35 @@ model to_watch {
 }
 
 model users {
-  id                       Int                     @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
-  username                 String                  @unique(map: "UQ_78a916df40e02a9deb1c4b75edb") @db.VarChar(32)
-  email                    String?                 @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(256)
-  description              String?                 @db.VarChar(400)
-  image_url                String?                 @db.VarChar(120)
-  password_hash            String                  @db.Char(60)
-  created_at               DateTime                @default(now()) @db.Timestamptz(6)
-  updated_at               DateTime                @default(now()) @db.Timestamptz(6)
-  deleted_at               DateTime?               @db.Timestamptz(6)
-  username_search_document Unsupported("tsvector")
-  comment                  comment[]
-  comment_like             comment_like[]
-  favorite_list            favorite_list[]
-  list                     list[]
-  list_like                list_like[]
-  list_view                list_view[]
-  review                   review[]
-  to_watch                 to_watch[]
+  id            Int             @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  username      String          @unique(map: "UQ_78a916df40e02a9deb1c4b75edb") @db.VarChar(32)
+  email         String?         @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(256)
+  description   String?         @db.VarChar(400)
+  image_url     String?         @db.VarChar(120)
+  password_hash String          @db.Char(60)
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime?       @db.Timestamptz(6)
+  comment       comment[]
+  comment_like  comment_like[]
+  favorite_list favorite_list[]
+  list          list[]
+  list_like     list_like[]
+  list_view     list_view[]
+  review        review[]
+  to_watch      to_watch[]
+  metadata      user_metadata?
 
   @@index([deleted_at], map: "IDX_22b81d3ed19a0bffcb660800f4")
   @@index([updated_at], map: "IDX_9cdce43fa0043c794281aa0905")
   @@index([created_at], map: "IDX_d091f1d36f18bbece2a9eabc6e")
+}
+
+model user_metadata {
+  user                     users                   @relation(fields: [userId], references: [id])
+  userId                   Int                     @id
+  username_search_document Unsupported("tsvector")
+
   @@index([username_search_document], map: "username_search_document_idx", type: Gin)
 }
 
