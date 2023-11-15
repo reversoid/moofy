@@ -6,6 +6,7 @@ import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EventsModule } from '../events/events.module';
+import { TokensService } from './tokens.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { EventsModule } from '../events/events.module';
     EventsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, TokensService],
 })
 export class AuthModule {}

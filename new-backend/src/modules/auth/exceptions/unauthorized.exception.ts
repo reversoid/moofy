@@ -1,6 +1,6 @@
-import { UnauthorizedException as _UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException as NestUnauthorizedException } from '@nestjs/common';
 
-export class UnauthorizedException extends _UnauthorizedException {
+export class UnauthorizedException extends NestUnauthorizedException {
   constructor() {
     super('UNAUTHORIZED');
   }

@@ -18,9 +18,12 @@ import globalConfig from './config/global.config';
 import apiKeysConfig from './config/api-keys.config';
 import s3Config from './config/s3.config';
 import rmqConfig from './config/rmq.config';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { getRedisConfig } from './config/modules-configs/get-redis-config';
 
 @Module({
   imports: [
+    RedisModule.forRootAsync(getRedisConfig()),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
