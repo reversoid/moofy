@@ -8,3 +8,14 @@ export const userSchema = z.object({
 });
 
 export type User = z.infer<typeof userSchema>;
+
+export type SelectUser = {
+  [key in keyof User]: true;
+};
+
+export const selectUser: SelectUser = {
+  description: true,
+  id: true,
+  image_url: true,
+  username: true,
+};
