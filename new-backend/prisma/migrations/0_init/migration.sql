@@ -1,8 +1,20 @@
 -- CreateEnum
-CREATE TYPE "film_type_enum" AS ENUM ('FILM', 'TV_SERIES', 'TV_SHOW', 'MINI_SERIES', 'VIDEO');
+CREATE TYPE "film_type_enum" AS ENUM (
+    'FILM',
+    'TV_SERIES',
+    'TV_SHOW',
+    'MINI_SERIES',
+    'VIDEO'
+);
 
 -- CreateEnum
-CREATE TYPE "profile_event_type_enum" AS ENUM ('LIST_LIKE', 'COMMENT_LIKE', 'COMMENT', 'REPLY', 'SUBSCRIBE');
+CREATE TYPE "profile_event_type_enum" AS ENUM (
+    'LIST_LIKE',
+    'COMMENT_LIKE',
+    'COMMENT',
+    'REPLY',
+    'SUBSCRIBE'
+);
 
 -- CreateEnum
 CREATE TYPE "task_task_type_enum" AS ENUM ('AUTH', 'REVIEW', 'LIST');
@@ -16,7 +28,6 @@ CREATE TABLE "comment" (
     "userId" INTEGER NOT NULL,
     "replyToId" INTEGER,
     "listId" INTEGER,
-
     CONSTRAINT "PK_0b0e4bbc8415ec426f87f3a88e2" PRIMARY KEY ("id")
 );
 
@@ -27,7 +38,6 @@ CREATE TABLE "comment_like" (
     "deleted_at" TIMESTAMPTZ(6),
     "userId" INTEGER NOT NULL,
     "commentId" INTEGER NOT NULL,
-
     CONSTRAINT "PK_04f93e6f1ace5dbc1d8c562ccbf" PRIMARY KEY ("id")
 );
 
@@ -38,7 +48,6 @@ CREATE TABLE "favorite_list" (
     "deleted_at" TIMESTAMPTZ(6),
     "userId" INTEGER NOT NULL,
     "listId" INTEGER,
-
     CONSTRAINT "PK_298ea5adef17b30abd7df2d3a1d" PRIMARY KEY ("id")
 );
 
@@ -51,9 +60,8 @@ CREATE TABLE "film" (
     "filmLength" CHAR(6),
     "posterPreviewUrl" VARCHAR(120),
     "posterUrl" VARCHAR(120),
-    "genres" VARCHAR(32)[],
+    "genres" VARCHAR(32) [],
     "search_document" tsvector NOT NULL,
-
     CONSTRAINT "PK_37ec0ffe0011ccbe438a65e3c6e" PRIMARY KEY ("id")
 );
 
@@ -71,7 +79,6 @@ CREATE TABLE "list" (
     "deleted_at" TIMESTAMPTZ(6),
     "userId" INTEGER NOT NULL,
     "search_document" tsvector NOT NULL,
-
     CONSTRAINT "PK_d8feafd203525d5f9c37b3ed3b9" PRIMARY KEY ("id")
 );
 
@@ -82,7 +89,6 @@ CREATE TABLE "list_like" (
     "deleted_at" TIMESTAMPTZ(6),
     "userId" INTEGER NOT NULL,
     "listId" INTEGER NOT NULL,
-
     CONSTRAINT "PK_08d899a0a4870c8959ddf52a604" PRIMARY KEY ("id")
 );
 
@@ -93,7 +99,6 @@ CREATE TABLE "list_view" (
     "deleted_at" TIMESTAMPTZ(6),
     "userId" INTEGER NOT NULL,
     "listId" INTEGER NOT NULL,
-
     CONSTRAINT "PK_4d9833b647fd9eacd77ed374854" PRIMARY KEY ("id")
 );
 
@@ -102,7 +107,6 @@ CREATE TABLE "migrations" (
     "id" SERIAL NOT NULL,
     "timestamp" BIGINT NOT NULL,
     "name" VARCHAR NOT NULL,
-
     CONSTRAINT "PK_8c82d7f526340ab734260ea46be" PRIMARY KEY ("id")
 );
 
@@ -116,7 +120,6 @@ CREATE TABLE "profile_event" (
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ(6),
     "seen_at" TIMESTAMPTZ(6),
-
     CONSTRAINT "PK_2515098fbdaa581436013ab7a60" PRIMARY KEY ("id")
 );
 
@@ -125,8 +128,8 @@ CREATE TABLE "review" (
     "id" SERIAL NOT NULL,
     "score" SMALLINT,
     "description" VARCHAR(400),
-    "tags" VARCHAR(32)[],
-    "order_in_list" DECIMAL(20,16) NOT NULL,
+    "tags" VARCHAR(32) [],
+    "order_in_list" DECIMAL(20, 16) NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ(6),
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -134,7 +137,6 @@ CREATE TABLE "review" (
     "userId" INTEGER NOT NULL,
     "listId" INTEGER NOT NULL,
     "search_document" tsvector NOT NULL,
-
     CONSTRAINT "PK_2e4299a343a81574217255c00ca" PRIMARY KEY ("id")
 );
 
@@ -145,7 +147,6 @@ CREATE TABLE "subscription" (
     "deleted_at" TIMESTAMPTZ(6),
     "follower_id" INTEGER,
     "followed_id" INTEGER,
-
     CONSTRAINT "PK_8c3e00ebd02103caa1174cd5d9d" PRIMARY KEY ("id")
 );
 
@@ -155,7 +156,6 @@ CREATE TABLE "task" (
     "task_date" TIMESTAMPTZ(6) NOT NULL,
     "task_type" "task_task_type_enum" NOT NULL,
     "task_name" VARCHAR(32) NOT NULL,
-
     CONSTRAINT "PK_fb213f79ee45060ba925ecd576e" PRIMARY KEY ("id")
 );
 
@@ -165,7 +165,6 @@ CREATE TABLE "to_watch" (
     "watched" BOOLEAN NOT NULL DEFAULT false,
     "userId" INTEGER NOT NULL,
     "filmId" VARCHAR(32) NOT NULL,
-
     CONSTRAINT "PK_0fd820af7972ef612ea0e17ae21" PRIMARY KEY ("id")
 );
 
@@ -181,7 +180,6 @@ CREATE TABLE "users" (
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ(6),
     "username_search_document" tsvector NOT NULL,
-
     CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
 );
 
@@ -309,53 +307,184 @@ CREATE INDEX "IDX_d091f1d36f18bbece2a9eabc6e" ON "users"("created_at");
 CREATE INDEX "username_search_document_idx" ON "users" USING GIN ("username_search_document");
 
 -- AddForeignKey
-ALTER TABLE "comment" ADD CONSTRAINT "FK_c0354a9a009d3bb45a08655ce3b" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "comment"
+ADD
+    CONSTRAINT "FK_c0354a9a009d3bb45a08655ce3b" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "comment" ADD CONSTRAINT "FK_cfc14dc2cafa339954de748ebf3" FOREIGN KEY ("replyToId") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "comment"
+ADD
+    CONSTRAINT "FK_cfc14dc2cafa339954de748ebf3" FOREIGN KEY ("replyToId") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "comment" ADD CONSTRAINT "FK_fc8455c31a9e1a7cfeb0ead49a9" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE
+    "comment"
+ADD
+    CONSTRAINT "FK_fc8455c31a9e1a7cfeb0ead49a9" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "comment_like" ADD CONSTRAINT "FK_a253dba95eab8659c027bbace44" FOREIGN KEY ("commentId") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "comment_like"
+ADD
+    CONSTRAINT "FK_a253dba95eab8659c027bbace44" FOREIGN KEY ("commentId") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "comment_like" ADD CONSTRAINT "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "comment_like"
+ADD
+    CONSTRAINT "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "favorite_list" ADD CONSTRAINT "FK_21938075574309780e33688b0a5" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "favorite_list"
+ADD
+    CONSTRAINT "FK_21938075574309780e33688b0a5" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "favorite_list" ADD CONSTRAINT "FK_fbbb4b0b4654357a4bd1138ccbd" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "favorite_list"
+ADD
+    CONSTRAINT "FK_fbbb4b0b4654357a4bd1138ccbd" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "list" ADD CONSTRAINT "FK_46ded14b26382088c9f032f8953" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "list"
+ADD
+    CONSTRAINT "FK_46ded14b26382088c9f032f8953" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "list_like" ADD CONSTRAINT "FK_2f7811183028e0c3b9a66f34957" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "list_like"
+ADD
+    CONSTRAINT "FK_2f7811183028e0c3b9a66f34957" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "list_like" ADD CONSTRAINT "FK_36bbfd04f2ebcc31a9c42450c36" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "list_like"
+ADD
+    CONSTRAINT "FK_36bbfd04f2ebcc31a9c42450c36" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "list_view" ADD CONSTRAINT "FK_4217d199530fdd010220d8d473a" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "list_view"
+ADD
+    CONSTRAINT "FK_4217d199530fdd010220d8d473a" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "list_view" ADD CONSTRAINT "FK_a8a0aa213e144f932c9793a6953" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "list_view"
+ADD
+    CONSTRAINT "FK_a8a0aa213e144f932c9793a6953" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "review" ADD CONSTRAINT "FK_1337f93918c70837d3cea105d39" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "review"
+ADD
+    CONSTRAINT "FK_1337f93918c70837d3cea105d39" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "review" ADD CONSTRAINT "FK_37e516b0d42e6a177cbbb15da8c" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "review"
+ADD
+    CONSTRAINT "FK_37e516b0d42e6a177cbbb15da8c" FOREIGN KEY ("listId") REFERENCES "list"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "review" ADD CONSTRAINT "FK_f1a2e33731808a7c6fcd644ca7c" FOREIGN KEY ("filmId") REFERENCES "film"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE
+    "review"
+ADD
+    CONSTRAINT "FK_f1a2e33731808a7c6fcd644ca7c" FOREIGN KEY ("filmId") REFERENCES "film"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "to_watch" ADD CONSTRAINT "FK_9e1aabc3453a7c955553f498c6e" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE
+    "to_watch"
+ADD
+    CONSTRAINT "FK_9e1aabc3453a7c955553f498c6e" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "to_watch" ADD CONSTRAINT "FK_b678c932a26ad586d6afd5ee42c" FOREIGN KEY ("filmId") REFERENCES "film"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE
+    "to_watch"
+ADD
+    CONSTRAINT "FK_b678c932a26ad586d6afd5ee42c" FOREIGN KEY ("filmId") REFERENCES "film"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+-- Review triggers
+CREATE FUNCTION to_review_tsvector() RETURNS trigger as $ $ begin new.search_document := to_tsvector('simple', coalesce(new.description, ''));
+
+return new;
+
+end $ $ LANGUAGE plpgsql;
+
+UPDATE
+    "review"
+SET
+    search_document = to_tsvector('simple', coalesce(description, ''));
+
+CREATE TRIGGER review_tsvector_update BEFORE
+INSERT
+    OR
+UPDATE
+    ON review FOR EACH ROW EXECUTE PROCEDURE to_review_tsvector();
+
+-- Film triggers
+CREATE FUNCTION to_film_tsvector() RETURNS trigger as $ $ begin new.search_document := to_tsvector('simple', coalesce(new.name, ''));
+
+return new;
+
+end $ $ LANGUAGE plpgsql;
+
+UPDATE
+    "film"
+SET
+    search_document = to_tsvector('simple', coalesce(name, ''));
+
+CREATE TRIGGER film_tsvector_update BEFORE
+INSERT
+    OR
+UPDATE
+    ON film FOR EACH ROW EXECUTE PROCEDURE to_film_tsvector();
+
+-- list triggers
+CREATE FUNCTION to_list_tsvector() RETURNS trigger as $ $ begin new.search_document := setweight(
+    to_tsvector('simple', coalesce(new.name, '')),
+    'A'
+) || setweight(
+    to_tsvector('simple', coalesce(new.description, '')),
+    'B'
+);
+
+return new;
+
+end $ $ LANGUAGE plpgsql;
+
+UPDATE
+    "list"
+SET
+    search_document = setweight(to_tsvector('simple', coalesce(name, '')), 'A') || setweight(
+        to_tsvector('simple', coalesce(description, '')),
+        'B'
+    );
+
+CREATE TRIGGER list_tsvector_update BEFORE
+INSERT
+    OR
+UPDATE
+    ON list FOR EACH ROW EXECUTE PROCEDURE to_list_tsvector();
+
+-- user triggers
+CREATE FUNCTION to_username_tsvector() RETURNS trigger as $ $ begin new.username_search_document := to_tsvector('simple', coalesce(new.username, ''));
+
+return new;
+
+end $ $ LANGUAGE plpgsql;
+
+UPDATE
+    "public"."user"
+SET
+    username_search_document = to_tsvector('simple', coalesce(username, ''));
+
+CREATE TRIGGER username_tsvector_update BEFORE
+INSERT
+    OR
+UPDATE
+    ON "public"."user" FOR EACH ROW EXECUTE PROCEDURE to_username_tsvector();
