@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
-import { PROFILE_NOTIFICATION_TOPIC } from './utils/profile-events/topics';
+import {
+  PROFILE_NOTIFICATION_SEEN_TOPIC,
+  PROFILE_NOTIFICATION_TOPIC,
+} from './utils/profile-events/topics';
 import {
   ProfileNotificationEvent,
   ProfileNotificationSeenEvent,
@@ -17,7 +20,7 @@ export class EventsService {
   }
 
   emitProfileSeenEvent(event: ProfileNotificationSeenEvent) {
-    return this.rmqService.notify(PROFILE_NOTIFICATION_TOPIC, event);
+    return this.rmqService.notify(PROFILE_NOTIFICATION_SEEN_TOPIC, event);
   }
 
   emitUserRegisteredEvent(event: UserRegisteredEvent) {
