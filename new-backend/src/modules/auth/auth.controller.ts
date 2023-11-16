@@ -1,23 +1,23 @@
+import { CookieSerializeOptions } from '@fastify/cookie';
 import { Body, Controller, Post, Res } from '@nestjs/common';
+import { FastifyReply } from 'fastify';
+import { AppEnvironments } from 'src/config/global.config';
+import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
+import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { AuthService } from './auth.service';
-import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import {
   LoginResponse,
   loginResponseSchema,
 } from './dto/responses/login.response';
 import {
-  RegisterResponse,
-  registerResponseSchema,
-} from './dto/responses/register.response';
-import {
   RefreshResponse,
   refreshResponseSchema,
 } from './dto/responses/refresh.response';
-import { FastifyReply } from 'fastify';
-import { CookieSerializeOptions } from '@fastify/cookie';
-import { AppEnvironments } from 'src/config/global.config';
+import {
+  RegisterResponse,
+  registerResponseSchema,
+} from './dto/responses/register.response';
 
 import { GlobalConfig } from '../global/global.config';
 import { UnauthorizedException } from './exceptions/unauthorized.exception';
