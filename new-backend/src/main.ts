@@ -11,6 +11,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { setupS3 } from './shared/utils/s3/s3';
 import { AppEnvironments } from './config/global.config';
 import { ConfigService } from '@nestjs/config';
+import multipart from '@fastify/multipart';
 
 patchNestJsSwagger();
 
@@ -63,8 +64,7 @@ async function bootstrap() {
     secret: configService.get<string>('secrets.cookie'),
   });
 
-  await app.register(require('@fastify/multipart'));
-
+  await app.register(multipart);
   await app.listen(3000);
 }
 bootstrap();

@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('List')
 @Controller('lists')
-export class ListController {
+export class CollectionController {
   @Post('')
   async createList() {}
 

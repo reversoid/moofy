@@ -3,7 +3,7 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { AppController } from './app.controller';
 import { ReviewModule } from './modules/review/review.module';
-import { ListModule } from './modules/list/list.module';
+import { CollectionModule } from './modules/collection/collection.module';
 import { FilmModule } from './modules/film/film.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MovieProxyModule } from './modules/movie-proxy/movie-proxy.module';
@@ -44,7 +44,7 @@ import { ExploreModule } from './modules/explore/explore.module';
       cache: true,
     }),
     ReviewModule,
-    ListModule,
+    CollectionModule,
     FilmModule,
     AuthModule,
     MovieProxyModule,

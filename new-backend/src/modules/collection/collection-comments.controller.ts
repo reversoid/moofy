@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('List comments')
 @Controller('list')
-export class ListCommentsController {
+export class CollectionCommentsController {
   @Get(':id/comments')
   getComments() {}
 
