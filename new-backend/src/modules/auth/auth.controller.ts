@@ -22,16 +22,40 @@ export class AuthController {
 
   @Post('login')
   @HttpResponse(loginResponseSchema)
-  async login(@Body() data: LoginDto): Promise<LoginResponse> {}
+  async login(
+    @Body() { username, password }: LoginDto,
+  ): Promise<LoginResponse> {
+    const { tokens, user } = await this.authService.login({
+      username,
+      password,
+    });
+
+    return { accessToken: tokens.access, user };
+  }
 
   @Post('register')
   @HttpResponse(registerResponseSchema)
-  async register(@Body() data: RegisterDto): Promise<RegisterResponse> {}
+  async register(
+    @Body() { password, username }: RegisterDto,
+  ): Promise<RegisterResponse> {
+    const { tokens, user } = await this.authService.register({
+      username,
+      password,
+    });
+
+    return { accessToken: tokens.access, user };
+  }
 
   @Post('logout')
-  async logout() {}
+  async logout() {
+    await this.authService.logout('token');
+  }
 
   @Post('refresh')
   @HttpResponse(refreshResponseSchema)
-  async refresh(): Promise<RefreshResponse> {}
+  async refresh(): Promise<RefreshResponse> {
+    const { tokens, user } = await this.authService.refresh('token');
+
+    return { accessToken: tokens.access, user };
+  }
 }
