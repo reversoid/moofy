@@ -63,6 +63,8 @@ async function bootstrap() {
     secret: configService.get<string>('secrets.cookie'),
   });
 
+  await app.register(require('@fastify/multipart'));
+
   await app.listen(3000);
 }
 bootstrap();

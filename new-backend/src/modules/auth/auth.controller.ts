@@ -21,6 +21,7 @@ import {
 
 import { GlobalConfig } from '../global/global.config';
 import { UnauthorizedException } from './exceptions/unauthorized.exception';
+import { ApiTags } from '@nestjs/swagger';
 
 const REFRESH_TOKEN_KEY = 'refresh_token';
 
@@ -29,6 +30,7 @@ const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieSerializeOptions = {
   path: '/auth/protected',
 };
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(

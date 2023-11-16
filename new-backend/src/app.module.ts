@@ -21,10 +21,14 @@ import rmqConfig from './config/rmq.config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { getRedisConfig } from './config/modules-configs/get-redis-config';
 import { GlobalModule } from './modules/global/global.module';
+import { RMQModule } from 'nestjs-rmq';
+import { getRMQConfig } from './config/modules-configs/get-rmq-config';
+import { ExploreModule } from './modules/explore/explore.module';
 
 @Module({
   imports: [
     RedisModule.forRootAsync(getRedisConfig()),
+    RMQModule.forRootAsync(getRMQConfig()),
     NestConfigModule.forRoot({
       isGlobal: true,
       load: [
@@ -49,6 +53,7 @@ import { GlobalModule } from './modules/global/global.module';
     EventsModule,
     ProfileModule,
     GlobalModule,
+    ExploreModule,
   ],
   providers: [
     {
