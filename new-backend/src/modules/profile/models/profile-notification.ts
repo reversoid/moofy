@@ -1,0 +1,7 @@
+export enum ProfileEventType {
+  LIST_LIKE = 'LIST_LIKE',
+  COMMENT_LIKE = 'COMMENT_LIKE',
+  COMMENT = 'COMMENT',
+  REPLY = 'REPLY',
+  SUBSCRIBE = 'SUBSCRIBE',
+}
