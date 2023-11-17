@@ -7,9 +7,11 @@ export class CollectionController {
   @Post('')
   async createList() {}
 
-  // TODO make option to also reviews
   @Get(':id')
   async getList() {}
+
+  @Get(':id/full')
+  async getFullList() {}
 
   @Post('image-upload')
   async uploadFile() {}
