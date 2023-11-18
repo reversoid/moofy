@@ -4,9 +4,9 @@ import { getJwtConfig } from './configs/get-jwt-config';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { EventsModule } from '../events/events.module';
-import { TokensService } from './tokens.service';
+import { TokensService } from './services/tokens.service';
 
 @Module({
   imports: [

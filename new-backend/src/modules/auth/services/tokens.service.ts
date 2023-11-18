@@ -3,14 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Redis } from 'ioredis';
 import globalConfig, { AppEnvironments } from 'src/config/global.config';
-import { UnauthorizedException } from './exceptions/unauthorized.exception';
+import { UnauthorizedException } from '../exceptions/unauthorized.exception';
 import {
   AccessTokenPayload,
   RefreshTokenPayload,
-} from './passport/tokens-payload.type';
+} from '../passport/tokens-payload.type';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../user/models/user';
-import { Tokens } from './types';
+import { User } from '../../user/models/user';
+import { Tokens } from '../types';
 
 const getRefreshTokenRedisKey = (userId: number) =>
   `user:${userId}:refresh_tokens`;

@@ -1,14 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { EventsService } from 'src/modules/events/events.service';
+import { FullUser } from 'src/modules/user/models/full-user';
+import { User } from 'src/modules/user/models/user';
+import { UserService } from 'src/modules/user/user.service';
+import { AlreadyTakenUsernameException } from '../exceptions/already-taken-username.exception';
+import { WrongCredentialsException } from '../exceptions/wrong-credentials.exception';
+import { LoginProps, TokensAndUser, RegisterProps } from '../types';
 import { TokensService } from './tokens.service';
-import { User } from '../user/models/user';
-import { UnauthorizedException } from './exceptions/unauthorized.exception';
-import { LoginProps, RegisterProps, TokensAndUser } from './types';
-import { AlreadyTakenUsernameException } from './exceptions/already-taken-username.exception';
 import * as bcrypt from 'bcrypt';
-import { WrongCredentialsException } from './exceptions/wrong-credentials.exception';
-import { FullUser } from '../user/models/full-user';
-import { EventsService } from '../events/events.service';
 
 @Injectable()
 export class AuthService {

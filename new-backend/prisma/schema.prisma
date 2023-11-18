@@ -159,21 +159,20 @@ model profile_event {
 }
 
 model review {
-  id            Int              @id(map: "PK_2e4299a343a81574217255c00ca") @default(autoincrement())
-  score         Int?             @db.SmallInt
-  description   String?          @db.VarChar(400)
-  tags          String[]         @db.VarChar(32)
-  order_in_list Decimal          @db.Decimal(20, 16)
-  created_at    DateTime         @default(now()) @db.Timestamptz(6)
-  deleted_at    DateTime?        @db.Timestamptz(6)
-  updated_at    DateTime         @default(now()) @db.Timestamptz(6)
-  filmId        String           @db.VarChar(32)
-  userId        Int
-  listId        Int
-  users         users            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
-  list          list             @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_37e516b0d42e6a177cbbb15da8c")
-  film          film             @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f1a2e33731808a7c6fcd644ca7c")
-  metadata      review_metadata?
+  id          Int              @id(map: "PK_2e4299a343a81574217255c00ca") @default(autoincrement())
+  score       Int?             @db.SmallInt
+  description String?          @db.VarChar(400)
+  tags        String[]         @db.VarChar(32)
+  created_at  DateTime         @default(now()) @db.Timestamptz(6)
+  deleted_at  DateTime?        @db.Timestamptz(6)
+  updated_at  DateTime         @default(now()) @db.Timestamptz(6)
+  filmId      String           @db.VarChar(32)
+  userId      Int
+  listId      Int
+  users       users            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
+  list        list             @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_37e516b0d42e6a177cbbb15da8c")
+  film        film             @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f1a2e33731808a7c6fcd644ca7c")
+  metadata    review_metadata?
 
   @@index([created_at], map: "IDX_004547e1fee5af6fc9fd3de095")
   @@index([deleted_at], map: "IDX_5fc50495948dd3c91bfec4276a")
