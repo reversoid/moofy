@@ -1,4 +1,4 @@
-import { List } from 'src/modules/collection/models/list';
+import { Collection } from 'src/modules/collection/models/collection';
 import { Review } from './models/review';
 import { User } from '../user/models/user';
 
@@ -6,7 +6,7 @@ export type CreateReviewProps = {
   score: number | null;
   description: string | null;
   filmId: string;
-  listId: List['id'];
+  listId: Collection['id'];
   userId: User['id'];
 };
 
