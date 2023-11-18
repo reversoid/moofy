@@ -1,8 +1,8 @@
 import { Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('List')
-@Controller('lists')
+@ApiTags('Collection')
+@Controller('collections')
 export class CollectionController {
   @Post('')
   async createList() {}

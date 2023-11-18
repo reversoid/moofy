@@ -1,8 +1,8 @@
 import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('List comments')
-@Controller('list')
+@ApiTags('Collection comments')
+@Controller('collections')
 export class CollectionCommentsController {
   @Get(':id/comments')
   getComments() {}
