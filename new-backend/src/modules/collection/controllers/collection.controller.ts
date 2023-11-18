@@ -5,35 +5,35 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('collections')
 export class CollectionController {
   @Post('')
-  async createList() {}
+  async createCollection() {}
 
   @Get(':id')
-  async getList() {}
+  async getCollection() {}
 
   @Get(':id/full')
-  async getFullList() {}
+  async getFullCollection() {}
 
   @Post('image-upload')
   async uploadFile() {}
 
   @Patch(':id')
-  async updateList() {}
+  async updateCollection() {}
 
   @Delete(':id')
-  async deleteList() {}
+  async deleteCollection() {}
 
   @Put(':id/likes')
-  async likeList() {}
+  async likeCollection() {}
 
   @Delete(':id/likes')
-  async unlikeList() {}
+  async unlikeCollection() {}
 
   @Post(':id/views')
-  async markListAsViewed() {}
+  async markCollectionAsViewed() {}
 
   @Put('favorites/:id')
-  async addFavoriteList() {}
+  async addFavoriteCollection() {}
 
   @Delete('favorites/:id')
-  async deleteFavoriteList() {}
+  async deleteFavoriteCollection() {}
 }
