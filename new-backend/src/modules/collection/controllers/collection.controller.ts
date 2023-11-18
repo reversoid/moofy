@@ -10,7 +10,7 @@ import { likeCollectionResponseSchema } from './responses/like-collection.respon
 import { removeFromFavoritesCollectionResponse } from './responses/remove-favorite.response';
 import { unlikeCollectionResponseSchema } from './responses/unlike-collection.response';
 import { updateCollectionResponseSchema } from './responses/update-collection.response';
-import { ICollectionController } from './types/collection-controller';
+import { ICollectionController } from './types/collection-controller.type';
 
 @ApiTags('Collection')
 @Controller('collections')

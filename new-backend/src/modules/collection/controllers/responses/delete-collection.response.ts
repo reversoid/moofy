@@ -1,9 +1,7 @@
 import { z } from 'zod';
-import { collectionSchema } from '../../models/collection';
+import { collectionAndSocialStatsSchema } from '../../models/collection-and-social-stats';
 
-export const deleteCollectionResponseSchema = z.object({
-  id: collectionSchema.shape.id,
-});
+export const deleteCollectionResponseSchema = collectionAndSocialStatsSchema;
 
 export type DeleteCollectionResponse = z.infer<
   typeof deleteCollectionResponseSchema
