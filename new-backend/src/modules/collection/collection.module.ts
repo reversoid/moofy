@@ -4,6 +4,7 @@ import { CollectionCommentsController } from './controllers/collection-comments.
 import { CollectionReviewsController } from './controllers/collection-reviews.controller';
 import { CollectionService } from './services/collection.service';
 import { CollectionRepository } from './repositories/collection.repository';
+import { PrimitiveCollectionService } from './services/primitive-collection.service';
 
 @Module({
   controllers: [
@@ -11,6 +12,10 @@ import { CollectionRepository } from './repositories/collection.repository';
     CollectionCommentsController,
     CollectionReviewsController,
   ],
-  providers: [CollectionService, CollectionRepository],
+  providers: [
+    CollectionService,
+    CollectionRepository,
+    PrimitiveCollectionService,
+  ],
 })
 export class CollectionModule {}

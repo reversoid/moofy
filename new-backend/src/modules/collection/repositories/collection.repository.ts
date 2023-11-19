@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { Collection, selectCollection } from '../models/collection';
+import { SocialStats } from '../models/social-stats';
+import { User } from 'src/modules/user/models/user';
 
 @Injectable()
 export class CollectionRepository {
@@ -49,13 +51,56 @@ export class CollectionRepository {
     return { id };
   }
 
-  async getCollectionSocialStats(
-    id: Collection['id'],
-  ): Promise<{ id: Collection['id'] }> {
-    await this.prismaService.list.update({
-      where: { id },
-      data: { deleted_at: new Date() },
+  async getSocialStats(
+    collectionId: Collection['id'],
+  ): Promise<SocialStats | null> {
+    const result = await this.prismaService.list.findUnique({
+      where: {
+        id: collectionId,
+      },
+      select: {
+        id: true,
+        _count: {
+          select: { list_like: true, comment: true },
+        },
+      },
     });
-    return { id };
+    if (!result) {
+      return null;
+    }
+
+    return {
+      commentsAmount: result._count.comment,
+      likesAmount: result._count.comment,
+    };
+  }
+
+  async hasUserLikedCollection(
+    collectionId: Collection['id'],
+    userId: User['id'],
+  ) {
+    const result = await this.prismaService.list.findUnique({
+      where: {
+        id: collectionId,
+        list_like: {
+          some: { userId },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    return Boolean(result);
+  }
+
+  async isCollectionFavorite(
+    collectionId: Collection['id'],
+    userId: User['id'],
+  ): Promise<boolean> {
+    const result = await this.prismaService.list.findUnique({
+      where: { id: collectionId, favorite_list: { some: { userId: userId } } },
+      select: { id: true },
+    });
+    return Boolean(result);
   }
 }

@@ -10,15 +10,15 @@ import { UpdateCollectionResponse } from '../responses/update-collection.respons
 import { UploadImageResponse } from '../responses/upload-image.response';
 
 export interface ICollectionController {
-  createCollection(): Promise<CreateCollectionResponse>;
-  getCollection(id: string): Promise<GetCollectionResponse>;
-  getFullCollection(id: string): Promise<GetFullCollectionResponse>;
+  createCollection(...args: any): Promise<CreateCollectionResponse>;
+  getCollection(...args: any): Promise<GetCollectionResponse>;
+  getFullCollection(...args: any): Promise<GetFullCollectionResponse>;
   uploadFile(): Promise<UploadImageResponse>;
   updateCollection(): Promise<UpdateCollectionResponse>;
-  deleteCollection(id: string): Promise<DeleteCollectionResponse>;
-  likeCollection(id: string): Promise<LikeCollectionResponse>;
-  unlikeCollection(id: string): Promise<UnlikeCollectionResponse>;
-  addFavoriteCollection(id: string): Promise<AddToFavoriteResponse>;
-  deleteFavoriteCollection(id: string): Promise<RemoveFromFavoriteResponse>;
-  markCollectionAsViewed(id: string): Promise<void>;
+  deleteCollection(...args: any): Promise<DeleteCollectionResponse>;
+  likeCollection(...args: any): Promise<LikeCollectionResponse>;
+  unlikeCollection(...args: any): Promise<UnlikeCollectionResponse>;
+  addFavoriteCollection(...args: any): Promise<AddToFavoriteResponse>;
+  deleteFavoriteCollection(...args: any): Promise<RemoveFromFavoriteResponse>;
+  markCollectionAsViewed(...args: any): Promise<void>;
 }

@@ -4,7 +4,7 @@ import { Collection } from './models/collection';
 export type CreateCollectionProps = {
   name: string;
   description: string | null;
-  imageUrl?: string;
+  imageUrl: string | null;
   userId: User['id'];
 };
 

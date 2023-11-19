@@ -1,31 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCollectionProps, UpdateCollectionProps } from '../types';
+import { User } from 'src/modules/user/models/user';
 import { Collection } from '../models/collection';
-import { CollectionRepository } from '../repositories/collection.repository';
+import { CollectionWithInfo } from '../models/collection-with-info';
+import { PrimitiveCollectionService } from './primitive-collection.service';
+import { CreateCollectionProps } from '../types';
 
 @Injectable()
 export class CollectionService {
-  constructor(private readonly collectionRepository: CollectionRepository) {}
+  constructor(
+    private readonly primitiveCollectionService: PrimitiveCollectionService,
+  ) {}
 
-  async createCollection(props: CreateCollectionProps): Promise<Collection> {
-    return this.collectionRepository.createCollection(props);
+  async createCollection(
+    props: CreateCollectionProps,
+  ): Promise<CollectionWithInfo> {
+    const collection =
+      await this.primitiveCollectionService.createCollection(props);
+
+    return this.getInfoForCollection(collection, props.userId);
   }
 
-  async getCollection(id: Collection['id']): Promise<Collection | null> {
-    return this.collectionRepository.getCollection(id);
-  }
+  private async getInfoForCollection(
+    collection: Collection,
+    userId: User['id'],
+  ): Promise<CollectionWithInfo> {
+    const [socialStats, isLiked, isFavorite] = await Promise.all([
+      this.primitiveCollectionService.getSocialStats(collection.id),
+      this.primitiveCollectionService.hasUserLikedCollection(
+        collection.id,
+        userId,
+      ),
+      this.primitiveCollectionService.isCollectionFavorite(
+        collection.id,
+        userId,
+      ),
+    ]);
 
-  async getFullCollection(id: Collection['id']): Promise<Collection | null> {
-    return this.collectionRepository.getCollection(id);
-  }
-
-  async updateCollection(props: UpdateCollectionProps): Promise<Collection> {
-    return this.collectionRepository.updateCollection(props);
-  }
-
-  async deleteCollection(
-    id: Collection['id'],
-  ): Promise<{ id: Collection['id'] }> {
-    return this.collectionRepository.deleteCollection(id);
+    return { collection, additionalInfo: { isLiked, isFavorite }, socialStats };
   }
 }

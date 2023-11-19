@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { collectionAndSocialStatsSchema } from '../../models/collection-and-social-stats';
+import { collectionWithInfoSchema } from '../../models/collection-with-info';
 
-export const getCollectionResponseSchema = collectionAndSocialStatsSchema;
+export const getCollectionResponseSchema = collectionWithInfoSchema;
 
 export type GetCollectionResponse = z.infer<typeof getCollectionResponseSchema>;
