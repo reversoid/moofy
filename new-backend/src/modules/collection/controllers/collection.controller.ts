@@ -3,10 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   Put,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -25,17 +25,20 @@ import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionService } from '../services/collection.service';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { User } from 'src/modules/user/models/user';
+import { NumericIdParamDto } from './dto/numeric-id-param.dto';
+import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
+import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 
 @ApiTags('Collection')
-@UseGuards(JwtAuthGuard)
 @Controller('collections')
 export class CollectionController implements ICollectionController {
   constructor(private readonly collectionService: CollectionService) {}
 
   @Post('')
   @HttpResponse(createCollectionResponseSchema)
+  @UseGuards(JwtAuthGuard)
   async createCollection(
-    @Req() { user }: { user: User },
+    @AuthUser() user: User,
     @Body() { description, imageUrl, name }: CreateCollectionDto,
   ) {
     return this.collectionService.createCollection({
@@ -48,39 +51,93 @@ export class CollectionController implements ICollectionController {
 
   @Get(':id')
   @HttpResponse(getCollectionResponseSchema)
-  async getCollection() {}
+  @UseGuards(OptionalJwtAuthGuard)
+  async getCollection(
+    @AuthUser() user: User | null,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.getCollection(id);
+  }
 
   @Get(':id/full')
   @HttpResponse(getFullCollectionResponseSchema)
-  async getFullCollection() {}
+  @UseGuards(OptionalJwtAuthGuard)
+  async getFullCollection(
+    @AuthUser() user: User | null,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.getFullCollection(id);
+  }
 
   @Post('image-upload')
   async uploadFile() {}
 
   @Patch(':id')
   @HttpResponse(updateCollectionResponseSchema)
-  async updateCollection() {}
+  @UseGuards(JwtAuthGuard)
+  async updateCollection(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.updateCollection(id);
+  }
 
   @Delete(':id')
   @HttpResponse(deleteCollectionResponseSchema)
-  async deleteCollection() {}
+  @UseGuards(JwtAuthGuard)
+  async deleteCollection(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.deleteCollection(id);
+  }
 
   @Put(':id/likes')
   @HttpResponse(likeCollectionResponseSchema)
-  async likeCollection() {}
+  @UseGuards(JwtAuthGuard)
+  async likeCollection(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.likeCollection(id);
+  }
 
   @Delete(':id/likes')
   @HttpResponse(unlikeCollectionResponseSchema)
-  async unlikeCollection() {}
+  @UseGuards(JwtAuthGuard)
+  async unlikeCollection(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.unlikeCollection(id);
+  }
 
   @Put('favorites/:id')
   @HttpResponse(addToFavoriteCollectionResponse)
-  async addFavoriteCollection() {}
+  @UseGuards(JwtAuthGuard)
+  async addFavoriteCollection(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.addToFavorite(id);
+  }
 
   @Delete('favorites/:id')
   @HttpResponse(removeFromFavoritesCollectionResponse)
-  async deleteFavoriteCollection() {}
+  @UseGuards(JwtAuthGuard)
+  async deleteFavoriteCollection(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.deleteFromFavorite(id);
+  }
 
   @Post(':id/views')
-  async markCollectionAsViewed() {}
+  @UseGuards(JwtAuthGuard)
+  async markCollectionAsViewed(
+    @AuthUser() user: User,
+    @Param() { id }: NumericIdParamDto,
+  ) {
+    return this.collectionService.markCollectionAsViewed(id);
+  }
 }
