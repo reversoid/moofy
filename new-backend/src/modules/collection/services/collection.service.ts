@@ -121,6 +121,7 @@ export class CollectionService {
     }
 
     await this.primitiveCollectionService.likeCollection(collectionId, userId);
+    return this.primitiveCollectionService.getSocialStats(collectionId);
   }
 
   async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
@@ -137,5 +138,6 @@ export class CollectionService {
       collectionId,
       userId,
     );
+    return this.primitiveCollectionService.getSocialStats(collectionId);
   }
 }
