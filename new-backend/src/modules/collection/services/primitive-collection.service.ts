@@ -78,4 +78,21 @@ export class PrimitiveCollectionService {
   ) {
     await this.collectionRepository.viewCollection(collectionId, userId);
   }
+
+  async addToFavorites(collectionId: Collection['id'], userId: User['id']) {
+    return this.collectionRepository.addCollectionToFavorites(
+      collectionId,
+      userId,
+    );
+  }
+
+  async removeFromFavorites(
+    collectionId: Collection['id'],
+    userId: User['id'],
+  ) {
+    return this.collectionRepository.removeCollectionFromFavorites(
+      collectionId,
+      userId,
+    );
+  }
 }

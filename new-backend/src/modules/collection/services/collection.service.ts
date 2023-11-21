@@ -39,12 +39,6 @@ export class CollectionService {
     );
   }
 
-  deleteFromFavorite(id: Collection['id'], userId: User['id']) {}
-
-  addToFavorite(id: Collection['id'], userId: User['id']) {
-    throw new Error('Method not implemented.');
-  }
-
   deleteCollection(id: Collection['id']) {
     return this.primitiveCollectionService.deleteCollection(id);
   }
@@ -147,5 +141,13 @@ export class CollectionService {
       userId,
     );
     return this.primitiveCollectionService.getSocialStats(collectionId);
+  }
+
+  deleteFromFavorite(id: Collection['id'], userId: User['id']) {
+    return this.primitiveCollectionService.removeFromFavorites(id, userId);
+  }
+
+  addToFavorite(id: Collection['id'], userId: User['id']) {
+    return this.primitiveCollectionService.addToFavorites(id, userId);
   }
 }

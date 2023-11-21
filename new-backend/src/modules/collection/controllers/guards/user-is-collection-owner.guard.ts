@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
 import { PrimitiveCollectionService } from '../../services/primitive-collection.service';
+import { WrongCollectionIdException } from '../../exceptions/wrong-collection-id.exception';
 
 export class UserIsCollectionOwnerGuard implements CanActivate {
   constructor(
@@ -16,7 +17,7 @@ export class UserIsCollectionOwnerGuard implements CanActivate {
 
     const id = request.params['id'];
     if (Number.isNaN(id)) {
-      return false;
+      throw new WrongCollectionIdException();
     }
 
     const collection = await this.primitiveCollectionService.getCollection(id);

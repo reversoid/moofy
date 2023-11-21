@@ -153,4 +153,25 @@ export class CollectionRepository extends PaginatedRepository {
       data: { listId: collectionId, userId: userId },
     });
   }
+
+  async addCollectionToFavorites(
+    collectionId: Collection['id'],
+    userId: User['id'],
+  ) {
+    await this.prismaService.favorite_list.create({
+      data: { listId: collectionId, userId },
+    });
+    return { id: collectionId };
+  }
+
+  async removeCollectionFromFavorites(
+    collectionId: Collection['id'],
+    userId: User['id'],
+  ) {
+    await this.prismaService.favorite_list.update({
+      data: { deleted_at: new Date() },
+      where: { id: collectionId, userId },
+    });
+    return { id: collectionId };
+  }
 }
