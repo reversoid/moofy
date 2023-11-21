@@ -4,10 +4,15 @@ import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { Collection, selectCollection } from '../models/collection';
 import { SocialStats } from '../models/social-stats';
 import { User } from 'src/modules/user/models/user';
+import { PaginatedData } from 'src/shared/utils/paginated-data';
+import { Review, selectReview } from 'src/modules/review/models/review';
+import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 
 @Injectable()
-export class CollectionRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+export class CollectionRepository extends PaginatedRepository {
+  constructor(private readonly prismaService: PrismaService) {
+    super();
+  }
 
   async createCollection({
     description,
@@ -102,5 +107,25 @@ export class CollectionRepository {
       select: { id: true },
     });
     return Boolean(result);
+  }
+
+  async getReviews(
+    id: Collection['id'],
+    limit: number,
+    nextKey: string | null,
+  ): Promise<PaginatedData<Review>> {
+    const parsedKey = nextKey !== null ? super.parseNextKey(nextKey) : null;
+
+    const reviews = await this.prismaService.review.findMany({
+      where: {
+        listId: id,
+        created_at: { lte: parsedKey ? new Date(parsedKey) : undefined },
+      },
+      select: selectReview,
+      orderBy: { created_at: 'desc' },
+      take: limit,
+    });
+
+    return super.getPaginatedData(reviews, limit, 'created_at');
   }
 }

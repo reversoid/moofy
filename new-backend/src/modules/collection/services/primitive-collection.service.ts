@@ -5,6 +5,8 @@ import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { User } from 'src/modules/user/models/user';
 import { SocialStats } from '../models/social-stats';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
+import { PaginatedData } from 'src/shared/utils/paginated-data';
+import { Review } from 'src/modules/review/models/review';
 
 @Injectable()
 export class PrimitiveCollectionService {
@@ -30,6 +32,14 @@ export class PrimitiveCollectionService {
     id: Collection['id'],
   ): Promise<{ id: Collection['id'] }> {
     return this.collectionRepository.deleteCollection(id);
+  }
+
+  async getCollectionReviews(
+    id: Collection['id'],
+    limit: number,
+    nextKey: string | null,
+  ): Promise<PaginatedData<Review>> {
+    return this.collectionRepository.getReviews(id, limit, nextKey);
   }
 
   async getSocialStats(collectionId: Collection['id']): Promise<SocialStats> {

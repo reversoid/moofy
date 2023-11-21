@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -14,7 +15,6 @@ import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorato
 import { addToFavoriteCollectionResponse } from './responses/add-favorite.response';
 import { createCollectionResponseSchema } from './responses/create-collection.response';
 import { deleteCollectionResponseSchema } from './responses/delete-collection.response';
-import { getCollectionResponseSchema } from './responses/get-collection.response';
 import { getFullCollectionResponseSchema } from './responses/get-full-collection.response';
 import { likeCollectionResponseSchema } from './responses/like-collection.response';
 import { removeFromFavoritesCollectionResponse } from './responses/remove-favorite.response';
@@ -28,6 +28,7 @@ import { User } from 'src/modules/user/models/user';
 import { NumericIdParamDto } from './dto/numeric-id-param.dto';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
+import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 
 @ApiTags('Collection')
 @Controller('collections')
@@ -49,24 +50,20 @@ export class CollectionController implements ICollectionController {
     });
   }
 
-  @Get(':id')
-  @HttpResponse(getCollectionResponseSchema)
-  @UseGuards(OptionalJwtAuthGuard)
-  async getCollection(
-    @AuthUser() user: User | null,
-    @Param() { id }: NumericIdParamDto,
-  ) {
-    return this.collectionService.getCollection(id);
-  }
-
   @Get(':id/full')
   @HttpResponse(getFullCollectionResponseSchema)
   @UseGuards(OptionalJwtAuthGuard)
   async getFullCollection(
     @AuthUser() user: User | null,
     @Param() { id }: NumericIdParamDto,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
-    return this.collectionService.getFullCollection(id);
+    return this.collectionService.getFullCollection(
+      id,
+      user ? user.id : null,
+      limit ?? 20,
+      nextKey,
+    );
   }
 
   @Post('image-upload')
@@ -79,7 +76,7 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.updateCollection(id);
+    return this.collectionService.updateCollection(id, user.id);
   }
 
   @Delete(':id')
@@ -89,7 +86,7 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.deleteCollection(id);
+    return this.collectionService.deleteCollection(id, user.id);
   }
 
   @Put(':id/likes')
@@ -99,7 +96,7 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.likeCollection(id);
+    return this.collectionService.likeCollection(id, user.id);
   }
 
   @Delete(':id/likes')
@@ -109,7 +106,7 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.unlikeCollection(id);
+    return this.collectionService.unlikeCollection(id, user.id);
   }
 
   @Put('favorites/:id')
@@ -119,7 +116,7 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.addToFavorite(id);
+    return this.collectionService.addToFavorite(id, user.id);
   }
 
   @Delete('favorites/:id')
@@ -129,15 +126,15 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.deleteFromFavorite(id);
+    return this.collectionService.deleteFromFavorite(id, user.id);
   }
 
   @Post(':id/views')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard)
   async markCollectionAsViewed(
-    @AuthUser() user: User,
+    @AuthUser() user: User | null,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.markCollectionAsViewed(id);
+    return this.collectionService.markCollectionAsViewed(id, user?.id);
   }
 }
