@@ -7,8 +7,10 @@ import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { SocialStats } from '../models/social-stats';
 import { CollectionAdditionalInfo } from '../models/collection-additional-info';
-import { PaginatedData } from 'src/shared/utils/paginated-data';
+import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Review } from 'src/modules/review/models/review';
+import { CollectionAlreadyLikedException } from './exceptions/already-liked.exception';
+import { CollectionNotLikedException } from './exceptions/not-liked.exception';
 
 @Injectable()
 export class CollectionService {
@@ -32,14 +34,6 @@ export class CollectionService {
   deleteFromFavorite(id: Collection['id'], userId: User['id']) {}
 
   addToFavorite(id: Collection['id'], userId: User['id']) {
-    throw new Error('Method not implemented.');
-  }
-
-  unlikeCollection(id: Collection['id'], userId: User['id']) {
-    throw new Error('Method not implemented.');
-  }
-
-  likeCollection(id: Collection['id'], userId: User['id']) {
     throw new Error('Method not implemented.');
   }
 
@@ -93,14 +87,14 @@ export class CollectionService {
     collection: Collection,
     userId: User['id'] | null,
   ): Promise<CollectionWithInfo> {
-    const [socialStats, isLiked, isFavorite] = await Promise.all([
+    const [socialStats, like, isFavorite] = await Promise.all([
       this.primitiveCollectionService.getSocialStats(collection.id),
       userId
-        ? this.primitiveCollectionService.hasUserLikedCollection(
+        ? this.primitiveCollectionService.userLikeOnCollection(
             collection.id,
             userId,
           )
-        : Promise.resolve(false),
+        : Promise.resolve(null),
       userId
         ? this.primitiveCollectionService.isCollectionFavorite(
             collection.id,
@@ -109,6 +103,39 @@ export class CollectionService {
         : Promise.resolve(false),
     ]);
 
-    return { collection, additionalInfo: { isLiked, isFavorite }, socialStats };
+    return {
+      collection,
+      additionalInfo: { isLiked: Boolean(like), isFavorite },
+      socialStats,
+    };
+  }
+
+  async likeCollection(collectionId: Collection['id'], userId: User['id']) {
+    const isLiked = await this.primitiveCollectionService.userLikeOnCollection(
+      collectionId,
+      userId,
+    );
+
+    if (isLiked) {
+      throw new CollectionAlreadyLikedException();
+    }
+
+    await this.primitiveCollectionService.likeCollection(collectionId, userId);
+  }
+
+  async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
+    const isLiked = await this.primitiveCollectionService.userLikeOnCollection(
+      collectionId,
+      userId,
+    );
+
+    if (!isLiked) {
+      throw new CollectionNotLikedException();
+    }
+
+    await this.primitiveCollectionService.unlikeCollection(
+      collectionId,
+      userId,
+    );
   }
 }

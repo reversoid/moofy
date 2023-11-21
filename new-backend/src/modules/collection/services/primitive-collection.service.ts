@@ -5,8 +5,8 @@ import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { User } from 'src/modules/user/models/user';
 import { SocialStats } from '../models/social-stats';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
-import { PaginatedData } from 'src/shared/utils/paginated-data';
 import { Review } from 'src/modules/review/models/review';
+import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 
 @Injectable()
 export class PrimitiveCollectionService {
@@ -57,13 +57,18 @@ export class PrimitiveCollectionService {
     return this.collectionRepository.isCollectionFavorite(collectionId, userId);
   }
 
-  async hasUserLikedCollection(
+  async userLikeOnCollection(
     collectionId: Collection['id'],
     userId: User['id'],
-  ): Promise<boolean> {
-    return this.collectionRepository.hasUserLikedCollection(
-      collectionId,
-      userId,
-    );
+  ): Promise<{ likeId: number } | null> {
+    return this.collectionRepository.userLikeOnCollection(collectionId, userId);
+  }
+
+  async likeCollection(collectionId: Collection['id'], userId: User['id']) {
+    await this.collectionRepository.likeCollection(collectionId, userId);
+  }
+
+  async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
+    await this.collectionRepository.unlikeCollection(collectionId, userId);
   }
 }

@@ -4,9 +4,9 @@ import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { Collection, selectCollection } from '../models/collection';
 import { SocialStats } from '../models/social-stats';
 import { User } from 'src/modules/user/models/user';
-import { PaginatedData } from 'src/shared/utils/paginated-data';
 import { Review, selectReview } from 'src/modules/review/models/review';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
+import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 
 @Injectable()
 export class CollectionRepository extends PaginatedRepository {
@@ -80,7 +80,7 @@ export class CollectionRepository extends PaginatedRepository {
     };
   }
 
-  async hasUserLikedCollection(
+  async userLikeOnCollection(
     collectionId: Collection['id'],
     userId: User['id'],
   ) {
@@ -95,7 +95,8 @@ export class CollectionRepository extends PaginatedRepository {
         id: true,
       },
     });
-    return Boolean(result);
+
+    return result ? { likeId: result.id } : null;
   }
 
   async isCollectionFavorite(
@@ -127,5 +128,23 @@ export class CollectionRepository extends PaginatedRepository {
     });
 
     return super.getPaginatedData(reviews, limit, 'created_at');
+  }
+
+  async likeCollection(collectionId: Collection['id'], userId: User['id']) {
+    await this.prismaService.list_like.create({
+      data: { listId: collectionId, userId: userId },
+    });
+  }
+
+  async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
+    const like = await this.userLikeOnCollection(collectionId, userId);
+    if (!like) {
+      return;
+    }
+
+    await this.prismaService.list_like.update({
+      data: { deleted_at: new Date() },
+      where: { id: like.likeId },
+    });
   }
 }
