@@ -30,6 +30,8 @@ import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
+import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
+import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
 
 @ApiTags('Collection')
 @Controller('collections')
@@ -53,7 +55,7 @@ export class CollectionController implements ICollectionController {
 
   @Get(':id/full')
   @HttpResponse(getFullCollectionResponseSchema)
-  @UseGuards(OptionalJwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   async getFullCollection(
     @AuthUser() user: User | null,
     @Param() { id }: NumericIdParamDto,
@@ -72,7 +74,7 @@ export class CollectionController implements ICollectionController {
 
   @Patch(':id')
   @HttpResponse(updateCollectionResponseSchema)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
   async updateCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
@@ -86,7 +88,7 @@ export class CollectionController implements ICollectionController {
 
   @Delete(':id')
   @HttpResponse(deleteCollectionResponseSchema)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
   async deleteCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
@@ -96,7 +98,7 @@ export class CollectionController implements ICollectionController {
 
   @Put(':id/likes')
   @HttpResponse(likeCollectionResponseSchema)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async likeCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
@@ -106,7 +108,7 @@ export class CollectionController implements ICollectionController {
 
   @Delete(':id/likes')
   @HttpResponse(unlikeCollectionResponseSchema)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async unlikeCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
@@ -116,7 +118,7 @@ export class CollectionController implements ICollectionController {
 
   @Put('favorites/:id')
   @HttpResponse(addToFavoriteCollectionResponse)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async addFavoriteCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
@@ -126,7 +128,7 @@ export class CollectionController implements ICollectionController {
 
   @Delete('favorites/:id')
   @HttpResponse(removeFromFavoritesCollectionResponse)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async deleteFavoriteCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
@@ -135,7 +137,7 @@ export class CollectionController implements ICollectionController {
   }
 
   @Post(':id/views')
-  @UseGuards(OptionalJwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   async markCollectionAsViewed(
     @AuthUser() user: User | null,
     @Param() { id }: NumericIdParamDto,
