@@ -4,7 +4,7 @@ import { Collection } from '../models/collection';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { User } from 'src/modules/user/models/user';
 import { SocialStats } from '../models/social-stats';
-import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
+import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
 import { Review } from 'src/modules/review/models/review';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 

@@ -32,6 +32,7 @@ import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.d
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
 import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
+import { CollectionExistsPipe } from './pipes/collection-exists.pipe';
 
 @ApiTags('Collection')
 @Controller('collections')
@@ -58,7 +59,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   async getFullCollection(
     @AuthUser() user: User | null,
-    @Param() { id }: NumericIdParamDto,
+    @Param('id', CollectionExistsPipe) id: number,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
     return this.collectionService.getFullCollection(
@@ -77,7 +78,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
   async updateCollection(
     @AuthUser() user: User,
-    @Param() { id }: NumericIdParamDto,
+    @Param('id', CollectionExistsPipe) id: number,
     @Body() props: UpdateCollectionDto,
   ) {
     return this.collectionService.updateCollection(id, user.id, {
@@ -89,7 +90,7 @@ export class CollectionController implements ICollectionController {
   @Delete(':id')
   @HttpResponse(deleteCollectionResponseSchema)
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
-  async deleteCollection(@Param() { id }: NumericIdParamDto) {
+  async deleteCollection(@Param('id', CollectionExistsPipe) id: number) {
     return this.collectionService.deleteCollection(id);
   }
 
@@ -98,7 +99,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async likeCollection(
     @AuthUser() user: User,
-    @Param() { id }: NumericIdParamDto,
+    @Param('id', CollectionExistsPipe) id: number,
   ) {
     return this.collectionService.likeCollection(id, user.id);
   }
@@ -108,7 +109,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async unlikeCollection(
     @AuthUser() user: User,
-    @Param() { id }: NumericIdParamDto,
+    @Param('id', CollectionExistsPipe) id: number,
   ) {
     return this.collectionService.unlikeCollection(id, user.id);
   }
@@ -118,7 +119,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async addFavoriteCollection(
     @AuthUser() user: User,
-    @Param() { id }: NumericIdParamDto,
+    @Param('id', CollectionExistsPipe) id: number,
   ) {
     return this.collectionService.addToFavorite(id, user.id);
   }
@@ -128,7 +129,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async deleteFavoriteCollection(
     @AuthUser() user: User,
-    @Param() { id }: NumericIdParamDto,
+    @Param('id', CollectionExistsPipe) id: number,
   ) {
     return this.collectionService.deleteFromFavorite(id, user.id);
   }
@@ -139,6 +140,6 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User | null,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.markCollectionAsViewed(id, user?.id);
+    return this.collectionService.markCollectionAsViewed(id, user.id);
   }
 }

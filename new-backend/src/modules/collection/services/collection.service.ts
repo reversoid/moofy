@@ -4,13 +4,13 @@ import { Collection } from '../models/collection';
 import { CollectionWithInfo } from '../models/collection-with-info';
 import { PrimitiveCollectionService } from './primitive-collection.service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
-import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
+import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
 import { SocialStats } from '../models/social-stats';
 import { CollectionAdditionalInfo } from '../models/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Review } from 'src/modules/review/models/review';
-import { CollectionAlreadyLikedException } from './exceptions/already-liked.exception';
-import { CollectionNotLikedException } from './exceptions/not-liked.exception';
+import { CollectionAlreadyLikedException } from '../exceptions/already-liked.exception';
+import { CollectionNotLikedException } from '../exceptions/not-liked.exception';
 
 @Injectable()
 export class CollectionService {
