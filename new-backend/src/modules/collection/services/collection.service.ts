@@ -43,8 +43,8 @@ export class CollectionService {
     throw new Error('Method not implemented.');
   }
 
-  deleteCollection(id: Collection['id'], userId: User['id']) {
-    // return this.
+  deleteCollection(id: Collection['id']) {
+    return this.primitiveCollectionService.deleteCollection(id);
   }
 
   async updateCollection(

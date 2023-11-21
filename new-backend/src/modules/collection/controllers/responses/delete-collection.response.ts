@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { collectionWithInfoSchema } from '../../models/collection-with-info';
 
-export const deleteCollectionResponseSchema = collectionWithInfoSchema;
+export const deleteCollectionResponseSchema = z.object({
+  id: z.number().int(),
+});
 
 export type DeleteCollectionResponse = z.infer<
   typeof deleteCollectionResponseSchema

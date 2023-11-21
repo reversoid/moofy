@@ -89,11 +89,8 @@ export class CollectionController implements ICollectionController {
   @Delete(':id')
   @HttpResponse(deleteCollectionResponseSchema)
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
-  async deleteCollection(
-    @AuthUser() user: User,
-    @Param() { id }: NumericIdParamDto,
-  ) {
-    return this.collectionService.deleteCollection(id, user.id);
+  async deleteCollection(@Param() { id }: NumericIdParamDto) {
+    return this.collectionService.deleteCollection(id);
   }
 
   @Put(':id/likes')
