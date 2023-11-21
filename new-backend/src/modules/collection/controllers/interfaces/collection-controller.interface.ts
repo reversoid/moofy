@@ -11,8 +11,8 @@ import { UploadImageResponse } from '../responses/upload-image.response';
 export interface ICollectionController {
   createCollection(...args: any): Promise<CreateCollectionResponse>;
   getFullCollection(...args: any): Promise<GetFullCollectionResponse>;
-  uploadFile(): Promise<UploadImageResponse>;
-  updateCollection(): Promise<UpdateCollectionResponse>;
+  uploadFile(...args: any): Promise<UploadImageResponse>;
+  updateCollection(...args: any): Promise<UpdateCollectionResponse>;
   deleteCollection(...args: any): Promise<DeleteCollectionResponse>;
   likeCollection(...args: any): Promise<LikeCollectionResponse>;
   unlikeCollection(...args: any): Promise<UnlikeCollectionResponse>;

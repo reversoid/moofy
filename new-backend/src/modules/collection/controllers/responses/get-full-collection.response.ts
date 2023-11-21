@@ -1,9 +1,9 @@
 import { reviewSchema } from 'src/modules/review/models/review';
 import { z } from 'zod';
 import { collectionSchema } from '../../models/collection';
-import { getPaginatedDataSchema } from 'src/shared/utils/paginated-data';
 import { socialStatsSchema } from '../../models/social-stats';
 import { collectionAdditionalInfoSchema } from '../../models/collection-additional-info';
+import { getPaginatedDataSchema } from 'src/shared/utils/pagination/paginated-data';
 
 export const getFullCollectionResponseSchema = z.object({
   collection: collectionSchema,

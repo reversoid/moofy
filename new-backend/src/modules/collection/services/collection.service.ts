@@ -3,7 +3,7 @@ import { User } from 'src/modules/user/models/user';
 import { Collection } from '../models/collection';
 import { CollectionWithInfo } from '../models/collection-with-info';
 import { PrimitiveCollectionService } from './primitive-collection.service';
-import { CreateCollectionProps } from '../types';
+import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { SocialStats } from '../models/social-stats';
 import { CollectionAdditionalInfo } from '../models/collection-additional-info';
@@ -46,8 +46,17 @@ export class CollectionService {
   deleteCollection(id: Collection['id'], userId: User['id']) {
     // return this.
   }
-  updateCollection(id: Collection['id'], userId: User['id']) {
-    throw new Error('Method not implemented.');
+
+  async updateCollection(
+    id: Collection['id'],
+    userId: User['id'],
+    props: UpdateCollectionProps,
+  ) {
+    const collection = await this.primitiveCollectionService.updateCollection(
+      id,
+      ...props,
+    );
+    return this.getInfoForCollection(collection, userId);
   }
 
   async getFullCollection(

@@ -20,7 +20,7 @@ import { likeCollectionResponseSchema } from './responses/like-collection.respon
 import { removeFromFavoritesCollectionResponse } from './responses/remove-favorite.response';
 import { unlikeCollectionResponseSchema } from './responses/unlike-collection.response';
 import { updateCollectionResponseSchema } from './responses/update-collection.response';
-import { ICollectionController } from './types/collection-controller.type';
+import { ICollectionController } from './interfaces/collection-controller.interface';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionService } from '../services/collection.service';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
@@ -29,6 +29,7 @@ import { NumericIdParamDto } from './dto/numeric-id-param.dto';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
+import { UpdateCollectionDto } from './dto/update-collection.dto';
 
 @ApiTags('Collection')
 @Controller('collections')
@@ -75,8 +76,12 @@ export class CollectionController implements ICollectionController {
   async updateCollection(
     @AuthUser() user: User,
     @Param() { id }: NumericIdParamDto,
+    @Body() props: UpdateCollectionDto,
   ) {
-    return this.collectionService.updateCollection(id, user.id);
+    return this.collectionService.updateCollection(id, user.id, {
+      id,
+      ...props,
+    });
   }
 
   @Delete(':id')
