@@ -14,3 +14,11 @@ export const getS3 = () => {
   }
   return s3;
 };
+
+export const supportedImageFormats = ['jpg', 'png', 'jpeg', 'webp', 'heif'];
+
+/** 10mb */
+export const MAX_INPUT_FILE_SIZE = 10 * 1024 * 1024;
+
+/** 50kb */
+export const MAX_COMPRESSED_FILE_SIZE = 50 * 1024;

@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -33,6 +34,8 @@ import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
 import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
 import { CollectionExistsPipe } from './pipes/collection-exists.pipe';
+import { FastifyRequest } from 'fastify';
+import { NoImageProvidedException } from '../exceptions/no-image-provided.exception';
 
 @ApiTags('Collection')
 @Controller('collections')
@@ -71,7 +74,14 @@ export class CollectionController implements ICollectionController {
   }
 
   @Post('image-upload')
-  async uploadFile() {}
+  async uploadFile(@Request() request: FastifyRequest) {
+    const file = await request.file();
+    if (file?.fieldname === 'image') {
+      return this.collectionService.uploadImage(file);
+    }
+
+    throw new NoImageProvidedException();
+  }
 
   @Patch(':id')
   @HttpResponse(updateCollectionResponseSchema)

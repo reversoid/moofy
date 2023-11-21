@@ -11,6 +11,18 @@ import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Review } from 'src/modules/review/models/review';
 import { CollectionAlreadyLikedException } from '../exceptions/already-liked.exception';
 import { CollectionNotLikedException } from '../exceptions/not-liked.exception';
+import { MultipartFile } from '@fastify/multipart';
+import {
+  MAX_COMPRESSED_FILE_SIZE,
+  MAX_INPUT_FILE_SIZE,
+  getS3,
+  supportedImageFormats,
+} from 'src/shared/utils/s3/s3';
+import { WrongImageFormatException } from '../exceptions/wrong-image-format.exception';
+import { TooLargeImageException } from '../exceptions/too-large-image.exception';
+import sharp from 'sharp';
+import { ImageLoadException } from '../exceptions/image-load.exception';
+import { ManagedUpload } from 'aws-sdk/clients/s3';
 
 @Injectable()
 export class CollectionService {
@@ -48,10 +60,8 @@ export class CollectionService {
     userId: User['id'],
     props: UpdateCollectionProps,
   ) {
-    const collection = await this.primitiveCollectionService.updateCollection(
-      id,
-      ...props,
-    );
+    const collection =
+      await this.primitiveCollectionService.updateCollection(props);
     return this.getInfoForCollection(collection, userId);
   }
 
@@ -149,5 +159,41 @@ export class CollectionService {
 
   addToFavorite(id: Collection['id'], userId: User['id']) {
     return this.primitiveCollectionService.addToFavorites(id, userId);
+  }
+
+  async uploadImage(file: MultipartFile): Promise<{ link: string }> {
+    if (
+      !supportedImageFormats.includes(
+        file.filename.toLocaleLowerCase().split('.').at(-1)!,
+      )
+    ) {
+      throw new WrongImageFormatException();
+    }
+
+    const buffer = await file.toBuffer();
+    if (buffer.byteLength > MAX_INPUT_FILE_SIZE) {
+      throw new TooLargeImageException();
+    }
+
+    const compressedImage = await sharp(buffer)
+      .webp({ quality: 75 })
+      .resize({ width: 600, height: 450, fit: 'cover' })
+      .toBuffer();
+
+    if (compressedImage.byteLength > MAX_COMPRESSED_FILE_SIZE) {
+      throw new TooLargeImageException();
+    }
+
+    const s3 = getS3();
+
+    const response = (await s3.Upload(
+      { buffer: compressedImage },
+      '/list-images/',
+    )) as ManagedUpload.SendData | false;
+    if (!response) {
+      throw new ImageLoadException();
+    }
+
+    return { link: response.Location };
   }
 }
