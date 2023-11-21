@@ -71,4 +71,11 @@ export class PrimitiveCollectionService {
   async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
     await this.collectionRepository.unlikeCollection(collectionId, userId);
   }
+
+  async markCollectionAsViewed(
+    collectionId: Collection['id'],
+    userId: User['id'],
+  ) {
+    await this.collectionRepository.viewCollection(collectionId, userId);
+  }
 }

@@ -140,6 +140,9 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User | null,
     @Param() { id }: NumericIdParamDto,
   ) {
-    return this.collectionService.markCollectionAsViewed(id, user.id);
+    return this.collectionService.markCollectionAsViewed(
+      id,
+      user ? user.id : null,
+    );
   }
 }

@@ -147,4 +147,10 @@ export class CollectionRepository extends PaginatedRepository {
       where: { id: like.likeId },
     });
   }
+
+  async viewCollection(collectionId: Collection['id'], userId: User['id']) {
+    await this.prismaService.list_view.create({
+      data: { listId: collectionId, userId: userId },
+    });
+  }
 }

@@ -27,8 +27,16 @@ export class CollectionService {
     return this.getInfoForCollection(collection, props.userId);
   }
 
-  markCollectionAsViewed(id: Collection['id'], userId: User['id']) {
-    throw new Error('Method not implemented.');
+  async markCollectionAsViewed(
+    collectionId: Collection['id'],
+    userId: User['id'] | null,
+  ) {
+    if (userId === null) return;
+
+    await this.primitiveCollectionService.markCollectionAsViewed(
+      collectionId,
+      userId,
+    );
   }
 
   deleteFromFavorite(id: Collection['id'], userId: User['id']) {}
