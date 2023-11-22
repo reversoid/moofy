@@ -1,4 +1,4 @@
-import { userSchema } from 'src/modules/user/models/user';
+import { selectUser, userSchema } from 'src/modules/user/models/user';
 import { PrismaSelectEntity } from 'src/shared/utils/db/select-entity';
 import { z } from 'zod';
 
@@ -21,13 +21,7 @@ export const selectCollection: PrismaSelectEntity<Collection> = {
   name: true,
   updated_at: true,
   user: {
-    select: {
-      created_at: true,
-      description: true,
-      id: true,
-      image_url: true,
-      username: true,
-    },
+    select: selectUser,
   },
   is_public: true,
 };

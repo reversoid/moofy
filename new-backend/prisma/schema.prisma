@@ -15,7 +15,7 @@ model comment {
   userId        Int
   replyToId     Int?
   listId        Int?
-  users         users          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0354a9a009d3bb45a08655ce3b")
+  user          users          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0354a9a009d3bb45a08655ce3b")
   comment       comment?       @relation("commentTocomment", fields: [replyToId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_cfc14dc2cafa339954de748ebf3")
   other_comment comment[]      @relation("commentTocomment")
   list          list?          @relation(fields: [listId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_fc8455c31a9e1a7cfeb0ead49a9")
@@ -33,7 +33,7 @@ model comment_like {
   userId     Int
   commentId  Int
   comment    comment   @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_a253dba95eab8659c027bbace44")
-  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b")
+  user       users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b")
 
   @@index([created_at], map: "IDX_15eb3b90a408e3222e1ef34035")
   @@index([deleted_at], map: "IDX_2e9f9d450d42a53a579dd00c38")
@@ -46,7 +46,7 @@ model favorite_list {
   userId     Int
   listId     Int?
   list       list?     @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_21938075574309780e33688b0a5")
-  users      users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_fbbb4b0b4654357a4bd1138ccbd")
+  user       users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_fbbb4b0b4654357a4bd1138ccbd")
 
   @@index([created_at], map: "IDX_4d2005680706ade52516a9b24b")
   @@index([deleted_at], map: "IDX_bcfc7a2063b16b9532c482ea27")
@@ -94,7 +94,7 @@ model list {
   userId           Int
   comment          comment[]
   favorite_list    favorite_list[]
-  users            users           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_46ded14b26382088c9f032f8953")
+  user             users           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_46ded14b26382088c9f032f8953")
   list_like        list_like[]
   list_view        list_view[]
   review           review[]
@@ -169,7 +169,7 @@ model review {
   filmId      String           @db.VarChar(32)
   userId      Int
   listId      Int
-  users       users            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
+  user        users            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_1337f93918c70837d3cea105d39")
   list        list             @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_37e516b0d42e6a177cbbb15da8c")
   film        film             @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f1a2e33731808a7c6fcd644ca7c")
   metadata    review_metadata?

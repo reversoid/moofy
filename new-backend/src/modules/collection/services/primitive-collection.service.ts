@@ -8,6 +8,7 @@ import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.ex
 import { Review } from 'src/modules/review/models/review';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 
+// TODO remove the layer
 @Injectable()
 export class PrimitiveCollectionService {
   constructor(private readonly collectionRepository: CollectionRepository) {}

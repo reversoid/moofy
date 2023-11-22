@@ -1,5 +1,5 @@
 import Sqids from 'sqids';
-import { PaginatedData } from '.';
+import { PaginatedData } from './paginated-data';
 
 export class PaginatedRepository {
   private sqids = new Sqids();
@@ -15,7 +15,11 @@ export class PaginatedRepository {
     return this.sqids.decode(key).at(0) ?? null;
   }
 
-  protected getPaginatedData<T extends { created_at: Date; updated_at: Date }>(
+  protected getPaginatedData<
+    T extends
+      | { created_at: Date; updated_at?: Date }
+      | { created_at?: Date; updated_at: Date },
+  >(
     entities: T[],
     limit: number,
     by: 'created_at' | 'updated_at',

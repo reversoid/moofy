@@ -1,11 +1,12 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CollectionExistsPipe } from './pipes/collection-exists.pipe';
 
 @ApiTags('Collection comments')
 @Controller('collections')
 export class CollectionCommentsController {
   @Get(':id/comments')
-  getComments() {}
+  getComments(@Param('id', CollectionExistsPipe) id: number) {}
 
   @Post(':id/comments')
   sendComment() {}

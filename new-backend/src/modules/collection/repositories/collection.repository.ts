@@ -115,12 +115,12 @@ export class CollectionRepository extends PaginatedRepository {
     limit: number,
     nextKey: string | null,
   ): Promise<PaginatedData<Review>> {
-    const parsedKey = nextKey !== null ? super.parseNextKey(nextKey) : null;
+    const parsedKey = super.parseNextKey(nextKey);
 
     const reviews = await this.prismaService.review.findMany({
       where: {
         listId: id,
-        created_at: { lte: parsedKey ? new Date(parsedKey) : undefined },
+        created_at: parsedKey ? { lte: new Date(parsedKey) } : undefined,
       },
       select: selectReview,
       orderBy: { created_at: 'desc' },
