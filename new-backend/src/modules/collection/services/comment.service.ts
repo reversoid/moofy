@@ -18,7 +18,7 @@ export class CommentService {
     colelctionId: Collection['id'],
     userId: User['id'] | null,
     limit: number,
-    nextKey: string | null,
+    nextKey?: string,
   ): Promise<PaginatedData<CommentWithInfo>> {
     const paginatedComments = await this.commentRepository.getComments(
       colelctionId,

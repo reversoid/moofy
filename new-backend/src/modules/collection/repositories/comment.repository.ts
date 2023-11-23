@@ -16,7 +16,7 @@ export class CommentRepository extends PaginatedRepository {
   async getComments(
     collectionId: Collection['id'],
     limit: number,
-    nextKey: string | null,
+    nextKey?: string,
   ): Promise<PaginatedData<Comment>> {
     const parsedKey = super.parseNextKey(nextKey);
 

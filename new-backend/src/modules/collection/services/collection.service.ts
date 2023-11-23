@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
 import { Collection } from '../models/collection/collection';
 import { CollectionWithInfo } from '../models/collection/collection-with-info';
-import { PrimitiveCollectionService } from './primitive-collection.service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
 import { CollectionSocialStats } from '../models/collection/collection-social-stats';
@@ -23,18 +22,16 @@ import { TooLargeImageException } from '../exceptions/too-large-image.exception'
 import sharp from 'sharp';
 import { ImageLoadException } from '../exceptions/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
+import { CollectionRepository } from '../repositories/collection.repository';
 
 @Injectable()
 export class CollectionService {
-  constructor(
-    private readonly primitiveCollectionService: PrimitiveCollectionService,
-  ) {}
+  constructor(private readonly collectionRepository: CollectionRepository) {}
 
   async createCollection(
     props: CreateCollectionProps,
   ): Promise<CollectionWithInfo> {
-    const collection =
-      await this.primitiveCollectionService.createCollection(props);
+    const collection = await this.collectionRepository.createCollection(props);
 
     return this.getInfoForCollection(collection, props.userId);
   }
@@ -44,24 +41,15 @@ export class CollectionService {
     userId: User['id'] | null,
   ) {
     if (userId === null) return;
-
-    await this.primitiveCollectionService.markCollectionAsViewed(
-      collectionId,
-      userId,
-    );
+    await this.collectionRepository.viewCollection(collectionId, userId);
   }
 
   deleteCollection(id: Collection['id']) {
-    return this.primitiveCollectionService.deleteCollection(id);
+    return this.collectionRepository.deleteCollection(id);
   }
 
-  async updateCollection(
-    id: Collection['id'],
-    userId: User['id'],
-    props: UpdateCollectionProps,
-  ) {
-    const collection =
-      await this.primitiveCollectionService.updateCollection(props);
+  async updateCollection(userId: User['id'], props: UpdateCollectionProps) {
+    const collection = await this.collectionRepository.updateCollection(props);
     return this.getInfoForCollection(collection, userId);
   }
 
@@ -69,14 +57,14 @@ export class CollectionService {
     id: Collection['id'],
     userId: User['id'] | null,
     limit: number,
-    nextKey: string | null,
+    nextKey?: string,
   ): Promise<{
     collection: Collection;
     socialStats: CollectionSocialStats;
     additionalInfo: CollectionAdditionalInfo;
     reviews: PaginatedData<Review>;
   }> {
-    const collection = await this.primitiveCollectionService.getCollection(id);
+    const collection = await this.collectionRepository.getCollection(id);
     if (!collection) {
       throw new WrongCollectionIdException();
     }
@@ -86,7 +74,7 @@ export class CollectionService {
       userId,
     );
 
-    const reviews = await this.primitiveCollectionService.getCollectionReviews(
+    const reviews = await this.collectionRepository.getReviews(
       id,
       limit,
       nextKey,
@@ -100,20 +88,18 @@ export class CollectionService {
     userId: User['id'] | null,
   ): Promise<CollectionWithInfo> {
     const [socialStats, like, isFavorite] = await Promise.all([
-      this.primitiveCollectionService.getSocialStats(collection.id),
+      this.collectionRepository.getSocialStats(collection.id),
       userId
-        ? this.primitiveCollectionService.userLikeOnCollection(
-            collection.id,
-            userId,
-          )
+        ? this.collectionRepository.userLikeOnCollection(collection.id, userId)
         : Promise.resolve(null),
       userId
-        ? this.primitiveCollectionService.isCollectionFavorite(
-            collection.id,
-            userId,
-          )
+        ? this.collectionRepository.isCollectionFavorite(collection.id, userId)
         : Promise.resolve(false),
     ]);
+
+    if (!socialStats) {
+      throw new WrongCollectionIdException();
+    }
 
     return {
       collection,
@@ -123,7 +109,7 @@ export class CollectionService {
   }
 
   async likeCollection(collectionId: Collection['id'], userId: User['id']) {
-    const isLiked = await this.primitiveCollectionService.userLikeOnCollection(
+    const isLiked = await this.collectionRepository.userLikeOnCollection(
       collectionId,
       userId,
     );
@@ -132,12 +118,12 @@ export class CollectionService {
       throw new CollectionAlreadyLikedException();
     }
 
-    await this.primitiveCollectionService.likeCollection(collectionId, userId);
-    return this.primitiveCollectionService.getSocialStats(collectionId);
+    await this.collectionRepository.likeCollection(collectionId, userId);
+    return this.collectionRepository.getSocialStats(collectionId);
   }
 
   async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
-    const isLiked = await this.primitiveCollectionService.userLikeOnCollection(
+    const isLiked = await this.collectionRepository.userLikeOnCollection(
       collectionId,
       userId,
     );
@@ -146,19 +132,16 @@ export class CollectionService {
       throw new CollectionNotLikedException();
     }
 
-    await this.primitiveCollectionService.unlikeCollection(
-      collectionId,
-      userId,
-    );
-    return this.primitiveCollectionService.getSocialStats(collectionId);
+    await this.collectionRepository.unlikeCollection(collectionId, userId);
+    return this.collectionRepository.getSocialStats(collectionId);
   }
 
-  deleteFromFavorite(id: Collection['id'], userId: User['id']) {
-    return this.primitiveCollectionService.removeFromFavorites(id, userId);
+  async deleteFromFavorite(id: Collection['id'], userId: User['id']) {
+    return this.collectionRepository.removeCollectionFromFavorites(id, userId);
   }
 
-  addToFavorite(id: Collection['id'], userId: User['id']) {
-    return this.primitiveCollectionService.addToFavorites(id, userId);
+  async addToFavorite(id: Collection['id'], userId: User['id']) {
+    return this.collectionRepository.addCollectionToFavorites(id, userId);
   }
 
   async uploadImage(file: MultipartFile): Promise<{ link: string }> {
@@ -195,5 +178,13 @@ export class CollectionService {
     }
 
     return { link: response.Location };
+  }
+
+  async getReviews(
+    colelctionId: Collection['id'],
+    limit: number,
+    nextKey?: string,
+  ): Promise<PaginatedData<Review>> {
+    return this.collectionRepository.getReviews(colelctionId, limit, nextKey);
   }
 }

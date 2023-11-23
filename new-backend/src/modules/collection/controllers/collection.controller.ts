@@ -91,7 +91,7 @@ export class CollectionController implements ICollectionController {
     @Param('id', CollectionExistsPipe) id: number,
     @Body() props: UpdateCollectionDto,
   ) {
-    return this.collectionService.updateCollection(id, user.id, {
+    return this.collectionService.updateCollection(user.id, {
       id,
       ...props,
     });

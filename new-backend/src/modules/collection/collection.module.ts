@@ -4,8 +4,7 @@ import { CollectionCommentsController } from './controllers/collection-comments.
 import { CollectionReviewsController } from './controllers/collection-reviews.controller';
 import { CollectionService } from './services/collection.service';
 import { CollectionRepository } from './repositories/collection.repository';
-import { PrimitiveCollectionService } from './services/primitive-collection.service';
-import { CommentService } from './services/services.service';
+import { CommentService } from './services/comment.service';
 import { CommentRepository } from './repositories/comment.repository';
 
 @Module({
@@ -17,7 +16,6 @@ import { CommentRepository } from './repositories/comment.repository';
   providers: [
     CollectionService,
     CollectionRepository,
-    PrimitiveCollectionService,
     CommentService,
     CommentRepository,
   ],

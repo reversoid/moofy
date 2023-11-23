@@ -113,7 +113,7 @@ export class CollectionRepository extends PaginatedRepository {
   async getReviews(
     id: Collection['id'],
     limit: number,
-    nextKey: string | null,
+    nextKey?: string,
   ): Promise<PaginatedData<Review>> {
     const parsedKey = super.parseNextKey(nextKey);
 

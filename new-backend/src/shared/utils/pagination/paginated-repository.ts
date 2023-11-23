@@ -8,7 +8,7 @@ export class PaginatedRepository {
     return this.sqids.encode([value])[0];
   }
 
-  protected parseNextKey(key: string | null): number | null {
+  protected parseNextKey(key?: string | null): number | null {
     if (!key) {
       return null;
     }
