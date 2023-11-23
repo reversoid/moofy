@@ -207,4 +207,18 @@ export class CollectionService {
       nextKey,
     );
   }
+
+  async getUserCollections(
+    userId: User['id'],
+    limit: number,
+    type: 'all' | 'public' | 'private',
+    nextKey?: string,
+  ): Promise<PaginatedData<Collection>> {
+    return this.collectionRepository.getUserCollections(
+      userId,
+      type,
+      limit,
+      nextKey,
+    );
+  }
 }

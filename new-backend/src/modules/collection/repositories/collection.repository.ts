@@ -5,6 +5,7 @@ import { User } from 'src/modules/user/models/user';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { Collection, selectCollection } from '../models/collection';
 import { CollectionSocialStats } from '../models/collection-social-stats';
+import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 
 @Injectable()
 export class CollectionRepository extends PaginatedRepository {
@@ -151,5 +152,28 @@ export class CollectionRepository extends PaginatedRepository {
       where: { id: collectionId, userId },
     });
     return { id: collectionId };
+  }
+
+  async getUserCollections(
+    userId: User['id'],
+    type: 'all' | 'public' | 'private',
+    limit: number,
+    nextKey?: string,
+  ): Promise<PaginatedData<Collection>> {
+    const key = this.parseNextKey(nextKey);
+    const data = await this.prismaService.list.findMany({
+      where: {
+        userId,
+        deleted_at: { not: null },
+        updated_at: key ? { lte: new Date(key) } : undefined,
+        is_public:
+          type === 'private' ? false : type === 'public' ? true : undefined,
+      },
+      orderBy: { updated_at: 'desc' },
+      take: limit + 1,
+      select: selectCollection,
+    });
+
+    return super.getPaginatedData(data, limit, 'updated_at');
   }
 }
