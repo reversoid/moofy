@@ -1,4 +1,4 @@
-import { reviewSchema } from 'src/modules/collection-reviews/models/review';
+import { reviewSchema } from 'src/modules/collection-review/models/review';
 import { z } from 'zod';
 import { collectionSchema } from '../../models/collection';
 import { collectionSocialStatsSchema } from '../../models/collection-social-stats';

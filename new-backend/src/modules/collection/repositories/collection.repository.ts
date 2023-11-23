@@ -2,12 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { User } from 'src/modules/user/models/user';
-import {
-  Review,
-  selectReview,
-} from 'src/modules/collection-reviews/models/review';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
-import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Collection, selectCollection } from '../models/collection';
 import { CollectionSocialStats } from '../models/collection-social-stats';
 
@@ -111,26 +106,6 @@ export class CollectionRepository extends PaginatedRepository {
       select: { id: true },
     });
     return Boolean(result);
-  }
-
-  async getReviews(
-    id: Collection['id'],
-    limit: number,
-    nextKey?: string,
-  ): Promise<PaginatedData<Review>> {
-    const parsedKey = super.parseNextKey(nextKey);
-
-    const reviews = await this.prismaService.review.findMany({
-      where: {
-        listId: id,
-        created_at: parsedKey ? { lte: new Date(parsedKey) } : undefined,
-      },
-      select: selectReview,
-      orderBy: { created_at: 'desc' },
-      take: limit,
-    });
-
-    return super.getPaginatedData(reviews, limit, 'created_at');
   }
 
   async likeCollection(collectionId: Collection['id'], userId: User['id']) {

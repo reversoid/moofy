@@ -7,7 +7,7 @@ import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exc
 import { CollectionSocialStats } from './models/collection-social-stats';
 import { CollectionAdditionalInfo } from './models/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Review } from 'src/modules/collection-reviews/models/review';
+import { Review } from 'src/modules/collection-review/models/review';
 import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
 import { CollectionNotLikedException } from './exceptions/not-liked.exception';
 import { MultipartFile } from '@fastify/multipart';
@@ -23,10 +23,14 @@ import sharp from 'sharp';
 import { ImageLoadException } from './exceptions/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { CollectionRepository } from './repositories/collection.repository';
+import { CollectionReviewService } from '../collection-review/collection-review.service';
 
 @Injectable()
 export class CollectionService {
-  constructor(private readonly collectionRepository: CollectionRepository) {}
+  constructor(
+    private readonly collectionRepository: CollectionRepository,
+    private readonly collectionReviewService: CollectionReviewService,
+  ) {}
 
   async getCollectionById(id: Collection['id']): Promise<Collection | null> {
     return this.collectionRepository.getCollection(id);
@@ -78,7 +82,7 @@ export class CollectionService {
       userId,
     );
 
-    const reviews = await this.collectionRepository.getReviews(
+    const reviews = await this.collectionReviewService.getReviews(
       id,
       limit,
       nextKey,
@@ -189,6 +193,10 @@ export class CollectionService {
     limit: number,
     nextKey?: string,
   ): Promise<PaginatedData<Review>> {
-    return this.collectionRepository.getReviews(colelctionId, limit, nextKey);
+    return this.collectionReviewService.getReviews(
+      colelctionId,
+      limit,
+      nextKey,
+    );
   }
 }

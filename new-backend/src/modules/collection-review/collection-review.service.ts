@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReviewProps, UpdateReviewProps } from './types';
-import { ReviewRepository } from './review.repository';
+import { CollectionReviewRepository } from './repositories/collection-review.repository';
 import { Review } from './models/review';
+import { Collection } from '../collection/models/collection';
 
 @Injectable()
-export class ReviewService {
-  constructor(private readonly reviewRepository: ReviewRepository) {}
+export class CollectionReviewService {
+  constructor(private readonly reviewRepository: CollectionReviewRepository) {}
 
   async createReview(props: CreateReviewProps) {
     return this.reviewRepository.createReview(props);
@@ -21,5 +22,17 @@ export class ReviewService {
 
   async deleteReview(id: Review['id']) {
     return this.reviewRepository.deleteReview(id);
+  }
+
+  async getReviews(
+    collectionId: Collection['id'],
+    limit: number,
+    nextKey?: string,
+  ) {
+    return this.reviewRepository.getReviewsFromCollection(
+      collectionId,
+      limit,
+      nextKey,
+    );
   }
 }

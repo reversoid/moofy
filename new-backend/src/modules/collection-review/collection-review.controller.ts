@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ReviewService } from 'src/modules/collection-reviews/review.service';
+import { CollectionReviewService } from 'src/modules/collection-review/collection-review.service';
 import { CollectionService } from '../collection/collection.service';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 import { UserCanViewCollectionGuard } from '../collection/controller/guards/user-can-view-collection.guard';
@@ -27,7 +27,7 @@ import { EditReviewDto } from '../collection/controller/dto/edit-review.dto';
 @Controller('collection')
 export class CollectionReviewsController {
   constructor(
-    private readonly reviewService: ReviewService,
+    private readonly reviewService: CollectionReviewService,
     private readonly collectionService: CollectionService,
   ) {}
 

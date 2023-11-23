@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { AppController } from './app.controller';
-import { ReviewModule } from './modules/collection-reviews/review.module';
+import { CollectionReviewModule } from './modules/collection-review/collection-review.module';
 import { CollectionModule } from './modules/collection/collection.module';
 import { FilmModule } from './modules/film/film.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -44,7 +44,7 @@ import { CollectionCommentModule } from './modules/collection-comments/collectio
       envFilePath: ['config/.env'],
       cache: true,
     }),
-    ReviewModule,
+    CollectionReviewModule,
     CollectionModule,
     FilmModule,
     AuthModule,

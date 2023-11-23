@@ -1,6 +1,6 @@
 import { Review } from './models/review';
 import { User } from '../user/models/user';
-import { Collection } from '../collection/models/collection/collection';
+import { Collection } from '../collection/models/collection';
 
 export type CreateReviewProps = {
   score?: number | null;
