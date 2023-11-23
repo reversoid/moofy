@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -21,9 +22,9 @@ import { likeCollectionResponseSchema } from './responses/like-collection.respon
 import { removeFromFavoritesCollectionResponse } from './responses/remove-favorite.response';
 import { unlikeCollectionResponseSchema } from './responses/unlike-collection.response';
 import { updateCollectionResponseSchema } from './responses/update-collection.response';
-import { ICollectionController } from './interfaces/collection-controller.interface';
+import { ICollectionController } from './collection.controller.interface';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { CollectionService } from '../services/collection.service';
+import { CollectionService } from '../collection.service';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { User } from 'src/modules/user/models/user';
 import { NumericIdParamDto } from './dto/numeric-id-param.dto';
@@ -33,7 +34,6 @@ import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.d
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
 import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
-import { CollectionExistsPipe } from './pipes/collection-exists.pipe';
 import { FastifyRequest } from 'fastify';
 import { NoImageProvidedException } from '../exceptions/no-image-provided.exception';
 
@@ -62,7 +62,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   async getFullCollection(
     @AuthUser() user: User | null,
-    @Param('id', CollectionExistsPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
     return this.collectionService.getFullCollection(
@@ -88,7 +88,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
   async updateCollection(
     @AuthUser() user: User,
-    @Param('id', CollectionExistsPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() props: UpdateCollectionDto,
   ) {
     return this.collectionService.updateCollection(user.id, {
@@ -100,7 +100,7 @@ export class CollectionController implements ICollectionController {
   @Delete(':id')
   @HttpResponse(deleteCollectionResponseSchema)
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
-  async deleteCollection(@Param('id', CollectionExistsPipe) id: number) {
+  async deleteCollection(@Param('id', ParseIntPipe) id: number) {
     return this.collectionService.deleteCollection(id);
   }
 
@@ -109,7 +109,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async likeCollection(
     @AuthUser() user: User,
-    @Param('id', CollectionExistsPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return this.collectionService.likeCollection(id, user.id);
   }
@@ -119,7 +119,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async unlikeCollection(
     @AuthUser() user: User,
-    @Param('id', CollectionExistsPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return this.collectionService.unlikeCollection(id, user.id);
   }
@@ -129,7 +129,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async addFavoriteCollection(
     @AuthUser() user: User,
-    @Param('id', CollectionExistsPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return this.collectionService.addToFavorite(id, user.id);
   }
@@ -139,7 +139,7 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async deleteFavoriteCollection(
     @AuthUser() user: User,
-    @Param('id', CollectionExistsPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     return this.collectionService.deleteFromFavorite(id, user.id);
   }

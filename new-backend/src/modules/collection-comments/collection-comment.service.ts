@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { CommentRepository } from '../repositories/comment.repository';
-import { Collection } from '../models/collection/collection';
+import { CollectionCommentRepository } from './repositories/comment.repository';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { CommentWithInfo } from '../models/comment/comment-with-info';
-import { Comment } from '../models/comment/comment';
 import { User } from 'src/modules/user/models/user';
-import { CommentSocialStats } from '../models/comment/comment-social-stats';
-import { WrongCommentIdException } from '../exceptions/wrong-comment-id.exception';
-import { CommentAlreadyLikedException } from '../exceptions/comment-already-liked.exception';
-import { CommentNotLikedException } from '../exceptions/comment-not-liked.exception';
+import { WrongCommentIdException } from './exceptions/wrong-comment-id.exception';
+import { CommentNotLikedException } from './exceptions/comment-not-liked.exception';
+import { Collection } from '../collection/models/collection';
+import { CommentAlreadyLikedException } from './exceptions/comment-already-liked.exception';
+import { CommentSocialStats } from './models/comment-social-stats';
+import { CommentWithInfo } from './models/comment-with-info';
+import { Comment } from './models/comment';
 
 @Injectable()
-export class CommentService {
-  constructor(private readonly commentRepository: CommentRepository) {}
+export class CollectionCommentService {
+  constructor(
+    private readonly commentRepository: CollectionCommentRepository,
+  ) {}
 
   async getComments(
     colelctionId: Collection['id'],

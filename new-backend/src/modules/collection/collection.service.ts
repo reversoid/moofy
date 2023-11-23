@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
-import { Collection } from '../models/collection/collection';
-import { CollectionWithInfo } from '../models/collection/collection-with-info';
-import { CreateCollectionProps, UpdateCollectionProps } from '../types';
-import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
-import { CollectionSocialStats } from '../models/collection/collection-social-stats';
-import { CollectionAdditionalInfo } from '../models/collection/collection-additional-info';
+import { Collection } from './models/collection';
+import { CollectionWithInfo } from './models/collection-with-info';
+import { CreateCollectionProps, UpdateCollectionProps } from './types';
+import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
+import { CollectionSocialStats } from './models/collection-social-stats';
+import { CollectionAdditionalInfo } from './models/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Review } from 'src/modules/review/models/review';
-import { CollectionAlreadyLikedException } from '../exceptions/already-liked.exception';
-import { CollectionNotLikedException } from '../exceptions/not-liked.exception';
+import { Review } from 'src/modules/collection-reviews/models/review';
+import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
+import { CollectionNotLikedException } from './exceptions/not-liked.exception';
 import { MultipartFile } from '@fastify/multipart';
 import {
   MAX_COMPRESSED_FILE_SIZE,
@@ -17,12 +17,12 @@ import {
   getS3,
   supportedImageFormats,
 } from 'src/shared/utils/s3/s3';
-import { WrongImageFormatException } from '../exceptions/wrong-image-format.exception';
-import { TooLargeImageException } from '../exceptions/too-large-image.exception';
+import { WrongImageFormatException } from './exceptions/wrong-image-format.exception';
+import { TooLargeImageException } from './exceptions/too-large-image.exception';
 import sharp from 'sharp';
-import { ImageLoadException } from '../exceptions/image-load.exception';
+import { ImageLoadException } from './exceptions/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
-import { CollectionRepository } from '../repositories/collection.repository';
+import { CollectionRepository } from './repositories/collection.repository';
 
 @Injectable()
 export class CollectionService {

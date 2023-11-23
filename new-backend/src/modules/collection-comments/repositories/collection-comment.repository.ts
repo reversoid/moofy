@@ -3,12 +3,15 @@ import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repos
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { User } from 'src/modules/user/models/user';
-import { Comment, selectComment } from '../models/comment/comment';
-import { Collection } from '../models/collection/collection';
-import { CommentSocialStats } from '../models/comment/comment-social-stats';
+import { Collection } from '../../collection/models/collection';
+import {
+  Comment,
+  selectComment,
+} from 'src/modules/collection-comments/models/comment';
+import { CommentSocialStats } from 'src/modules/collection-comments/models/comment-social-stats';
 
 @Injectable()
-export class CommentRepository extends PaginatedRepository {
+export class CollectionCommentRepository extends PaginatedRepository {
   constructor(private readonly prismaService: PrismaService) {
     super();
   }

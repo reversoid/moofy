@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
-import { CommentService } from '../../services/comment.service';
+import { CollectionCommentService } from '../../collection-comment.service';
 import { WrongCommentIdException } from '../../exceptions/wrong-comment-id.exception';
 
 export class UserIsCommentCreator implements CanActivate {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(private readonly commentService: CollectionCommentService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

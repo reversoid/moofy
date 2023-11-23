@@ -11,17 +11,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ReviewService } from 'src/modules/review/review.service';
-import { CollectionService } from '../services/collection.service';
+import { ReviewService } from 'src/modules/collection-reviews/review.service';
+import { CollectionService } from '../collection/collection.service';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
-import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
+import { UserCanViewCollectionGuard } from '../collection/controller/guards/user-can-view-collection.guard';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { User } from 'src/modules/user/models/user';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
-import { EditReviewDto } from './dto/edit-review.dto';
+import { CreateReviewDto } from '../collection/controller/dto/create-review.dto';
+import { UserIsCollectionOwnerGuard } from '../collection/controller/guards/user-is-collection-owner.guard';
+import { EditReviewDto } from '../collection/controller/dto/edit-review.dto';
 
 @ApiTags('Collection reviews')
 @Controller('collection')

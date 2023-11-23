@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { User } from 'src/modules/user/models/user';
-import { Review, selectReview } from 'src/modules/review/models/review';
+import {
+  Review,
+  selectReview,
+} from 'src/modules/collection-reviews/models/review';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Collection, selectCollection } from '../models/collection/collection';
-import { CollectionSocialStats } from '../models/collection/collection-social-stats';
+import { Collection, selectCollection } from '../models/collection';
+import { CollectionSocialStats } from '../models/collection-social-stats';
 
 @Injectable()
 export class CollectionRepository extends PaginatedRepository {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { AppController } from './app.controller';
-import { ReviewModule } from './modules/review/review.module';
+import { ReviewModule } from './modules/collection-reviews/review.module';
 import { CollectionModule } from './modules/collection/collection.module';
 import { FilmModule } from './modules/film/film.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -24,6 +24,7 @@ import { GlobalModule } from './modules/global/global.module';
 import { RMQModule } from 'nestjs-rmq';
 import { getRMQConfig } from './config/modules-configs/get-rmq-config';
 import { ExploreModule } from './modules/explore/explore.module';
+import { CollectionCommentModule } from './modules/collection-comments/collection-comment.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { ExploreModule } from './modules/explore/explore.module';
     ProfileModule,
     GlobalModule,
     ExploreModule,
+    CollectionCommentModule,
   ],
   providers: [
     {
