@@ -3,7 +3,7 @@ import { CollectionRepository } from '../repositories/collection.repository';
 import { Collection } from '../models/collection';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { User } from 'src/modules/user/models/user';
-import { SocialStats } from '../models/social-stats';
+import { CollectionSocialStats } from '../models/collection-social-stats';
 import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
 import { Review } from 'src/modules/review/models/review';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
@@ -43,7 +43,9 @@ export class PrimitiveCollectionService {
     return this.collectionRepository.getReviews(id, limit, nextKey);
   }
 
-  async getSocialStats(collectionId: Collection['id']): Promise<SocialStats> {
+  async getSocialStats(
+    collectionId: Collection['id'],
+  ): Promise<CollectionSocialStats> {
     const stats = await this.collectionRepository.getSocialStats(collectionId);
     if (!stats) {
       throw new WrongCollectionIdException();

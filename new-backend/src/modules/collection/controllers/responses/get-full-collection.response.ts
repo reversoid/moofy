@@ -1,13 +1,13 @@
 import { reviewSchema } from 'src/modules/review/models/review';
 import { z } from 'zod';
 import { collectionSchema } from '../../models/collection';
-import { socialStatsSchema } from '../../models/social-stats';
-import { collectionAdditionalInfoSchema } from '../../models/collection-additional-info';
+import { collectionSocialStatsSchema } from '../../models/collection-social-stats';
+import { collectionAdditionalInfoSchema } from '../../models/collection/collection-additional-info';
 import { getPaginatedDataSchema } from 'src/shared/utils/pagination/paginated-data';
 
 export const getFullCollectionResponseSchema = z.object({
   collection: collectionSchema,
-  socialStats: socialStatsSchema,
+  socialStats: collectionSocialStatsSchema,
   additionalInfo: collectionAdditionalInfoSchema,
   reviews: getPaginatedDataSchema(reviewSchema),
 });

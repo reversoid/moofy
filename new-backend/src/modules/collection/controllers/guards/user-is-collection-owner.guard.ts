@@ -15,7 +15,7 @@ export class UserIsCollectionOwnerGuard implements CanActivate {
       return false;
     }
 
-    const id = request.params['id'];
+    const id = Number(request.params['id']);
     if (Number.isNaN(id)) {
       throw new WrongCollectionIdException();
     }

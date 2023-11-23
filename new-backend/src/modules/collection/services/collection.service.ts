@@ -5,8 +5,8 @@ import { CollectionWithInfo } from '../models/collection-with-info';
 import { PrimitiveCollectionService } from './primitive-collection.service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
-import { SocialStats } from '../models/social-stats';
-import { CollectionAdditionalInfo } from '../models/collection-additional-info';
+import { CollectionSocialStats } from '../models/collection-social-stats';
+import { CollectionAdditionalInfo } from '../models/collection/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Review } from 'src/modules/review/models/review';
 import { CollectionAlreadyLikedException } from '../exceptions/already-liked.exception';
@@ -72,7 +72,7 @@ export class CollectionService {
     nextKey: string | null,
   ): Promise<{
     collection: Collection;
-    socialStats: SocialStats;
+    socialStats: CollectionSocialStats;
     additionalInfo: CollectionAdditionalInfo;
     reviews: PaginatedData<Review>;
   }> {

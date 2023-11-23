@@ -12,7 +12,7 @@ export class UserCanViewCollectionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user: User | null = request.raw['user'];
 
-    const id = request.params['id'];
+    const id = Number(request.params['id']);
     if (Number.isNaN(id)) {
       throw new WrongCollectionIdException();
     }

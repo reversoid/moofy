@@ -6,7 +6,7 @@ import { CollectionService } from './services/collection.service';
 import { CollectionRepository } from './repositories/collection.repository';
 import { PrimitiveCollectionService } from './services/primitive-collection.service';
 import { CommentService } from './services/services.service';
-import { CommentRepository } from './repositories/comment.service';
+import { CommentRepository } from './repositories/comment.repository';
 
 @Module({
   controllers: [

@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { socialStatsSchema } from '../../models/social-stats';
+import { collectionSocialStatsSchema } from '../../models/collection-social-stats';
 
-export const unlikeCollectionResponseSchema = socialStatsSchema;
+export const unlikeCollectionResponseSchema = collectionSocialStatsSchema;
 
 export type UnlikeCollectionResponse = z.infer<
   typeof unlikeCollectionResponseSchema

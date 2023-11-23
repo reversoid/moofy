@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
-import { Collection, selectCollection } from '../models/collection';
-import { SocialStats } from '../models/social-stats';
 import { User } from 'src/modules/user/models/user';
 import { Review, selectReview } from 'src/modules/review/models/review';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
+import { Collection, selectCollection } from '../models/collection/collection';
+import { CollectionSocialStats } from '../models/collection/collection-social-stats';
 
 @Injectable()
 export class CollectionRepository extends PaginatedRepository {
@@ -58,7 +58,7 @@ export class CollectionRepository extends PaginatedRepository {
 
   async getSocialStats(
     collectionId: Collection['id'],
-  ): Promise<SocialStats | null> {
+  ): Promise<CollectionSocialStats | null> {
     const result = await this.prismaService.list.findUnique({
       where: {
         id: collectionId,

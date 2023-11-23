@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
-import { Collection } from '../models/collection';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Comment, selectComment } from '../models/comment';
 import { User } from 'src/modules/user/models/user';
-import { CommentStats } from '../models/comment-stats';
+import { Comment, selectComment } from '../models/comment/comment';
+import { Collection } from '../models/collection/collection';
+import { CommentSocialStats } from '../models/comment/comment-social-stats';
 
 @Injectable()
 export class CommentRepository extends PaginatedRepository {
@@ -51,7 +51,7 @@ export class CommentRepository extends PaginatedRepository {
 
   async getCommentStats(
     commentId: Comment['id'],
-  ): Promise<CommentStats | null> {
+  ): Promise<CommentSocialStats | null> {
     const data = await this.prismaService.comment.findUnique({
       select: {
         _count: {
@@ -88,6 +88,13 @@ export class CommentRepository extends PaginatedRepository {
     });
     return comment;
   }
+  async getCommentById(commentId: Comment['id']): Promise<Comment | null> {
+    const comment = await this.prismaService.comment.findUnique({
+      select: selectComment,
+      where: { id: commentId, deleted_at: { not: null } },
+    });
+    return comment;
+  }
 
   async deleteComment(
     commentId: Comment['id'],
@@ -98,5 +105,24 @@ export class CommentRepository extends PaginatedRepository {
     });
 
     return { id: commentId };
+  }
+
+  async likeComment(
+    commentId: Comment['id'],
+    userId: User['id'],
+  ): Promise<void> {
+    await this.prismaService.comment_like.create({
+      data: { commentId, userId },
+    });
+  }
+
+  async unlikeComment(
+    commentId: Comment['id'],
+    userId: User['id'],
+  ): Promise<void> {
+    await this.prismaService.comment_like.updateMany({
+      data: { deleted_at: new Date() },
+      where: { commentId, userId },
+    });
   }
 }
