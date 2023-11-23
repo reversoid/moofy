@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
-import { Collection } from '../models/collection';
-import { CollectionWithInfo } from '../models/collection-with-info';
+import { Collection } from '../models/collection/collection';
+import { CollectionWithInfo } from '../models/collection/collection-with-info';
 import { PrimitiveCollectionService } from './primitive-collection.service';
 import { CreateCollectionProps, UpdateCollectionProps } from '../types';
 import { WrongCollectionIdException } from '../exceptions/wrong-collection-id.exception';
-import { CollectionSocialStats } from '../models/collection-social-stats';
+import { CollectionSocialStats } from '../models/collection/collection-social-stats';
 import { CollectionAdditionalInfo } from '../models/collection/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Review } from 'src/modules/review/models/review';

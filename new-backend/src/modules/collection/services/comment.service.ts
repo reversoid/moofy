@@ -7,6 +7,8 @@ import { Comment } from '../models/comment/comment';
 import { User } from 'src/modules/user/models/user';
 import { CommentSocialStats } from '../models/comment/comment-social-stats';
 import { WrongCommentIdException } from '../exceptions/wrong-comment-id.exception';
+import { CommentAlreadyLikedException } from '../exceptions/comment-already-liked.exception';
+import { CommentNotLikedException } from '../exceptions/comment-not-liked.exception';
 
 @Injectable()
 export class CommentService {
@@ -63,6 +65,13 @@ export class CommentService {
     commentId: Comment['id'],
     userId: User['id'],
   ): Promise<CommentSocialStats> {
+    const isLiked = await this.commentRepository.isCommentLikedByUser(
+      commentId,
+      userId,
+    );
+    if (isLiked) {
+      throw new CommentAlreadyLikedException();
+    }
     await this.commentRepository.likeComment(commentId, userId);
     const stats = await this.commentRepository.getCommentStats(commentId);
     if (!stats) {
@@ -75,6 +84,13 @@ export class CommentService {
     commentId: Comment['id'],
     userId: User['id'],
   ): Promise<CommentSocialStats> {
+    const isLiked = await this.commentRepository.isCommentLikedByUser(
+      commentId,
+      userId,
+    );
+    if (!isLiked) {
+      throw new CommentNotLikedException();
+    }
     await this.commentRepository.unlikeComment(commentId, userId);
     const stats = await this.commentRepository.getCommentStats(commentId);
     if (!stats) {
