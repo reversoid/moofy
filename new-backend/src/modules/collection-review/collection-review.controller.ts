@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CollectionReviewService } from 'src/modules/collection-review/collection-review.service';
-import { CollectionService } from '../collection/collection.service';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 import { UserCanViewCollectionGuard } from '../collection/controller/guards/user-can-view-collection.guard';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
@@ -26,10 +25,7 @@ import { EditReviewDto } from '../collection/controller/dto/edit-review.dto';
 @ApiTags('Collection reviews')
 @Controller('collection')
 export class CollectionReviewsController {
-  constructor(
-    private readonly reviewService: CollectionReviewService,
-    private readonly collectionService: CollectionService,
-  ) {}
+  constructor(private readonly reviewService: CollectionReviewService) {}
 
   @Post(':id/reviews')
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
@@ -57,7 +53,7 @@ export class CollectionReviewsController {
     @Param('id', ParseIntPipe) id: number,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
-    return this.collectionService.getReviews(id, limit ?? 20, nextKey);
+    return this.reviewService.getReviews(id, limit ?? 20, nextKey);
   }
 
   @Patch(':id/reviews/reviewId')

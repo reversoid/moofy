@@ -5,5 +5,6 @@ import { CollectionCommentService } from './collection-comment.service';
 @Module({
   controllers: [CollectionCommentsController],
   providers: [CollectionCommentService],
+  exports: [CollectionCommentService],
 })
 export class CollectionCommentModule {}
