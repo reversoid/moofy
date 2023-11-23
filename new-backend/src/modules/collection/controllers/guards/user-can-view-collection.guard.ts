@@ -1,23 +1,21 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
-import { PrimitiveCollectionService } from '../../services/primitive-collection.service';
 import { WrongCollectionIdException } from '../../exceptions/wrong-collection-id.exception';
+import { CollectionService } from '../../services/collection.service';
+import { collectionSchema } from '../../models/collection/collection';
+
+const idSchema = collectionSchema.shape.id;
 
 export class UserCanViewCollectionGuard implements CanActivate {
-  constructor(
-    private readonly primitiveCollectionService: PrimitiveCollectionService,
-  ) {}
+  constructor(private readonly collectionService: CollectionService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user: User | null = request.raw['user'];
 
-    const id = Number(request.params['id']);
-    if (Number.isNaN(id)) {
-      throw new WrongCollectionIdException();
-    }
+    const id = idSchema.parse(request.params['id']);
 
-    const collection = await this.primitiveCollectionService.getCollection(id);
+    const collection = await this.collectionService.getCollectionById(id);
     if (!collection) {
       throw new WrongCollectionIdException();
     }

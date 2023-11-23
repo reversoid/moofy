@@ -28,6 +28,10 @@ import { CollectionRepository } from '../repositories/collection.repository';
 export class CollectionService {
   constructor(private readonly collectionRepository: CollectionRepository) {}
 
+  async getCollectionById(id: Collection['id']): Promise<Collection | null> {
+    return this.collectionRepository.getCollection(id);
+  }
+
   async createCollection(
     props: CreateCollectionProps,
   ): Promise<CollectionWithInfo> {
