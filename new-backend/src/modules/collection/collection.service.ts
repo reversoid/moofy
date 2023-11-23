@@ -127,7 +127,11 @@ export class CollectionService {
     }
 
     await this.collectionRepository.likeCollection(collectionId, userId);
-    return this.collectionRepository.getSocialStats(collectionId);
+    const stats = await this.collectionRepository.getSocialStats(collectionId);
+    if (!stats) {
+      throw new WrongCollectionIdException();
+    }
+    return stats;
   }
 
   async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
@@ -141,7 +145,11 @@ export class CollectionService {
     }
 
     await this.collectionRepository.unlikeCollection(collectionId, userId);
-    return this.collectionRepository.getSocialStats(collectionId);
+    const stats = await this.collectionRepository.getSocialStats(collectionId);
+    if (!stats) {
+      throw new WrongCollectionIdException();
+    }
+    return stats;
   }
 
   async deleteFromFavorite(id: Collection['id'], userId: User['id']) {
