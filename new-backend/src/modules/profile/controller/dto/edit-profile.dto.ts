@@ -1,9 +1,9 @@
 import { createZodDto } from 'nestjs-zod';
+import { USERNAME_PATTERN } from 'src/modules/auth/dto/register.dto';
 import { z } from 'zod';
 
-// TODO check for username pattern
 const editProfileDtoSchema = z.object({
-  username: z.string().optional(),
+  username: z.string().regex(USERNAME_PATTERN).optional(),
   description: z.string().nullish(),
   imageUrl: z.string().url().nullish(),
 });
