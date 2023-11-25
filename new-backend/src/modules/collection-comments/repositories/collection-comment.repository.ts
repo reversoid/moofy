@@ -33,7 +33,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
       orderBy: {
         created_at: 'desc',
       },
-      take: limit,
+      take: limit + 1,
     });
     return super.getPaginatedData(comments, limit, 'created_at');
   }

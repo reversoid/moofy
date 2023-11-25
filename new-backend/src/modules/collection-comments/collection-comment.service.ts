@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CollectionCommentRepository } from './repositories/comment.repository';
+import { CollectionCommentRepository } from './repositories/collection-comment.repository';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { User } from 'src/modules/user/models/user';
 import { WrongCommentIdException } from './exceptions/wrong-comment-id.exception';

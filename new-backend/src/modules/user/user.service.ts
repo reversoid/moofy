@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './models/user';
-import { CreateUserProps } from './types';
+import { ChangeUserDataProps, CreateUserProps } from './types';
 import { UserRepository } from './user.repository';
 import { FullUser } from './models/full-user';
 
@@ -24,5 +24,12 @@ export class UserService {
     username: User['username'],
   ): Promise<FullUser | null> {
     return this.userRepository.getFullUserByUsername(username);
+  }
+
+  async changeUserData(
+    userId: User['id'],
+    props: ChangeUserDataProps,
+  ): Promise<User> {
+    return this.userRepository.changeUserData(userId, props);
   }
 }

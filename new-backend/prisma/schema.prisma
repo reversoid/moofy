@@ -188,14 +188,16 @@ model review_metadata {
 }
 
 model subscription {
-  id          Int       @id(map: "PK_8c3e00ebd02103caa1174cd5d9d") @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   created_at  DateTime  @default(now()) @db.Timestamptz(6)
   deleted_at  DateTime? @db.Timestamptz(6)
-  follower_id Int?
-  followed_id Int?
+  follower_id Int
+  followed_id Int
+  follower    users     @relation("followerRelation", fields: [follower_id], references: [id])
+  followed    users     @relation("followedRelation", fields: [followed_id], references: [id])
 
-  @@index([deleted_at], map: "IDX_8b52b9aae50d89a98d3ef92c8d")
-  @@index([created_at], map: "IDX_9a97c3ebf1bef5345852963e4c")
+  @@index([deleted_at])
+  @@index([created_at])
 }
 
 model task {
@@ -240,6 +242,9 @@ model users {
   review        review[]
   to_watch      to_watch[]
   metadata      user_metadata?
+
+  followers subscription[] @relation("followerRelation")
+  followed  subscription[] @relation("followedRelation")
 
   @@index([deleted_at], map: "IDX_22b81d3ed19a0bffcb660800f4")
   @@index([updated_at], map: "IDX_9cdce43fa0043c794281aa0905")

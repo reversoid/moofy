@@ -66,7 +66,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
       },
       select: selectReview,
       orderBy: { created_at: 'desc' },
-      take: limit,
+      take: limit + 1,
     });
 
     return super.getPaginatedData(reviews, limit, 'created_at');
