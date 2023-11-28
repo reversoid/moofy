@@ -25,6 +25,9 @@ import { RMQModule } from 'nestjs-rmq';
 import { getRMQConfig } from './config/modules-configs/get-rmq-config';
 import { ExploreModule } from './modules/explore/explore.module';
 import { CollectionCommentModule } from './modules/collection-comments/collection-comment.module';
+import { ExternalFilmProxyModule } from './modules/external-film-proxy/external-film-proxy.module';
+import { ExternalFilmServiceService } from './modules/external-film-proxy/external-film-service.service';
+import { FilmRepositoryService } from './modules/film-repository/film-repository.service';
 
 @Module({
   imports: [
@@ -56,6 +59,7 @@ import { CollectionCommentModule } from './modules/collection-comments/collectio
     GlobalModule,
     ExploreModule,
     CollectionCommentModule,
+    ExternalFilmProxyModule,
   ],
   providers: [
     {
@@ -63,6 +67,8 @@ import { CollectionCommentModule } from './modules/collection-comments/collectio
       useClass: ZodValidationPipe,
     },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
+    ExternalFilmServiceService,
+    FilmRepositoryService,
   ],
   controllers: [AppController],
 })

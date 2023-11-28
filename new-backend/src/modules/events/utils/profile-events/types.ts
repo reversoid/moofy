@@ -1,4 +1,4 @@
-import { ProfileEventType } from 'src/modules/profile/models/profile-notification';
+import { ProfileEventType } from 'src/modules/profile-notifications/models/profile-notification';
 
 export type ProfileNotificationEvent = {
   type: 'direct' | 'counter';

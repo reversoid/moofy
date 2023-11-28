@@ -1,4 +1,5 @@
 type Primitive =
+  | Array<unknown>
   | Date
   | string
   | number
