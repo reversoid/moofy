@@ -5,8 +5,8 @@ import {
   PROFILE_NOTIFICATION_TOPIC,
 } from './utils/profile-events/topics';
 import {
-  ProfileNotificationEvent,
-  ProfileNotificationSeenEvent,
+  ProfileEventDto,
+  ProfileSeenEventDto,
 } from './utils/profile-events/types';
 import { UserRegisteredEvent } from './utils/register-events/types';
 import { USER_REGISTERED_TOPIC } from './utils/register-events/topics';
@@ -15,11 +15,11 @@ import { USER_REGISTERED_TOPIC } from './utils/register-events/topics';
 export class EventsService {
   constructor(private rmqService: RMQService) {}
 
-  emitProfileEvent(event: ProfileNotificationEvent) {
+  emitProfileEvent(event: ProfileEventDto) {
     return this.rmqService.notify(PROFILE_NOTIFICATION_TOPIC, event);
   }
 
-  emitProfileSeenEvent(event: ProfileNotificationSeenEvent) {
+  emitProfileSeenEvent(event: ProfileSeenEventDto) {
     return this.rmqService.notify(PROFILE_NOTIFICATION_SEEN_TOPIC, event);
   }
 

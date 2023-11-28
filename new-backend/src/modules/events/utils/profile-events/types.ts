@@ -1,6 +1,6 @@
-import { ProfileEventType } from 'src/modules/profile-notifications/models/profile-notification';
+import { ProfileEventType } from 'src/modules/profile-events/models/profile-event';
 
-export type ProfileNotificationEvent = {
+export type ProfileEventDto = {
   type: 'direct' | 'counter';
   fromUserId: number;
   toUserId: number;
@@ -8,6 +8,6 @@ export type ProfileNotificationEvent = {
   targetId: number;
 };
 
-export type ProfileNotificationSeenEvent = {
-  notificationId: string;
+export type ProfileSeenEventDto = {
+  eventId: string;
 };

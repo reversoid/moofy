@@ -6,9 +6,7 @@ import { CollectionReviewModule } from './modules/collection-review/collection-r
 import { CollectionModule } from './modules/collection/collection.module';
 import { FilmModule } from './modules/film/film.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { MovieProxyModule } from './modules/movie-proxy/movie-proxy.module';
 import { UserModule } from './modules/user/user.module';
-import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
 import { EventsModule } from './modules/events/events.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
@@ -26,8 +24,7 @@ import { getRMQConfig } from './config/modules-configs/get-rmq-config';
 import { ExploreModule } from './modules/explore/explore.module';
 import { CollectionCommentModule } from './modules/collection-comments/collection-comment.module';
 import { ExternalFilmProxyModule } from './modules/external-film-proxy/external-film-proxy.module';
-import { ExternalFilmServiceService } from './modules/external-film-proxy/external-film-service.service';
-import { FilmRepositoryService } from './modules/film-repository/film-repository.service';
+import { ProfileEventsModule } from './modules/profile-events/profile-events.module';
 
 @Module({
   imports: [
@@ -51,9 +48,8 @@ import { FilmRepositoryService } from './modules/film-repository/film-repository
     CollectionModule,
     FilmModule,
     AuthModule,
-    MovieProxyModule,
     UserModule,
-    ProfileNotificationsModule,
+    ProfileEventsModule,
     EventsModule,
     ProfileModule,
     GlobalModule,
@@ -67,8 +63,6 @@ import { FilmRepositoryService } from './modules/film-repository/film-repository
       useClass: ZodValidationPipe,
     },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
-    ExternalFilmServiceService,
-    FilmRepositoryService,
   ],
   controllers: [AppController],
 })

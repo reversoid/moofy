@@ -31,7 +31,9 @@ export class AuthService {
   }: RegisterProps): Promise<TokensAndUser> {
     const user = await this.createUser(username, password);
     const tokens = await this.tokensService.generateTokens(user.id);
+
     this.eventsService.emitUserRegisteredEvent({ userId: user.id });
+
     return { tokens, user };
   }
 

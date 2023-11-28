@@ -3,7 +3,7 @@ import { UnnoficialKpService } from './proxy-realizations/unofficial-kp/unnofici
 import { Film } from '../film/models/film';
 
 @Injectable()
-export class ExternalFilmServiceService {
+export class ExternalFilmApiService {
   constructor(private readonly externalFilmApiService: UnnoficialKpService) {}
 
   searchFilmsByName(name: string): Promise<Film[]> {
