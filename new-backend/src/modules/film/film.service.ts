@@ -11,6 +11,10 @@ export class FilmService {
     private readonly filmRepository: FilmRepository,
   ) {}
 
+  async getFilmById(id: string): Promise<Film | null> {
+    return this.externalFilmApiService.getFilmById(id);
+  }
+
   async saveFilmById(id: string): Promise<Film> {
     const film = await this.externalFilmApiService.getFilmById(id);
     if (!film) {
@@ -18,5 +22,14 @@ export class FilmService {
     }
     await this.filmRepository.saveFilm(film);
     return film;
+  }
+
+  async saveFilm(film: Film): Promise<Film> {
+    await this.filmRepository.saveFilm(film);
+    return film;
+  }
+
+  async filmIsSaved(id: string): Promise<boolean> {
+    return this.filmRepository.filmIsSaved(id);
   }
 }

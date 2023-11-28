@@ -12,4 +12,11 @@ export class FilmRepository {
     });
     return film;
   }
+
+  async filmIsSaved(filmId: string): Promise<boolean> {
+    const film = await this.prismaService.film.findUnique({
+      where: { id: filmId },
+    });
+    return Boolean(film);
+  }
 }

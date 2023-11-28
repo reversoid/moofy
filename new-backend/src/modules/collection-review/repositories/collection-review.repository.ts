@@ -5,6 +5,7 @@ import { Review, selectReview } from '../models/review';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Collection } from 'src/modules/collection/models/collection';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
+import { Film } from 'src/modules/film/models/film';
 
 @Injectable()
 export class CollectionReviewRepository extends PaginatedRepository {
@@ -30,6 +31,16 @@ export class CollectionReviewRepository extends PaginatedRepository {
       where: { id },
       select: selectReview,
     });
+  }
+
+  async reviewOnFilmExists(
+    collectionId: Collection['id'],
+    filmId: Film['id'],
+  ): Promise<boolean> {
+    const review = await this.prismaService.review.findFirst({
+      where: { deleted_at: null, listId: collectionId, filmId },
+    });
+    return Boolean(review);
   }
 
   async updateReview({

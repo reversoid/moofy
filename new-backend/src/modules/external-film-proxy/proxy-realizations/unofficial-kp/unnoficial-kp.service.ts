@@ -5,7 +5,7 @@ import apiKeysConfig from 'src/config/api-keys.config';
 import { ConfigType } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { ApiKeyRotator } from '../../utils/api-key-rotator';
-import { catchError, lastValueFrom, map, of } from 'rxjs';
+import { catchError, lastValueFrom, map, of, throwError } from 'rxjs';
 import { UnofficialKpFilmDto } from './types';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class UnnoficialKpService implements ExternalFilmApiService {
           map(({ data: filmDto }) => this.convertDtoToFilm(filmDto)),
           catchError((e) => {
             console.log(e);
-            return of(null);
+            return throwError(() => e);
           }),
         ),
     );
