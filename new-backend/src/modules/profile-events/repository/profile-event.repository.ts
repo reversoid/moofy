@@ -3,6 +3,7 @@ import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateProfileEventDto } from '../dto/create-profile-event.dto';
 import { RemoveProfileEventDto } from '../dto/remove-profile-event.dto';
 import { MakeEventSeenDto } from '../dto/make-event-seen.dto';
+import { selectProfileEvent } from '../models/profile-event';
 
 @Injectable()
 export class ProfileEventRepository {
@@ -14,7 +15,7 @@ export class ProfileEventRepository {
     targetId,
     toUserId,
   }: CreateProfileEventDto) {
-    await this.prismaService.profile_event.create({
+    return this.prismaService.profile_event.create({
       data: {
         type: eventType,
         user_to_id: toUserId,
@@ -22,6 +23,7 @@ export class ProfileEventRepository {
         target_id: targetId,
         user_from_id: fromUserId,
       },
+      select: selectProfileEvent,
     });
   }
 
@@ -31,7 +33,7 @@ export class ProfileEventRepository {
     targetId,
     toUserId,
   }: RemoveProfileEventDto) {
-    await this.prismaService.profile_event.updateMany({
+    const events = await this.prismaService.profile_event.findMany({
       where: {
         type: eventType,
         user_from_id: fromUserId,
@@ -39,20 +41,36 @@ export class ProfileEventRepository {
         target_id: targetId,
         deleted_at: null,
       },
-      data: {
-        deleted_at: new Date(),
+      select: selectProfileEvent,
+    });
+
+    await this.prismaService.profile_event.updateMany({
+      data: { deleted_at: new Date() },
+      where: {
+        id: { in: events.map((e) => e.id) },
       },
     });
+
+    return events;
   }
 
   async markEventAsSeen({ eventId }: MakeEventSeenDto) {
-    await this.prismaService.profile_event.update({
+    const event = await this.prismaService.profile_event.findUnique({
       where: {
         id: eventId,
-      },
-      data: {
-        seen_at: new Date(),
+        deleted_at: null,
       },
     });
+
+    if (event) {
+      await this.prismaService.profile_event.update({
+        where: {
+          id: event.id,
+        },
+        data: {
+          seen_at: new Date(),
+        },
+      });
+    }
   }
 }

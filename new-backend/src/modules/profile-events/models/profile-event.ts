@@ -18,7 +18,7 @@ export const PROFILE_EVENT_TYPES = [
 ] as const;
 
 export const profileEventSchema = z.object({
-  id: z.number().int(),
+  id: z.string(),
   user_from_id: z.number().int(),
   user_to_id: z.number().int(),
   target_id: z.number().int(),
@@ -29,7 +29,7 @@ export const profileEventSchema = z.object({
 
 export type ProfileEvent = z.infer<typeof profileEventSchema>;
 
-export const selectProfileNotification: PrismaSelectEntity<ProfileEvent> = {
+export const selectProfileEvent: PrismaSelectEntity<ProfileEvent> = {
   created_at: true,
   id: true,
   seen_at: true,
