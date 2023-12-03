@@ -64,12 +64,22 @@ export class NotificationsGateway
   async handleUserEventNotification(message: ProfileEventDto) {
     if (message.type === 'direct') {
       const directEvent = await this.eventsService.createEvent(message);
-      return await this.sendDirectEventToUser(message.toUserId, directEvent);
+      const notification = await this.eventsService.getDirectNotification(
+        directEvent.id,
+      );
+
+      return await this.sendDirectNotificationToUser(
+        message.toUserId,
+        notification,
+      );
     }
 
     if (message.type === 'counter') {
       const counterEvents = await this.eventsService.removeEvent(message);
-      return await this.sendCounterEventToUser(message.toUserId, counterEvents);
+
+      return await this.sendCounterEventToUser(message.toUserId, {
+        eventIds: counterEvents.map((e) => e.id),
+      });
     }
   }
 
@@ -81,7 +91,7 @@ export class NotificationsGateway
     return await this.sendSeenEventToUser(toUserId, { eventId });
   }
 
-  private async sendDirectEventToUser(
+  private async sendDirectNotificationToUser(
     userId: number,
     event: ProfileDirectNotificationDto,
   ) {

@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateProfileEventDto } from '../dto/create-profile-event.dto';
 import { RemoveProfileEventDto } from '../dto/remove-profile-event.dto';
-import { MakeEventSeenDto } from '../dto/make-event-seen.dto';
-import { selectProfileEvent } from '../models/profile-event';
+import { ProfileEvent, selectProfileEvent } from '../models/profile-event';
 
 @Injectable()
 export class ProfileEventRepository {
@@ -54,7 +53,7 @@ export class ProfileEventRepository {
     return events;
   }
 
-  async markEventAsSeen({ eventId }: MakeEventSeenDto) {
+  async markEventAsSeen(eventId: ProfileEvent['id']) {
     const event = await this.prismaService.profile_event.findUnique({
       where: {
         id: eventId,
