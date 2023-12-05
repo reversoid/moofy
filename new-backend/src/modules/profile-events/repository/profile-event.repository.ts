@@ -3,10 +3,15 @@ import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateProfileEventDto } from '../dto/create-profile-event.dto';
 import { RemoveProfileEventDto } from '../dto/remove-profile-event.dto';
 import { ProfileEvent, selectProfileEvent } from '../models/profile-event';
+import { User } from 'src/modules/user/models/user';
+import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
+import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 
 @Injectable()
-export class ProfileEventRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+export class ProfileEventRepository extends PaginatedRepository {
+  constructor(private readonly prismaService: PrismaService) {
+    super();
+  }
 
   async createEvent({
     eventType,
@@ -66,6 +71,52 @@ export class ProfileEventRepository {
         },
       });
     }
+  }
+
+  async markAllEventsAsSeen(userId: User['id']) {
+    await this.prismaService.profile_event.updateMany({
+      where: {
+        user_to_id: userId,
+        seen_at: null,
+      },
+      data: {
+        seen_at: new Date(),
+      },
+    });
+  }
+
+  async getUserEvents(
+    userId: User['id'],
+    limit: number,
+    type: 'all' | 'seen' | 'unseen',
+    nextKey?: string,
+  ): Promise<PaginatedData<ProfileEvent>> {
+    const key = super.parseNextKey(nextKey);
+
+    const seenAt = {
+      all: undefined,
+      seen: { not: null },
+      unseen: null,
+    };
+
+    const profileEvents = await this.prismaService.profile_event.findMany({
+      where: {
+        user_to_id: userId,
+        seen_at: seenAt[type],
+        created_at: key ? { lte: new Date(key) } : undefined,
+      },
+      select: selectProfileEvent,
+      take: limit + 1,
+      orderBy: { created_at: 'desc' },
+    });
+
+    return super.getPaginatedData(profileEvents, limit, 'created_at');
+  }
+
+  async getAmountOfUnseenEvents(userId: User['id']): Promise<number> {
+    return this.prismaService.profile_event.count({
+      where: { seen_at: null, user_to_id: userId },
+    });
   }
 
   async getEvent(eventId: ProfileEvent['id']): Promise<ProfileEvent | null> {

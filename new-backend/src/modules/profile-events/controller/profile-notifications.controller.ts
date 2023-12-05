@@ -27,7 +27,12 @@ export class ProfileNotificationsController
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
-    return this.eventService.getUnseenEventsForUser(user.id, limit, nextKey);
+    return this.eventService.getEventsForUser(
+      user.id,
+      limit ?? 20,
+      'unseen',
+      nextKey,
+    );
   }
 
   @Get('all')
@@ -36,7 +41,12 @@ export class ProfileNotificationsController
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
-    return this.eventService.getAllEventsForUser(user.id, limit, nextKey);
+    return this.eventService.getEventsForUser(
+      user.id,
+      limit ?? 20,
+      'all',
+      nextKey,
+    );
   }
 
   @Patch('unseen/all')

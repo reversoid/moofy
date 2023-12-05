@@ -9,13 +9,11 @@ import { ProfileDirectNotification } from './models/notifications/profile-direct
 import { ProfileService } from '../profile/profile.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionCommentService } from '../collection-comments/collection-comment.service';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProfileEventsService {
   constructor(
     private readonly profileEventRepository: ProfileEventRepository,
-    private readonly userService: UserService,
     private readonly profileService: ProfileService,
     private readonly collectionService: CollectionService,
     private readonly collectionCommentService: CollectionCommentService,
@@ -39,27 +37,38 @@ export class ProfileEventsService {
   }
 
   async getAmountOfUnseenEvents(userId: User['id']): Promise<number> {
-    throw new Error('Method not implemented.');
+    return this.profileEventRepository.getAmountOfUnseenEvents(userId);
   }
 
   async markAllEventsSeen(userId: User['id']): Promise<void> {
-    throw new Error('Method not implemented.');
+    await this.profileEventRepository.markAllEventsAsSeen(userId);
   }
 
-  async getAllEventsForUser(
+  async getEventsForUser(
     id: User['id'],
-    limit?: number,
+    limit: number,
+    type: 'all' | 'seen' | 'unseen',
     nextKey?: string,
   ): Promise<PaginatedData<ProfileDirectNotification>> {
-    throw new Error('Method not implemented.');
-  }
+    const paginatedEvents = await this.profileEventRepository.getUserEvents(
+      id,
+      limit,
+      type,
+      nextKey,
+    );
 
-  async getUnseenEventsForUser(
-    userId: User['id'],
-    limit?: number,
-    lowerBound?: string,
-  ): Promise<PaginatedData<ProfileDirectNotification>> {
-    throw new Error('Method not implemented.');
+    const notifications = await Promise.all(
+      paginatedEvents.items.map((event) =>
+        this.getDirectNotification(event.id),
+      ),
+    );
+
+    return {
+      nextKey: paginatedEvents.nextKey,
+      items: notifications.filter(
+        (n) => n !== null,
+      ) as ProfileDirectNotification[],
+    };
   }
 
   async getDirectNotification(
