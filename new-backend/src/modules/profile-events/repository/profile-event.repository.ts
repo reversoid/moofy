@@ -71,6 +71,7 @@ export class ProfileEventRepository extends PaginatedRepository {
         },
       });
     }
+    return event;
   }
 
   async markAllEventsAsSeen(userId: User['id']) {

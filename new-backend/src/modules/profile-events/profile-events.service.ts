@@ -9,6 +9,7 @@ import { ProfileDirectNotification } from './models/notifications/profile-direct
 import { ProfileService } from '../profile/profile.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionCommentService } from '../collection-comments/collection-comment.service';
+import { EventsService } from '../events/events.service';
 
 @Injectable()
 export class ProfileEventsService {
@@ -17,6 +18,7 @@ export class ProfileEventsService {
     private readonly profileService: ProfileService,
     private readonly collectionService: CollectionService,
     private readonly collectionCommentService: CollectionCommentService,
+    private readonly eventService: EventsService,
   ) {}
 
   async createEvent(dto: CreateProfileEventDto): Promise<ProfileEvent> {
@@ -32,7 +34,15 @@ export class ProfileEventsService {
   async markEventAsSeen(
     eventId: ProfileEvent['id'],
   ): Promise<ProfileEvent['id']> {
-    await this.profileEventRepository.markEventAsSeen(eventId);
+    const event = await this.profileEventRepository.markEventAsSeen(eventId);
+
+    if (event) {
+      this.eventService.emitProfileSeenEvent({
+        eventId,
+        toUserId: event.user_to_id,
+      });
+    }
+
     return eventId;
   }
 
@@ -42,6 +52,11 @@ export class ProfileEventsService {
 
   async markAllEventsSeen(userId: User['id']): Promise<void> {
     await this.profileEventRepository.markAllEventsAsSeen(userId);
+
+    this.eventService.emitProfileSeenEvent({
+      eventId: '__ALL__',
+      toUserId: userId,
+    });
   }
 
   async getEventsForUser(
