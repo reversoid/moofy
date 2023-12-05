@@ -19,9 +19,9 @@ export const PROFILE_EVENT_TYPES = [
 
 export const profileEventSchema = z.object({
   id: z.string(),
-  user_from_id: z.number().int(),
+  user_from_id: z.number().int().nullable(),
   user_to_id: z.number().int(),
-  target_id: z.number().int(),
+  target_id: z.number().int().nullable(),
   type: z.enum(PROFILE_EVENT_TYPES),
   created_at: z.date(),
   seen_at: z.date().nullable(),

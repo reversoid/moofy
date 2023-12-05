@@ -9,6 +9,7 @@ import { UserService } from '../user/user.service';
 import { ProfileRepository } from './repository/profile.repository';
 import { AlreadySubscribedException } from './exceptions/already-subscribed.exception';
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
+import { Subscription } from './models/subscription';
 
 @Injectable()
 export class ProfileService {
@@ -119,5 +120,9 @@ export class ProfileService {
       user,
       additionalInfo: { isSubscribed: isSubscribedMap.get(user.id) ?? false },
     }));
+  }
+
+  async getSubscription(id: Subscription['id']): Promise<Subscription | null> {
+    return this.profileRepository.getSubscription(id);
   }
 }

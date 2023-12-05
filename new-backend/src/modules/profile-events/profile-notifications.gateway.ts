@@ -9,11 +9,6 @@ import { RMQRoute } from 'nestjs-rmq';
 import { Server, Socket } from 'socket.io';
 import { WsGuard } from './guards/ws-guard';
 import { SocketService } from './utils/socket.service';
-import {
-  ProfileCounterNotificationDto,
-  ProfileDirectNotificationDto,
-  ProfileSeenNotificationDto,
-} from './utils/types';
 import { ProfileEventsService } from './profile-events.service';
 import {
   PROFILE_NOTIFICATION_SEEN_TOPIC,
@@ -23,6 +18,9 @@ import {
   ProfileEventDto,
   ProfileSeenEventDto,
 } from '../events/utils/profile-events/types';
+import { ProfileDirectNotification } from './models/notifications/profile-direct-notification';
+import { ProfileCounterNotification } from './models/notifications/profile-counter-notification';
+import { ProfileSeenNotification } from './models/notifications/profile-seen-notification';
 
 @WebSocketGateway()
 export class NotificationsGateway
@@ -93,21 +91,21 @@ export class NotificationsGateway
 
   private async sendDirectNotificationToUser(
     userId: number,
-    event: ProfileDirectNotificationDto,
+    event: ProfileDirectNotification,
   ) {
     return this.sendEventToUser('notification:direct', userId, event);
   }
 
   private async sendCounterEventToUser(
     userId: number,
-    event: ProfileCounterNotificationDto,
+    event: ProfileCounterNotification,
   ) {
     return this.sendEventToUser('notification:counter', userId, event);
   }
 
   private async sendSeenEventToUser(
     userId: number,
-    event: ProfileSeenNotificationDto,
+    event: ProfileSeenNotification,
   ) {
     return this.sendEventToUser('notification:seen', userId, event);
   }

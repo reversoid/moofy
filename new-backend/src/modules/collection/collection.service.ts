@@ -24,6 +24,7 @@ import { ImageLoadException } from './exceptions/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { CollectionRepository } from './repositories/collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
+import { CollectionLike } from '../collection-comments/models/collection-like';
 
 @Injectable()
 export class CollectionService {
@@ -220,5 +221,11 @@ export class CollectionService {
       limit,
       nextKey,
     );
+  }
+
+  async getCollectionLike(
+    likeId: CollectionLike['id'],
+  ): Promise<CollectionLike | null> {
+    return this.collectionRepository.getCollectionLike(likeId);
   }
 }

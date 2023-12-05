@@ -2,13 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { User } from 'src/modules/user/models/user';
-import { Collection } from '../../collection/models/collection';
+import { User, selectUser } from 'src/modules/user/models/user';
+import {
+  Collection,
+  selectCollection,
+} from '../../collection/models/collection';
 import {
   Comment,
+  commentSchema,
   selectComment,
 } from 'src/modules/collection-comments/models/comment';
 import { CommentSocialStats } from 'src/modules/collection-comments/models/comment-social-stats';
+import { CommentLike } from '../models/comment-like';
 
 @Injectable()
 export class CollectionCommentRepository extends PaginatedRepository {
@@ -126,6 +131,48 @@ export class CollectionCommentRepository extends PaginatedRepository {
     await this.prismaService.comment_like.updateMany({
       data: { deleted_at: new Date() },
       where: { commentId, userId },
+    });
+  }
+
+  async getCommentLike(likeId: number): Promise<CommentLike | null> {
+    const commentLike = await this.prismaService.comment_like.findUnique({
+      where: { id: likeId },
+      select: {
+        id: true,
+        comment: {
+          select: {
+            ...selectComment,
+            list: {
+              select: selectCollection,
+            },
+          },
+        },
+        user: {
+          select: selectUser,
+        },
+      },
+    });
+
+    if (!commentLike) {
+      return null;
+    }
+
+    return {
+      collection: commentLike.comment.list!,
+      comment: commentSchema.parse(commentLike.comment),
+      user: commentLike.user,
+      id: commentLike.id,
+    } satisfies CommentLike;
+  }
+
+  async getCollectionByCommentId(
+    commentId: Comment['id'],
+  ): Promise<Collection | null> {
+    return this.prismaService.list.findFirst({
+      where: {
+        comment: { some: { id: commentId } },
+      },
+      select: selectCollection,
     });
   }
 }

@@ -9,6 +9,7 @@ import { CommentAlreadyLikedException } from './exceptions/comment-already-liked
 import { CommentSocialStats } from './models/comment-social-stats';
 import { CommentWithInfo } from './models/comment-with-info';
 import { Comment } from './models/comment';
+import { CommentLike } from './models/comment-like';
 
 @Injectable()
 export class CollectionCommentService {
@@ -61,6 +62,12 @@ export class CollectionCommentService {
 
   async getCommentById(commentId: Comment['id']): Promise<Comment | null> {
     return this.commentRepository.getCommentById(commentId);
+  }
+
+  async getCollectionByCommentId(
+    commentId: Comment['id'],
+  ): Promise<Collection | null> {
+    return this.commentRepository.getCollectionByCommentId(commentId);
   }
 
   async likeComment(
@@ -127,5 +134,9 @@ export class CollectionCommentService {
     }
 
     return { comment, socialStats, additionalInfo: { isLiked } };
+  }
+
+  async getCommentLike(likeId: CommentLike['id']): Promise<CommentLike | null> {
+    return this.commentRepository.getCommentLike(likeId);
   }
 }

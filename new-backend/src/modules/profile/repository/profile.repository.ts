@@ -7,6 +7,7 @@ import { User, selectUser } from 'src/modules/user/models/user';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
+import { Subscription } from '../models/subscription';
 
 @Injectable()
 export class ProfileRepository extends PaginatedRepository {
@@ -176,5 +177,16 @@ export class ProfileRepository extends PaginatedRepository {
     }
 
     return checkMap;
+  }
+
+  async getSubscription(id: Subscription['id']): Promise<Subscription | null> {
+    return this.prismaService.subscription.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        follower: { select: selectUser },
+        followed: { select: selectUser },
+      },
+    });
   }
 }

@@ -54,12 +54,7 @@ export class ProfileEventRepository {
   }
 
   async markEventAsSeen(eventId: ProfileEvent['id']) {
-    const event = await this.prismaService.profile_event.findUnique({
-      where: {
-        id: eventId,
-        deleted_at: null,
-      },
-    });
+    const event = await this.getEvent(eventId);
 
     if (event) {
       await this.prismaService.profile_event.update({
@@ -71,5 +66,15 @@ export class ProfileEventRepository {
         },
       });
     }
+  }
+
+  async getEvent(eventId: ProfileEvent['id']): Promise<ProfileEvent | null> {
+    return this.prismaService.profile_event.findUnique({
+      where: {
+        id: eventId,
+        deleted_at: null,
+      },
+      select: selectProfileEvent,
+    });
   }
 }

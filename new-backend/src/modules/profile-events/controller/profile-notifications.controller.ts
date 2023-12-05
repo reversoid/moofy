@@ -7,15 +7,18 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/passport/jwt-auth.guard';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
-import { User } from '../user/models/user';
+import { User } from '../../user/models/user';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
-import { ProfileEventsService } from './profile-events.service';
-import { UserCanAccessEventGuard } from './guards/user-can-access-guard';
+import { ProfileEventsService } from '../profile-events.service';
+import { UserCanAccessEventGuard } from '../guards/user-can-access-guard';
+import { IProfileNotificationsController } from './interface';
 
 @Controller('profile-events')
-export class ProfileNotificationsController {
+export class ProfileNotificationsController
+  implements IProfileNotificationsController
+{
   constructor(private readonly eventService: ProfileEventsService) {}
 
   @Get('unseen')
@@ -47,12 +50,12 @@ export class ProfileNotificationsController {
   async getUnseenAmount(@AuthUser() user: User) {
     const amount = await this.eventService.getAmountOfUnseenEvents(user.id);
 
-    return { unseen: amount };
+    return { amount };
   }
 
   @Patch('unseen/:id')
   @UseGuards(JwtAuthGuard, UserCanAccessEventGuard)
   async markEventAsSeen(@Param('id', ParseUUIDPipe) eventId: string) {
-    return this.eventService.markEventAsSeen(eventId);
+    await this.eventService.markEventAsSeen(eventId);
   }
 }
