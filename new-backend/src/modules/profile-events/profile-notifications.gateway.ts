@@ -27,7 +27,7 @@ export class NotificationsGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
   constructor(
-    private readonly eventsService: ProfileEventsService,
+    private readonly profileEventsService: ProfileEventsService,
     private readonly socketService: SocketService,
     private readonly wsGuard: WsGuard,
   ) {}
@@ -61,22 +61,23 @@ export class NotificationsGateway
   @RMQRoute(PROFILE_NOTIFICATION_TOPIC)
   async handleUserEventNotification(message: ProfileEventDto) {
     if (message.type === 'direct') {
-      const directEvent = await this.eventsService.createEvent(message);
-      const notification = await this.eventsService.getDirectNotification(
-        directEvent.id,
-      );
+      const directEvent = await this.profileEventsService.createEvent(message);
+      const notification =
+        await this.profileEventsService.getDirectNotification(directEvent.id);
+
       if (!notification) {
         return;
       }
 
       return await this.sendDirectNotificationToUser(
-        message.toUserId,
+        directEvent.user_to_id,
         notification,
       );
     }
 
     if (message.type === 'counter') {
-      const counterEvents = await this.eventsService.removeEvent(message);
+      const counterEvents =
+        await this.profileEventsService.removeEvent(message);
 
       return await this.sendCounterEventToUser(message.toUserId, {
         eventIds: counterEvents.map((e) => e.id),

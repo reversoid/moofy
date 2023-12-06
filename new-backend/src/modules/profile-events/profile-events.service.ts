@@ -26,9 +26,9 @@ export class ProfileEventsService {
     return profileEventSchema.parse(event);
   }
 
-  async removeEvent(dto: RemoveProfileEventDto): Promise<ProfileEvent[]> {
-    const events = await this.profileEventRepository.removeEvent(dto);
-    return events.map((e) => profileEventSchema.parse(e));
+  async removeEvent(dto: RemoveProfileEventDto): Promise<ProfileEvent | null> {
+    const event = await this.profileEventRepository.removeEvent(dto);
+    return profileEventSchema.parse(event);
   }
 
   async markEventAsSeen(
@@ -39,7 +39,6 @@ export class ProfileEventsService {
     if (event) {
       this.eventService.emitProfileSeenEvent({
         eventId,
-        toUserId: event.user_to_id,
       });
     }
 
@@ -55,7 +54,6 @@ export class ProfileEventsService {
 
     this.eventService.emitProfileSeenEvent({
       eventId: '__ALL__',
-      toUserId: userId,
     });
   }
 

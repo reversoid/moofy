@@ -1,3 +1,6 @@
-import { ProfileEventDto } from 'src/modules/events/utils/profile-events/types';
+import { ProfileEventType } from '../models/profile-event';
 
-export type RemoveProfileEventDto = Omit<ProfileEventDto, 'type'>;
+export type RemoveProfileEventDto = {
+  eventType: ProfileEventType;
+  targetId: number;
+};

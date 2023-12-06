@@ -143,19 +143,26 @@ model migrations {
   name      String @db.VarChar
 }
 
-model profile_event {
-  id           String                  @id(map: "PK_2515098fbdaa581436013ab7a60") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_from_id Int?
-  user_to_id   Int
-  target_id    Int?
-  type         profile_event_type_enum
-  created_at   DateTime                @default(now()) @db.Timestamptz(6)
-  deleted_at   DateTime?               @db.Timestamptz(6)
-  seen_at      DateTime?               @db.Timestamptz(6)
+model event {
+  id           String          @id(map: "PK_2515098fbdaa581436013ab7a60") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  target_id    Int
+  type         event_type_enum
+  created_at   DateTime        @default(now()) @db.Timestamptz(6)
+  deleted_at   DateTime?       @db.Timestamptz(6)
+  notification notification[]
+}
 
-  @@index([seen_at], map: "IDX_8309c84989285fe1c67372c6d5")
-  @@index([user_to_id], map: "IDX_8b030364dc2366e22513c8b521")
-  @@index([created_at], map: "IDX_c13216c673eef88943fdc684e3")
+model notification {
+  id       String    @id() @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  event    event     @relation(fields: [event_id], references: [id])
+  event_id String    @db.Uuid
+  seen_at  DateTime? @db.Timestamptz(6)
+
+  from_user    users @relation(name: "from_user_relation", fields: [from_user_id], references: [id])
+  from_user_id Int
+
+  to_user    users @relation(name: "to_user_relation", fields: [to_user_id], references: [id])
+  to_user_id Int
 }
 
 model review {
@@ -246,6 +253,9 @@ model users {
   followers subscription[] @relation("followerRelation")
   followed  subscription[] @relation("followedRelation")
 
+  user_created_notifications notification[] @relation("from_user_relation")
+  user_notifications         notification[] @relation("to_user_relation")
+
   @@index([deleted_at], map: "IDX_22b81d3ed19a0bffcb660800f4")
   @@index([updated_at], map: "IDX_9cdce43fa0043c794281aa0905")
   @@index([created_at], map: "IDX_d091f1d36f18bbece2a9eabc6e")
@@ -267,12 +277,15 @@ enum film_type_enum {
   VIDEO
 }
 
-enum profile_event_type_enum {
-  LIST_LIKE
-  COMMENT_LIKE
-  COMMENT
-  REPLY
-  SUBSCRIBE
+enum event_type_enum {
+  LIST_LIKED
+  LIST_VIEWED
+  COMMENT_LIKED
+  COMMENT_CREATED
+  REVIEW_CREATED
+  REPLY_CREATED
+  LIST_CREATED
+  SUBSCRIBED
 }
 
 enum task_task_type_enum {

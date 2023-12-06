@@ -15,8 +15,8 @@ export class ProfileEventRepository extends PaginatedRepository {
 
   async createEvent({
     eventType,
-    fromUserId,
     targetId,
+    fromUser,
     toUserId,
   }: CreateProfileEventDto) {
     return this.prismaService.profile_event.create({
@@ -25,37 +25,34 @@ export class ProfileEventRepository extends PaginatedRepository {
         user_to_id: toUserId,
         created_at: new Date(),
         target_id: targetId,
-        user_from_id: fromUserId,
+        user_from_id: fromUser,
       },
       select: selectProfileEvent,
     });
   }
 
-  async removeEvent({
-    eventType,
-    fromUserId,
-    targetId,
-    toUserId,
-  }: RemoveProfileEventDto) {
-    const events = await this.prismaService.profile_event.findMany({
+  async removeEvent({ eventType, targetId }: RemoveProfileEventDto) {
+    const event = await this.prismaService.profile_event.findFirst({
       where: {
         type: eventType,
-        user_from_id: fromUserId,
-        user_to_id: toUserId,
         target_id: targetId,
         deleted_at: null,
       },
       select: selectProfileEvent,
     });
 
+    if (!event) {
+      return null;
+    }
+
     await this.prismaService.profile_event.updateMany({
       data: { deleted_at: new Date() },
       where: {
-        id: { in: events.map((e) => e.id) },
+        id: event.id,
       },
     });
 
-    return events;
+    return event;
   }
 
   async markEventAsSeen(eventId: ProfileEvent['id']) {
