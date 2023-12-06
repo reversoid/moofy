@@ -6,7 +6,7 @@ import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EventsModule } from '../events/events.module';
-import { TokensService } from './utils/tokens.service';
+import { TokensService } from './services/tokens.service';
 
 @Module({
   imports: [

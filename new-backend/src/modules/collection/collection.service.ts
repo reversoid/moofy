@@ -26,7 +26,7 @@ import { CollectionRepository } from './repositories/collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-events/models/profile-event';
+import { ProfileEventType } from '../profile-notifications/models/profile-event';
 
 @Injectable()
 export class CollectionService {
@@ -140,7 +140,7 @@ export class CollectionService {
       throw new WrongCollectionIdException();
     }
 
-    this.eventsService.emitProfileEvent({
+    this.eventsService.handleUserEvent({
       eventType: ProfileEventType.LIST_LIKE,
       targetId: like.id,
       type: 'direct',
@@ -164,7 +164,7 @@ export class CollectionService {
       throw new WrongCollectionIdException();
     }
 
-    this.eventsService.emitProfileEvent({
+    this.eventsService.handleUserEvent({
       eventType: ProfileEventType.LIST_LIKE,
       type: 'counter',
       targetId: like.id,

@@ -6,7 +6,7 @@ import { UserService } from 'src/modules/user/user.service';
 import { AlreadyTakenUsernameException } from './exceptions/already-taken-username.exception';
 import { WrongCredentialsException } from './exceptions/wrong-credentials.exception';
 import { LoginProps, TokensAndUser, RegisterProps } from './types';
-import { TokensService } from './utils/tokens.service';
+import { TokensService } from './services/tokens.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

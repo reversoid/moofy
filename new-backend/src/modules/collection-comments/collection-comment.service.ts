@@ -11,7 +11,7 @@ import { CommentWithInfo } from './models/comment-with-info';
 import { Comment } from './models/comment';
 import { CommentLike } from './models/comment-like';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-events/models/profile-event';
+import { ProfileEventType } from '../profile-notifications/models/profile-event';
 
 @Injectable()
 export class CollectionCommentService {
@@ -53,7 +53,7 @@ export class CollectionCommentService {
       replyTo,
     );
 
-    this.eventService.emitProfileEvent({
+    this.eventService.handleUserEvent({
       type: 'direct',
       eventType: replyTo ? ProfileEventType.REPLY : ProfileEventType.COMMENT,
       targetId: comment.id,
@@ -70,7 +70,7 @@ export class CollectionCommentService {
       throw new NotFoundException();
     }
 
-    this.eventService.emitProfileEvent({
+    this.eventService.handleUserEvent({
       eventType: comment.replyTo
         ? ProfileEventType.REPLY
         : ProfileEventType.COMMENT,
@@ -108,7 +108,7 @@ export class CollectionCommentService {
       throw new WrongCommentIdException();
     }
 
-    this.eventService.emitProfileEvent({
+    this.eventService.handleUserEvent({
       eventType: ProfileEventType.COMMENT_LIKE,
       targetId: like.id,
       type: 'direct',
@@ -131,7 +131,7 @@ export class CollectionCommentService {
       throw new WrongCommentIdException();
     }
 
-    this.eventService.emitProfileEvent({
+    this.eventService.handleUserEvent({
       eventType: ProfileEventType.COMMENT_LIKE,
       targetId: like.id,
       type: 'counter',

@@ -11,18 +11,18 @@ import { JwtAuthGuard } from '../../auth/passport/jwt-auth.guard';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { User } from '../../user/models/user';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
-import { ProfileEventsService } from '../profile-events.service';
+import { ProfileNotificationsService } from '../profile-notifications.service';
 import { UserCanAccessEventGuard } from '../guards/user-can-access-guard';
 import { IProfileNotificationsController } from './interface';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { getEventsResponseSchema } from './responses/get-events.response';
 import { getEventsAmountResponseSchema } from './responses/get-unseen-amount.response';
 
-@Controller('profile-events')
+@Controller('profile-notifications')
 export class ProfileNotificationsController
   implements IProfileNotificationsController
 {
-  constructor(private readonly eventService: ProfileEventsService) {}
+  constructor(private readonly eventService: ProfileNotificationsService) {}
 
   @Get('unseen')
   @UseGuards(JwtAuthGuard)
@@ -74,4 +74,9 @@ export class ProfileNotificationsController
   async markEventAsSeen(@Param('id', ParseUUIDPipe) eventId: string) {
     await this.eventService.markEventAsSeen(eventId);
   }
+
+  // TODO subscribe on create and remove event topic.
+  // filter types
+  // create notifications for specific events
+  // make another rmq notify
 }

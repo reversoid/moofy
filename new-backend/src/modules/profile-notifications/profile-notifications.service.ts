@@ -12,7 +12,7 @@ import { CollectionCommentService } from '../collection-comments/collection-comm
 import { EventsService } from '../events/events.service';
 
 @Injectable()
-export class ProfileEventsService {
+export class ProfileNotificationsService {
   constructor(
     private readonly profileEventRepository: ProfileEventRepository,
     private readonly profileService: ProfileService,

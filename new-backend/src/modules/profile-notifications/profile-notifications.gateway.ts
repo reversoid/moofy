@@ -9,7 +9,7 @@ import { RMQRoute } from 'nestjs-rmq';
 import { Server, Socket } from 'socket.io';
 import { WsGuard } from './guards/ws-guard';
 import { SocketService } from './utils/socket.service';
-import { ProfileEventsService } from './profile-events.service';
+import { ProfileNotificationsService } from './profile-notifications.service';
 import {
   PROFILE_NOTIFICATION_SEEN_TOPIC,
   PROFILE_NOTIFICATION_TOPIC,
@@ -23,11 +23,11 @@ import { ProfileCounterNotification } from './models/notifications/profile-count
 import { ProfileSeenNotification } from './models/notifications/profile-seen-notification';
 
 @WebSocketGateway()
-export class NotificationsGateway
+export class ProfileNotificationsGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
   constructor(
-    private readonly profileEventsService: ProfileEventsService,
+    private readonly profileEventsService: ProfileNotificationsService,
     private readonly socketService: SocketService,
     private readonly wsGuard: WsGuard,
   ) {}

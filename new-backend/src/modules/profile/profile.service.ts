@@ -11,7 +11,7 @@ import { AlreadySubscribedException } from './exceptions/already-subscribed.exce
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
 import { Subscription } from './models/subscription';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-events/models/profile-event';
+import { ProfileEventType } from '../profile-notifications/models/profile-event';
 
 @Injectable()
 export class ProfileService {
@@ -66,7 +66,7 @@ export class ProfileService {
       throw new AlreadySubscribedException();
     }
     const subscription = await this.profileRepository.followUser(from, to);
-    this.eventsService.emitProfileEvent({
+    this.eventsService.handleUserEvent({
       eventType: ProfileEventType.SUBSCRIBE,
       targetId: subscription.id,
       type: 'direct',
@@ -80,7 +80,7 @@ export class ProfileService {
       throw new NotSubscribedException();
     }
 
-    this.eventsService.emitProfileEvent({
+    this.eventsService.handleUserEvent({
       eventType: ProfileEventType.SUBSCRIBE,
       targetId: subscription.id,
       type: 'counter',
