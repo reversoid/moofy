@@ -21,6 +21,10 @@ import { UserCanViewCollectionGuard } from '../../collection/controller/guards/u
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UserIsCommentCreator } from './guards/user-is-comment-creator.guard';
 import { ICollectionCommentsController } from './collection-comments.interface';
+import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
+import { getCommentsResponseSchema } from './responses/get-comments.response';
+import { sendCommentResponseSchema } from './responses/send-comment.response';
+import { likeUnlikeCommentResponseSchema } from './responses/like-unlike-comment.response';
 
 @ApiTags('Collection comments')
 @Controller('collections')
@@ -30,6 +34,7 @@ export class CollectionCommentsController
   constructor(private readonly commentService: CollectionCommentService) {}
 
   @Get(':id/comments')
+  @HttpResponse(getCommentsResponseSchema)
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   getComments(
     @AuthUser() user: User | null,
@@ -46,6 +51,7 @@ export class CollectionCommentsController
 
   @Post(':id/comments')
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
+  @HttpResponse(sendCommentResponseSchema)
   sendComment(
     @AuthUser() user: User,
     @Param('id', ParseIntPipe) id: number,
@@ -62,6 +68,7 @@ export class CollectionCommentsController
 
   @Put(':id/comments/:commentId/likes')
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
+  @HttpResponse(likeUnlikeCommentResponseSchema)
   likeComment(
     @AuthUser() user: User,
     @Param('commentId', ParseIntPipe) id: number,
@@ -71,6 +78,7 @@ export class CollectionCommentsController
 
   @Delete(':id/comments/:commentId/likes')
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
+  @HttpResponse(likeUnlikeCommentResponseSchema)
   unlikeComment(
     @AuthUser() user: User,
     @Param('commentId', ParseIntPipe) id: number,

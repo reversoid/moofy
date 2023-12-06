@@ -62,9 +62,7 @@ export class CollectionCommentService {
     return this.getInfoForComment(comment, userId);
   }
 
-  async removeComment(
-    commentId: Comment['id'],
-  ): Promise<{ id: Comment['id'] }> {
+  async removeComment(commentId: Comment['id']): Promise<void> {
     const comment = await this.commentRepository.deleteComment(commentId);
     if (!comment) {
       throw new NotFoundException();
@@ -77,8 +75,6 @@ export class CollectionCommentService {
       type: 'counter',
       targetId: comment.id,
     });
-
-    return { id: commentId };
   }
 
   async getCommentById(commentId: Comment['id']): Promise<Comment | null> {

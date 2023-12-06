@@ -24,7 +24,7 @@ import { getRMQConfig } from './config/modules-configs/get-rmq-config';
 import { ExploreModule } from './modules/explore/explore.module';
 import { CollectionCommentModule } from './modules/collection-comments/collection-comment.module';
 import { ExternalFilmProxyModule } from './modules/external-film-proxy/external-film-proxy.module';
-import { ProfileNotificationsModule } from './modules/profile-notifications/profile-events.module';
+import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
 
 @Module({
   imports: [
