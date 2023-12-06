@@ -10,6 +10,8 @@ import { ProfileRepository } from './repository/profile.repository';
 import { AlreadySubscribedException } from './exceptions/already-subscribed.exception';
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
 import { Subscription } from './models/subscription';
+import { EventsService } from '../events/events.service';
+import { ProfileEventType } from '../profile-events/models/profile-event';
 
 @Injectable()
 export class ProfileService {
@@ -17,6 +19,7 @@ export class ProfileService {
     private readonly collectionService: CollectionService,
     private readonly userService: UserService,
     private readonly profileRepository: ProfileRepository,
+    private readonly eventsService: EventsService,
   ) {}
 
   async getUnseenCollections(
@@ -62,15 +65,26 @@ export class ProfileService {
     if (isSubscribed) {
       throw new AlreadySubscribedException();
     }
-    await this.profileRepository.followUser(from, to);
+    const subscription = await this.profileRepository.followUser(from, to);
+    this.eventsService.emitProfileEvent({
+      eventType: ProfileEventType.SUBSCRIBE,
+      targetId: subscription.id,
+      type: 'direct',
+    });
   }
 
   async unfollowUser(from: User['id'], to: User['id']): Promise<void> {
-    const isSubscribed = await this.profileRepository.isFollowingUser(from, to);
-    if (!isSubscribed) {
+    const subscription = await this.profileRepository.unfollowUser(from, to);
+
+    if (!subscription) {
       throw new NotSubscribedException();
     }
-    await this.profileRepository.unfollowUser(from, to);
+
+    this.eventsService.emitProfileEvent({
+      eventType: ProfileEventType.SUBSCRIBE,
+      targetId: subscription.id,
+      type: 'counter',
+    });
   }
 
   async getFollowers(

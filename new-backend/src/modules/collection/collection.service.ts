@@ -25,12 +25,15 @@ import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { CollectionRepository } from './repositories/collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
+import { EventsService } from '../events/events.service';
+import { ProfileEventType } from '../profile-events/models/profile-event';
 
 @Injectable()
 export class CollectionService {
   constructor(
     private readonly collectionRepository: CollectionRepository,
     private readonly collectionReviewService: CollectionReviewService,
+    private readonly eventsService: EventsService,
   ) {}
 
   async getCollectionById(id: Collection['id']): Promise<Collection | null> {
@@ -127,29 +130,46 @@ export class CollectionService {
       throw new CollectionAlreadyLikedException();
     }
 
-    await this.collectionRepository.likeCollection(collectionId, userId);
-    const stats = await this.collectionRepository.getSocialStats(collectionId);
-    if (!stats) {
-      throw new WrongCollectionIdException();
-    }
-    return stats;
-  }
-
-  async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
-    const isLiked = await this.collectionRepository.userLikeOnCollection(
+    const like = await this.collectionRepository.likeCollection(
       collectionId,
       userId,
     );
 
-    if (!isLiked) {
-      throw new CollectionNotLikedException();
-    }
-
-    await this.collectionRepository.unlikeCollection(collectionId, userId);
     const stats = await this.collectionRepository.getSocialStats(collectionId);
     if (!stats) {
       throw new WrongCollectionIdException();
     }
+
+    this.eventsService.emitProfileEvent({
+      eventType: ProfileEventType.LIST_LIKE,
+      targetId: like.id,
+      type: 'direct',
+    });
+
+    return stats;
+  }
+
+  async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
+    const like = await this.collectionRepository.unlikeCollection(
+      collectionId,
+      userId,
+    );
+
+    if (!like) {
+      throw new CollectionNotLikedException();
+    }
+
+    const stats = await this.collectionRepository.getSocialStats(collectionId);
+    if (!stats) {
+      throw new WrongCollectionIdException();
+    }
+
+    this.eventsService.emitProfileEvent({
+      eventType: ProfileEventType.LIST_LIKE,
+      type: 'counter',
+      targetId: like.id,
+    });
+
     return stats;
   }
 

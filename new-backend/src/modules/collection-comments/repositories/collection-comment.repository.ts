@@ -104,22 +104,31 @@ export class CollectionCommentRepository extends PaginatedRepository {
     return comment;
   }
 
-  async deleteComment(
-    commentId: Comment['id'],
-  ): Promise<{ id: Comment['id'] }> {
+  async deleteComment(commentId: Comment['id']): Promise<{
+    id: Comment['id'];
+    replyTo?: Comment['replyToId'] | null;
+  } | null> {
+    const comment = await this.prismaService.comment.findUnique({
+      where: { id: commentId },
+      select: { replyToId: true, id: true },
+    });
+    if (!comment) {
+      return null;
+    }
+
     await this.prismaService.comment.update({
       data: { deleted_at: new Date() },
       where: { id: commentId },
     });
 
-    return { id: commentId };
+    return { id: comment.id, replyTo: comment.replyToId };
   }
 
   async likeComment(
     commentId: Comment['id'],
     userId: User['id'],
-  ): Promise<void> {
-    await this.prismaService.comment_like.create({
+  ): Promise<{ id: Comment['id'] }> {
+    return this.prismaService.comment_like.create({
       data: { commentId, userId },
     });
   }
@@ -127,11 +136,23 @@ export class CollectionCommentRepository extends PaginatedRepository {
   async unlikeComment(
     commentId: Comment['id'],
     userId: User['id'],
-  ): Promise<void> {
-    await this.prismaService.comment_like.updateMany({
-      data: { deleted_at: new Date() },
-      where: { commentId, userId },
+  ): Promise<{ id: Comment['id'] } | null> {
+    const like = await this.prismaService.comment_like.findFirst({
+      where: {
+        commentId,
+        userId,
+      },
     });
+    if (!like) {
+      return null;
+    }
+
+    await this.prismaService.comment_like.update({
+      data: { deleted_at: new Date() },
+      where: { id: like.id },
+    });
+
+    return { id: like.id };
   }
 
   async getCommentLike(likeId: number): Promise<CommentLike | null> {

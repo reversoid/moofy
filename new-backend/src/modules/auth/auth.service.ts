@@ -3,10 +3,10 @@ import { EventsService } from 'src/modules/events/events.service';
 import { FullUser } from 'src/modules/user/models/full-user';
 import { User } from 'src/modules/user/models/user';
 import { UserService } from 'src/modules/user/user.service';
-import { AlreadyTakenUsernameException } from '../exceptions/already-taken-username.exception';
-import { WrongCredentialsException } from '../exceptions/wrong-credentials.exception';
-import { LoginProps, TokensAndUser, RegisterProps } from '../types';
-import { TokensService } from './tokens.service';
+import { AlreadyTakenUsernameException } from './exceptions/already-taken-username.exception';
+import { WrongCredentialsException } from './exceptions/wrong-credentials.exception';
+import { LoginProps, TokensAndUser, RegisterProps } from './types';
+import { TokensService } from './utils/tokens.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

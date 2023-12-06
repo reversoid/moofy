@@ -65,6 +65,9 @@ export class NotificationsGateway
       const notification = await this.eventsService.getDirectNotification(
         directEvent.id,
       );
+      if (!notification) {
+        return;
+      }
 
       return await this.sendDirectNotificationToUser(
         message.toUserId,

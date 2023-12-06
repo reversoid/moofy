@@ -3,7 +3,7 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { AppEnvironments } from 'src/config/global.config';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {

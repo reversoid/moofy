@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CollectionCommentRepository } from './repositories/collection-comment.repository';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { User } from 'src/modules/user/models/user';
@@ -10,11 +10,14 @@ import { CommentSocialStats } from './models/comment-social-stats';
 import { CommentWithInfo } from './models/comment-with-info';
 import { Comment } from './models/comment';
 import { CommentLike } from './models/comment-like';
+import { EventsService } from '../events/events.service';
+import { ProfileEventType } from '../profile-events/models/profile-event';
 
 @Injectable()
 export class CollectionCommentService {
   constructor(
     private readonly commentRepository: CollectionCommentRepository,
+    private readonly eventService: EventsService,
   ) {}
 
   async getComments(
@@ -50,13 +53,31 @@ export class CollectionCommentService {
       replyTo,
     );
 
+    this.eventService.emitProfileEvent({
+      type: 'direct',
+      eventType: replyTo ? ProfileEventType.REPLY : ProfileEventType.COMMENT,
+      targetId: comment.id,
+    });
+
     return this.getInfoForComment(comment, userId);
   }
 
   async removeComment(
     commentId: Comment['id'],
   ): Promise<{ id: Comment['id'] }> {
-    await this.commentRepository.deleteComment(commentId);
+    const comment = await this.commentRepository.deleteComment(commentId);
+    if (!comment) {
+      throw new NotFoundException();
+    }
+
+    this.eventService.emitProfileEvent({
+      eventType: comment.replyTo
+        ? ProfileEventType.REPLY
+        : ProfileEventType.COMMENT,
+      type: 'counter',
+      targetId: comment.id,
+    });
+
     return { id: commentId };
   }
 
@@ -81,11 +102,18 @@ export class CollectionCommentService {
     if (isLiked) {
       throw new CommentAlreadyLikedException();
     }
-    await this.commentRepository.likeComment(commentId, userId);
+    const like = await this.commentRepository.likeComment(commentId, userId);
     const stats = await this.commentRepository.getCommentStats(commentId);
     if (!stats) {
       throw new WrongCommentIdException();
     }
+
+    this.eventService.emitProfileEvent({
+      eventType: ProfileEventType.COMMENT_LIKE,
+      targetId: like.id,
+      type: 'direct',
+    });
+
     return stats;
   }
 
@@ -93,18 +121,22 @@ export class CollectionCommentService {
     commentId: Comment['id'],
     userId: User['id'],
   ): Promise<CommentSocialStats> {
-    const isLiked = await this.commentRepository.isCommentLikedByUser(
-      commentId,
-      userId,
-    );
-    if (!isLiked) {
+    const like = await this.commentRepository.unlikeComment(commentId, userId);
+    if (!like) {
       throw new CommentNotLikedException();
     }
-    await this.commentRepository.unlikeComment(commentId, userId);
+
     const stats = await this.commentRepository.getCommentStats(commentId);
     if (!stats) {
       throw new WrongCommentIdException();
     }
+
+    this.eventService.emitProfileEvent({
+      eventType: ProfileEventType.COMMENT_LIKE,
+      targetId: like.id,
+      type: 'counter',
+    });
+
     return stats;
   }
 

@@ -84,19 +84,16 @@ export class CollectionRepository extends PaginatedRepository {
     collectionId: Collection['id'],
     userId: User['id'],
   ) {
-    const result = await this.prismaService.list.findUnique({
+    return this.prismaService.list_like.findFirst({
       where: {
-        id: collectionId,
-        list_like: {
-          some: { userId },
-        },
+        listId: collectionId,
+        userId,
+        deleted_at: null,
       },
       select: {
         id: true,
       },
     });
-
-    return result ? { likeId: result.id } : null;
   }
 
   async isCollectionFavorite(
@@ -111,21 +108,24 @@ export class CollectionRepository extends PaginatedRepository {
   }
 
   async likeCollection(collectionId: Collection['id'], userId: User['id']) {
-    await this.prismaService.list_like.create({
+    return this.prismaService.list_like.create({
       data: { listId: collectionId, userId: userId },
+      select: { id: true },
     });
   }
 
   async unlikeCollection(collectionId: Collection['id'], userId: User['id']) {
     const like = await this.userLikeOnCollection(collectionId, userId);
     if (!like) {
-      return;
+      return null;
     }
 
     await this.prismaService.list_like.update({
       data: { deleted_at: new Date() },
-      where: { id: like.likeId },
+      where: { id: like.id },
     });
+
+    return { id: like.id };
   }
 
   async viewCollection(collectionId: Collection['id'], userId: User['id']) {

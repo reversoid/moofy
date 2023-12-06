@@ -78,17 +78,33 @@ export class ProfileRepository extends PaginatedRepository {
     return count[0].count;
   }
 
-  async followUser(from: User['id'], to: User['id']): Promise<void> {
-    await this.prismaService.subscription.create({
+  async followUser(
+    from: User['id'],
+    to: User['id'],
+  ): Promise<{ id: Subscription['id'] }> {
+    return this.prismaService.subscription.create({
       data: { follower_id: from, followed_id: to },
     });
   }
 
-  async unfollowUser(from: User['id'], to: User['id']): Promise<void> {
-    await this.prismaService.subscription.updateMany({
-      where: { follower_id: from, followed_id: to },
+  async unfollowUser(
+    from: User['id'],
+    to: User['id'],
+  ): Promise<{ id: Subscription['id'] } | null> {
+    const subscription = await this.prismaService.subscription.findFirst({
+      where: { follower_id: from, followed_id: to, deleted_at: null },
+    });
+
+    if (!subscription) {
+      return null;
+    }
+
+    await this.prismaService.subscription.update({
+      where: { id: subscription.id },
       data: { deleted_at: new Date() },
     });
+
+    return { id: subscription.id };
   }
 
   async getFollowers(
