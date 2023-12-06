@@ -31,7 +31,7 @@ export class CollectionReviewService {
   }
 
   async deleteReview(id: Review['id']) {
-    return this.reviewRepository.deleteReview(id);
+    await this.reviewRepository.deleteReview(id);
   }
 
   async getReviews(

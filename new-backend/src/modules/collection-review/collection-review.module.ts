@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CollectionReviewService } from './collection-review.service';
-import { CollectionReviewsController } from './collection-review.controller';
+import { CollectionReviewsController } from './controller/collection-review.controller';
 import { FilmModule } from '../film/film.module';
 
 @Module({

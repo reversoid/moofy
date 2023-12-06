@@ -13,42 +13,55 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CollectionReviewService } from 'src/modules/collection-review/collection-review.service';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
-import { UserCanViewCollectionGuard } from '../collection/controller/guards/user-can-view-collection.guard';
+import { UserCanViewCollectionGuard } from '../../collection/controller/guards/user-can-view-collection.guard';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { User } from 'src/modules/user/models/user';
-import { CreateReviewDto } from '../collection/controller/dto/create-review.dto';
-import { UserIsCollectionOwnerGuard } from '../collection/controller/guards/user-is-collection-owner.guard';
-import { EditReviewDto } from '../collection/controller/dto/edit-review.dto';
+import { CreateReviewDto } from '../../collection/controller/dto/create-review.dto';
+import { UserIsCollectionOwnerGuard } from 'src/modules/collection/controller/guards/user-is-collection-owner.guard';
+import { EditReviewDto } from '../../collection/controller/dto/edit-review.dto';
+import { ICollectionReviewsController } from './collection-review.controller.interface';
+import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
+import { createReviewResponseSchema } from './responses/create-review.response';
+import { getReviewResponseSchema } from './responses/get-review.response';
+import { getReviewsResponseSchema } from './responses/get-reviews.response';
+import { editReviewResponseSchema } from './responses/edit-review.response';
 
 @ApiTags('Collection reviews')
 @Controller('collection')
-export class CollectionReviewsController {
+export class CollectionReviewsController
+  implements ICollectionReviewsController
+{
   constructor(private readonly reviewService: CollectionReviewService) {}
 
   @Post(':id/reviews')
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
-  createReview(
+  @HttpResponse(createReviewResponseSchema)
+  async createReview(
     @Param('id', ParseIntPipe) id: number,
     @AuthUser() user: User,
     @Body() dto: CreateReviewDto,
   ) {
-    return this.reviewService.createReview({
+    const review = await this.reviewService.createReview({
       userId: user.id,
       ...dto,
       listId: id,
     });
+    return { review };
   }
 
   @Get(':id/reviews/:reviewId')
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
-  getReview(@Param('id', ParseIntPipe) id: number) {
-    return this.reviewService.getReviewById(id);
+  @HttpResponse(getReviewResponseSchema)
+  async getReview(@Param('id', ParseIntPipe) id: number) {
+    const review = await this.reviewService.getReviewById(id);
+    return { review };
   }
 
   @Get(':id/reviews')
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
+  @HttpResponse(getReviewsResponseSchema)
   getReviews(
     @Param('id', ParseIntPipe) id: number,
     @Query() { limit, nextKey }: PaginatedQueryDto,
@@ -58,11 +71,13 @@ export class CollectionReviewsController {
 
   @Patch(':id/reviews/reviewId')
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
-  editReview(
+  @HttpResponse(editReviewResponseSchema)
+  async editReview(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: EditReviewDto,
   ) {
-    return this.reviewService.updateReview({ id, ...dto });
+    const review = await this.reviewService.updateReview({ id, ...dto });
+    return { review };
   }
 
   @Delete(':id/reviews/reviewId')
