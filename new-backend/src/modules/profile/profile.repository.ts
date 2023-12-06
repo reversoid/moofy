@@ -7,7 +7,7 @@ import { User, selectUser } from 'src/modules/user/models/user';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
-import { Subscription } from '../models/subscription';
+import { Subscription } from './models/subscription';
 
 @Injectable()
 export class ProfileRepository extends PaginatedRepository {

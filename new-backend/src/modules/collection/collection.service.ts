@@ -22,7 +22,7 @@ import { TooLargeImageException } from './exceptions/too-large-image.exception';
 import sharp from 'sharp';
 import { ImageLoadException } from './exceptions/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
-import { CollectionRepository } from './repositories/collection.repository';
+import { CollectionRepository } from './collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';

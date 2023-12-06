@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ProfileNotificationsService } from './profile-notifications.service';
-import { ProfileEventRepository } from './repository/profile-event.repository';
+import { ProfileEventRepository } from './profile-event.repository';
 import { ProfileNotificationsController } from './controller/profile-notifications.controller';
 import { CollectionModule } from '../collection/collection.module';
 import { CollectionCommentModule } from '../collection-comments/collection-comment.module';

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProfileEventDto } from './dto/create-profile-event.dto';
 import { RemoveProfileEventDto } from './dto/remove-profile-event.dto';
-import { ProfileEventRepository } from './repository/profile-event.repository';
+import { ProfileEventRepository } from './profile-event.repository';
 import { ProfileEvent, profileEventSchema } from './models/profile-event';
 import { User } from '../user/models/user';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';

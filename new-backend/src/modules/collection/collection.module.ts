@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CollectionController } from './controller/collection.controller';
 import { CollectionService } from './collection.service';
-import { CollectionRepository } from './repositories/collection.repository';
+import { CollectionRepository } from './collection.repository';
 import { CollectionReviewModule } from '../collection-review/collection-review.module';
 import { EventsModule } from '../events/events.module';
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
-import { CreateProfileEventDto } from '../dto/create-profile-event.dto';
-import { RemoveProfileEventDto } from '../dto/remove-profile-event.dto';
-import { ProfileEvent, selectProfileEvent } from '../models/profile-event';
+import { CreateProfileEventDto } from './dto/create-profile-event.dto';
+import { RemoveProfileEventDto } from './dto/remove-profile-event.dto';
+import { ProfileEvent, selectProfileEvent } from './models/profile-event';
 import { User } from 'src/modules/user/models/user';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';

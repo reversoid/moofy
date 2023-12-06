@@ -8,6 +8,6 @@ export class ExploreController {
   @Get('top-profiles')
   async getTopProfiles() {}
 
-  @Get('search')
+  @Get('profiles')
   async searchProfiles() {}
 }

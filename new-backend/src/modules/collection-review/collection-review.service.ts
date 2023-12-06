@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReviewProps, UpdateReviewProps } from './types';
-import { CollectionReviewRepository } from './repositories/collection-review.repository';
+import { CollectionReviewRepository } from './collection-review.repository';
 import { Review } from './models/review';
 import { Collection } from '../collection/models/collection';
 import { FilmService } from '../film/film.service';

@@ -6,7 +6,7 @@ import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Collection } from '../collection/models/collection';
 import { ShortProfile } from './models/short-profile';
 import { UserService } from '../user/user.service';
-import { ProfileRepository } from './repository/profile.repository';
+import { ProfileRepository } from './profile.repository';
 import { AlreadySubscribedException } from './exceptions/already-subscribed.exception';
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
 import { Subscription } from './models/subscription';
