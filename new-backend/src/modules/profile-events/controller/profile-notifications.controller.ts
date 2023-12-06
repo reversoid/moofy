@@ -14,6 +14,9 @@ import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.d
 import { ProfileEventsService } from '../profile-events.service';
 import { UserCanAccessEventGuard } from '../guards/user-can-access-guard';
 import { IProfileNotificationsController } from './interface';
+import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
+import { getEventsResponseSchema } from './responses/get-events.response';
+import { getEventsAmountResponseSchema } from './responses/get-unseen-amount.response';
 
 @Controller('profile-events')
 export class ProfileNotificationsController
@@ -23,6 +26,7 @@ export class ProfileNotificationsController
 
   @Get('unseen')
   @UseGuards(JwtAuthGuard)
+  @HttpResponse(getEventsResponseSchema)
   async getUnreadEvents(
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
@@ -37,6 +41,7 @@ export class ProfileNotificationsController
 
   @Get('all')
   @UseGuards(JwtAuthGuard)
+  @HttpResponse(getEventsResponseSchema)
   async getAllEvents(
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
@@ -57,6 +62,7 @@ export class ProfileNotificationsController
 
   @Get('unseen/amount')
   @UseGuards(JwtAuthGuard)
+  @HttpResponse(getEventsAmountResponseSchema)
   async getUnseenAmount(@AuthUser() user: User) {
     const amount = await this.eventService.getAmountOfUnseenEvents(user.id);
 
