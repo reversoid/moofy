@@ -1,15 +1,6 @@
-export enum UserEventType {
-  LIST_LIKED = 'LIST_LIKED',
-  LIST_VIEWED = 'LIST_VIEWED',
-  COMMENT_LIKED = 'COMMENT_LIKED',
-  COMMENT_CREATED = 'COMMENT_CREATED',
-  REVIEW_CREATED = 'REVIEW_CREATED',
-  REPLY_CREATED = 'REPLY_CREATED',
-  LIST_CREATED = 'LIST_CREATED',
-  SUBSCRIBED = 'SUBSCRIBED',
-}
+import { UserEventType } from '../models/user-event';
 
-export type UserEvent = {
+export type UserEventDto = {
   type: UserEventType;
   targetId: number;
 };

@@ -1,18 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { RMQService } from 'nestjs-rmq';
-import { UserEvent } from './utils/types';
+import { UserEventDto } from './utils/types';
+import { EventRepository } from './event.repository';
+import {
+  CANCEL_USER_EVENT_TOPIC,
+  CREATE_USER_EVENT_TOPIC,
+} from './utils/topics';
 
 @Injectable()
 export class EventsService {
-  constructor(private rmqService: RMQService) {}
+  constructor(
+    private readonly rmqService: RMQService,
+    private readonly eventRepository: EventRepository,
+  ) {}
 
-  createUserEvent(event: UserEvent) {
-    // save in db
-    // rmq notify
+  async createUserEvent(dto: UserEventDto) {
+    const createdEvent = await this.eventRepository.createEvent(dto);
+    this.rmqService.notify(CREATE_USER_EVENT_TOPIC, createdEvent);
   }
 
-  removeUserEvent(event: UserEvent) {
-    // remove from db
-    // rmq notify
+  async cancelUserEvent(dto: UserEventDto) {
+    const canceledEvent = await this.eventRepository.removeEvent(dto);
+    if (canceledEvent) {
+      this.rmqService.notify(CANCEL_USER_EVENT_TOPIC, canceledEvent);
+    }
   }
 }
