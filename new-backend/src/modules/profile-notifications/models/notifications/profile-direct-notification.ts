@@ -1,11 +1,46 @@
 import { commentSchema } from 'src/modules/collection-comments/models/comment';
 import { collectionSchema } from 'src/modules/collection/models/collection';
+import { UserEventType } from 'src/modules/events/models/user-event';
 import { userSchema } from 'src/modules/user/models/user';
 import { z } from 'zod';
 
+export type ProfileEventType = Extract<
+  UserEventType,
+  | 'LIST_LIKED'
+  | 'COMMENT_LIKED'
+  | 'COMMENT_CREATED'
+  | 'REPLY_CREATED'
+  | 'SUBSCRIBED'
+>;
+
+export const profileNotificationType = [
+  'COLLECTION_LIKE',
+  'COMMENT_LIKE',
+  'NEW_COMMENT',
+  'NEW_REPLY',
+  'NEW_FOLLOWER',
+] as const;
+
+// eslint-disable-next-line prettier/prettier
+export type ProfileNotificationType = typeof profileNotificationType[number];
+
+/** Map of application event type to profile-specific type */
+export const eventTypeToProfileNotificationType: Record<
+  ProfileEventType,
+  ProfileNotificationType
+> = {
+  COMMENT_CREATED: 'NEW_COMMENT',
+  COMMENT_LIKED: 'COMMENT_LIKE',
+  LIST_LIKED: 'COLLECTION_LIKE',
+  REPLY_CREATED: 'NEW_REPLY',
+  SUBSCRIBED: 'NEW_FOLLOWER',
+};
+
 export const profileDirectNotificationSchema = z.object({
   id: z.string(),
+  seen_at: z.date().nullable(),
   created_at: z.date(),
+  type: z.enum(profileNotificationType),
   payload: z.object({
     collection_like: z
       .object({

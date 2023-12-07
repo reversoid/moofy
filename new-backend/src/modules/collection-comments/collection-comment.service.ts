@@ -11,7 +11,7 @@ import { CommentWithInfo } from './models/comment-with-info';
 import { Comment } from './models/comment';
 import { CommentLike } from './models/comment-like';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-notifications/models/profile-event';
+import { ProfileEventType } from '../profile-notifications/models/profile-notification';
 
 @Injectable()
 export class CollectionCommentService {

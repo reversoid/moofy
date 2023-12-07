@@ -17,21 +17,30 @@ import { IProfileNotificationsController } from './interface';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { getEventsResponseSchema } from './responses/get-events.response';
 import { getEventsAmountResponseSchema } from './responses/get-unseen-amount.response';
+import { RMQRoute, RMQService } from 'nestjs-rmq';
+import {
+  CANCEL_USER_EVENT_TOPIC,
+  CREATE_USER_EVENT_TOPIC,
+} from 'src/modules/events/utils/topics';
+import { UserEvent } from 'src/modules/events/models/user-event';
 
 @Controller('profile-notifications')
 export class ProfileNotificationsController
   implements IProfileNotificationsController
 {
-  constructor(private readonly eventService: ProfileNotificationsService) {}
+  constructor(
+    private readonly notificationsService: ProfileNotificationsService,
+    private readonly rmqService: RMQService,
+  ) {}
 
   @Get('unseen')
   @UseGuards(JwtAuthGuard)
   @HttpResponse(getEventsResponseSchema)
-  async getUnreadEvents(
+  async getUnreadNotifications(
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
-    return this.eventService.getEventsForUser(
+    return this.notificationsService.getNotificationsForUser(
       user.id,
       limit ?? 20,
       'unseen',
@@ -42,11 +51,11 @@ export class ProfileNotificationsController
   @Get('all')
   @UseGuards(JwtAuthGuard)
   @HttpResponse(getEventsResponseSchema)
-  async getAllEvents(
+  async getAllNotifications(
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
-    return this.eventService.getEventsForUser(
+    return this.notificationsService.getNotificationsForUser(
       user.id,
       limit ?? 20,
       'all',
@@ -56,27 +65,33 @@ export class ProfileNotificationsController
 
   @Patch('unseen/all')
   @UseGuards(JwtAuthGuard)
-  async markAllEventsAsSeen(@AuthUser() user: User) {
-    return this.eventService.markAllEventsSeen(user.id);
+  async markAlNotificationsAsSeen(@AuthUser() user: User) {
+    return this.notificationsService.markAllNotificationsAsSeen(user.id);
   }
 
   @Get('unseen/amount')
   @UseGuards(JwtAuthGuard)
   @HttpResponse(getEventsAmountResponseSchema)
   async getUnseenAmount(@AuthUser() user: User) {
-    const amount = await this.eventService.getAmountOfUnseenEvents(user.id);
+    const amount =
+      await this.notificationsService.getAmountOfUnseenNotification(user.id);
 
     return { amount };
   }
 
   @Patch('unseen/:id')
   @UseGuards(JwtAuthGuard, UserCanAccessEventGuard)
-  async markEventAsSeen(@Param('id', ParseUUIDPipe) eventId: string) {
-    await this.eventService.markEventAsSeen(eventId);
+  async markNotificationAsSeen(@Param('id', ParseUUIDPipe) eventId: string) {
+    await this.notificationsService.markNotificationAsSeen(eventId);
   }
 
-  // TODO subscribe on create and remove event topic.
-  // filter types
-  // create notifications for specific events
-  // make another rmq notify
+  @RMQRoute(CREATE_USER_EVENT_TOPIC)
+  async createNotification(message: UserEvent) {
+    await this.notificationsService.createNotification(message);
+  }
+
+  @RMQRoute(CANCEL_USER_EVENT_TOPIC)
+  async cancelNotification(message: UserEvent) {
+    await this.notificationsService.findNotificationByEventId(message);
+  }
 }

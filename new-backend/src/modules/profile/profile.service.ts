@@ -11,7 +11,7 @@ import { AlreadySubscribedException } from './exceptions/already-subscribed.exce
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
 import { Subscription } from './models/subscription';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-notifications/models/profile-event';
+import { ProfileEventType } from '../profile-notifications/models/profile-notification';
 
 @Injectable()
 export class ProfileService {
@@ -35,8 +35,9 @@ export class ProfileService {
   }
 
   async getAmountOfUpdates(userId: User['id']): Promise<{ amount: number }> {
-    const amount =
-      await this.profileRepository.getCollectionsUpdatesAmount(userId);
+    const amount = await this.profileRepository.getCollectionsUpdatesAmount(
+      userId,
+    );
     return { amount };
   }
 

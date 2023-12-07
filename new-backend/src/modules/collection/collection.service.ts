@@ -26,7 +26,7 @@ import { CollectionRepository } from './collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-notifications/models/profile-event';
+import { ProfileEventType } from '../profile-notifications/models/profile-notification';
 
 @Injectable()
 export class CollectionService {

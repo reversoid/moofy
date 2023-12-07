@@ -32,6 +32,10 @@ export class PaginatedRepository {
       nextKey = this.createNextKey(Number(fieldValue));
     }
 
-    return { items: entities.slice(0, limit), nextKey };
+    return { items: this.sliceItems(entities, limit), nextKey };
+  }
+
+  protected sliceItems<T>(items: T[], limit: number) {
+    return items.slice(0, limit);
   }
 }

@@ -61,7 +61,9 @@ export class ProfileNotificationsGateway
   @RMQRoute(PROFILE_NOTIFICATION_TOPIC)
   async handleUserEventNotification(message: ProfileEventDto) {
     if (message.type === 'direct') {
-      const directEvent = await this.profileEventsService.createEvent(message);
+      const directEvent = await this.profileEventsService.createNotification(
+        message,
+      );
       const notification =
         await this.profileEventsService.getDirectNotification(directEvent.id);
 
@@ -77,7 +79,7 @@ export class ProfileNotificationsGateway
 
     if (message.type === 'counter') {
       const counterEvents =
-        await this.profileEventsService.removeEvent(message);
+        await this.profileEventsService.findNotificationByEventId(message);
 
       return await this.sendCounterEventToUser(message.toUserId, {
         eventIds: counterEvents.map((e) => e.id),
