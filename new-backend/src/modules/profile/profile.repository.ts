@@ -8,6 +8,10 @@ import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { Subscription } from './models/subscription';
+import { ShortProfile } from './models/short-profile';
+import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
+
+const topUsersCoeffs = { followers: 2, reviews: 1 } as const;
 
 @Injectable()
 export class ProfileRepository extends PaginatedRepository {
@@ -204,5 +208,34 @@ export class ProfileRepository extends PaginatedRepository {
         followed: { select: selectUser },
       },
     });
+  }
+
+  async getTopUsers(limit: number, forUserId?: User['id']): Promise<User[]> {
+    const users = await this.prismaService.$queryRaw`
+    SELECT u.* FROM users AS u, COUNT(review) * ${topUsersCoeffs.reviews} + COUNT(subscription) * ${topUsersCoeffs.followers} as rank
+    JOIN review ON review.userId = u.id
+    JOIN subscription ON subscription.followed_id = u.id
+    ORDER BY rank DESC
+    LIMIT ${limit}
+    `;
+
+    // TODO parse users
+    return users as any;
+  }
+
+  async searchProfiles(search: string, limit: number): Promise<ShortProfile[]> {
+    const searchString = getTsQueryFromString(search);
+
+    const users = await this.prismaService.$queryRaw`
+    SELECT u.* FROM users AS u,
+    ts_rank(user_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
+    WHERE (user_metadata.search_document) @@ to_tsquery('simple', ${searchString})
+    JOIN user_metadata ON user_metadata.userId = u.id
+    ORDER BY rank DESC
+    LIMIT ${limit}
+    `;
+
+    // TODO parse users
+    return users as any;
   }
 }

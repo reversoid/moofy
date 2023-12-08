@@ -98,7 +98,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
     JOIN review_metadata ON review_metadata.reviewId = review.id
     JOIN film ON film.id = review.filmId
     JOIN film_metadata ON film.metadata.filmId = film.id
-    ORDER BY rank
+    ORDER BY rank DESC
     LIMIT ${limit}
     `;
 

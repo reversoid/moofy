@@ -57,7 +57,7 @@ export class CollectionController implements ICollectionController {
     });
   }
 
-  @Get(':id/full')
+  @Get(':id')
   @HttpResponse(getFullCollectionResponseSchema)
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   async getFullCollection(
