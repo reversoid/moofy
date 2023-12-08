@@ -7,6 +7,7 @@ import { FilmService } from '../film/film.service';
 import { WrongFilmIdException } from '../film/exceptions/wrong-film-id.exception';
 import { ReviewOnFilmExists } from './exceptions/review-exists.exception';
 import { Film } from '../film/models/film';
+import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 
 @Injectable()
 export class CollectionReviewService {
@@ -36,9 +37,19 @@ export class CollectionReviewService {
 
   async getReviews(
     collectionId: Collection['id'],
+    search: string | null,
     limit: number,
     nextKey?: string,
-  ) {
+  ): Promise<PaginatedData<Review>> {
+    if (search) {
+      const reviews = await this.reviewRepository.searchReviewsFromCollection(
+        collectionId,
+        search,
+        limit,
+      );
+      return { items: reviews, nextKey: null };
+    }
+
     return this.reviewRepository.getReviewsFromCollection(
       collectionId,
       limit,

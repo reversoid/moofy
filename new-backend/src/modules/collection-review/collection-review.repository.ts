@@ -6,6 +6,7 @@ import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Collection } from 'src/modules/collection/models/collection';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { Film } from 'src/modules/film/models/film';
+import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
 
 @Injectable()
 export class CollectionReviewRepository extends PaginatedRepository {
@@ -81,5 +82,27 @@ export class CollectionReviewRepository extends PaginatedRepository {
     });
 
     return super.getPaginatedData(reviews, limit, 'created_at');
+  }
+
+  async searchReviewsFromCollection(
+    collectionId: Collection['id'],
+    search: string,
+    limit: number,
+  ): Promise<Review[]> {
+    const searchString = getTsQueryFromString(search);
+
+    const reviews = await this.prismaService.$queryRaw`
+    SELECT * FROM review,
+    ts_rank(film_metadata.search_document || review_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
+    WHERE review.listId = ${collectionId} AND (film_metadata.search_document || review.search_document) @@ to_tsquery('simple', ${searchString})
+    JOIN review_metadata ON review_metadata.reviewId = review.id
+    JOIN film ON film.id = review.filmId
+    JOIN film_metadata ON film.metadata.filmId = film.id
+    ORDER BY rank
+    LIMIT ${limit}
+    `;
+
+    // TODO parse reviews
+    return reviews as any;
   }
 }

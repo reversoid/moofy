@@ -65,8 +65,9 @@ export class CollectionReviewsController
   getReviews(
     @Param('id', ParseIntPipe) id: number,
     @Query() { limit, nextKey }: PaginatedQueryDto,
+    @Query('search') search: string | null = null, // TODO will it work? with 2 query decorators
   ) {
-    return this.reviewService.getReviews(id, limit ?? 20, nextKey);
+    return this.reviewService.getReviews(id, search, limit ?? 20, nextKey);
   }
 
   @Patch(':id/reviews/reviewId')
