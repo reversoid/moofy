@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const profileSeenNotificationSchema = z.object({
-  eventId: z.string(),
+  notificationId: z.string(),
 });
 
 export type ProfileSeenNotification = z.infer<

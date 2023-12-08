@@ -10,17 +10,17 @@ import { Server, Socket } from 'socket.io';
 import { WsGuard } from './guards/ws-guard';
 import { SocketService } from './utils/socket.service';
 import { ProfileNotificationsService } from './profile-notifications.service';
-import {
-  PROFILE_NOTIFICATION_SEEN_TOPIC,
-  PROFILE_NOTIFICATION_TOPIC,
-} from '../events/utils/profile-events/topics';
-import {
-  ProfileEventDto,
-  ProfileSeenEventDto,
-} from '../events/utils/profile-events/types';
 import { ProfileDirectNotification } from './models/notifications/profile-direct-notification';
 import { ProfileCounterNotification } from './models/notifications/profile-counter-notification';
 import { ProfileSeenNotification } from './models/notifications/profile-seen-notification';
+import {
+  PROFILE_COUNTER_NOTIFICATION_TOPIC,
+  PROFILE_DIRECT_NOTIFICATION_TOPIC,
+  PROFILE_SEEN_ALL_NOTIFICATIONS_TOPIC,
+  PROFILE_SEEN_NOTIFICATION_TOPIC,
+} from './utils/topics';
+import { ProfileNotification } from './models/profile-notification';
+import { User } from '../user/models/user';
 
 @WebSocketGateway()
 export class ProfileNotificationsGateway
@@ -58,65 +58,68 @@ export class ProfileNotificationsGateway
     }
   }
 
-  @RMQRoute(PROFILE_NOTIFICATION_TOPIC)
-  async handleUserEventNotification(message: ProfileEventDto) {
-    if (message.type === 'direct') {
-      const directEvent = await this.profileEventsService.createNotification(
-        message,
-      );
-      const notification =
-        await this.profileEventsService.getDirectNotification(directEvent.id);
+  @RMQRoute(PROFILE_DIRECT_NOTIFICATION_TOPIC)
+  async handleNewNotification(notification: ProfileNotification) {
+    const directNotification =
+      await this.profileEventsService.getDirectNotification(notification);
 
-      if (!notification) {
-        return;
-      }
-
-      return await this.sendDirectNotificationToUser(
-        directEvent.user_to_id,
-        notification,
-      );
+    if (!directNotification) {
+      return;
     }
 
-    if (message.type === 'counter') {
-      const counterEvents =
-        await this.profileEventsService.findNotificationByEventId(message);
-
-      return await this.sendCounterEventToUser(message.toUserId, {
-        eventIds: counterEvents.map((e) => e.id),
-      });
-    }
+    return await this.sendDirectNotificationToUser(
+      notification.to_user.id,
+      directNotification,
+    );
   }
 
-  @RMQRoute(PROFILE_NOTIFICATION_SEEN_TOPIC)
-  async handleUserSeenEventNotification({
-    eventId,
-    toUserId,
-  }: ProfileSeenEventDto) {
-    return await this.sendSeenEventToUser(toUserId, { eventId });
+  @RMQRoute(PROFILE_SEEN_NOTIFICATION_TOPIC)
+  async handleSeenNotification(notification: ProfileNotification) {
+    return await this.sendSeenNotificationToUser(notification.to_user.id, {
+      notificationId: notification.id,
+    });
+  }
+
+  @RMQRoute(PROFILE_SEEN_ALL_NOTIFICATIONS_TOPIC)
+  async handleSeenAllNotifications({ userId }: { userId: User['id'] }) {
+    return await this.sendSeenNotificationToUser(userId, {
+      notificationId: '__ALL__',
+    });
+  }
+
+  @RMQRoute(PROFILE_COUNTER_NOTIFICATION_TOPIC)
+  async handleCounterNotification(notification: ProfileNotification) {
+    return await this.sendCounterNotificationToUser(notification.to_user.id, {
+      eventId: notification.id,
+    });
   }
 
   private async sendDirectNotificationToUser(
     userId: number,
     event: ProfileDirectNotification,
   ) {
-    return this.sendEventToUser('notification:direct', userId, event);
+    return this.sendNotificationToUser('notification:direct', userId, event);
   }
 
-  private async sendCounterEventToUser(
+  private async sendSeenNotificationToUser(
+    userId: number,
+    notification: ProfileSeenNotification,
+  ) {
+    return this.sendNotificationToUser(
+      'notification:seen',
+      userId,
+      notification,
+    );
+  }
+
+  private async sendCounterNotificationToUser(
     userId: number,
     event: ProfileCounterNotification,
   ) {
-    return this.sendEventToUser('notification:counter', userId, event);
+    return this.sendNotificationToUser('notification:counter', userId, event);
   }
 
-  private async sendSeenEventToUser(
-    userId: number,
-    event: ProfileSeenNotification,
-  ) {
-    return this.sendEventToUser('notification:seen', userId, event);
-  }
-
-  private async sendEventToUser(
+  private async sendNotificationToUser(
     eventName: string,
     userId: number,
     event: unknown,

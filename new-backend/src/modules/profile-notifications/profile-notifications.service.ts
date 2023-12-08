@@ -9,16 +9,18 @@ import { CollectionService } from '../collection/collection.service';
 import { CollectionCommentService } from '../collection-comments/collection-comment.service';
 import { UserEvent } from '../events/models/user-event';
 import { ProfileNotification } from './models/profile-notification';
+import { RMQService } from 'nestjs-rmq';
 
 export class OutdatedEventException extends InternalServerErrorException {}
 
 @Injectable()
 export class ProfileNotificationsService {
   constructor(
-    private readonly profileEventRepository: ProfileNotificationsRepository,
+    private readonly profileNotificationsRepository: ProfileNotificationsRepository,
     private readonly profileService: ProfileService,
     private readonly collectionService: CollectionService,
     private readonly collectionCommentService: CollectionCommentService,
+    private readonly rmqService: RMQService,
   ) {}
 
   async createNotification(event: UserEvent): Promise<ProfileNotification> {
@@ -27,49 +29,46 @@ export class ProfileNotificationsService {
       throw new OutdatedEventException();
     }
 
-    const notification = this.profileEventRepository.createNotification({
-      eventId: event.id,
-      fromUserId: users.userFrom.id,
-      toUserId: users.userTo.id,
-    });
+    const notification = this.profileNotificationsRepository.createNotification(
+      {
+        eventId: event.id,
+        fromUserId: users.userFrom.id,
+        toUserId: users.userTo.id,
+      },
+    );
 
     return notification;
   }
 
   async findNotificationByEventId(
-    event: UserEvent,
+    eventId: UserEvent['id'],
   ): Promise<ProfileNotification | null> {
     const notification =
-      await this.profileEventRepository.findNotificationByEventId(event.id);
+      await this.profileNotificationsRepository.findNotificationByEventId(
+        eventId,
+      );
     return notification;
   }
 
   async markNotificationAsSeen(
     notificationId: ProfileNotification['id'],
-  ): Promise<void> {
-    const event = await this.profileEventRepository.markNotificationAsSeen(
-      notificationId,
-    );
+  ): Promise<ProfileNotification | null> {
+    const notification =
+      await this.profileNotificationsRepository.markNotificationAsSeen(
+        notificationId,
+      );
 
-    if (event) {
-      this.eventService.emitProfileSeenEvent({
-        eventId,
-      });
-    }
-
-    return eventId;
+    return notification;
   }
 
   async getAmountOfUnseenNotification(userId: User['id']): Promise<number> {
-    return this.profileEventRepository.getAmountOfUnseenEvents(userId);
+    return this.profileNotificationsRepository.getAmountOfUnseenEvents(userId);
   }
 
   async markAllNotificationsAsSeen(userId: User['id']): Promise<void> {
-    await this.profileEventRepository.markAllNotificationsAsSeen(userId);
-
-    this.eventService.emitProfileSeenEvent({
-      eventId: '__ALL__',
-    });
+    await this.profileNotificationsRepository.markAllNotificationsAsSeen(
+      userId,
+    );
   }
 
   async getNotificationsForUser(
@@ -78,50 +77,41 @@ export class ProfileNotificationsService {
     type: 'all' | 'seen' | 'unseen',
     nextKey?: string,
   ): Promise<PaginatedData<ProfileDirectNotification>> {
-    const paginatedEvents = await this.profileEventRepository.getUserEvents(
-      id,
-      limit,
-      type,
-      nextKey,
-    );
+    const paginatedEvents =
+      await this.profileNotificationsRepository.getUserNotifications(
+        id,
+        limit,
+        type,
+        nextKey,
+      );
 
-    const notifications = await Promise.all(
-      paginatedEvents.items.map((event) =>
-        this.getDirectNotification(event.id),
-      ),
+    const directNotifications = await Promise.all(
+      paginatedEvents.items.map((n) => this.getDirectNotification(n)),
     );
 
     return {
       nextKey: paginatedEvents.nextKey,
-      items: notifications.filter(
+      items: directNotifications.filter(
         (n) => n !== null,
       ) as ProfileDirectNotification[],
     };
   }
 
   async getDirectNotification(
-    eventId: ProfileEvent['id'],
+    notification: ProfileNotification,
   ): Promise<ProfileDirectNotification | null> {
-    const event = await this.profileEventRepository.getNotificationById(
-      eventId,
-    );
-    if (!event) {
-      return null;
-    }
-    const notificationBase: Pick<
+    const resultBase: Pick<
       ProfileDirectNotification,
-      'id' | 'created_at'
+      'id' | 'created_at' | 'seen_at'
     > = {
-      id: eventId,
-      created_at: event.created_at,
+      id: notification.id,
+      created_at: notification.event.created_at,
+      seen_at: notification.seen_at,
     };
 
-    if (event.type === 'LIST_LIKE') {
-      if (!event.target_id) {
-        throw new Error('No target id for list like event');
-      }
+    if (notification.event.type === 'LIST_LIKED') {
       const like = await this.collectionService.getCollectionLike(
-        event.target_id,
+        notification.event.target_id,
       );
 
       if (!like) {
@@ -129,7 +119,8 @@ export class ProfileNotificationsService {
       }
 
       return {
-        ...notificationBase,
+        ...resultBase,
+        type: 'COLLECTION_LIKE',
         payload: {
           collection_like: {
             collection: like.collection,
@@ -139,18 +130,16 @@ export class ProfileNotificationsService {
       };
     }
 
-    if (event.type === 'COMMENT_LIKE') {
-      if (!event.target_id) {
-        throw new Error('No target id for comment like event');
-      }
+    if (notification.event.type === 'COMMENT_LIKED') {
       const like = await this.collectionCommentService.getCommentLike(
-        event.target_id,
+        notification.event.target_id,
       );
       if (!like) {
         return null;
       }
       return {
-        ...notificationBase,
+        ...resultBase,
+        type: 'COMMENT_LIKE',
         payload: {
           comment_like: {
             collection: like.collection,
@@ -161,13 +150,14 @@ export class ProfileNotificationsService {
       };
     }
 
-    if (event.type === 'COMMENT') {
-      if (!event.target_id) {
-        throw new Error('No target id for comment event');
-      }
+    if (notification.event.type === 'COMMENT_CREATED') {
       const [comment, collection] = await Promise.all([
-        this.collectionCommentService.getCommentById(event.target_id),
-        this.collectionCommentService.getCollectionByCommentId(event.target_id),
+        this.collectionCommentService.getCommentById(
+          notification.event.target_id,
+        ),
+        this.collectionCommentService.getCollectionByCommentId(
+          notification.event.target_id,
+        ),
       ]);
 
       if (!comment || !collection) {
@@ -175,7 +165,8 @@ export class ProfileNotificationsService {
       }
 
       return {
-        ...notificationBase,
+        ...resultBase,
+        type: 'NEW_COMMENT',
         payload: {
           comment: {
             collection: collection,
@@ -185,14 +176,14 @@ export class ProfileNotificationsService {
       };
     }
 
-    if (event.type === 'REPLY') {
-      if (!event.target_id) {
-        throw new Error('No target id for reply event');
-      }
-
+    if (notification.event.type === 'REPLY_CREATED') {
       const [reply, collection] = await Promise.all([
-        this.collectionCommentService.getCommentById(event.target_id),
-        this.collectionCommentService.getCollectionByCommentId(event.target_id),
+        this.collectionCommentService.getCommentById(
+          notification.event.target_id,
+        ),
+        this.collectionCommentService.getCollectionByCommentId(
+          notification.event.target_id,
+        ),
       ]);
 
       if (!reply || !collection) {
@@ -213,7 +204,8 @@ export class ProfileNotificationsService {
       }
 
       return {
-        ...notificationBase,
+        ...resultBase,
+        type: 'NEW_REPLY',
         payload: {
           reply: {
             collection,
@@ -224,24 +216,21 @@ export class ProfileNotificationsService {
       };
     }
 
-    if (event.type === 'SUBSCRIBE') {
-      if (!event.target_id) {
-        throw new Error('No target id for subscribe event');
-      }
-
+    if (notification.event.type === 'SUBSCRIBED') {
       const subscription = await this.profileService.getSubscription(
-        event.target_id,
+        notification.event.target_id,
       );
       if (!subscription) {
         return null;
       }
       return {
-        ...notificationBase,
+        ...resultBase,
+        type: 'NEW_FOLLOWER',
         payload: { subscribe: { user_from: subscription.follower } },
       };
     }
 
-    throw new Error(`Unknown event type ${event.type}`);
+    throw new Error(`Unknown event type ${notification.event.type}`);
   }
 
   private async getUsersFromEvent(

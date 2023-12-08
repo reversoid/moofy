@@ -23,6 +23,12 @@ import {
   CREATE_USER_EVENT_TOPIC,
 } from 'src/modules/events/utils/topics';
 import { UserEvent } from 'src/modules/events/models/user-event';
+import {
+  PROFILE_COUNTER_NOTIFICATION_TOPIC,
+  PROFILE_DIRECT_NOTIFICATION_TOPIC,
+  PROFILE_SEEN_ALL_NOTIFICATIONS_TOPIC,
+  PROFILE_SEEN_NOTIFICATION_TOPIC,
+} from '../utils/topics';
 
 @Controller('profile-notifications')
 export class ProfileNotificationsController
@@ -65,8 +71,11 @@ export class ProfileNotificationsController
 
   @Patch('unseen/all')
   @UseGuards(JwtAuthGuard)
-  async markAlNotificationsAsSeen(@AuthUser() user: User) {
-    return this.notificationsService.markAllNotificationsAsSeen(user.id);
+  async markAllNotificationsAsSeen(@AuthUser() user: User) {
+    await this.notificationsService.markAllNotificationsAsSeen(user.id);
+    await this.rmqService.notify(PROFILE_SEEN_ALL_NOTIFICATIONS_TOPIC, {
+      userId: user.id,
+    });
   }
 
   @Get('unseen/amount')
@@ -82,16 +91,25 @@ export class ProfileNotificationsController
   @Patch('unseen/:id')
   @UseGuards(JwtAuthGuard, UserCanAccessEventGuard)
   async markNotificationAsSeen(@Param('id', ParseUUIDPipe) eventId: string) {
-    await this.notificationsService.markNotificationAsSeen(eventId);
+    const notification =
+      await this.notificationsService.markNotificationAsSeen(eventId);
+
+    this.rmqService.notify(PROFILE_SEEN_NOTIFICATION_TOPIC, notification);
   }
 
   @RMQRoute(CREATE_USER_EVENT_TOPIC)
   async createNotification(message: UserEvent) {
-    await this.notificationsService.createNotification(message);
+    const notification =
+      await this.notificationsService.createNotification(message);
+
+    this.rmqService.notify(PROFILE_DIRECT_NOTIFICATION_TOPIC, notification);
   }
 
   @RMQRoute(CANCEL_USER_EVENT_TOPIC)
   async cancelNotification(message: UserEvent) {
-    await this.notificationsService.findNotificationByEventId(message);
+    const notification =
+      await this.notificationsService.findNotificationByEventId(message.id);
+
+    this.rmqService.notify(PROFILE_COUNTER_NOTIFICATION_TOPIC, notification);
   }
 }
