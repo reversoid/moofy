@@ -25,6 +25,8 @@ import { User } from 'src/modules/user/models/user';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { EditProfileDto } from './dto/edit-profile.dto';
 import { UserIsNotProfileOwnerGuard } from './guards/user-is-not-profile-owner.guard';
+import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
+import { NotFoundProfileException } from '../exceptions/not-found-profile-exception';
 
 @Controller('profiles')
 export class ProfileController implements IProfileController {
@@ -59,6 +61,21 @@ export class ProfileController implements IProfileController {
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
     return this.profileService.getCollections(user.id, limit ?? 20, nextKey);
+  }
+
+  @Get(':id')
+  @HttpResponse(getFolloweesResponseSchema)
+  @UseGuards(OptionalJwtAuthGuard)
+  async getProfile(
+    @AuthUser() user: User | null,
+    @Param('id', ParseIntPipe) id: number,
+    @Param('limit', ParseIntPipe) limit: number = 20,
+  ) {
+    const profile = await this.profileService.getProfile(id, limit, user?.id);
+    if (!profile) {
+      throw new NotFoundProfileException();
+    }
+    return profile;
   }
 
   @Patch(':id')

@@ -2,6 +2,7 @@ import { GetCollectionsResponse } from './responses/get-collections.response';
 import { GetFolloweesResponse } from './responses/get-followees.response';
 import { GetFollowersResponse } from './responses/get-followers.response';
 import { GetListUpdatesResponse } from './responses/get-list-updates.response';
+import { GetProfileResponse } from './responses/get-profile.response';
 import { GetUpdatesAmountResponse } from './responses/get-updates-amount.response';
 
 export interface IProfileController {
@@ -10,6 +11,8 @@ export interface IProfileController {
   getAmountOfUpdates(...args: any): Promise<GetUpdatesAmountResponse>;
 
   getCollections(...args: any): Promise<GetCollectionsResponse>;
+
+  getProfile(...args: any): Promise<GetProfileResponse>;
 
   editProfile(...args: any): Promise<void>;
 

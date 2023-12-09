@@ -179,6 +179,37 @@ export class CollectionRepository extends PaginatedRepository {
     return super.getPaginatedData(data, limit, 'updated_at');
   }
 
+  async getUserFavoriteCollections(
+    userId: User['id'],
+    limit: number,
+    nextKey?: string,
+  ): Promise<PaginatedData<Collection>> {
+    const key = this.parseNextKey(nextKey);
+    const favCollections = await this.prismaService.favorite_list.findMany({
+      where: {
+        userId,
+        deleted_at: null,
+        created_at: key ? { lte: new Date(key) } : undefined,
+      },
+      orderBy: { created_at: 'desc' },
+      take: limit + 1,
+      select: { list: { select: selectCollection }, created_at: true },
+    });
+
+    const paginatedFavCollections = super.getPaginatedData(
+      favCollections,
+      limit,
+      'created_at',
+    );
+
+    return {
+      nextKey: paginatedFavCollections.nextKey,
+      items: paginatedFavCollections.items
+        .map((i) => i.list)
+        .filter(Boolean) as Collection[],
+    };
+  }
+
   async searchPublicCollections(
     search: string,
     limit: number,

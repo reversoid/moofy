@@ -11,6 +11,8 @@ import { AlreadySubscribedException } from './exceptions/already-subscribed.exce
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
 import { Subscription } from './models/subscription';
 import { EventsService } from '../events/events.service';
+import { Profile } from './models/profile';
+import { ProfileSocialStats } from './models/profile-social-stats';
 
 @Injectable()
 export class ProfileService {
@@ -99,6 +101,52 @@ export class ProfileService {
       paginatedUsers.items,
     );
     return { nextKey: paginatedUsers.nextKey, items: shortProfiles };
+  }
+
+  async getProfile(
+    userId: User['id'],
+    limit: number,
+    forUserId?: User['id'],
+  ): Promise<Profile | null> {
+    const user = await this.userService.getUserById(userId);
+    if (!user) {
+      return null;
+    }
+
+    const profile: ShortProfile = forUserId
+      ? (await this.getShortProfiles(forUserId, [user]))[0]
+      : { user, additionalInfo: { isSubscribed: false } };
+
+    const isOwner = forUserId === userId;
+
+    const [collections, favCollections, stats] = await Promise.all([
+      this.collectionService.getUserCollections(
+        userId,
+        limit,
+        isOwner ? 'all' : 'public',
+      ),
+      isOwner
+        ? this.collectionService.getUserFavoriteCollections(userId, limit)
+        : Promise.resolve(null),
+      this.getSocialStatsForUser(userId),
+    ]);
+
+    if (!stats) {
+      return null;
+    }
+
+    return {
+      ...profile,
+      collections,
+      favoriteCollections: favCollections ?? undefined,
+      socialStats: stats ?? { followees: 0, followers: 0 },
+    };
+  }
+
+  async getSocialStatsForUser(
+    userId: User['id'],
+  ): Promise<ProfileSocialStats | null> {
+    return this.profileRepository.getSocialStats(userId);
   }
 
   async getFollowees(

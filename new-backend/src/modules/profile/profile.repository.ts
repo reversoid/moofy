@@ -9,6 +9,7 @@ import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repos
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { Subscription } from './models/subscription';
 import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
+import { ProfileSocialStats } from './models/profile-social-stats';
 
 const topUsersCoeffs = { followers: 2, reviews: 1 } as const;
 
@@ -207,6 +208,30 @@ export class ProfileRepository extends PaginatedRepository {
         followed: { select: selectUser },
       },
     });
+  }
+
+  async getSocialStats(id: User['id']): Promise<ProfileSocialStats | null> {
+    const result = await this.prismaService.users.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        _count: {
+          select: {
+            followed: { where: { deleted_at: null } },
+            followers: { where: { deleted_at: null } },
+          },
+        },
+      },
+    });
+    if (!result) {
+      return null;
+    }
+    return {
+      followees: result._count.followed,
+      followers: result._count.followers,
+    };
   }
 
   async getTopUsers(limit: number, forUserId?: User['id']): Promise<User[]> {

@@ -242,6 +242,18 @@ export class CollectionService {
     );
   }
 
+  async getUserFavoriteCollections(
+    userId: User['id'],
+    limit: number,
+    nextKey?: string,
+  ): Promise<PaginatedData<Collection>> {
+    return this.collectionRepository.getUserFavoriteCollections(
+      userId,
+      limit,
+      nextKey,
+    );
+  }
+
   async getCollectionLike(
     likeId: CollectionLike['id'],
   ): Promise<CollectionLike | null> {
