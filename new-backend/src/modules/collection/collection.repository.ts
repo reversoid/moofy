@@ -7,6 +7,7 @@ import { Collection, selectCollection } from './models/collection';
 import { CollectionSocialStats } from './models/collection-social-stats';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionLike } from 'src/modules/collection-comments/models/collection-like';
+import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
 
 @Injectable()
 export class CollectionRepository extends PaginatedRepository {
@@ -176,6 +177,25 @@ export class CollectionRepository extends PaginatedRepository {
     });
 
     return super.getPaginatedData(data, limit, 'updated_at');
+  }
+
+  async searchPublicCollections(
+    search: string,
+    limit: number,
+  ): Promise<Collection[]> {
+    const searchString = getTsQueryFromString(search);
+
+    const collections = await this.prismaService.$queryRaw`
+    SELECT list.* FROM list,
+    ts_rank(list_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
+    JOIN list_metadata ON list_metadata.listId = list.id
+    WHERE (list_metadata.search_document) @@ to_tsquery('simple', ${searchString})
+    ORDER BY rank DESC
+    LIMIT ${limit}
+    `;
+
+    // TODO parse response
+    return collections as any;
   }
 
   async getCollectionLike(

@@ -11,7 +11,6 @@ import { AlreadySubscribedException } from './exceptions/already-subscribed.exce
 import { NotSubscribedException } from './exceptions/not-subscribed.exception';
 import { Subscription } from './models/subscription';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-notifications/models/profile-notification';
 
 @Injectable()
 export class ProfileService {
@@ -35,9 +34,8 @@ export class ProfileService {
   }
 
   async getAmountOfUpdates(userId: User['id']): Promise<{ amount: number }> {
-    const amount = await this.profileRepository.getCollectionsUpdatesAmount(
-      userId,
-    );
+    const amount =
+      await this.profileRepository.getCollectionsUpdatesAmount(userId);
     return { amount };
   }
 
@@ -67,10 +65,9 @@ export class ProfileService {
       throw new AlreadySubscribedException();
     }
     const subscription = await this.profileRepository.followUser(from, to);
-    this.eventsService.handleUserEvent({
-      eventType: ProfileEventType.SUBSCRIBE,
+    this.eventsService.createUserEvent({
       targetId: subscription.id,
-      type: 'direct',
+      type: 'SUBSCRIBED',
     });
   }
 
@@ -81,10 +78,9 @@ export class ProfileService {
       throw new NotSubscribedException();
     }
 
-    this.eventsService.handleUserEvent({
-      eventType: ProfileEventType.SUBSCRIBE,
+    this.eventsService.cancelUserEvent({
       targetId: subscription.id,
-      type: 'counter',
+      type: 'SUBSCRIBED',
     });
   }
 
@@ -120,6 +116,35 @@ export class ProfileService {
       paginatedUsers.items,
     );
     return { nextKey: paginatedUsers.nextKey, items: shortProfiles };
+  }
+
+  async getTopProfiles(
+    limit: number,
+    forUserId?: User['id'],
+  ): Promise<PaginatedData<ShortProfile>> {
+    const users = await this.profileRepository.getTopUsers(limit, forUserId);
+    if (forUserId) {
+      const profiles = await this.getShortProfiles(forUserId, users);
+      return { nextKey: null, items: profiles };
+    } else {
+      const profiles = users.map<ShortProfile>((u) => ({
+        user: u,
+        additionalInfo: { isSubscribed: false },
+      }));
+
+      return { nextKey: null, items: profiles };
+    }
+  }
+
+  async searchProfiles(
+    search: string,
+    limit: number,
+    forUserId: User['id'],
+  ): Promise<PaginatedData<ShortProfile>> {
+    const users = await this.profileRepository.searchUsers(search, limit);
+
+    const profiles = await this.getShortProfiles(forUserId, users);
+    return { nextKey: null, items: profiles };
   }
 
   private async getShortProfiles(

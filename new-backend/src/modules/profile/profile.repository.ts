@@ -8,7 +8,6 @@ import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { Subscription } from './models/subscription';
-import { ShortProfile } from './models/short-profile';
 import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
 
 const topUsersCoeffs = { followers: 2, reviews: 1 } as const;
@@ -210,14 +209,22 @@ export class ProfileRepository extends PaginatedRepository {
     });
   }
 
-  async getTopUsers(limit: number, forUserId: User['id']): Promise<User[]> {
+  async getTopUsers(limit: number, forUserId?: User['id']): Promise<User[]> {
     const users = await this.prismaService.$queryRaw`
     SELECT u.*, 
-           (COUNT(DISTINCT review.id) * ${topUsersCoeffs.reviews} + COUNT(DISTINCT subscription.id) * ${topUsersCoeffs.followers}) as rank
+           (COUNT(DISTINCT review.id) * ${
+             topUsersCoeffs.reviews
+           } + COUNT(DISTINCT subscription.id) * ${
+             topUsersCoeffs.followers
+           }) as rank
     FROM users AS u
     LEFT JOIN review ON review.userId = u.id
     LEFT JOIN subscription ON subscription.followed_id = u.id
-    WHERE u.id NOT IN (SELECT followed_id FROM subscription WHERE follower_id = ${forUserId})
+    ${
+      forUserId
+        ? `WHERE u.id NOT IN (SELECT followed_id FROM subscription WHERE follower_id = ${forUserId})`
+        : ''
+    }
     GROUP BY u.id
     ORDER BY rank DESC
     LIMIT ${limit}
@@ -226,7 +233,7 @@ export class ProfileRepository extends PaginatedRepository {
     return users as any;
   }
 
-  async searchProfiles(search: string, limit: number): Promise<ShortProfile[]> {
+  async searchUsers(search: string, limit: number): Promise<User[]> {
     const searchString = getTsQueryFromString(search);
 
     const users = await this.prismaService.$queryRaw`

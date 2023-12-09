@@ -1,4 +1,10 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { IExploreController } from './explore.controller.interface';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
@@ -15,20 +21,31 @@ export class ExploreController implements IExploreController {
 
   @Get('collections')
   @HttpResponse(getPublicCollectionsResponseSchema)
-  async getPublicCollections(@Query('search') username: string = '') {
-    return this.exploreService.getPublicCollections(username);
+  async getPublicCollections(
+    @Query('search') search: string = '',
+    @Query('limit', ParseIntPipe) limit: number = 20,
+  ) {
+    return this.exploreService.getPublicCollections(search, limit);
   }
 
   @Get('top-profiles')
   @HttpResponse(getTopProfilesResponseSchema)
   @UseGuards(JwtAuthGuard)
-  async getTopProfiles(@AuthUser() user: User) {
-    return this.exploreService.getTopProfiles(user.id);
+  async getTopProfiles(
+    @AuthUser() user: User,
+    @Query('limit', ParseIntPipe) limit: number = 20,
+  ) {
+    return this.exploreService.getTopProfiles(limit, user.id);
   }
 
   @Get('profiles')
+  @UseGuards(JwtAuthGuard)
   @HttpResponse(searchProfilesResponseSchema)
-  async searchProfiles(@Query('search') username: string) {
-    return this.exploreService.getProfiles(username);
+  async searchProfiles(
+    @AuthUser() user: User,
+    @Query('search') username: string = '',
+    @Query('limit', ParseIntPipe) limit: number = 20,
+  ) {
+    return this.exploreService.getProfiles(username, limit, user.id);
   }
 }

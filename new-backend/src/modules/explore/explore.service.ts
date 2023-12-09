@@ -3,16 +3,35 @@ import { User } from '../user/models/user';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { ShortProfile } from '../profile/models/short-profile';
 import { Collection } from '../collection/models/collection';
+import { ProfileService } from '../profile/profile.service';
+import { CollectionService } from '../collection/collection.service';
 
 @Injectable()
 export class ExploreService {
-  async getProfiles(username?: string): Promise<PaginatedData<ShortProfile>> {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly collectionService: CollectionService,
+  ) {}
+
+  async getProfiles(
+    search: string,
+    limit: number,
+    forUserId: User['id'],
+  ): Promise<PaginatedData<ShortProfile>> {
+    return this.profileService.searchProfiles(search, limit, forUserId);
+  }
 
   async getPublicCollections(
-    username?: string,
-  ): Promise<PaginatedData<Collection>> {}
+    search: string,
+    limit: number,
+  ): Promise<PaginatedData<Collection>> {
+    return this.collectionService.searchPublicCollections(search, limit);
+  }
 
   async getTopProfiles(
-    userId?: User['id'],
-  ): Promise<PaginatedData<ShortProfile>> {}
+    limit: number,
+    forUserId?: User['id'],
+  ): Promise<PaginatedData<ShortProfile>> {
+    return this.profileService.getTopProfiles(limit, forUserId);
+  }
 }

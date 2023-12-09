@@ -26,7 +26,6 @@ import { CollectionRepository } from './collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-notifications/models/profile-notification';
 
 @Injectable()
 export class CollectionService {
@@ -247,5 +246,16 @@ export class CollectionService {
     likeId: CollectionLike['id'],
   ): Promise<CollectionLike | null> {
     return this.collectionRepository.getCollectionLike(likeId);
+  }
+
+  async searchPublicCollections(
+    search: string,
+    limit: number,
+  ): Promise<PaginatedData<Collection>> {
+    const collections = await this.collectionRepository.searchPublicCollections(
+      search,
+      limit,
+    );
+    return { items: collections, nextKey: null };
   }
 }
