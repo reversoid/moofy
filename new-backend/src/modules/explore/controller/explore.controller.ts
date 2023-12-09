@@ -14,8 +14,10 @@ import { searchProfilesResponseSchema } from './responses/search-profiles.respon
 import { User } from 'src/modules/user/models/user';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { ExploreService } from '../explore.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('explore')
+@ApiTags('Explore')
 export class ExploreController implements IExploreController {
   constructor(private readonly exploreService: ExploreService) {}
 
