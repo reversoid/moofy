@@ -210,16 +210,19 @@ export class ProfileRepository extends PaginatedRepository {
     });
   }
 
-  async getTopUsers(limit: number, forUserId?: User['id']): Promise<User[]> {
+  async getTopUsers(limit: number, forUserId: User['id']): Promise<User[]> {
     const users = await this.prismaService.$queryRaw`
-    SELECT u.* FROM users AS u, COUNT(review) * ${topUsersCoeffs.reviews} + COUNT(subscription) * ${topUsersCoeffs.followers} as rank
-    JOIN review ON review.userId = u.id
-    JOIN subscription ON subscription.followed_id = u.id
+    SELECT u.*, 
+           (COUNT(DISTINCT review.id) * ${topUsersCoeffs.reviews} + COUNT(DISTINCT subscription.id) * ${topUsersCoeffs.followers}) as rank
+    FROM users AS u
+    LEFT JOIN review ON review.userId = u.id
+    LEFT JOIN subscription ON subscription.followed_id = u.id
+    WHERE u.id NOT IN (SELECT followed_id FROM subscription WHERE follower_id = ${forUserId})
+    GROUP BY u.id
     ORDER BY rank DESC
     LIMIT ${limit}
     `;
 
-    // TODO parse users
     return users as any;
   }
 
@@ -229,8 +232,8 @@ export class ProfileRepository extends PaginatedRepository {
     const users = await this.prismaService.$queryRaw`
     SELECT u.* FROM users AS u,
     ts_rank(user_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
-    WHERE (user_metadata.search_document) @@ to_tsquery('simple', ${searchString})
     JOIN user_metadata ON user_metadata.userId = u.id
+    WHERE (user_metadata.search_document) @@ to_tsquery('simple', ${searchString})
     ORDER BY rank DESC
     LIMIT ${limit}
     `;
