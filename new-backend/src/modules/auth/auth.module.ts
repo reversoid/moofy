@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EventsModule } from '../events/events.module';
 import { TokensService } from './utils/tokens.service';
+import { ValidationService } from './utils/validation.service';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TokensService } from './utils/tokens.service';
     EventsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, TokensService],
+  providers: [AuthService, TokensService, ValidationService],
+  exports: [ValidationService],
 })
 export class AuthModule {}

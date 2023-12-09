@@ -22,19 +22,7 @@ export const profileNotificationType = [
 ] as const;
 
 // eslint-disable-next-line prettier/prettier
-export type ProfileNotificationType = typeof profileNotificationType[number];
-
-/** Map of application event type to profile-specific type */
-export const eventTypeToProfileNotificationType: Record<
-  ProfileEventType,
-  ProfileNotificationType
-> = {
-  COMMENT_CREATED: 'NEW_COMMENT',
-  COMMENT_LIKED: 'COMMENT_LIKE',
-  LIST_LIKED: 'COLLECTION_LIKE',
-  REPLY_CREATED: 'NEW_REPLY',
-  SUBSCRIBED: 'NEW_FOLLOWER',
-};
+export type ProfileNotificationType = (typeof profileNotificationType)[number];
 
 export const profileDirectNotificationSchema = z.object({
   id: z.string(),

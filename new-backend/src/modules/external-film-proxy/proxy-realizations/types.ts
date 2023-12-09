@@ -1,6 +1,6 @@
 import { Film } from 'src/modules/film/models/film';
 
-export interface ExternalFilmApiService {
+export interface IApiFilmService {
   getFilmById(id: string): Promise<Film | null>;
   searchFilmsByName(name: string): Promise<Film[]>;
 }

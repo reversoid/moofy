@@ -9,6 +9,7 @@ export const userEvents = [
   'REVIEW_CREATED',
   'LIST_CREATED',
   'SUBSCRIBED',
+  'USER_REGISTERED',
 ] as const;
 
 export type UserEventType = UserEvent['type'];

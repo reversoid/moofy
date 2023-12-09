@@ -6,5 +6,6 @@ import { ExternalFilmApiService } from './external-film-api.service';
 @Module({
   imports: [HttpModule.register({ timeout: 5000 })],
   providers: [UnnoficialKpService, ExternalFilmApiService],
+  exports: [ExternalFilmApiService],
 })
 export class ExternalFilmProxyModule {}

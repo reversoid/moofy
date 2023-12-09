@@ -285,6 +285,7 @@ enum event_type_enum {
   REVIEW_CREATED
   LIST_CREATED
   SUBSCRIBED
+  USER_REGISTERED
 }
 
 enum task_task_type_enum {

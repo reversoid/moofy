@@ -32,7 +32,10 @@ export class AuthService {
     const user = await this.createUser(username, password);
     const tokens = await this.tokensService.generateTokens(user.id);
 
-    this.eventsService.emitUserRegisteredEvent({ userId: user.id });
+    this.eventsService.createUserEvent({
+      targetId: user.id,
+      type: 'USER_REGISTERED',
+    });
 
     return { tokens, user };
   }

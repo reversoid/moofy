@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ExternalFilmApiService } from '../external-film-proxy/proxy-realizations/types';
 import { FilmRepository } from './film.repository';
 import { WrongFilmIdException } from './exceptions/wrong-film-id.exception';
 import { Film } from './models/film';
+import { ExternalFilmApiService } from '../external-film-proxy/external-film-api.service';
 
 @Injectable()
 export class FilmService {

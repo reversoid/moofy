@@ -1,4 +1,4 @@
-import { filmSchema } from 'src/modules/film/models/film';
+import { filmSchema, selectFilm } from 'src/modules/film/models/film';
 import { PrismaSelectEntity } from 'src/shared/utils/db/select-entity';
 import { z } from 'zod';
 
@@ -17,13 +17,7 @@ export const selectReview: PrismaSelectEntity<Review> = {
   created_at: true,
   description: true,
   film: {
-    select: {
-      id: true,
-      name: true,
-      posterPreviewUrl: true,
-      posterUrl: true,
-      year: true,
-    },
+    select: selectFilm,
   },
   id: true,
   score: true,

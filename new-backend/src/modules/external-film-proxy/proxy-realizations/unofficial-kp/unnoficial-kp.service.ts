@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ExternalFilmApiService } from '../types';
+import { IApiFilmService } from '../types';
 import { Film } from 'src/modules/film/models/film';
 import apiKeysConfig from 'src/config/api-keys.config';
 import { ConfigType } from '@nestjs/config';
@@ -9,7 +9,7 @@ import { catchError, lastValueFrom, map, of, throwError } from 'rxjs';
 import { UnofficialKpFilmDto } from './types';
 
 @Injectable()
-export class UnnoficialKpService implements ExternalFilmApiService {
+export class UnnoficialKpService implements IApiFilmService {
   constructor(
     private readonly httpService: HttpService,
     @Inject(apiKeysConfig.KEY)
