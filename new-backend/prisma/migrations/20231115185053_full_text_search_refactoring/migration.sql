@@ -104,56 +104,76 @@ ALTER TABLE "user_metadata" ADD CONSTRAINT "user_metadata_userId_fkey" FOREIGN K
 
 
 -- Film triggers
-CREATE FUNCTION update_film_metadata_tsvector() RETURNS trigger AS $$
+CREATE FUNCTION update_or_insert_film_metadata_tsvector() RETURNS trigger AS $$
 BEGIN
-  UPDATE film_metadata
-  SET search_document = to_tsvector('simple', coalesce(NEW.name, ''))
-  WHERE filmId = NEW.id;
+  IF EXISTS (SELECT * FROM film_metadata WHERE filmId = NEW.id) THEN
+    UPDATE film_metadata
+    SET search_document = to_tsvector('simple', coalesce(NEW.name, ''))
+    WHERE filmId = NEW.id;
+  ELSE
+    INSERT INTO film_metadata (filmId, search_document)
+    VALUES (NEW.id, to_tsvector('simple', coalesce(NEW.name, '')));
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER film_metadata_tsvector_update BEFORE INSERT OR UPDATE
-ON film FOR EACH ROW EXECUTE FUNCTION update_film_metadata_tsvector();
+ON film FOR EACH ROW EXECUTE FUNCTION update_or_insert_film_metadata_tsvector();
 
 -- list triggers
-CREATE FUNCTION update_list_metadata_tsvector() RETURNS trigger AS $$
+CREATE FUNCTION update_or_insert_list_metadata_tsvector() RETURNS trigger AS $$
 BEGIN
-  UPDATE list_metadata
-  SET search_document = setweight(to_tsvector('simple', coalesce(NEW.name, '')), 'A') || setweight(to_tsvector('simple', coalesce(NEW.description, '')), 'B')
-  WHERE listId = NEW.id;
+  IF EXISTS (SELECT * FROM list_metadata WHERE listId = NEW.id) THEN
+    UPDATE list_metadata
+    SET search_document = setweight(to_tsvector('simple', coalesce(NEW.name, '')), 'A') || setweight(to_tsvector('simple', coalesce(NEW.description, '')), 'B')
+    WHERE listId = NEW.id;
+  ELSE
+    INSERT INTO list_metadata (listId, search_document)
+    VALUES (NEW.id, setweight(to_tsvector('simple', coalesce(NEW.name, '')), 'A') || setweight(to_tsvector('simple', coalesce(NEW.description, '')), 'B'));
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER list_metadata_tsvector_update BEFORE INSERT OR UPDATE
-ON list FOR EACH ROW EXECUTE FUNCTION update_list_metadata_tsvector();
+ON list FOR EACH ROW EXECUTE FUNCTION update_or_insert_list_metadata_tsvector();
 
 -- review triggers
-CREATE FUNCTION update_review_metadata_tsvector() RETURNS trigger AS $$
+CREATE FUNCTION update_or_insert_review_metadata_tsvector() RETURNS trigger AS $$
 BEGIN
-  UPDATE review_metadata
-  SET search_document = to_tsvector('simple', coalesce(NEW.description, ''))
-  WHERE reviewId = NEW.id;
+  IF EXISTS (SELECT * FROM review_metadata WHERE reviewId = NEW.id) THEN
+    UPDATE review_metadata
+    SET search_document = to_tsvector('simple', coalesce(NEW.description, ''))
+    WHERE reviewId = NEW.id;
+  ELSE
+    INSERT INTO review_metadata (reviewId, search_document)
+    VALUES (NEW.id, to_tsvector('simple', coalesce(NEW.description, '')));
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER review_metadata_tsvector_update BEFORE INSERT OR UPDATE
-ON review FOR EACH ROW EXECUTE FUNCTION update_review_metadata_tsvector();
+ON review FOR EACH ROW EXECUTE FUNCTION update_or_insert_review_metadata_tsvector();
 
 -- user triggers
-CREATE FUNCTION update_user_metadata_tsvector() RETURNS trigger AS $$
-BEGIN
-  UPDATE user_metadata
-  SET username_search_document = to_tsvector('simple', coalesce(NEW.username, ''))
-  WHERE userId = NEW.id;
-  RETURN NEW;
-END;
+CREATE FUNCTION update_or_insert_user_metadata_tsvector() RETURNS trigger AS $$
+  BEGIN
+    IF EXISTS (SELECT * FROM user_metadata WHERE userId = NEW.id) THEN
+      UPDATE user_metadata
+      SET username_search_document = to_tsvector('simple', coalesce(NEW.username, ''))
+      WHERE userId = NEW.id;
+    ELSE
+      INSERT INTO user_metadata (userId, username_search_document)
+      VALUES (NEW.id, to_tsvector('simple', coalesce(NEW.username, '')));
+    END IF;
+    RETURN NEW;
+  END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER user_metadata_tsvector_update BEFORE INSERT OR UPDATE
-ON "users" FOR EACH ROW EXECUTE FUNCTION update_user_metadata_tsvector();
+ON "users" FOR EACH ROW EXECUTE FUNCTION update_or_insert_user_metadata_tsvector();
 
 -- fill fields
 
