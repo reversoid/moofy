@@ -30,7 +30,7 @@ const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieSerializeOptions = {
   path: '/auth/protected',
 };
 
-@ApiTags('Auth')
+@ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
   constructor(

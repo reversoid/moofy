@@ -37,7 +37,7 @@ import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.gu
 import { FastifyRequest } from 'fastify';
 import { NoImageProvidedException } from '../exceptions/no-image-provided.exception';
 
-@ApiTags('Collection')
+@ApiTags('Collections')
 @Controller('collections')
 export class CollectionController implements ICollectionController {
   constructor(private readonly collectionService: CollectionService) {}

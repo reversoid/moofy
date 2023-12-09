@@ -27,8 +27,10 @@ import { EditProfileDto } from './dto/edit-profile.dto';
 import { UserIsNotProfileOwnerGuard } from './guards/user-is-not-profile-owner.guard';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 import { NotFoundProfileException } from '../exceptions/not-found-profile-exception';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('profiles')
+@ApiTags('Profiles')
 export class ProfileController implements IProfileController {
   constructor(private readonly profileService: ProfileService) {}
 

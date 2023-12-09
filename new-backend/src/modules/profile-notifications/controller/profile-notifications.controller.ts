@@ -30,8 +30,10 @@ import {
   PROFILE_SEEN_NOTIFICATION_TOPIC,
 } from '../utils/topics';
 import { isAllowedProfileEvent } from '../utils/is-allowed-profile-event';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('profile-notifications')
+@ApiTags('Profile notifications')
 export class ProfileNotificationsController
   implements IProfileNotificationsController
 {
