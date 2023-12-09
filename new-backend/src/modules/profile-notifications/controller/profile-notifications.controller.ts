@@ -29,6 +29,7 @@ import {
   PROFILE_SEEN_ALL_NOTIFICATIONS_TOPIC,
   PROFILE_SEEN_NOTIFICATION_TOPIC,
 } from '../utils/topics';
+import { isAllowedProfileEvent } from '../utils/is-allowed-profile-event';
 
 @Controller('profile-notifications')
 export class ProfileNotificationsController
@@ -99,6 +100,10 @@ export class ProfileNotificationsController
 
   @RMQRoute(CREATE_USER_EVENT_TOPIC)
   async createNotification(message: UserEvent) {
+    if (!isAllowedProfileEvent(message)) {
+      return;
+    }
+
     const notification =
       await this.notificationsService.createNotification(message);
 

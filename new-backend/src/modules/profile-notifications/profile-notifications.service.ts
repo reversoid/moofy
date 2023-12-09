@@ -7,9 +7,8 @@ import { ProfileDirectNotification } from './models/notifications/profile-direct
 import { ProfileService } from '../profile/profile.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionCommentService } from '../collection-comments/collection-comment.service';
-import { UserEvent } from '../events/models/user-event';
 import { ProfileNotification } from './models/profile-notification';
-import { RMQService } from 'nestjs-rmq';
+import { ProfileEvent } from './models/profile-event';
 
 export class OutdatedEventException extends InternalServerErrorException {}
 
@@ -20,10 +19,9 @@ export class ProfileNotificationsService {
     private readonly profileService: ProfileService,
     private readonly collectionService: CollectionService,
     private readonly collectionCommentService: CollectionCommentService,
-    private readonly rmqService: RMQService,
   ) {}
 
-  async createNotification(event: UserEvent): Promise<ProfileNotification> {
+  async createNotification(event: ProfileEvent): Promise<ProfileNotification> {
     const users = await this.getUsersFromEvent(event);
     if (!users) {
       throw new OutdatedEventException();
@@ -41,7 +39,7 @@ export class ProfileNotificationsService {
   }
 
   async findNotificationByEventId(
-    eventId: UserEvent['id'],
+    eventId: ProfileEvent['id'],
   ): Promise<ProfileNotification | null> {
     const notification =
       await this.profileNotificationsRepository.findNotificationByEventId(
@@ -211,7 +209,7 @@ export class ProfileNotificationsService {
   }
 
   private async getUsersFromEvent(
-    event: UserEvent,
+    event: ProfileEvent,
   ): Promise<{ userFrom: User; userTo: User } | null> {
     if (event.type === 'COMMENT_CREATED') {
       const [comment, collection] = await Promise.all([
