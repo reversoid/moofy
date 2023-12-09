@@ -35,6 +35,7 @@ export class CollectionReviewService {
     await this.reviewRepository.deleteReview(id);
   }
 
+  // TODO maybe make 2 methods?
   async getReviews(
     collectionId: Collection['id'],
     search: string | null,

@@ -7,7 +7,6 @@ export const userEvents = [
   'COMMENT_LIKED',
   'COMMENT_CREATED',
   'REVIEW_CREATED',
-  'REPLY_CREATED',
   'LIST_CREATED',
   'SUBSCRIBED',
 ] as const;

@@ -87,6 +87,7 @@ export class CollectionService {
 
     const reviews = await this.collectionReviewService.getReviews(
       id,
+      null,
       limit,
       nextKey,
     );
@@ -139,10 +140,9 @@ export class CollectionService {
       throw new WrongCollectionIdException();
     }
 
-    this.eventsService.handleUserEvent({
-      eventType: ProfileEventType.LIST_LIKE,
+    this.eventsService.cancelUserEvent({
       targetId: like.id,
-      type: 'direct',
+      type: 'LIST_LIKED',
     });
 
     return stats;
@@ -163,9 +163,8 @@ export class CollectionService {
       throw new WrongCollectionIdException();
     }
 
-    this.eventsService.handleUserEvent({
-      eventType: ProfileEventType.LIST_LIKE,
-      type: 'counter',
+    this.eventsService.cancelUserEvent({
+      type: 'LIST_LIKED',
       targetId: like.id,
     });
 
@@ -223,6 +222,7 @@ export class CollectionService {
   ): Promise<PaginatedData<Review>> {
     return this.collectionReviewService.getReviews(
       colelctionId,
+      null,
       limit,
       nextKey,
     );

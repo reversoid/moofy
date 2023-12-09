@@ -164,6 +164,23 @@ export class ProfileNotificationsService {
         return null;
       }
 
+      if (comment.replyToId) {
+        const originalComment =
+          await this.collectionCommentService.getCommentById(comment.replyToId);
+
+        if (!originalComment) {
+          return null;
+        }
+
+        return {
+          ...resultBase,
+          type: 'NEW_REPLY',
+          payload: {
+            reply: { collection, reply: comment, comment: originalComment },
+          },
+        };
+      }
+
       return {
         ...resultBase,
         type: 'NEW_COMMENT',
@@ -171,46 +188,6 @@ export class ProfileNotificationsService {
           comment: {
             collection: collection,
             comment,
-          },
-        },
-      };
-    }
-
-    if (notification.event.type === 'REPLY_CREATED') {
-      const [reply, collection] = await Promise.all([
-        this.collectionCommentService.getCommentById(
-          notification.event.target_id,
-        ),
-        this.collectionCommentService.getCollectionByCommentId(
-          notification.event.target_id,
-        ),
-      ]);
-
-      if (!reply || !collection) {
-        return null;
-      }
-
-      if (!reply.replyToId) {
-        throw new Error(
-          'Reply event: the target id points to the comment that is not a reply',
-        );
-      }
-
-      const originalComment =
-        await this.collectionCommentService.getCommentById(reply.replyToId);
-
-      if (!originalComment) {
-        return null;
-      }
-
-      return {
-        ...resultBase,
-        type: 'NEW_REPLY',
-        payload: {
-          reply: {
-            collection,
-            comment: originalComment,
-            reply: reply,
           },
         },
       };
@@ -246,6 +223,17 @@ export class ProfileNotificationsService {
         return null;
       }
 
+      if (comment.replyToId) {
+        const originalComment =
+          await this.collectionCommentService.getCommentById(comment.replyToId);
+
+        if (!originalComment) {
+          return null;
+        }
+
+        return { userFrom: comment.user, userTo: originalComment.user };
+      }
+
       return { userFrom: comment.user, userTo: collection.user };
     } else if (event.type === 'COMMENT_LIKED') {
       const like = await this.collectionCommentService.getCommentLike(
@@ -263,23 +251,6 @@ export class ProfileNotificationsService {
         return null;
       }
       return { userFrom: subscription.follower, userTo: subscription.followed };
-    } else if (event.type === 'REPLY_CREATED') {
-      const reply = await this.collectionCommentService.getCommentById(
-        event.target_id,
-      );
-
-      if (!reply) {
-        return null;
-      }
-
-      const originalComment =
-        await this.collectionCommentService.getCommentById(reply.id);
-
-      if (!originalComment) {
-        return null;
-      }
-
-      return { userFrom: reply.user, userTo: originalComment.user };
     } else if (event.type === 'LIST_LIKED') {
       const like = await this.collectionService.getCollectionLike(
         event.target_id,

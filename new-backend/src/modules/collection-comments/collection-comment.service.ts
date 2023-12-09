@@ -11,7 +11,6 @@ import { CommentWithInfo } from './models/comment-with-info';
 import { Comment } from './models/comment';
 import { CommentLike } from './models/comment-like';
 import { EventsService } from '../events/events.service';
-import { ProfileEventType } from '../profile-notifications/models/profile-notification';
 
 @Injectable()
 export class CollectionCommentService {
@@ -53,9 +52,8 @@ export class CollectionCommentService {
       replyTo,
     );
 
-    this.eventService.handleUserEvent({
-      type: 'direct',
-      eventType: replyTo ? ProfileEventType.REPLY : ProfileEventType.COMMENT,
+    this.eventService.createUserEvent({
+      type: 'COMMENT_CREATED',
       targetId: comment.id,
     });
 
@@ -68,11 +66,8 @@ export class CollectionCommentService {
       throw new NotFoundException();
     }
 
-    this.eventService.handleUserEvent({
-      eventType: comment.replyTo
-        ? ProfileEventType.REPLY
-        : ProfileEventType.COMMENT,
-      type: 'counter',
+    this.eventService.cancelUserEvent({
+      type: 'COMMENT_CREATED',
       targetId: comment.id,
     });
   }
@@ -104,10 +99,9 @@ export class CollectionCommentService {
       throw new WrongCommentIdException();
     }
 
-    this.eventService.handleUserEvent({
-      eventType: ProfileEventType.COMMENT_LIKE,
+    this.eventService.createUserEvent({
       targetId: like.id,
-      type: 'direct',
+      type: 'LIST_LIKED',
     });
 
     return stats;
@@ -127,10 +121,9 @@ export class CollectionCommentService {
       throw new WrongCommentIdException();
     }
 
-    this.eventService.handleUserEvent({
-      eventType: ProfileEventType.COMMENT_LIKE,
+    this.eventService.cancelUserEvent({
       targetId: like.id,
-      type: 'counter',
+      type: 'LIST_LIKED',
     });
 
     return stats;
