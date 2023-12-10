@@ -32,10 +32,11 @@ export class AuthService {
     const user = await this.createUser(username, password);
     const tokens = await this.tokensService.generateTokens(user.id);
 
-    this.eventsService.createUserEvent({
-      targetId: user.id,
-      type: 'USER_REGISTERED',
-    });
+    // TODO WHY NOT WORKING?
+    // this.eventsService.createUserEvent({
+    //   targetId: user.id,
+    //   type: 'USER_REGISTERED',
+    // });
 
     return { tokens, user };
   }
@@ -88,7 +89,7 @@ export class AuthService {
     try {
       const isPasswordCorrect = await bcrypt.compare(
         password,
-        user.password_hash,
+        user.passwordHash,
       );
 
       if (!isPasswordCorrect) throw new WrongCredentialsException();

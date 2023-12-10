@@ -15,14 +15,10 @@ export class PaginatedRepository {
     return this.sqids.decode(key).at(0) ?? null;
   }
 
-  protected getPaginatedData<
-    T extends
-      | { created_at: Date; updated_at?: Date }
-      | { created_at?: Date; updated_at: Date },
-  >(
+  protected getPaginatedData<T extends { createdAt?: Date; updatedAt?: Date }>(
     entities: T[],
     limit: number,
-    by: 'created_at' | 'updated_at',
+    by: 'createdAt' | 'updatedAt',
   ): PaginatedData<T> {
     let nextKey: string | null = null;
 

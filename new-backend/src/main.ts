@@ -7,7 +7,6 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { patchNestJsSwagger } from 'nestjs-zod';
 import fastifyCookie from '@fastify/cookie';
-import { ValidationPipe } from '@nestjs/common';
 import { setupS3 } from './shared/utils/s3/s3';
 import { AppEnvironments } from './config/global.config';
 import { ConfigService } from '@nestjs/config';
@@ -44,9 +43,6 @@ async function bootstrap() {
       configService.get<AppEnvironments>('global.environment') ===
       AppEnvironments.dev,
   });
-
-  // global pipes
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
   app.enableCors({
     origin: [

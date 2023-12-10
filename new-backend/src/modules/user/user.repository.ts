@@ -9,8 +9,8 @@ export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createUser({ passwordHash, username }: CreateUserProps): Promise<User> {
-    return await this.prismaService.users.create({
-      data: { password_hash: passwordHash, username },
+    return this.prismaService.users.create({
+      data: { passwordHash: passwordHash, username },
       select: selectUser,
     });
   }
@@ -23,8 +23,8 @@ export class UserRepository {
   }
 
   async getUserByUsername(username: User['username']): Promise<User | null> {
-    return this.prismaService.users.findUnique({
-      where: { username },
+    return this.prismaService.users.findFirst({
+      where: { username, deletedAt: null },
       select: selectUser,
     });
   }
@@ -45,7 +45,7 @@ export class UserRepository {
     return this.prismaService.users.update({
       where: { id: userId },
       data: {
-        image_url: props.imageUrl,
+        imageUrl: props.imageUrl,
         username: props.username,
         description: props.description,
       },

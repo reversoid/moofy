@@ -29,26 +29,26 @@ export class CollectionCommentRepository extends PaginatedRepository {
       select: selectComment,
       where: {
         listId: collectionId,
-        created_at: parsedKey ? { lte: new Date(parsedKey) } : undefined,
-        deleted_at: { not: null },
+        createdAt: parsedKey ? { lte: new Date(parsedKey) } : undefined,
+        deletedAt: { not: null },
       },
       orderBy: {
-        created_at: 'desc',
+        createdAt: 'desc',
       },
       take: limit + 1,
     });
-    return super.getPaginatedData(comments, limit, 'created_at');
+    return super.getPaginatedData(comments, limit, 'createdAt');
   }
 
   async isCommentLikedByUser(
     commentId: Comment['id'],
     userId: User['id'],
   ): Promise<boolean> {
-    const comment = await this.prismaService.comment_like.findFirst({
+    const comment = await this.prismaService.commentLike.findFirst({
       where: {
         user: { id: userId },
         commentId,
-        deleted_at: { not: null },
+        deletedAt: { not: null },
       },
     });
     return Boolean(comment);
@@ -61,8 +61,8 @@ export class CollectionCommentRepository extends PaginatedRepository {
       select: {
         _count: {
           select: {
-            comment_like: { where: { deleted_at: { not: null } } },
-            other_comment: { where: { deleted_at: { not: null } } },
+            commentLike: { where: { deletedAt: { not: null } } },
+            otherComment: { where: { deletedAt: { not: null } } },
           },
         },
       },
@@ -76,8 +76,8 @@ export class CollectionCommentRepository extends PaginatedRepository {
     }
 
     return {
-      likesAmount: data._count.comment_like,
-      repliesAmount: data._count.other_comment,
+      likesAmount: data._count.commentLike,
+      repliesAmount: data._count.otherComment,
     };
   }
 
@@ -96,7 +96,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
   async getCommentById(commentId: Comment['id']): Promise<Comment | null> {
     const comment = await this.prismaService.comment.findUnique({
       select: selectComment,
-      where: { id: commentId, deleted_at: { not: null } },
+      where: { id: commentId, deletedAt: { not: null } },
     });
     return comment;
   }
@@ -114,7 +114,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
     }
 
     await this.prismaService.comment.update({
-      data: { deleted_at: new Date() },
+      data: { deletedAt: new Date() },
       where: { id: commentId },
     });
 
@@ -125,7 +125,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
     commentId: Comment['id'],
     userId: User['id'],
   ): Promise<{ id: Comment['id'] }> {
-    return this.prismaService.comment_like.create({
+    return this.prismaService.commentLike.create({
       data: { commentId, userId },
     });
   }
@@ -134,7 +134,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
     commentId: Comment['id'],
     userId: User['id'],
   ): Promise<{ id: Comment['id'] } | null> {
-    const like = await this.prismaService.comment_like.findFirst({
+    const like = await this.prismaService.commentLike.findFirst({
       where: {
         commentId,
         userId,
@@ -144,8 +144,8 @@ export class CollectionCommentRepository extends PaginatedRepository {
       return null;
     }
 
-    await this.prismaService.comment_like.update({
-      data: { deleted_at: new Date() },
+    await this.prismaService.commentLike.update({
+      data: { deletedAt: new Date() },
       where: { id: like.id },
     });
 
@@ -153,7 +153,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
   }
 
   async getCommentLike(likeId: number): Promise<CommentLike | null> {
-    const commentLike = await this.prismaService.comment_like.findUnique({
+    const commentLike = await this.prismaService.commentLike.findUnique({
       where: { id: likeId },
       select: {
         id: true,

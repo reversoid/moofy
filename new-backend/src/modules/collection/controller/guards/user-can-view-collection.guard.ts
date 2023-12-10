@@ -20,7 +20,7 @@ export class UserCanViewCollectionGuard implements CanActivate {
       throw new WrongCollectionIdException();
     }
 
-    if (collection.is_public) {
+    if (collection.isPublic) {
       return true;
     }
 

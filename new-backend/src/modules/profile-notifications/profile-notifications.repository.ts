@@ -24,9 +24,9 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
   }: CreateProfileNotificationDto): Promise<ProfileNotification> {
     return this.prismaService.notification.create({
       data: {
-        event_id: eventId,
-        from_user_id: fromUserId,
-        to_user_id: toUserId,
+        eventId: eventId,
+        fromUserId: fromUserId,
+        toUserId: toUserId,
       },
       select: selectProfileNotification,
     });
@@ -57,10 +57,10 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
           id: notification.id,
         },
         data: {
-          seen_at: seenDate,
+          seenAt: seenDate,
         },
       });
-      return { ...notification, seen_at: seenDate };
+      return { ...notification, seenAt: seenDate };
     }
 
     return null;
@@ -69,11 +69,11 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
   async markAllNotificationsAsSeen(userId: User['id']) {
     await this.prismaService.notification.updateMany({
       where: {
-        to_user_id: userId,
-        seen_at: null,
+        toUserId: userId,
+        seenAt: null,
       },
       data: {
-        seen_at: new Date(),
+        seenAt: new Date(),
       },
     });
   }
@@ -94,20 +94,20 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
 
     const notifications = await this.prismaService.notification.findMany({
       where: {
-        to_user_id: userId,
-        seen_at: seenAt[type],
+        toUserId: userId,
+        seenAt: seenAt[type],
         event: {
-          created_at: key ? { lte: new Date(key) } : undefined,
-          deleted_at: null,
+          createdAt: key ? { lte: new Date(key) } : undefined,
+          deletedAt: null,
         },
       },
       select: selectProfileNotification,
       take: limit + 1,
-      orderBy: { event: { created_at: 'desc' } },
+      orderBy: { event: { createdAt: 'desc' } },
     });
 
     const events = notifications.map((n) => n.event);
-    const paginatedEvents = super.getPaginatedData(events, limit, 'created_at');
+    const paginatedEvents = super.getPaginatedData(events, limit, 'createdAt');
     return {
       nextKey: paginatedEvents.nextKey,
       items: super.sliceItems(notifications, limit),
@@ -116,7 +116,7 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
 
   async getAmountOfUnseenEvents(userId: User['id']): Promise<number> {
     return this.prismaService.notification.count({
-      where: { seen_at: null, to_user_id: userId },
+      where: { seenAt: null, toUserId: userId },
     });
   }
 

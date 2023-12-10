@@ -16,18 +16,18 @@ export type UserEventType = UserEvent['type'];
 
 export const userEventSchema = z.object({
   id: z.string().uuid(),
-  target_id: z.number().int(),
+  targetId: z.number().int(),
   type: z.enum(userEvents),
-  created_at: z.date(),
-  deleted_at: z.date().nullable(),
+  createdAt: z.date(),
+  deletedAt: z.date().nullable(),
 });
 
 export type UserEvent = z.infer<typeof userEventSchema>;
 
 export const selectUserEvent: PrismaSelectEntity<UserEvent> = {
   type: true,
-  created_at: true,
+  createdAt: true,
   id: true,
-  target_id: true,
-  deleted_at: true,
+  targetId: true,
+  deletedAt: true,
 };

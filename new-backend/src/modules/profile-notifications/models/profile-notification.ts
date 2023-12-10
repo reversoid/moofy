@@ -9,18 +9,18 @@ import { z } from 'zod';
 export const profileNotificationSchema = z.object({
   id: z.string(),
   event: userEventSchema,
-  seen_at: z.date().nullable(),
-  from_user: userSchema,
-  to_user: userSchema,
+  seenAt: z.date().nullable(),
+  fromUser: userSchema,
+  toUser: userSchema,
 });
 
 export const selectProfileNotification: PrismaSelectEntity<ProfileNotification> =
   {
     event: { select: selectUserEvent },
-    from_user: { select: selectUser },
-    to_user: { select: selectUser },
+    fromUser: { select: selectUser },
+    toUser: { select: selectUser },
     id: true,
-    seen_at: true,
+    seenAt: true,
   };
 
 export type ProfileNotification = z.infer<typeof profileNotificationSchema>;

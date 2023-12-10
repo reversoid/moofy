@@ -103,13 +103,13 @@ export class ProfileNotificationsService {
       'id' | 'created_at' | 'seen_at'
     > = {
       id: notification.id,
-      created_at: notification.event.created_at,
-      seen_at: notification.seen_at,
+      created_at: notification.event.createdAt,
+      seen_at: notification.seenAt,
     };
 
     if (notification.event.type === 'LIST_LIKED') {
       const like = await this.collectionService.getCollectionLike(
-        notification.event.target_id,
+        notification.event.targetId,
       );
 
       if (!like) {
@@ -130,7 +130,7 @@ export class ProfileNotificationsService {
 
     if (notification.event.type === 'COMMENT_LIKED') {
       const like = await this.collectionCommentService.getCommentLike(
-        notification.event.target_id,
+        notification.event.targetId,
       );
       if (!like) {
         return null;
@@ -151,10 +151,10 @@ export class ProfileNotificationsService {
     if (notification.event.type === 'COMMENT_CREATED') {
       const [comment, collection] = await Promise.all([
         this.collectionCommentService.getCommentById(
-          notification.event.target_id,
+          notification.event.targetId,
         ),
         this.collectionCommentService.getCollectionByCommentId(
-          notification.event.target_id,
+          notification.event.targetId,
         ),
       ]);
 
@@ -193,7 +193,7 @@ export class ProfileNotificationsService {
 
     if (notification.event.type === 'SUBSCRIBED') {
       const subscription = await this.profileService.getSubscription(
-        notification.event.target_id,
+        notification.event.targetId,
       );
       if (!subscription) {
         return null;
@@ -213,8 +213,8 @@ export class ProfileNotificationsService {
   ): Promise<{ userFrom: User; userTo: User } | null> {
     if (event.type === 'COMMENT_CREATED') {
       const [comment, collection] = await Promise.all([
-        this.collectionCommentService.getCommentById(event.target_id),
-        this.collectionCommentService.getCollectionByCommentId(event.target_id),
+        this.collectionCommentService.getCommentById(event.targetId),
+        this.collectionCommentService.getCollectionByCommentId(event.targetId),
       ]);
 
       if (!comment || !collection) {
@@ -235,7 +235,7 @@ export class ProfileNotificationsService {
       return { userFrom: comment.user, userTo: collection.user };
     } else if (event.type === 'COMMENT_LIKED') {
       const like = await this.collectionCommentService.getCommentLike(
-        event.target_id,
+        event.targetId,
       );
       if (!like) {
         return null;
@@ -243,7 +243,7 @@ export class ProfileNotificationsService {
       return { userFrom: like.user, userTo: like.collection.user };
     } else if (event.type === 'SUBSCRIBED') {
       const subscription = await this.profileService.getSubscription(
-        event.target_id,
+        event.targetId,
       );
       if (!subscription) {
         return null;
@@ -251,7 +251,7 @@ export class ProfileNotificationsService {
       return { userFrom: subscription.follower, userTo: subscription.followed };
     } else if (event.type === 'LIST_LIKED') {
       const like = await this.collectionService.getCollectionLike(
-        event.target_id,
+        event.targetId,
       );
       if (!like) {
         return null;

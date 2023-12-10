@@ -42,7 +42,7 @@ export class AuthController {
   @HttpResponse(loginResponseSchema)
   async login(
     @Body() { username, password }: LoginDto,
-    @Res() response: FastifyReply,
+    @Res({ passthrough: true }) response: FastifyReply,
   ): Promise<LoginResponse> {
     const { tokens, user } = await this.authService.login({
       username,
@@ -61,8 +61,8 @@ export class AuthController {
   @Post('register')
   @HttpResponse(registerResponseSchema)
   async register(
-    @Body() { password, username }: RegisterDto,
-    @Res() response: FastifyReply,
+    @Body() { username, password }: RegisterDto,
+    @Res({ passthrough: true }) response: FastifyReply,
   ): Promise<RegisterResponse> {
     const { tokens, user } = await this.authService.register({
       username,
@@ -79,7 +79,7 @@ export class AuthController {
   }
 
   @Post('protected/logout')
-  async logout(@Res() response: FastifyReply) {
+  async logout(@Res({ passthrough: true }) response: FastifyReply) {
     try {
       await this.authService.logout('token');
       response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
@@ -91,7 +91,9 @@ export class AuthController {
 
   @Post('protected/refresh')
   @HttpResponse(refreshResponseSchema)
-  async refresh(@Res() response: FastifyReply): Promise<RefreshResponse> {
+  async refresh(
+    @Res({ passthrough: true }) response: FastifyReply,
+  ): Promise<RefreshResponse> {
     try {
       const { tokens, user } = await this.authService.refresh('token');
 

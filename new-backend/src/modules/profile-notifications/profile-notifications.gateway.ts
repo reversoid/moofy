@@ -68,14 +68,14 @@ export class ProfileNotificationsGateway
     }
 
     return await this.sendDirectNotificationToUser(
-      notification.to_user.id,
+      notification.toUser.id,
       directNotification,
     );
   }
 
   @RMQRoute(PROFILE_SEEN_NOTIFICATION_TOPIC)
   async handleSeenNotification(notification: ProfileNotification) {
-    return await this.sendSeenNotificationToUser(notification.to_user.id, {
+    return await this.sendSeenNotificationToUser(notification.toUser.id, {
       notificationId: notification.id,
     });
   }
@@ -89,7 +89,7 @@ export class ProfileNotificationsGateway
 
   @RMQRoute(PROFILE_COUNTER_NOTIFICATION_TOPIC)
   async handleCounterNotification(notification: ProfileNotification) {
-    return await this.sendCounterNotificationToUser(notification.to_user.id, {
+    return await this.sendCounterNotificationToUser(notification.toUser.id, {
       eventId: notification.id,
     });
   }

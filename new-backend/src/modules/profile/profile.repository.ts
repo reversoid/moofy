@@ -28,14 +28,14 @@ export class ProfileRepository extends PaginatedRepository {
     const result = await this.prismaService.list.findMany({
       where: {
         user: { followers: { some: { id: userId } } },
-        updated_at: key ? { lte: new Date(key) } : undefined,
-        deleted_at: null,
+        updatedAt: key ? { lte: new Date(key) } : undefined,
+        deletedAt: null,
       },
       take: limit + 1,
-      orderBy: { updated_at: 'desc' },
+      orderBy: { updatedAt: 'desc' },
       select: selectCollection,
     });
-    return super.getPaginatedData(result, limit, 'updated_at');
+    return super.getPaginatedData(result, limit, 'updatedAt');
   }
 
   async getUnseenCollectionsFromFollowees(
@@ -46,24 +46,24 @@ export class ProfileRepository extends PaginatedRepository {
     // TODO fix parsing query
     const key = this.parseNextKey(nextKey);
     const paginationWhereClause = key
-      ? `AND l.updated_at <= ${new Date(key).toISOString()}`
+      ? `AND l.updatedAt <= ${new Date(key).toISOString()}`
       : '';
 
     const result = (await this.prismaService.$queryRaw`
         SELECT l.*, u.*
         FROM list l
         JOIN users u ON l.userId = u.id
-        WHERE l.updated_at > (
-            SELECT MAX(lv.created_at)
-            FROM list_view lv
+        WHERE l.updatedAt > (
+            SELECT MAX(lv.createdAt)
+            FROM listView lv
             WHERE lv.listId = l.id AND lv.userId = ${userId}
         ) 
-        AND l.deleted_at IS NULL
+        AND l.deletedAt IS NULL
         ${paginationWhereClause}
         LIMIT ${limit + 1};
     `) as Collection[];
 
-    return super.getPaginatedData(result, limit, 'updated_at');
+    return super.getPaginatedData(result, limit, 'updatedAt');
   }
 
   async getCollectionsUpdatesAmount(userId: User['id']): Promise<number> {
@@ -71,12 +71,12 @@ export class ProfileRepository extends PaginatedRepository {
     const count = (await this.prismaService.$queryRaw`
     SELECT COUNT(*)
     FROM list l
-    WHERE l.updated_at > (
-      SELECT MAX(lv.created_at)
-      FROM list_view lv
+    WHERE l.updatedAt > (
+      SELECT MAX(lv.createdAt)
+      FROM listView lv
       WHERE lv.listId = l.id AND lv.userId = ${userId}
     )
-    AND l.deleted_at IS NULL;
+    AND l.deletedAt IS NULL;
   `) as [{ count: number }];
 
     return count[0].count;
@@ -87,7 +87,7 @@ export class ProfileRepository extends PaginatedRepository {
     to: User['id'],
   ): Promise<{ id: Subscription['id'] }> {
     return this.prismaService.subscription.create({
-      data: { follower_id: from, followed_id: to },
+      data: { followerId: from, followedId: to },
     });
   }
 
@@ -96,7 +96,7 @@ export class ProfileRepository extends PaginatedRepository {
     to: User['id'],
   ): Promise<{ id: Subscription['id'] } | null> {
     const subscription = await this.prismaService.subscription.findFirst({
-      where: { follower_id: from, followed_id: to, deleted_at: null },
+      where: { followerId: from, followedId: to, deletedAt: null },
     });
 
     if (!subscription) {
@@ -105,7 +105,7 @@ export class ProfileRepository extends PaginatedRepository {
 
     await this.prismaService.subscription.update({
       where: { id: subscription.id },
-      data: { deleted_at: new Date() },
+      data: { deletedAt: new Date() },
     });
 
     return { id: subscription.id };
@@ -118,18 +118,18 @@ export class ProfileRepository extends PaginatedRepository {
   ): Promise<PaginatedData<User>> {
     const key = super.parseNextKey(nextKey);
     const subscriptions = await this.prismaService.subscription.findMany({
-      select: { follower: { select: selectUser }, created_at: true },
+      select: { follower: { select: selectUser }, createdAt: true },
       where: {
-        followed_id: userId,
-        created_at: key ? { lte: new Date(key) } : undefined,
+        followedId: userId,
+        createdAt: key ? { lte: new Date(key) } : undefined,
       },
       take: limit + 1,
-      orderBy: { created_at: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
     const paginatedSubscriptions = super.getPaginatedData(
       subscriptions,
       limit,
-      'created_at',
+      'createdAt',
     );
     return {
       nextKey: paginatedSubscriptions.nextKey,
@@ -144,19 +144,19 @@ export class ProfileRepository extends PaginatedRepository {
   ): Promise<PaginatedData<User>> {
     const key = super.parseNextKey(nextKey);
     const subscriptions = await this.prismaService.subscription.findMany({
-      select: { followed: { select: selectUser }, created_at: true },
+      select: { followed: { select: selectUser }, createdAt: true },
       where: {
-        follower_id: userId,
-        created_at: key ? { lte: new Date(key) } : undefined,
-        deleted_at: { not: null },
+        followerId: userId,
+        createdAt: key ? { lte: new Date(key) } : undefined,
+        deletedAt: { not: null },
       },
       take: limit + 1,
-      orderBy: { created_at: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
     const paginatedSubscriptions = super.getPaginatedData(
       subscriptions,
       limit,
-      'created_at',
+      'createdAt',
     );
     return {
       nextKey: paginatedSubscriptions.nextKey,
@@ -167,9 +167,9 @@ export class ProfileRepository extends PaginatedRepository {
   async isFollowingUser(userId: User['id'], userIdToCheck: User['id']) {
     const result = await this.prismaService.subscription.findFirst({
       where: {
-        follower_id: userId,
-        followed_id: userIdToCheck,
-        deleted_at: { not: null },
+        followerId: userId,
+        followedId: userIdToCheck,
+        deletedAt: { not: null },
       },
     });
     return Boolean(result);
@@ -185,15 +185,15 @@ export class ProfileRepository extends PaginatedRepository {
 
     const result = await this.prismaService.subscription.findMany({
       where: {
-        deleted_at: { not: null },
-        follower_id: userId,
-        followed_id: { in: usersToCheck },
+        deletedAt: { not: null },
+        followerId: userId,
+        followedId: { in: usersToCheck },
       },
-      select: { followed_id: true },
+      select: { followedId: true },
     });
 
-    for (const { followed_id } of result) {
-      checkMap.set(followed_id, true);
+    for (const { followedId } of result) {
+      checkMap.set(followedId, true);
     }
 
     return checkMap;
@@ -219,8 +219,8 @@ export class ProfileRepository extends PaginatedRepository {
         id: true,
         _count: {
           select: {
-            followed: { where: { deleted_at: null } },
-            followers: { where: { deleted_at: null } },
+            followed: { where: { deletedAt: null } },
+            followers: { where: { deletedAt: null } },
           },
         },
       },
@@ -244,10 +244,10 @@ export class ProfileRepository extends PaginatedRepository {
            }) as rank
     FROM users AS u
     LEFT JOIN review ON review.userId = u.id
-    LEFT JOIN subscription ON subscription.followed_id = u.id
+    LEFT JOIN subscription ON subscription.followedId = u.id
     ${
       forUserId
-        ? `WHERE u.id NOT IN (SELECT followed_id FROM subscription WHERE follower_id = ${forUserId})`
+        ? `WHERE u.id NOT IN (SELECT followedId FROM subscription WHERE followerId = ${forUserId})`
         : ''
     }
     GROUP BY u.id

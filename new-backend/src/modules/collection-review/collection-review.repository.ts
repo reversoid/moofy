@@ -39,7 +39,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
     filmId: Film['id'],
   ): Promise<boolean> {
     const review = await this.prismaService.review.findFirst({
-      where: { deleted_at: null, listId: collectionId, filmId },
+      where: { deletedAt: null, listId: collectionId, filmId },
     });
     return Boolean(review);
   }
@@ -58,7 +58,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
 
   async deleteReview(id: Review['id']): Promise<{ id: Review['id'] }> {
     await this.prismaService.review.update({
-      data: { deleted_at: new Date() },
+      data: { deletedAt: new Date() },
       where: { id },
     });
     return { id };
@@ -74,14 +74,14 @@ export class CollectionReviewRepository extends PaginatedRepository {
     const reviews = await this.prismaService.review.findMany({
       where: {
         listId: id,
-        created_at: parsedKey ? { lte: new Date(parsedKey) } : undefined,
+        createdAt: parsedKey ? { lte: new Date(parsedKey) } : undefined,
       },
       select: selectReview,
-      orderBy: { created_at: 'desc' },
+      orderBy: { createdAt: 'desc' },
       take: limit + 1,
     });
 
-    return super.getPaginatedData(reviews, limit, 'created_at');
+    return super.getPaginatedData(reviews, limit, 'createdAt');
   }
 
   async searchReviewsFromCollection(

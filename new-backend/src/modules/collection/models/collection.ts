@@ -6,22 +6,22 @@ export const collectionSchema = z.object({
   id: z.number().int(),
   name: z.string(),
   description: z.string().nullable(),
-  created_at: z.date(),
-  updated_at: z.date(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
   user: userSchema,
-  is_public: z.boolean(),
+  isPublic: z.boolean(),
 });
 
 export type Collection = z.infer<typeof collectionSchema>;
 
 export const selectCollection: PrismaSelectEntity<Collection> = {
-  created_at: true,
+  createdAt: true,
   description: true,
   id: true,
   name: true,
-  updated_at: true,
+  updatedAt: true,
   user: {
     select: selectUser,
   },
-  is_public: true,
+  isPublic: true,
 };

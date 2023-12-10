@@ -118,7 +118,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER film_metadata_tsvector_update BEFORE INSERT OR UPDATE
+CREATE TRIGGER film_metadata_tsvector_update AFTER INSERT OR UPDATE
 ON film FOR EACH ROW EXECUTE FUNCTION update_or_insert_film_metadata_tsvector();
 
 -- list triggers
@@ -136,7 +136,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER list_metadata_tsvector_update BEFORE INSERT OR UPDATE
+CREATE TRIGGER list_metadata_tsvector_update AFTER INSERT OR UPDATE
 ON list FOR EACH ROW EXECUTE FUNCTION update_or_insert_list_metadata_tsvector();
 
 -- review triggers
@@ -154,7 +154,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER review_metadata_tsvector_update BEFORE INSERT OR UPDATE
+CREATE TRIGGER review_metadata_tsvector_update AFTER INSERT OR UPDATE
 ON review FOR EACH ROW EXECUTE FUNCTION update_or_insert_review_metadata_tsvector();
 
 -- user triggers
@@ -172,7 +172,7 @@ CREATE FUNCTION update_or_insert_user_metadata_tsvector() RETURNS trigger AS $$
   END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER user_metadata_tsvector_update BEFORE INSERT OR UPDATE
+CREATE TRIGGER user_metadata_tsvector_update AFTER INSERT OR UPDATE
 ON "users" FOR EACH ROW EXECUTE FUNCTION update_or_insert_user_metadata_tsvector();
 
 -- fill fields

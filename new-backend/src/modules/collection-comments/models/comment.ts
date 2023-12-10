@@ -6,14 +6,14 @@ export const commentSchema = z.object({
   id: z.number().int(),
   text: z.string(),
   user: userSchema,
-  created_at: z.date(),
+  createdAt: z.date(),
   replyToId: z.number().int().nullable(),
 });
 
 export type Comment = z.infer<typeof commentSchema>;
 
 export const selectComment: PrismaSelectEntity<Comment> = {
-  created_at: true,
+  createdAt: true,
   id: true,
   text: true,
   user: {

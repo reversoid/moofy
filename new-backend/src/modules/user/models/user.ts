@@ -5,8 +5,8 @@ export const userSchema = z.object({
   id: z.number().int(),
   username: z.string().min(1),
   description: z.string().max(400).nullable(),
-  image_url: z.string().url().nullable(),
-  created_at: z.date(),
+  imageUrl: z.string().url().nullable(),
+  createdAt: z.date(),
 });
 
 export type User = z.infer<typeof userSchema>;
@@ -14,7 +14,7 @@ export type User = z.infer<typeof userSchema>;
 export const selectUser: PrismaSelectEntity<User> = {
   description: true,
   id: true,
-  image_url: true,
+  imageUrl: true,
   username: true,
-  created_at: true,
+  createdAt: true,
 };
