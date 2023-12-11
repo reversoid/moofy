@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { EventsModule } from '../events/events.module';
 import { TokensService } from './utils/tokens.service';
 import { ValidationService } from './utils/validation.service';
+import { JwtStrategy } from './passport/jwt.strategy';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { ValidationService } from './utils/validation.service';
     EventsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, TokensService, ValidationService],
+  providers: [AuthService, TokensService, ValidationService, JwtStrategy],
   exports: [ValidationService],
 })
 export class AuthModule {}

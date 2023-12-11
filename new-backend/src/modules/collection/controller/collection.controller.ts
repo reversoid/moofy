@@ -52,7 +52,7 @@ export class CollectionController implements ICollectionController {
     return this.collectionService.createCollection({
       userId: user.id,
       description,
-      imageUrl,
+      imageUrl: imageUrl ?? null,
       name,
     });
   }
