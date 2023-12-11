@@ -36,7 +36,7 @@ export class CollectionRepository extends PaginatedRepository {
 
   async getCollection(id: Collection['id']): Promise<Collection | null> {
     return this.prismaService.list.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
       select: selectCollection,
     });
   }

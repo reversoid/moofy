@@ -16,7 +16,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { addToFavoriteCollectionResponse } from './responses/add-favorite.response';
 import { createCollectionResponseSchema } from './responses/create-collection.response';
-import { deleteCollectionResponseSchema } from './responses/delete-collection.response';
 import { getFullCollectionResponseSchema } from './responses/get-full-collection.response';
 import { likeCollectionResponseSchema } from './responses/like-collection.response';
 import { removeFromFavoritesCollectionResponse } from './responses/remove-favorite.response';
@@ -99,7 +98,6 @@ export class CollectionController implements ICollectionController {
   }
 
   @Delete(':id')
-  @HttpResponse(deleteCollectionResponseSchema)
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
   async deleteCollection(@Param('id', ParseIntPipe) id: number) {
     return this.collectionService.deleteCollection(id);

@@ -55,8 +55,8 @@ export class CollectionService {
     await this.collectionRepository.viewCollection(collectionId, userId);
   }
 
-  deleteCollection(id: Collection['id']) {
-    return this.collectionRepository.deleteCollection(id);
+  async deleteCollection(id: Collection['id']) {
+    await this.collectionRepository.deleteCollection(id);
   }
 
   async updateCollection(userId: User['id'], props: UpdateCollectionProps) {
