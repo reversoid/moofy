@@ -22,6 +22,8 @@ export class AuthService {
     await this.comparePasswords(user, password);
 
     const tokens = await this.tokensService.generateTokens(user.id);
+    console.log('refresh_token', tokens.refresh);
+
     return { tokens, user };
   }
 
@@ -32,16 +34,17 @@ export class AuthService {
     const user = await this.createUser(username, password);
     const tokens = await this.tokensService.generateTokens(user.id);
 
-    // TODO WHY NOT WORKING?
-    // this.eventsService.createUserEvent({
-    //   targetId: user.id,
-    //   type: 'USER_REGISTERED',
-    // });
+    this.eventsService.createUserEvent({
+      targetId: user.id,
+      type: 'USER_REGISTERED',
+    });
 
     return { tokens, user };
   }
 
   async refresh(refreshToken: string): Promise<TokensAndUser> {
+    console.log(refreshToken);
+
     const { id } = await this.tokensService.decodeRefreshToken(refreshToken);
 
     const user = await this.validateUserById(id);

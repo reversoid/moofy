@@ -1,5 +1,5 @@
 import { createZodDto } from 'nestjs-zod';
-import { USERNAME_PATTERN } from 'src/modules/auth/dto/register.dto';
+import { USERNAME_PATTERN } from 'src/modules/auth/controller/dto/register.dto';
 import { z } from 'zod';
 
 const editProfileDtoSchema = z.object({

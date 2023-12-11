@@ -1,9 +1,9 @@
 import { CookieSerializeOptions } from '@fastify/cookie';
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { AppEnvironments } from 'src/config/global.config';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {
@@ -19,11 +19,13 @@ import {
   registerResponseSchema,
 } from './dto/responses/register.response';
 
-import { GlobalConfig } from '../global/global.config';
-import { UnauthorizedException } from './exceptions/unauthorized.exception';
 import { ApiTags } from '@nestjs/swagger';
-
-const REFRESH_TOKEN_KEY = 'refresh_token';
+import { GlobalConfig } from '../../global/global.config';
+import { UnauthorizedException } from '../exceptions/unauthorized.exception';
+import { RefreshToken } from './decorators/refresh-token.decorator';
+import { HasRefreshGuard } from './guards/has-refresh-token.guard';
+import { REFRESH_TOKEN_KEY } from './utils/refresh-token-key';
+import { ParseStringPipe } from 'src/shared/parse-string-pipe';
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieSerializeOptions = {
   signed: true,
@@ -79,9 +81,13 @@ export class AuthController {
   }
 
   @Post('protected/logout')
-  async logout(@Res({ passthrough: true }) response: FastifyReply) {
+  @UseGuards(HasRefreshGuard)
+  async logout(
+    @RefreshToken(ParseStringPipe) token: string,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ) {
     try {
-      await this.authService.logout('token');
+      await this.authService.logout(token);
       response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
     } catch (error) {
       response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
@@ -90,12 +96,14 @@ export class AuthController {
   }
 
   @Post('protected/refresh')
+  @UseGuards(HasRefreshGuard)
   @HttpResponse(refreshResponseSchema)
   async refresh(
+    @RefreshToken(ParseStringPipe) token: string,
     @Res({ passthrough: true }) response: FastifyReply,
   ): Promise<RefreshResponse> {
     try {
-      const { tokens, user } = await this.authService.refresh('token');
+      const { tokens, user } = await this.authService.refresh(token);
 
       response.setCookie(
         REFRESH_TOKEN_KEY,
@@ -106,7 +114,7 @@ export class AuthController {
       return { accessToken: tokens.access, user };
     } catch (error: unknown) {
       if (error instanceof UnauthorizedException) {
-        response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
+        // response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
       }
       throw error;
     }
