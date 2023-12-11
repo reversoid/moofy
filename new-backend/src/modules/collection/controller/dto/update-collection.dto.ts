@@ -1,12 +1,13 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
-export const createCollectionDtoSchema = z.object({
+export const updateCollectionDtoSchema = z.object({
   name: z.string().optional(),
   description: z.string().nullish(),
-  imageUrl: z.string().url().nullable(),
+  imageUrl: z.string().url().nullish(),
+  isPrivate: z.boolean().optional(),
 });
 
 export class UpdateCollectionDto extends createZodDto(
-  createCollectionDtoSchema,
+  updateCollectionDtoSchema,
 ) {}

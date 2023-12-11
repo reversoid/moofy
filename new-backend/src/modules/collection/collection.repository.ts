@@ -20,9 +20,16 @@ export class CollectionRepository extends PaginatedRepository {
     name,
     imageUrl,
     userId,
+    isPrivate,
   }: CreateCollectionProps): Promise<Collection> {
     return this.prismaService.list.create({
-      data: { name, description: description, imageUrl: imageUrl, userId },
+      data: {
+        name,
+        description: description,
+        imageUrl: imageUrl,
+        userId,
+        isPublic: !isPrivate,
+      },
       select: selectCollection,
     });
   }
@@ -39,10 +46,16 @@ export class CollectionRepository extends PaginatedRepository {
     description,
     imageUrl,
     name,
+    isPrivate,
   }: UpdateCollectionProps): Promise<Collection> {
     return this.prismaService.list.update({
       where: { id },
-      data: { description, imageUrl: imageUrl, name: name },
+      data: {
+        description,
+        imageUrl: imageUrl,
+        name: name,
+        isPublic: !isPrivate,
+      },
       select: selectCollection,
     });
   }

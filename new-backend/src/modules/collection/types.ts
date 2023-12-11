@@ -6,6 +6,7 @@ export type CreateCollectionProps = {
   description: string | null;
   imageUrl: string | null;
   userId: User['id'];
+  isPrivate: boolean;
 };
 
 export type UpdateCollectionProps = {
@@ -13,4 +14,5 @@ export type UpdateCollectionProps = {
   description?: string | null;
   imageUrl?: string | null;
   id: Collection['id'];
+  isPrivate?: boolean;
 };

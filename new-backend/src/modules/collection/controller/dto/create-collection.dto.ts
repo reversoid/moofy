@@ -5,6 +5,7 @@ export const createCollectionDtoSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   imageUrl: z.string().url().nullish(),
+  isPrivate: z.boolean(),
 });
 
 export class CreateCollectionDto extends createZodDto(

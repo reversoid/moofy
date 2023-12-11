@@ -47,13 +47,14 @@ export class CollectionController implements ICollectionController {
   @UseGuards(JwtAuthGuard)
   async createCollection(
     @AuthUser() user: User,
-    @Body() { description, imageUrl, name }: CreateCollectionDto,
+    @Body() { description, imageUrl, name, isPrivate }: CreateCollectionDto,
   ) {
     return this.collectionService.createCollection({
       userId: user.id,
       description,
       imageUrl: imageUrl ?? null,
       name,
+      isPrivate,
     });
   }
 
