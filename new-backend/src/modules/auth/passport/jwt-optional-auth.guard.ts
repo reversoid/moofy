@@ -1,10 +1,15 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private readonly userService: UserService) {
+  private userService: UserService = this.moduleRef.get(UserService, {
+    strict: false,
+  });
+
+  constructor(private moduleRef: ModuleRef) {
     super();
   }
 
