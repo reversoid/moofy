@@ -5,7 +5,7 @@ export class PaginatedRepository {
   private sqids = new Sqids();
 
   private createNextKey(value: number): string {
-    return this.sqids.encode([value])[0];
+    return this.sqids.encode([value]);
   }
 
   protected parseNextKey(key?: string | null): number | null {

@@ -1,14 +1,21 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
 import { CollectionCommentService } from '../../collection-comment.service';
 import { WrongCommentIdException } from '../../exceptions/wrong-comment-id.exception';
+import { ModuleRef } from '@nestjs/core';
 
+@Injectable()
 export class UserIsCommentCreator implements CanActivate {
-  constructor(private readonly commentService: CollectionCommentService) {}
+  commentService: CollectionCommentService = this.moduleRef.get(
+    CollectionCommentService,
+    { strict: false },
+  );
+
+  constructor(private readonly moduleRef: ModuleRef) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const user: User | null = request.raw['user'];
+    const user: User | null = request['user'];
     if (!user) {
       return false;
     }

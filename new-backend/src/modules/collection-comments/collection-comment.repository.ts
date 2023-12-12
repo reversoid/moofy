@@ -30,13 +30,14 @@ export class CollectionCommentRepository extends PaginatedRepository {
       where: {
         listId: collectionId,
         createdAt: parsedKey ? { lte: new Date(parsedKey) } : undefined,
-        deletedAt: { not: null },
+        deletedAt: null,
       },
       orderBy: {
         createdAt: 'desc',
       },
       take: limit + 1,
     });
+
     return super.getPaginatedData(comments, limit, 'createdAt');
   }
 
@@ -46,9 +47,9 @@ export class CollectionCommentRepository extends PaginatedRepository {
   ): Promise<boolean> {
     const comment = await this.prismaService.commentLike.findFirst({
       where: {
-        user: { id: userId },
+        userId: userId,
         commentId,
-        deletedAt: { not: null },
+        deletedAt: null,
       },
     });
     return Boolean(comment);
@@ -61,8 +62,8 @@ export class CollectionCommentRepository extends PaginatedRepository {
       select: {
         _count: {
           select: {
-            commentLike: { where: { deletedAt: { not: null } } },
-            otherComment: { where: { deletedAt: { not: null } } },
+            commentLike: { where: { deletedAt: null, commentId } },
+            otherComment: { where: { deletedAt: null, replyToId: commentId } },
           },
         },
       },
@@ -96,7 +97,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
   async getCommentById(commentId: Comment['id']): Promise<Comment | null> {
     const comment = await this.prismaService.comment.findUnique({
       select: selectComment,
-      where: { id: commentId, deletedAt: { not: null } },
+      where: { id: commentId, deletedAt: null },
     });
     return comment;
   }
@@ -138,6 +139,7 @@ export class CollectionCommentRepository extends PaginatedRepository {
       where: {
         commentId,
         userId,
+        deletedAt: null,
       },
     });
     if (!like) {
