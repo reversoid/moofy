@@ -29,7 +29,7 @@ import { getReviewsResponseSchema } from './responses/get-reviews.response';
 import { editReviewResponseSchema } from './responses/edit-review.response';
 
 @ApiTags('Collection reviews')
-@Controller('collection')
+@Controller('collections')
 export class CollectionReviewsController
   implements ICollectionReviewsController
 {
@@ -45,8 +45,10 @@ export class CollectionReviewsController
   ) {
     const review = await this.reviewService.createReview({
       userId: user.id,
-      ...dto,
-      listId: id,
+      filmId: dto.filmId,
+      description: dto.description,
+      score: dto.score,
+      collectionId: id,
     });
     return { review };
   }
@@ -54,7 +56,7 @@ export class CollectionReviewsController
   @Get(':id/reviews/:reviewId')
   @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
   @HttpResponse(getReviewResponseSchema)
-  async getReview(@Param('id', ParseIntPipe) id: number) {
+  async getReview(@Param('reviewId', ParseIntPipe) id: number) {
     const review = await this.reviewService.getReviewById(id);
     return { review };
   }
@@ -70,20 +72,20 @@ export class CollectionReviewsController
     return this.reviewService.getReviews(id, search, limit ?? 20, nextKey);
   }
 
-  @Patch(':id/reviews/reviewId')
+  @Patch(':id/reviews/:reviewId')
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
   @HttpResponse(editReviewResponseSchema)
   async editReview(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('reviewId', ParseIntPipe) id: number,
     @Body() dto: EditReviewDto,
   ) {
     const review = await this.reviewService.updateReview({ id, ...dto });
     return { review };
   }
 
-  @Delete(':id/reviews/reviewId')
+  @Delete(':id/reviews/:reviewId')
   @UseGuards(JwtAuthGuard, UserIsCollectionOwnerGuard)
-  deleteReview(@Param('id', ParseIntPipe) id: number) {
+  deleteReview(@Param('reviewId', ParseIntPipe) id: number) {
     return this.reviewService.deleteReview(id);
   }
 }

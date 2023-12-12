@@ -204,7 +204,7 @@ model Review {
 model ReviewMetadata {
   searchDocument Unsupported("tsvector") @map("search_document")
   review         Review                  @relation(fields: [reviewId], references: [id])
-  reviewId       Int                     @id @map("reviewId")
+  reviewId       Int                     @id @map("review_id")
 
   @@index([searchDocument], name: "search_review_document_idx", type: Gin)
   @@map("review_metadata")

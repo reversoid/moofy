@@ -6,7 +6,7 @@ export type CreateReviewProps = {
   score?: number | null;
   description?: string | null;
   filmId: string;
-  listId: Collection['id'];
+  collectionId: Collection['id'];
   userId: User['id'];
 };
 

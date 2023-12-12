@@ -17,7 +17,7 @@ export class CollectionReviewService {
   ) {}
 
   async createReview(props: CreateReviewProps) {
-    await this.validateReviewExistence(props.listId, props.filmId);
+    await this.validateReviewExistence(props.collectionId, props.filmId);
     await this.ensureFilmExists(props.filmId);
 
     return this.reviewRepository.createReview(props);
@@ -73,6 +73,7 @@ export class CollectionReviewService {
 
   private async ensureFilmExists(filmId: Film['id']) {
     const film = await this.filmService.getFilmById(filmId);
+
     if (!film) {
       throw new WrongFilmIdException();
     }

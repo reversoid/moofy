@@ -18,7 +18,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
     description,
     filmId,
     score,
-    listId,
+    collectionId: listId,
     userId,
   }: CreateReviewProps): Promise<Review> {
     return this.prismaService.review.create({
