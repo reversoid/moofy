@@ -119,8 +119,8 @@ export class CollectionRepository extends PaginatedRepository {
     collectionId: Collection['id'],
     userId: User['id'],
   ): Promise<boolean> {
-    const result = await this.prismaService.list.findUnique({
-      where: { id: collectionId, favoriteList: { some: { userId: userId } } },
+    const result = await this.prismaService.favoriteList.findFirst({
+      where: { userId, listId: collectionId, deletedAt: null },
       select: { id: true },
     });
     return Boolean(result);
@@ -167,9 +167,9 @@ export class CollectionRepository extends PaginatedRepository {
     collectionId: Collection['id'],
     userId: User['id'],
   ) {
-    await this.prismaService.favoriteList.update({
+    await this.prismaService.favoriteList.updateMany({
       data: { deletedAt: new Date() },
-      where: { id: collectionId, userId },
+      where: { listId: collectionId, userId, deletedAt: null },
     });
     return { id: collectionId };
   }

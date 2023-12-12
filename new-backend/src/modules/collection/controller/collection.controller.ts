@@ -14,11 +14,9 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
-import { addToFavoriteCollectionResponse } from './responses/add-favorite.response';
 import { createCollectionResponseSchema } from './responses/create-collection.response';
 import { getFullCollectionResponseSchema } from './responses/get-full-collection.response';
 import { likeCollectionResponseSchema } from './responses/like-collection.response';
-import { removeFromFavoritesCollectionResponse } from './responses/remove-favorite.response';
 import { unlikeCollectionResponseSchema } from './responses/unlike-collection.response';
 import { updateCollectionResponseSchema } from './responses/update-collection.response';
 import { ICollectionController } from './collection.controller.interface';
@@ -124,7 +122,6 @@ export class CollectionController implements ICollectionController {
   }
 
   @Put('favorites/:id')
-  @HttpResponse(addToFavoriteCollectionResponse)
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async addFavoriteCollection(
     @AuthUser() user: User,
@@ -134,7 +131,6 @@ export class CollectionController implements ICollectionController {
   }
 
   @Delete('favorites/:id')
-  @HttpResponse(removeFromFavoritesCollectionResponse)
   @UseGuards(JwtAuthGuard, UserCanViewCollectionGuard)
   async deleteFavoriteCollection(
     @AuthUser() user: User,

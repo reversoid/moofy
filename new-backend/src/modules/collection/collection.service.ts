@@ -26,6 +26,8 @@ import { CollectionRepository } from './collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
+import { AlreadyFavoriteCollectionException } from './exceptions/already-favorite-collection.exception';
+import { NotFavoriteCollectionException } from './exceptions/not-favorite-collection.exception';
 
 @Injectable()
 export class CollectionService {
@@ -172,11 +174,25 @@ export class CollectionService {
   }
 
   async deleteFromFavorite(id: Collection['id'], userId: User['id']) {
-    return this.collectionRepository.removeCollectionFromFavorites(id, userId);
+    const isFavorite = await this.collectionRepository.isCollectionFavorite(
+      id,
+      userId,
+    );
+    if (!isFavorite) {
+      throw new NotFavoriteCollectionException();
+    }
+    await this.collectionRepository.removeCollectionFromFavorites(id, userId);
   }
 
   async addToFavorite(id: Collection['id'], userId: User['id']) {
-    return this.collectionRepository.addCollectionToFavorites(id, userId);
+    const isFavorite = await this.collectionRepository.isCollectionFavorite(
+      id,
+      userId,
+    );
+    if (isFavorite) {
+      throw new AlreadyFavoriteCollectionException();
+    }
+    await this.collectionRepository.addCollectionToFavorites(id, userId);
   }
 
   async uploadImage(file: MultipartFile): Promise<{ link: string }> {

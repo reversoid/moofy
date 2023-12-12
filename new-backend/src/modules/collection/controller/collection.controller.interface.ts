@@ -1,8 +1,6 @@
-import { AddToFavoriteResponse } from './responses/add-favorite.response';
 import { CreateCollectionResponse } from './responses/create-collection.response';
 import { GetFullCollectionResponse } from './responses/get-full-collection.response';
 import { LikeCollectionResponse } from './responses/like-collection.response';
-import { RemoveFromFavoriteResponse } from './responses/remove-favorite.response';
 import { UnlikeCollectionResponse } from './responses/unlike-collection.response';
 import { UpdateCollectionResponse } from './responses/update-collection.response';
 import { UploadImageResponse } from './responses/upload-image.response';
@@ -15,7 +13,7 @@ export interface ICollectionController {
   deleteCollection(...args: any): Promise<void>;
   likeCollection(...args: any): Promise<LikeCollectionResponse>;
   unlikeCollection(...args: any): Promise<UnlikeCollectionResponse>;
-  addFavoriteCollection(...args: any): Promise<AddToFavoriteResponse>;
-  deleteFavoriteCollection(...args: any): Promise<RemoveFromFavoriteResponse>;
+  addFavoriteCollection(...args: any): Promise<void>;
+  deleteFavoriteCollection(...args: any): Promise<void>;
   markCollectionAsViewed(...args: any): Promise<void>;
 }
