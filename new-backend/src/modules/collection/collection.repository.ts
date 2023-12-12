@@ -80,7 +80,12 @@ export class CollectionRepository extends PaginatedRepository {
       select: {
         id: true,
         _count: {
-          select: { listLike: true, comment: true },
+          select: {
+            listLike: { where: { listId: collectionId, deletedAt: null } },
+            comment: {
+              where: { listId: collectionId, deletedAt: null },
+            },
+          },
         },
       },
     });
@@ -90,7 +95,7 @@ export class CollectionRepository extends PaginatedRepository {
 
     return {
       commentsAmount: result._count.comment,
-      likesAmount: result._count.comment,
+      likesAmount: result._count.listLike,
     };
   }
 
