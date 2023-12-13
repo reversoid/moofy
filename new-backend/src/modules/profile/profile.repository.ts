@@ -229,8 +229,8 @@ export class ProfileRepository extends PaginatedRepository {
       return null;
     }
     return {
-      followees: result._count.followed,
-      followers: result._count.followers,
+      followees: result._count.followers,
+      followers: result._count.followed,
     };
   }
 
