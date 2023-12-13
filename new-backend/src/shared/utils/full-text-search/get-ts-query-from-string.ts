@@ -14,4 +14,4 @@ export const getTsQueryFromString = (searchString: string) =>
     .map((c) => c.trim())
     .filter(Boolean)
     .map((word) => `${word}:*`)
-    .join(' & ');
+    .join(' | ');
