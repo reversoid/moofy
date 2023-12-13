@@ -164,12 +164,12 @@ export class ProfileRepository extends PaginatedRepository {
     };
   }
 
-  async isFollowingUser(userId: User['id'], userIdToCheck: User['id']) {
+  async hasExistingSubscription(from: User['id'], to: User['id']) {
     const result = await this.prismaService.subscription.findFirst({
       where: {
-        followerId: userId,
-        followedId: userIdToCheck,
-        deletedAt: { not: null },
+        followerId: from,
+        followedId: to,
+        deletedAt: null,
       },
     });
     return Boolean(result);

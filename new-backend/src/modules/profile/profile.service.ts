@@ -62,7 +62,10 @@ export class ProfileService {
   }
 
   async followUser(from: User['id'], to: User['id']): Promise<void> {
-    const isSubscribed = await this.profileRepository.isFollowingUser(from, to);
+    const isSubscribed = await this.profileRepository.hasExistingSubscription(
+      from,
+      to,
+    );
     if (isSubscribed) {
       throw new AlreadySubscribedException();
     }
