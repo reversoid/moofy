@@ -93,15 +93,18 @@ export class CollectionReviewRepository extends PaginatedRepository {
     const searchString = getTsQueryFromString(search);
 
     const reviews = await this.prismaService.$queryRaw`
-    SELECT * FROM review,
-    ts_rank(film_metadata.search_document || review_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
-    WHERE review.listId = ${collectionId} AND (film_metadata.search_document || review.search_document) @@ to_tsquery('simple', ${searchString})
-    JOIN review_metadata ON review_metadata.reviewId = review.id
-    JOIN film ON film.id = review.filmId
-    JOIN film_metadata ON film.metadata.filmId = film.id
+    SELECT review.*, 
+      ts_rank(film_metadata.search_document || review_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
+    FROM review
+    JOIN review_metadata ON review_metadata.review_id = review.id
+    JOIN film ON film.id = review.film_id
+    JOIN film_metadata ON film_metadata.film_id = film.id
+    WHERE review.list_id = ${collectionId} 
+      AND (film_metadata.search_document || review_metadata.search_document) @@ to_tsquery('simple', ${searchString})
     ORDER BY rank DESC
     LIMIT ${limit}
     `;
+    console.log(reviews);
 
     // TODO parse reviews
     return reviews as any;
