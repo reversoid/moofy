@@ -66,17 +66,19 @@ export class UnnoficialKpService implements IApiFilmService {
   }
 
   private convertDtoToFilm(dto: UnofficialKpFilmDto): Film | null {
-    if (!dto.kinopoiskId || !dto.nameRu || !dto.posterUrlPreview) {
+    const year = parseInt(dto.year);
+
+    if (!dto.nameRu || !dto.posterUrlPreview || isNaN(year)) {
       return null;
     }
 
     return {
-      id: String(dto.kinopoiskId),
+      id: String(dto.filmId),
       genres: dto.genres.map(({ genre }) => genre),
       name: dto.nameRu,
       posterPreviewUrl: dto.posterUrlPreview,
       posterUrl: dto.posterUrl,
-      year: dto.year,
+      year: year,
       type: dto.type,
     };
   }

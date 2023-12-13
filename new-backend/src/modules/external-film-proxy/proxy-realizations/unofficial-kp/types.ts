@@ -7,11 +7,10 @@ export enum UnofficialKpFilmType {
 }
 
 export type UnofficialKpFilmDto = {
-  kinopoiskId?: number;
-  filmId?: number;
+  filmId: number;
   nameRu: string;
   nameEn: string;
-  year: number;
+  year: string;
   posterUrl: string;
   posterUrlPreview: string;
   filmLength: string;
