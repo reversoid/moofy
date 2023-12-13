@@ -46,7 +46,6 @@ export class ProfileRepository extends PaginatedRepository {
   ): Promise<PaginatedData<Collection>> {
     const key = this.parseNextKey(nextKey);
     const dateKey = key && new Date(key);
-    console.log(key && new Date(key), '2023-12-13T19:13:36.488Z');
 
     const result = (await this.prismaService.$queryRaw`
         SELECT
