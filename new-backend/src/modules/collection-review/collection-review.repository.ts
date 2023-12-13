@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateReviewProps, UpdateReviewProps } from './types';
-import { Review, selectReview } from './models/review';
+import { Review, reviewSchema, selectReview } from './models/review';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Collection } from 'src/modules/collection/models/collection';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
@@ -92,8 +92,20 @@ export class CollectionReviewRepository extends PaginatedRepository {
   ): Promise<Review[]> {
     const searchString = getTsQueryFromString(search);
 
-    const reviews = await this.prismaService.$queryRaw`
-    SELECT review.*, 
+    const reviews = (await this.prismaService.$queryRaw`
+    SELECT 
+      review.id AS review_id,
+      review.created_at AS review_created_at,
+      review.updated_at AS review_updated_at,
+      review.description AS review_description,
+      review.score AS review_score,
+      film.id AS film_id,
+      film.genres AS film_genres,
+      film.name AS film_name,
+      film.poster_preview_url AS film_poster_preview_url,
+      film.poster_url AS film_poster_url,
+      film.type AS film_type,
+      film.year AS film_year,
       ts_rank(film_metadata.search_document || review_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
     FROM review
     JOIN review_metadata ON review_metadata.review_id = review.id
@@ -103,10 +115,49 @@ export class CollectionReviewRepository extends PaginatedRepository {
       AND (film_metadata.search_document || review_metadata.search_document) @@ to_tsquery('simple', ${searchString})
     ORDER BY rank DESC
     LIMIT ${limit}
-    `;
-    console.log(reviews);
+    `) as any[];
 
-    // TODO parse reviews
-    return reviews as any;
+    return this.parseReviews(reviews);
   }
+
+  private parseReviews(rawData: any[]): Review[] {
+    return rawData.map<Review>((data) =>
+      reviewSchema.parse({
+        id: data.review_id,
+        createdAt: data.review_created_at,
+        updatedAt: data.review_updated_at,
+        description: data.review_description,
+        film: {
+          id: data.film_id,
+          genres: data.film_genres,
+          name: data.film_name,
+          posterPreviewUrl: data.film_poster_preview_url,
+          posterUrl: data.film_poster_url,
+          type: data.film_type,
+          year: data.film_year,
+        },
+        score: data.review_score,
+      }),
+    );
+  }
+  // {
+  //   id: '327',
+  //   score: null,
+  //   description: null,
+  //   tags: null,
+  //   created_at: 2023-12-12T19:36:18.432Z,
+  //   deleted_at: null,
+  //   updated_at: 2023-12-12T19:36:18.432Z,
+  //   film_id: '327',
+  //   user_id: 1,
+  //   list_id: 9,
+  //   rank: 0.0607927106320858,
+  //   name: 'Крестный отец 2',
+  //   year: 1974,
+  //   type: 'FILM',
+  //   film_length: null,
+  //   poster_preview_url: 'https://kinopoiskapiunofficial.tech/images/posters/kp_small/327.jpg',
+  //   poster_url: 'https://kinopoiskapiunofficial.tech/images/posters/kp/327.jpg',
+  //   genres: [ 'драма', 'криминал' ]
+  // }
 }
