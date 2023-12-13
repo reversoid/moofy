@@ -1,7 +1,8 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { User, userSchema } from 'src/modules/user/models/user';
+import { User } from 'src/modules/user/models/user';
+import { z } from 'zod';
 
-const idSchema = userSchema.shape.id;
+const idSchema = z.coerce.number().int();
 
 export class UserIsProfileOwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
