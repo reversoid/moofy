@@ -46,7 +46,7 @@ export class ProfileRepository extends PaginatedRepository {
   ): Promise<PaginatedData<Collection>> {
     const key = this.parseNextKey(nextKey);
     const dateKey = key && new Date(key);
-    console.log(key && new Date(key));
+    console.log(key && new Date(key), '2023-12-13T19:13:36.488Z');
 
     const result = (await this.prismaService.$queryRaw`
         SELECT
@@ -73,6 +73,7 @@ export class ProfileRepository extends PaginatedRepository {
         AND l.deleted_at IS NULL
         AND u.deleted_at IS NULL
         AND l.updated_at <= COALESCE(${dateKey}, NOW())
+        ORDER BY l.updated_at DESC
         LIMIT ${limit + 1};
     `) as any[];
 
