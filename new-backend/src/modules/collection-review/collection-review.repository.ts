@@ -29,7 +29,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
 
   async getReviewById(id: Review['id']): Promise<Review | null> {
     return this.prismaService.review.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
       select: selectReview,
     });
   }
@@ -75,6 +75,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
       where: {
         listId: id,
         createdAt: parsedKey ? { lte: new Date(parsedKey) } : undefined,
+        deletedAt: null,
       },
       select: selectReview,
       orderBy: { createdAt: 'desc' },
