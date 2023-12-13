@@ -45,6 +45,8 @@ export class ProfileRepository extends PaginatedRepository {
     nextKey?: string,
   ): Promise<PaginatedData<Collection>> {
     const key = this.parseNextKey(nextKey);
+    const dateKey = key && new Date(key);
+    console.log(key && new Date(key));
 
     const result = (await this.prismaService.$queryRaw`
         SELECT
@@ -62,14 +64,15 @@ export class ProfileRepository extends PaginatedRepository {
           u.username as user_username
         FROM list l
         JOIN users u ON l.user_id = u.id
-        WHERE l.updated_at > (
+        WHERE l.updated_at > COALESCE((
             SELECT MAX(lv.created_at)
             FROM list_view lv
             WHERE lv.list_id = l.id AND lv.user_id = ${userId}
-        )
+        ), '1900-01-01')
+        AND l.is_public = TRUE
         AND l.deleted_at IS NULL
         AND u.deleted_at IS NULL
-        AND l.updated_at <= ${key ? new Date(key) : new Date()}
+        AND l.updated_at <= COALESCE(${dateKey}, NOW())
         LIMIT ${limit + 1};
     `) as any[];
 
@@ -104,11 +107,12 @@ export class ProfileRepository extends PaginatedRepository {
           COUNT(l.*) as count
         FROM list l
         JOIN users u ON l.user_id = u.id
-        WHERE l.updated_at > (
+        WHERE l.updated_at > COALESCE((
             SELECT MAX(lv.created_at)
             FROM list_view lv
             WHERE lv.list_id = l.id AND lv.user_id = ${userId}
-        )
+        ), '1900-01-01')
+        AND l.is_public = TRUE
         AND l.deleted_at IS NULL
         AND u.deleted_at IS NULL
     `) as [{ count: bigint }];

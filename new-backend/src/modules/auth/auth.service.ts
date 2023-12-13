@@ -22,7 +22,6 @@ export class AuthService {
     await this.comparePasswords(user, password);
 
     const tokens = await this.tokensService.generateTokens(user.id);
-    console.log('refresh_token', tokens.refresh);
 
     return { tokens, user };
   }
@@ -43,8 +42,6 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<TokensAndUser> {
-    console.log(refreshToken);
-
     const { id } = await this.tokensService.decodeRefreshToken(refreshToken);
 
     const user = await this.validateUserById(id);

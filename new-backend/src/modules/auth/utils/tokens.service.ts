@@ -50,12 +50,8 @@ export class TokensService {
     try {
       const data =
         await this.jwtService.verifyAsync<RefreshTokenPayload>(token);
-      console.log(data);
-
       return data;
     } catch (error) {
-      console.log(error);
-
       throw new UnauthorizedException();
     }
   }
