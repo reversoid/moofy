@@ -3,6 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserService } from 'src/modules/user/user.service';
 import { UnauthorizedException } from '../exceptions/unauthorized.exception';
 import { ModuleRef } from '@nestjs/core';
+import { userSchema } from 'src/modules/user/models/user';
+
+export const userIdSchema = userSchema.shape.id;
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -28,9 +31,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const request = context.switchToHttp().getRequest();
 
-    const userId = request.user;
+    const userId = request.user as unknown;
 
-    const user = await this.userService.getUserById(userId);
+    const numericUserId = userIdSchema.parse(userId);
+
+    const user = await this.userService.getUserById(numericUserId);
 
     request.user = user;
     return Boolean(user);

@@ -6,7 +6,7 @@ const idSchema = userSchema.shape.id;
 export class UserIsProfileOwnerGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const user: User | null = request.raw['user'];
+    const user: User | null = request['user'];
 
     const id = idSchema.parse(request.params['id']);
 

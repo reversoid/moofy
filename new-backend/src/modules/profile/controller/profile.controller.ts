@@ -28,11 +28,27 @@ import { UserIsNotProfileOwnerGuard } from './guards/user-is-not-profile-owner.g
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 import { NotFoundProfileException } from '../exceptions/not-found-profile-exception';
 import { ApiTags } from '@nestjs/swagger';
+import { getProfileResponseSchema } from './responses/get-profile.response';
 
 @Controller('profiles')
 @ApiTags('Profiles')
 export class ProfileController implements IProfileController {
   constructor(private readonly profileService: ProfileService) {}
+
+  @Get(':id')
+  @HttpResponse(getProfileResponseSchema)
+  @UseGuards(OptionalJwtAuthGuard)
+  async getProfile(
+    @AuthUser() user: User | null,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('limit', ParseIntPipe) limit: number = 20,
+  ) {
+    const profile = await this.profileService.getProfile(id, limit, user?.id);
+    if (!profile) {
+      throw new NotFoundProfileException();
+    }
+    return profile;
+  }
 
   @Get(':id/list-updates')
   @HttpResponse(getListUpdatesResponseSchema)
@@ -63,21 +79,6 @@ export class ProfileController implements IProfileController {
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
     return this.profileService.getCollections(user.id, limit ?? 20, nextKey);
-  }
-
-  @Get(':id')
-  @HttpResponse(getFolloweesResponseSchema)
-  @UseGuards(OptionalJwtAuthGuard)
-  async getProfile(
-    @AuthUser() user: User | null,
-    @Param('id', ParseIntPipe) id: number,
-    @Param('limit', ParseIntPipe) limit: number = 20,
-  ) {
-    const profile = await this.profileService.getProfile(id, limit, user?.id);
-    if (!profile) {
-      throw new NotFoundProfileException();
-    }
-    return profile;
   }
 
   @Patch(':id')
