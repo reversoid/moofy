@@ -113,14 +113,15 @@ export class CollectionReviewRepository extends PaginatedRepository {
     JOIN film_metadata ON film_metadata.film_id = film.id
     WHERE review.list_id = ${collectionId} 
       AND (film_metadata.search_document || review_metadata.search_document) @@ to_tsquery('simple', ${searchString})
+      AND review.deleted_at IS NULL
     ORDER BY rank DESC
     LIMIT ${limit}
     `) as any[];
 
-    return this.parseReviews(reviews);
+    return this.parseSearchReviews(reviews);
   }
 
-  private parseReviews(rawData: any[]): Review[] {
+  private parseSearchReviews(rawData: any[]): Review[] {
     return rawData.map<Review>((data) =>
       reviewSchema.parse({
         id: data.review_id,
@@ -137,27 +138,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
           year: data.film_year,
         },
         score: data.review_score,
-      }),
+      } satisfies Review),
     );
   }
-  // {
-  //   id: '327',
-  //   score: null,
-  //   description: null,
-  //   tags: null,
-  //   created_at: 2023-12-12T19:36:18.432Z,
-  //   deleted_at: null,
-  //   updated_at: 2023-12-12T19:36:18.432Z,
-  //   film_id: '327',
-  //   user_id: 1,
-  //   list_id: 9,
-  //   rank: 0.0607927106320858,
-  //   name: 'Крестный отец 2',
-  //   year: 1974,
-  //   type: 'FILM',
-  //   film_length: null,
-  //   poster_preview_url: 'https://kinopoiskapiunofficial.tech/images/posters/kp_small/327.jpg',
-  //   poster_url: 'https://kinopoiskapiunofficial.tech/images/posters/kp/327.jpg',
-  //   genres: [ 'драма', 'криминал' ]
-  // }
 }

@@ -50,7 +50,7 @@ export class ProfileController implements IProfileController {
     return profile;
   }
 
-  @Get(':id/list-updates')
+  @Get(':id/collections-updates')
   @HttpResponse(getListUpdatesResponseSchema)
   @UseGuards(JwtAuthGuard, UserIsProfileOwnerGuard)
   async getCollectionsUpdates(
@@ -64,7 +64,7 @@ export class ProfileController implements IProfileController {
     );
   }
 
-  @Get(':id/list-updates/amount')
+  @Get(':id/collections-updates/amount')
   @HttpResponse(getUpdatesAmountResponseSchema)
   @UseGuards(JwtAuthGuard, UserIsProfileOwnerGuard)
   async getAmountOfUpdates(@AuthUser() user: User) {

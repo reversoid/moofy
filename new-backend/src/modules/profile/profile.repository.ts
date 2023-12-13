@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   Collection,
+  collectionSchema,
   selectCollection,
 } from 'src/modules/collection/models/collection';
 import { User, selectUser } from 'src/modules/user/models/user';
@@ -43,43 +44,76 @@ export class ProfileRepository extends PaginatedRepository {
     limit: number,
     nextKey?: string,
   ): Promise<PaginatedData<Collection>> {
-    // TODO fix parsing query
     const key = this.parseNextKey(nextKey);
-    const paginationWhereClause = key
-      ? `AND l.updatedAt <= ${new Date(key).toISOString()}`
-      : '';
 
     const result = (await this.prismaService.$queryRaw`
-        SELECT l.*, u.*
-        FROM list l
-        JOIN users u ON l.userId = u.id
-        WHERE l.updatedAt > (
-            SELECT MAX(lv.createdAt)
-            FROM listView lv
-            WHERE lv.listId = l.id AND lv.userId = ${userId}
-        ) 
-        AND l.deletedAt IS NULL
-        ${paginationWhereClause}
-        LIMIT ${limit + 1};
-    `) as Collection[];
+        SELECT
+          l.id as collection_id,
+          l.created_at as collection_created_at,
+          l.description as collection_description,
+          l.is_public as collection_is_public,
+          l.name as collection_name,
+          l.updated_at as collection_updated_at,
 
-    return super.getPaginatedData(result, limit, 'updatedAt');
+          u.id as user_id,
+          u.created_at as user_created_at,
+          u.description as user_description,
+          u.image_url as user_image_url,
+          u.username as user_username
+        FROM list l
+        JOIN users u ON l.user_id = u.id
+        WHERE l.updated_at > (
+            SELECT MAX(lv.created_at)
+            FROM list_view lv
+            WHERE lv.list_id = l.id AND lv.user_id = ${userId}
+        )
+        AND l.deleted_at IS NULL
+        AND u.deleted_at IS NULL
+        AND l.updated_at <= ${key ? new Date(key) : new Date()}
+        LIMIT ${limit + 1};
+    `) as any[];
+
+    const collections = this.parseUnseenCollections(result);
+
+    return super.getPaginatedData(collections, limit, 'updatedAt');
+  }
+
+  private parseUnseenCollections(rawData: any[]): Collection[] {
+    return rawData.map<Collection>((data) =>
+      collectionSchema.parse({
+        id: data.collection_id,
+        createdAt: data.collection_created_at,
+        description: data.collection_description,
+        isPublic: data.collection_is_public,
+        name: data.collection_name,
+        updatedAt: data.collection_updated_at,
+        user: {
+          id: data.user_id,
+          createdAt: data.user_created_at,
+          description: data.user_description,
+          imageUrl: data.user_image_url,
+          username: data.user_username,
+        },
+      } satisfies Collection),
+    );
   }
 
   async getCollectionsUpdatesAmount(userId: User['id']): Promise<number> {
-    // TODO fix query
-    const count = (await this.prismaService.$queryRaw`
-    SELECT COUNT(*)
-    FROM list l
-    WHERE l.updatedAt > (
-      SELECT MAX(lv.createdAt)
-      FROM listView lv
-      WHERE lv.listId = l.id AND lv.userId = ${userId}
-    )
-    AND l.deletedAt IS NULL;
-  `) as [{ count: number }];
+    const result = (await this.prismaService.$queryRaw`
+        SELECT
+          COUNT(l.*) as count
+        FROM list l
+        JOIN users u ON l.user_id = u.id
+        WHERE l.updated_at > (
+            SELECT MAX(lv.created_at)
+            FROM list_view lv
+            WHERE lv.list_id = l.id AND lv.user_id = ${userId}
+        )
+        AND l.deleted_at IS NULL
+        AND u.deleted_at IS NULL
+    `) as [{ count: bigint }];
 
-    return count[0].count;
+    return Number(result[0].count);
   }
 
   async followUser(
