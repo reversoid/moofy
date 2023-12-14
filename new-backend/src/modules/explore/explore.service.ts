@@ -22,9 +22,13 @@ export class ExploreService {
   }
 
   async getPublicCollections(
-    search: string,
+    search: string | null,
     limit: number,
   ): Promise<PaginatedData<Collection>> {
+    if (!search) {
+      return this.collectionService.getTopPublicCollections(limit);
+    }
+
     return this.collectionService.searchPublicCollections(search, limit);
   }
 

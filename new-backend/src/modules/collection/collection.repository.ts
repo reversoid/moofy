@@ -1,13 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
-import { User, selectUser } from 'src/modules/user/models/user';
+import { User, selectUser, userSchema } from 'src/modules/user/models/user';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
-import { Collection, selectCollection } from './models/collection';
+import {
+  Collection,
+  collectionSchema,
+  selectCollection,
+} from './models/collection';
 import { CollectionSocialStats } from './models/collection-social-stats';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionLike } from 'src/modules/collection-comments/models/collection-like';
 import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
+
+const TOP_COLLECTIONS_COEFFS = {
+  likes: 3,
+  variousComments: 2,
+  reviewsWithDescription: 2,
+  reviews: 1,
+  lastUpdate: 2,
+  views: 1,
+};
 
 @Injectable()
 export class CollectionRepository extends PaginatedRepository {
@@ -234,17 +247,102 @@ export class CollectionRepository extends PaginatedRepository {
   ): Promise<Collection[]> {
     const searchString = getTsQueryFromString(search);
 
-    const collections = await this.prismaService.$queryRaw`
-    SELECT list.* FROM list,
-    ts_rank(list_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
-    JOIN list_metadata ON list_metadata.listId = list.id
-    WHERE (list_metadata.search_document) @@ to_tsquery('simple', ${searchString})
-    ORDER BY rank DESC
-    LIMIT ${limit}
-    `;
+    const collections = (await this.prismaService.$queryRaw`
+    SELECT
+        l.id AS collection_id,
+        l.name AS collection_name,
+        l.description AS collection_description,
+        l.created_at AS collection_created_at,
+        l.updated_at AS collection_updated_at,
+        l.is_public AS collection_is_public,
+        u.id AS user_id,
+        u.username AS user_username,
+        u.description AS user_description,
+        u.image_url AS user_image_url,
+        u.created_at AS user_created_at,
+        ts_rank(lm.search_document, to_tsquery('simple', ${searchString})) AS rank
+      FROM
+          list AS l
+      JOIN
+          users AS u ON l.user_id = u.id
+      JOIN 
+          list_metadata AS lm ON lm.list_id = l.id
+      WHERE
+        (lm.search_document) @@ to_tsquery('simple', ${searchString})
+        AND l.deleted_at IS NULL
+        AND
+          l.is_public = TRUE
+      ORDER BY
+          rank DESC
+      LIMIT ${limit};
+    `) as any[];
 
-    // TODO parse response
-    return collections as any;
+    return this.parseRawCollections(collections);
+  }
+
+  async getTopPublicCollections(limit: number): Promise<Collection[]> {
+    const rawData = (await this.prismaService.$queryRaw`
+      SELECT
+        l.id AS collection_id,
+        l.name AS collection_name,
+        l.description AS collection_description,
+        l.created_at AS collection_created_at,
+        l.updated_at AS collection_updated_at,
+        l.is_public AS collection_is_public,
+        u.id AS user_id,
+        u.username AS user_username,
+        u.description AS user_description,
+        u.image_url AS user_image_url,
+        u.created_at AS user_created_at,
+        (COALESCE(ll.likes_count, 0) * ${TOP_COLLECTIONS_COEFFS.likes}) +
+        (COALESCE(lv.views_count, 0) * ${TOP_COLLECTIONS_COEFFS.views}) +
+        (COALESCE(r.review_count, 0) * ${TOP_COLLECTIONS_COEFFS.reviews}) +
+        (COALESCE(rd.review_with_desc_count, 0) * ${TOP_COLLECTIONS_COEFFS.reviewsWithDescription}) +
+        (COALESCE(c.comment_count, 0) * ${TOP_COLLECTIONS_COEFFS.variousComments}) AS rank
+      FROM
+          list AS l
+      JOIN
+          users AS u ON l.user_id = u.id
+      LEFT JOIN
+          (SELECT list_id, COUNT(*) as likes_count FROM list_like WHERE deleted_at IS NULL GROUP BY list_id) ll ON l.id = ll.list_id
+      LEFT JOIN
+          (SELECT list_id, COUNT(*) as views_count FROM list_view WHERE deleted_at IS NULL GROUP BY list_id) lv ON l.id = lv.list_id
+      LEFT JOIN
+          (SELECT list_id, COUNT(*) as review_count FROM review WHERE deleted_at IS NULL GROUP BY list_id) r ON l.id = r.list_id
+      LEFT JOIN
+          (SELECT list_id, COUNT(*) as review_with_desc_count FROM review WHERE deleted_at IS NULL AND description IS NOT NULL GROUP BY list_id) rd ON l.id = rd.list_id
+      LEFT JOIN
+          (SELECT list_id, COUNT(*) as comment_count FROM comment WHERE deleted_at IS NULL GROUP BY list_id) c ON l.id = c.list_id
+      WHERE
+          l.deleted_at IS NULL
+        AND
+          l.is_public = TRUE
+      ORDER BY
+          rank DESC
+      LIMIT ${limit};
+    `) as any[];
+
+    return this.parseRawCollections(rawData);
+  }
+
+  private parseRawCollections(rawData: any[]): Collection[] {
+    return rawData.map<Collection>((data) =>
+      collectionSchema.parse({
+        id: data.collection_id,
+        name: data.collection_name,
+        description: data.collection_description,
+        createdAt: data.collection_created_at,
+        updatedAt: data.collection_updated_at,
+        isPublic: data.collection_is_public,
+        user: userSchema.parse({
+          id: data.user_id,
+          username: data.user_username,
+          description: data.user_description,
+          imageUrl: data.user_image_url,
+          createdAt: data.user_created_at,
+        } satisfies User),
+      } satisfies Collection),
+    );
   }
 
   async getCollectionLike(

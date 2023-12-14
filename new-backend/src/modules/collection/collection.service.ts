@@ -286,4 +286,13 @@ export class CollectionService {
     );
     return { items: collections, nextKey: null };
   }
+
+  async getTopPublicCollections(
+    limit: number,
+  ): Promise<PaginatedData<Collection>> {
+    const collections =
+      await this.collectionRepository.getTopPublicCollections(limit);
+
+    return { items: collections, nextKey: null };
+  }
 }

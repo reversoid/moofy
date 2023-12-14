@@ -24,7 +24,7 @@ export class ExploreController implements IExploreController {
   @Get('collections')
   @HttpResponse(getPublicCollectionsResponseSchema)
   async getPublicCollections(
-    @Query('search') search: string = '',
+    @Query('search') search: string | null = null,
     @Query('limit', ParseIntPipe) limit: number = 20,
   ) {
     return this.exploreService.getPublicCollections(search, limit);
