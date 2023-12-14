@@ -86,4 +86,18 @@ export class PersonalProfileController implements IPersonalProfileController {
   async getAmountOfUpdates(@AuthUser() user: User) {
     return this.profileService.getAmountOfUpdates(user.id);
   }
+
+  @Get('favorites')
+  @HttpResponse(getUpdatesAmountResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  getFavoriteCollections(
+    @AuthUser() user: User,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+  ) {
+    return this.profileService.getUserFavoriteCollections(
+      user.id,
+      limit ?? 20,
+      nextKey,
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import { GetCollectionsResponse } from './responses/get-collections.response';
+import { GetFavoriteCollectionsResponse } from './responses/get-favorite-collections.response';
 import { GetFolloweesResponse } from './responses/get-followees.response';
 import { GetFollowersResponse } from './responses/get-followers.response';
 import { GetListUpdatesResponse } from './responses/get-list-updates.response';
@@ -19,6 +20,8 @@ export interface IProfileController {
 
 export interface IPersonalProfileController {
   getCollections(...args: any): Promise<GetCollectionsResponse>;
+
+  getFavoriteCollections(...args: any): Promise<GetFavoriteCollectionsResponse>;
 
   getCollectionsUpdates(...args: any): Promise<GetListUpdatesResponse>;
 

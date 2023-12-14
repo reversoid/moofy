@@ -217,4 +217,16 @@ export class ProfileService {
   async getSubscription(id: Subscription['id']): Promise<Subscription | null> {
     return this.profileRepository.getSubscription(id);
   }
+
+  async getUserFavoriteCollections(
+    userId: User['id'],
+    limit: number,
+    nextKey?: string,
+  ) {
+    return this.collectionService.getUserFavoriteCollections(
+      userId,
+      limit,
+      nextKey,
+    );
+  }
 }
