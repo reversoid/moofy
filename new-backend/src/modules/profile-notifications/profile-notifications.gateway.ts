@@ -42,7 +42,6 @@ export class ProfileNotificationsGateway
   async handleConnection(client: Socket & { userId: number }) {
     const context = this.createWsExecutionContext(client);
     const canActivate = await this.wsGuard.canActivate(context);
-
     if (!canActivate) {
       client.disconnect();
       return;
@@ -96,9 +95,13 @@ export class ProfileNotificationsGateway
 
   private async sendDirectNotificationToUser(
     userId: number,
-    event: ProfileDirectNotification,
+    notification: ProfileDirectNotification,
   ) {
-    return this.sendNotificationToUser('notification:direct', userId, event);
+    return this.sendNotificationToUser(
+      'notification:direct',
+      userId,
+      notification,
+    );
   }
 
   private async sendSeenNotificationToUser(
@@ -125,6 +128,7 @@ export class ProfileNotificationsGateway
     event: unknown,
   ) {
     const ids = await this.socketService.getUserSocketIDs(userId);
+
     for (const id of ids) {
       const client = this.server.sockets.sockets.get(id);
       client?.emit(eventName, event);
