@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ProfileNotificationsRepository } from './profile-notifications.repository';
 
 import { User } from '../user/models/user';
@@ -11,6 +15,8 @@ import { ProfileNotification } from './models/profile-notification';
 import { ProfileEvent } from './models/profile-event';
 
 export class OutdatedEventException extends InternalServerErrorException {}
+
+export class SelfCreatedNotification extends BadRequestException {}
 
 @Injectable()
 export class ProfileNotificationsService {
@@ -25,6 +31,9 @@ export class ProfileNotificationsService {
     const users = await this.getUsersFromEvent(event);
     if (!users) {
       throw new OutdatedEventException();
+    }
+    if (users.userFrom.id === users.userTo.id) {
+      throw new SelfCreatedNotification();
     }
 
     const notification = this.profileNotificationsRepository.createNotification(

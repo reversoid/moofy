@@ -15,6 +15,7 @@ export class EventsService {
   ) {}
 
   async createUserEvent(dto: UserEventDto) {
+    // TODO make different topics
     const createdEvent = await this.eventRepository.createEvent(dto);
     this.rmqService.notify(CREATE_USER_EVENT_TOPIC, createdEvent);
   }
