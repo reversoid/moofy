@@ -272,7 +272,8 @@ export class ProfileRepository extends PaginatedRepository {
     };
   }
 
-  async getTopUsers(limit: number, forUserId?: User['id']): Promise<User[]> {
+  async getTopUsers(limit: number, forUserId: User['id']): Promise<User[]> {
+    // TODO make for optional user id
     const rawUsers = (await this.prismaService.$queryRaw`
     SELECT 
       u.id AS user_id,
@@ -282,8 +283,8 @@ export class ProfileRepository extends PaginatedRepository {
       u.created_at AS user_created_at,
       (COUNT(DISTINCT r.id) * ${topUsersCoeffs.reviews} + COUNT(DISTINCT s.id) * ${topUsersCoeffs.followers}) as rank
     FROM users AS u
-    LEFT JOIN review AS r ON r.user_id = u.id
-    LEFT JOIN subscription AS s ON s.followed_id = u.id
+    JOIN review AS r ON r.user_id = u.id
+    JOIN subscription AS s ON s.followed_id = u.id
     WHERE u.deleted_at IS NULL
       AND u.id NOT IN (SELECT followed_id FROM subscription WHERE follower_id = ${forUserId})
     GROUP BY u.id
@@ -309,16 +310,22 @@ export class ProfileRepository extends PaginatedRepository {
   async searchUsers(search: string, limit: number): Promise<User[]> {
     const searchString = getTsQueryFromString(search);
 
-    const users = await this.prismaService.$queryRaw`
-    SELECT u.* FROM users AS u,
-    ts_rank(user_metadata.search_document, to_tsquery('simple', ${searchString})) AS rank
-    JOIN user_metadata ON user_metadata.userId = u.id
-    WHERE (user_metadata.search_document) @@ to_tsquery('simple', ${searchString})
-    ORDER BY rank DESC
-    LIMIT ${limit}
-    `;
+    const rawUsers = (await this.prismaService.$queryRaw`
+      SELECT 
+        u.id AS user_id,
+        u.username AS user_username,
+        u.description AS user_description,
+        u.image_url AS user_image_url,
+        u.created_at AS user_created_at,
+        ts_rank(um.username_search_document, to_tsquery('simple', ${searchString})) AS rank
+      FROM users AS u
+      JOIN user_metadata AS um ON um.user_id = u.id
+      WHERE (um.username_search_document) @@ to_tsquery('simple', ${searchString})
+        AND u.deleted_at IS NULL
+      ORDER BY rank DESC
+      LIMIT ${limit};
+      `) as any[];
 
-    // TODO parse users
-    return users as any;
+    return this.parseRawUsers(rawUsers);
   }
 }

@@ -172,7 +172,7 @@ export class ProfileService {
 
   async getTopProfiles(
     limit: number,
-    forUserId?: User['id'],
+    forUserId: User['id'],
   ): Promise<PaginatedData<ShortProfile>> {
     const users = await this.profileRepository.getTopUsers(limit, forUserId);
     if (forUserId) {

@@ -34,7 +34,7 @@ export class ExploreService {
 
   async getTopProfiles(
     limit: number,
-    forUserId?: User['id'],
+    forUserId: User['id'],
   ): Promise<PaginatedData<ShortProfile>> {
     return this.profileService.getTopProfiles(limit, forUserId);
   }
