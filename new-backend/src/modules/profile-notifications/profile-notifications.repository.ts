@@ -48,7 +48,7 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
   async markNotificationAsSeen(
     notificationId: ProfileNotification['id'],
   ): Promise<ProfileNotification | null> {
-    const notification = await this.findNotificationByEventId(notificationId);
+    const notification = await this.getNotificationById(notificationId);
 
     const seenDate = new Date();
     if (notification) {
@@ -114,9 +114,9 @@ export class ProfileNotificationsRepository extends PaginatedRepository {
     };
   }
 
-  async getAmountOfUnseenEvents(userId: User['id']): Promise<number> {
+  async getAmountOfUnseenNotifications(userId: User['id']): Promise<number> {
     return this.prismaService.notification.count({
-      where: { seenAt: null, toUserId: userId },
+      where: { seenAt: null, toUserId: userId, event: { deletedAt: null } },
     });
   }
 

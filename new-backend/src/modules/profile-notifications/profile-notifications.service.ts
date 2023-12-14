@@ -60,7 +60,9 @@ export class ProfileNotificationsService {
   }
 
   async getAmountOfUnseenNotification(userId: User['id']): Promise<number> {
-    return this.profileNotificationsRepository.getAmountOfUnseenEvents(userId);
+    return this.profileNotificationsRepository.getAmountOfUnseenNotifications(
+      userId,
+    );
   }
 
   async markAllNotificationsAsSeen(userId: User['id']): Promise<void> {
@@ -75,7 +77,7 @@ export class ProfileNotificationsService {
     type: 'all' | 'seen' | 'unseen',
     nextKey?: string,
   ): Promise<PaginatedData<ProfileDirectNotification>> {
-    const paginatedEvents =
+    const paginatedNotifications =
       await this.profileNotificationsRepository.getUserNotifications(
         id,
         limit,
@@ -84,11 +86,11 @@ export class ProfileNotificationsService {
       );
 
     const directNotifications = await Promise.all(
-      paginatedEvents.items.map((n) => this.getDirectNotification(n)),
+      paginatedNotifications.items.map((n) => this.getDirectNotification(n)),
     );
 
     return {
-      nextKey: paginatedEvents.nextKey,
+      nextKey: paginatedNotifications.nextKey,
       items: directNotifications.filter(
         (n) => n !== null,
       ) as ProfileDirectNotification[],
