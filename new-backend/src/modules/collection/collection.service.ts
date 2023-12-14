@@ -142,7 +142,7 @@ export class CollectionService {
       throw new WrongCollectionIdException();
     }
 
-    this.eventsService.cancelUserEvent({
+    this.eventsService.createUserEvent({
       targetId: like.id,
       type: 'LIST_LIKED',
     });
