@@ -13,6 +13,7 @@ import { Subscription } from './models/subscription';
 import { EventsService } from '../events/events.service';
 import { Profile } from './models/profile';
 import { ProfileSocialStats } from './models/profile-social-stats';
+import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 
 @Injectable()
 export class ProfileService {
@@ -41,7 +42,7 @@ export class ProfileService {
     return { amount };
   }
 
-  async getCollections(
+  async getAllUserCollections(
     userId: User['id'],
     limit: number,
     nextKey?: string,
@@ -110,10 +111,10 @@ export class ProfileService {
     userId: User['id'],
     limit: number,
     forUserId?: User['id'],
-  ): Promise<Profile | null> {
+  ): Promise<Profile> {
     const user = await this.userService.getUserById(userId);
     if (!user) {
-      return null;
+      throw new NotFoundProfileException();
     }
 
     const profile: ShortProfile = forUserId
@@ -135,7 +136,7 @@ export class ProfileService {
     ]);
 
     if (!stats) {
-      return null;
+      throw new NotFoundProfileException();
     }
 
     return {

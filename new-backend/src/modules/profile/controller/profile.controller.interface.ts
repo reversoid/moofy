@@ -6,15 +6,7 @@ import { GetProfileResponse } from './responses/get-profile.response';
 import { GetUpdatesAmountResponse } from './responses/get-updates-amount.response';
 
 export interface IProfileController {
-  getCollectionsUpdates(...args: any): Promise<GetListUpdatesResponse>;
-
-  getAmountOfUpdates(...args: any): Promise<GetUpdatesAmountResponse>;
-
-  getCollections(...args: any): Promise<GetCollectionsResponse>;
-
   getProfile(...args: any): Promise<GetProfileResponse>;
-
-  editProfile(...args: any): Promise<void>;
 
   followUser(...args: any): Promise<void>;
 
@@ -23,4 +15,16 @@ export interface IProfileController {
   getFollowers(...args: any): Promise<GetFollowersResponse>;
 
   getFollowees(...args: any): Promise<GetFolloweesResponse>;
+}
+
+export interface IPersonalProfileController {
+  getCollections(...args: any): Promise<GetCollectionsResponse>;
+
+  getCollectionsUpdates(...args: any): Promise<GetListUpdatesResponse>;
+
+  getAmountOfUpdates(...args: any): Promise<GetUpdatesAmountResponse>;
+
+  editProfile(...args: any): Promise<void>;
+
+  getProfile(...args: any): Promise<GetProfileResponse>;
 }

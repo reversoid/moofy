@@ -6,9 +6,10 @@ import { EventsModule } from '../events/events.module';
 import { CollectionModule } from '../collection/collection.module';
 import { UserModule } from '../user/user.module';
 import { PrismaService } from 'src/shared/utils/prisma-service';
+import { PersonalProfileController } from './controller/personal-profile.controller';
 
 @Module({
-  controllers: [ProfileController],
+  controllers: [ProfileController, PersonalProfileController],
   providers: [ProfileService, ProfileRepository, PrismaService],
   imports: [EventsModule, CollectionModule, UserModule],
   exports: [ProfileService],

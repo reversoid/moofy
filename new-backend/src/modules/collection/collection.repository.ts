@@ -184,7 +184,7 @@ export class CollectionRepository extends PaginatedRepository {
     const data = await this.prismaService.list.findMany({
       where: {
         userId,
-        deletedAt: { not: null },
+        deletedAt: null,
         updatedAt: key ? { lte: new Date(key) } : undefined,
         isPublic:
           type === 'private' ? false : type === 'public' ? true : undefined,

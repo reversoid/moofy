@@ -17,7 +17,7 @@ export class UserRepository {
 
   async getUserById(id: User['id']): Promise<User | null> {
     return this.prismaService.users.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
       select: selectUser,
     });
   }
