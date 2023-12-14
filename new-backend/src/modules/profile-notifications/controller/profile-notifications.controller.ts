@@ -12,7 +12,7 @@ import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { User } from '../../user/models/user';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { ProfileNotificationsService } from '../profile-notifications.service';
-import { UserCanAccessEventGuard } from '../guards/user-can-access-guard';
+import { UserCanAccessNotificationGuard } from '../guards/user-can-access-guard';
 import { IProfileNotificationsController } from './interface';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { getEventsResponseSchema } from './responses/get-events.response';
@@ -92,7 +92,7 @@ export class ProfileNotificationsController
   }
 
   @Patch('unseen/:id')
-  @UseGuards(JwtAuthGuard, UserCanAccessEventGuard)
+  @UseGuards(JwtAuthGuard, UserCanAccessNotificationGuard)
   async markNotificationAsSeen(@Param('id', ParseUUIDPipe) eventId: string) {
     const notification =
       await this.notificationsService.markNotificationAsSeen(eventId);

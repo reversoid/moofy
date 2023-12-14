@@ -57,6 +57,14 @@ export class ProfileNotificationsService {
     return notification;
   }
 
+  async getNotificationById(
+    notificationId: ProfileNotification['id'],
+  ): Promise<ProfileNotification | null> {
+    return this.profileNotificationsRepository.getNotificationById(
+      notificationId,
+    );
+  }
+
   async markNotificationAsSeen(
     notificationId: ProfileNotification['id'],
   ): Promise<ProfileNotification | null> {
