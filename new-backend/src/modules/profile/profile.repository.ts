@@ -4,7 +4,7 @@ import {
   collectionSchema,
   selectCollection,
 } from 'src/modules/collection/models/collection';
-import { User, selectUser } from 'src/modules/user/models/user';
+import { User, selectUser, userSchema } from 'src/modules/user/models/user';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
 import { PrismaService } from 'src/shared/utils/prisma-service';
@@ -273,27 +273,37 @@ export class ProfileRepository extends PaginatedRepository {
   }
 
   async getTopUsers(limit: number, forUserId?: User['id']): Promise<User[]> {
-    const users = await this.prismaService.$queryRaw`
-    SELECT u.*, 
-           (COUNT(DISTINCT review.id) * ${
-             topUsersCoeffs.reviews
-           } + COUNT(DISTINCT subscription.id) * ${
-             topUsersCoeffs.followers
-           }) as rank
+    const rawUsers = (await this.prismaService.$queryRaw`
+    SELECT 
+      u.id AS user_id,
+      u.username AS user_username,
+      u.description AS user_description,
+      u.image_url AS user_image_url,
+      u.created_at AS user_created_at,
+      (COUNT(DISTINCT r.id) * ${topUsersCoeffs.reviews} + COUNT(DISTINCT s.id) * ${topUsersCoeffs.followers}) as rank
     FROM users AS u
-    LEFT JOIN review ON review.userId = u.id
-    LEFT JOIN subscription ON subscription.followedId = u.id
-    ${
-      forUserId
-        ? `WHERE u.id NOT IN (SELECT followedId FROM subscription WHERE followerId = ${forUserId})`
-        : ''
-    }
+    LEFT JOIN review AS r ON r.user_id = u.id
+    LEFT JOIN subscription AS s ON s.followed_id = u.id
+    WHERE u.deleted_at IS NULL
+      AND u.id NOT IN (SELECT followed_id FROM subscription WHERE follower_id = ${forUserId})
     GROUP BY u.id
     ORDER BY rank DESC
     LIMIT ${limit}
-    `;
+    `) as any[];
 
-    return users as any;
+    return this.parseRawUsers(rawUsers);
+  }
+
+  private parseRawUsers(rawData: any[]): User[] {
+    return rawData.map<User>((data) =>
+      userSchema.parse({
+        id: data.user_id,
+        username: data.user_username,
+        description: data.user_description,
+        imageUrl: data.user_image_url,
+        createdAt: data.user_created_at,
+      } satisfies User),
+    );
   }
 
   async searchUsers(search: string, limit: number): Promise<User[]> {
