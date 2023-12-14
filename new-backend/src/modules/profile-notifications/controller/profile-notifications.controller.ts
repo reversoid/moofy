@@ -100,6 +100,7 @@ export class ProfileNotificationsController
     this.rmqService.notify(PROFILE_SEEN_NOTIFICATION_TOPIC, notification);
   }
 
+  // TODO if needed, it should use several topics
   @RMQRoute(CREATE_USER_EVENT_TOPIC)
   async createNotification(message: UserEvent) {
     if (!isAllowedProfileEvent(message)) {
