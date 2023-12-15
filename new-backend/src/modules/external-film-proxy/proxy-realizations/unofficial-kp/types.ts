@@ -6,8 +6,7 @@ export enum UnofficialKpFilmType {
   VIDEO = 'VIDEO',
 }
 
-export type UnofficialKpFilmDto = {
-  filmId: number;
+type UnofficialKpFilmBaseDto = {
   nameRu: string;
   nameEn: string;
   year: string;
@@ -17,3 +16,11 @@ export type UnofficialKpFilmDto = {
   genres: { genre: string }[];
   type: UnofficialKpFilmType;
 };
+
+export interface SearchUnofficialKpFilmDto extends UnofficialKpFilmBaseDto {
+  filmId: number;
+}
+
+export interface UnofficialKpFilmDto extends UnofficialKpFilmBaseDto {
+  kinopoiskId: number;
+}

@@ -6,7 +6,7 @@ import { ConfigType } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { ApiKeyRotator } from '../../utils/api-key-rotator';
 import { catchError, lastValueFrom, map, of, throwError } from 'rxjs';
-import { UnofficialKpFilmDto } from './types';
+import { SearchUnofficialKpFilmDto, UnofficialKpFilmDto } from './types';
 
 @Injectable()
 export class UnnoficialKpService implements IApiFilmService {
@@ -41,7 +41,7 @@ export class UnnoficialKpService implements IApiFilmService {
   searchFilmsByName(name: string): Promise<Film[]> {
     return lastValueFrom(
       this.httpService
-        .get<{ films: UnofficialKpFilmDto[] }>(
+        .get<{ films: SearchUnofficialKpFilmDto[] }>(
           `${this.baseUrl}/v2.1/films/search-by-keyword`,
           {
             params: {
@@ -65,15 +65,27 @@ export class UnnoficialKpService implements IApiFilmService {
     return this.keyRotator.currentKey;
   }
 
-  private convertDtoToFilm(dto: UnofficialKpFilmDto): Film | null {
+  private convertDtoToFilm(
+    dto: SearchUnofficialKpFilmDto | UnofficialKpFilmDto,
+  ): Film | null {
     const year = parseInt(dto.year);
 
     if (!dto.nameRu || !dto.posterUrlPreview || isNaN(year)) {
       return null;
     }
 
+    let id: null | string = null;
+    if (this.isSearchDto(dto)) {
+      id = dto.filmId ? String(dto.filmId) : '';
+    } else {
+      id = dto.kinopoiskId ? String(dto.kinopoiskId) : '';
+    }
+    if (!id) {
+      return null;
+    }
+
     return {
-      id: String(dto.filmId),
+      id,
       genres: dto.genres.map(({ genre }) => genre),
       name: dto.nameRu,
       posterPreviewUrl: dto.posterUrlPreview,
@@ -81,5 +93,11 @@ export class UnnoficialKpService implements IApiFilmService {
       year: year,
       type: dto.type,
     };
+  }
+
+  private isSearchDto(
+    dto: SearchUnofficialKpFilmDto | UnofficialKpFilmDto,
+  ): dto is SearchUnofficialKpFilmDto {
+    return Boolean((dto as SearchUnofficialKpFilmDto).filmId);
   }
 }
