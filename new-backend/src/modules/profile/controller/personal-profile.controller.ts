@@ -19,6 +19,7 @@ import { getListUpdatesResponseSchema } from './responses/get-list-updates.respo
 import { getUpdatesAmountResponseSchema } from './responses/get-updates-amount.response';
 import { EditProfileDto } from './dto/edit-profile.dto';
 import { getProfileResponseSchema } from './responses/get-profile.response';
+import { getFavoriteCollectionsResponseSchema } from './responses/get-favorite-collections.response';
 
 @Controller('profile')
 export class PersonalProfileController implements IPersonalProfileController {
@@ -87,8 +88,8 @@ export class PersonalProfileController implements IPersonalProfileController {
     return this.profileService.getAmountOfUpdates(user.id);
   }
 
-  @Get('favorites')
-  @HttpResponse(getUpdatesAmountResponseSchema)
+  @Get('collections/favorites')
+  @HttpResponse(getFavoriteCollectionsResponseSchema)
   @UseGuards(JwtAuthGuard)
   getFavoriteCollections(
     @AuthUser() user: User,
