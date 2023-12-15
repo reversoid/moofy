@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Query,
@@ -20,6 +21,7 @@ import { getUpdatesAmountResponseSchema } from './responses/get-updates-amount.r
 import { EditProfileDto } from './dto/edit-profile.dto';
 import { getProfileResponseSchema } from './responses/get-profile.response';
 import { getFavoriteCollectionsResponseSchema } from './responses/get-favorite-collections.response';
+import { getLatestUpdatedCollectionsResponseSchema } from './responses/get-latest-updated-collections.response';
 
 @Controller('profile')
 export class PersonalProfileController implements IPersonalProfileController {
@@ -67,7 +69,7 @@ export class PersonalProfileController implements IPersonalProfileController {
     );
   }
 
-  @Get('collections-updates')
+  @Get('collections/updates')
   @HttpResponse(getListUpdatesResponseSchema)
   @UseGuards(JwtAuthGuard)
   async getCollectionsUpdates(
@@ -81,7 +83,23 @@ export class PersonalProfileController implements IPersonalProfileController {
     );
   }
 
-  @Get('collections-updates/amount')
+  @Get('collections/latest-updated')
+  @HttpResponse(getLatestUpdatedCollectionsResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  async getLatestUpdatedCollections(
+    @AuthUser() user: User,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+    @Query('excludeEmpty', ParseBoolPipe) excludeEmpty: boolean,
+  ) {
+    return this.profileService.getLatestUpdatedCollections(
+      user.id,
+      limit ?? 20,
+      excludeEmpty,
+      nextKey,
+    );
+  }
+
+  @Get('collections/updates/amount')
   @HttpResponse(getUpdatesAmountResponseSchema)
   @UseGuards(JwtAuthGuard)
   async getAmountOfUpdates(@AuthUser() user: User) {

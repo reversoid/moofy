@@ -45,6 +45,29 @@ export class ProfileService {
     };
   }
 
+  async getLatestUpdatedCollections(
+    userId: User['id'],
+    limit: number,
+    excludeEmptyCollections: boolean,
+    nextKey?: string,
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    const latestCollections =
+      await this.profileRepository.getLatestUpdatedCollections(
+        userId,
+        limit,
+        excludeEmptyCollections,
+        nextKey,
+      );
+
+    return {
+      nextKey: latestCollections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        latestCollections.items,
+        userId,
+      ),
+    };
+  }
+
   async getAmountOfUpdates(userId: User['id']): Promise<{ amount: number }> {
     const amount =
       await this.profileRepository.getCollectionsUpdatesAmount(userId);

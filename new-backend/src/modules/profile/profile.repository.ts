@@ -295,6 +295,29 @@ export class ProfileRepository extends PaginatedRepository {
     return this.parseRawUsers(rawUsers);
   }
 
+  async getLatestUpdatedCollections(
+    userId: User['id'],
+    limit: number,
+    excludeEmptyCollections: boolean,
+    nextKey?: string,
+  ): Promise<PaginatedData<Collection>> {
+    const key = super.parseNextKey(nextKey);
+
+    const data = await this.prismaService.list.findMany({
+      where: {
+        deletedAt: null,
+        isPublic: true,
+        user: { followers: { some: { id: userId } } },
+        updatedAt: key ? { lte: new Date(key) } : undefined,
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: limit + 1,
+      select: selectCollection,
+    });
+
+    return super.getPaginatedData(data, limit, 'updatedAt');
+  }
+
   private parseRawUsers(rawData: any[]): User[] {
     return rawData.map<User>((data) =>
       userSchema.parse({
