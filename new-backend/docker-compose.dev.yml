@@ -8,7 +8,8 @@ services:
       POSTGRES_USER: '${POSTGRES_USER}'
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
     ports:
-      - 5432:5432
+      - 5433:5433
+    command: -p 5433
 
   redis-db:
     image: redis:7.0.5-alpine
