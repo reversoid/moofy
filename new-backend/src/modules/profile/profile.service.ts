@@ -3,7 +3,6 @@ import { User } from '../user/models/user';
 import { EditProfileProps } from './types';
 import { CollectionService } from '../collection/collection.service';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Collection } from '../collection/models/collection';
 import { ShortProfile } from './models/short-profile';
 import { UserService } from '../user/user.service';
 import { ProfileRepository } from './profile.repository';
@@ -14,6 +13,7 @@ import { EventsService } from '../events/events.service';
 import { Profile } from './models/profile';
 import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
+import { CollectionWithInfo } from '../collection/models/collection-with-info';
 
 @Injectable()
 export class ProfileService {
@@ -28,12 +28,21 @@ export class ProfileService {
     userId: User['id'],
     limit: number,
     nextKey?: string,
-  ): Promise<PaginatedData<Collection>> {
-    return this.profileRepository.getUnseenCollectionsFromFollowees(
-      userId,
-      limit,
-      nextKey,
-    );
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    const updatedCollections =
+      await this.profileRepository.getUnseenCollectionsFromFollowees(
+        userId,
+        limit,
+        nextKey,
+      );
+
+    return {
+      nextKey: updatedCollections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        updatedCollections.items,
+        userId,
+      ),
+    };
   }
 
   async getAmountOfUpdates(userId: User['id']): Promise<{ amount: number }> {
@@ -46,13 +55,20 @@ export class ProfileService {
     userId: User['id'],
     limit: number,
     nextKey?: string,
-  ): Promise<PaginatedData<Collection>> {
-    return this.collectionService.getUserCollections(
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    const collections = await this.collectionService.getUserCollections(
       userId,
       limit,
       'all',
       nextKey,
     );
+    return {
+      nextKey: collections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        collections.items,
+        userId,
+      ),
+    };
   }
 
   async editProfile(
@@ -110,7 +126,7 @@ export class ProfileService {
   async getProfile(
     userId: User['id'],
     limit: number,
-    forUserId?: User['id'],
+    forUserId: User['id'] | null,
   ): Promise<Profile> {
     const user = await this.userService.getUserById(userId);
     if (!user) {
@@ -141,8 +157,23 @@ export class ProfileService {
 
     return {
       ...profile,
-      collections,
-      favoriteCollections: favCollections ?? undefined,
+      collections: {
+        nextKey: collections.nextKey,
+        items: await this.collectionService.getInfoForManyCollections(
+          collections.items,
+          forUserId,
+        ),
+      },
+      favoriteCollections:
+        isOwner && favCollections
+          ? {
+              nextKey: favCollections.nextKey,
+              items: await this.collectionService.getInfoForManyCollections(
+                favCollections.items,
+                forUserId,
+              ),
+            }
+          : undefined,
       socialStats: stats ?? { followees: 0, followers: 0 },
     };
   }
@@ -222,11 +253,20 @@ export class ProfileService {
     userId: User['id'],
     limit: number,
     nextKey?: string,
-  ) {
-    return this.collectionService.getUserFavoriteCollections(
-      userId,
-      limit,
-      nextKey,
-    );
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    const favCollections =
+      await this.collectionService.getUserFavoriteCollections(
+        userId,
+        limit,
+        nextKey,
+      );
+
+    return {
+      nextKey: favCollections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        favCollections.items,
+        userId,
+      ),
+    };
   }
 }

@@ -36,7 +36,11 @@ export class ProfileController implements IProfileController {
     @Param('id', ParseIntPipe) id: number,
     @Query('limit', ParseIntPipe) limit: number = 20,
   ) {
-    const profile = await this.profileService.getProfile(id, limit, user?.id);
+    const profile = await this.profileService.getProfile(
+      id,
+      limit,
+      user?.id ?? null,
+    );
     return profile;
   }
 

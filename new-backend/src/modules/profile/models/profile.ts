@@ -3,14 +3,16 @@ import { z } from 'zod';
 import { profileAdditionalInfoSchema } from './profile-additional-info';
 import { profileSocialStatsSchema } from './profile-social-stats';
 import { createPaginatedDataSchema } from 'src/shared/utils/pagination/paginated-data';
-import { collectionSchema } from 'src/modules/collection/models/collection';
+import { collectionWithInfoSchema } from 'src/modules/collection/models/collection-with-info';
 
 export const profileSchema = z.object({
   user: userSchema,
   additionalInfo: profileAdditionalInfoSchema,
   socialStats: profileSocialStatsSchema,
-  collections: createPaginatedDataSchema(collectionSchema),
-  favoriteCollections: createPaginatedDataSchema(collectionSchema).optional(),
+  collections: createPaginatedDataSchema(collectionWithInfoSchema),
+  favoriteCollections: createPaginatedDataSchema(
+    collectionWithInfoSchema,
+  ).optional(),
 });
 
 export type Profile = z.infer<typeof profileSchema>;

@@ -97,7 +97,17 @@ export class CollectionService {
     return { ...collectionWithInfo, reviews };
   }
 
-  private async getInfoForCollection(
+  async getInfoForManyCollections(
+    collections: Collection[],
+    userId: User['id'] | null,
+  ): Promise<CollectionWithInfo[]> {
+    // TODO optimize
+    return Promise.all(
+      collections.map((c) => this.getInfoForCollection(c, userId)),
+    );
+  }
+
+  async getInfoForCollection(
     collection: Collection,
     userId: User['id'] | null,
   ): Promise<CollectionWithInfo> {
