@@ -19,7 +19,7 @@ import {
 } from 'src/shared/utils/s3/s3';
 import { WrongImageFormatException } from './exceptions/wrong-image-format.exception';
 import { TooLargeImageException } from './exceptions/too-large-image.exception';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 import { ImageLoadException } from './exceptions/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { CollectionRepository } from './collection.repository';
