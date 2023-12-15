@@ -41,6 +41,12 @@ export class CollectionService {
     return this.collectionRepository.getCollection(id);
   }
 
+  async getCollectionByReviewId(
+    id: Collection['id'],
+  ): Promise<Collection | null> {
+    return this.collectionRepository.getCollectionByReviewId(id);
+  }
+
   async createCollection(
     props: CreateCollectionProps,
   ): Promise<CollectionWithInfo> {

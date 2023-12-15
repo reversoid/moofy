@@ -4,9 +4,10 @@ import { CollectionReviewsController } from './controller/collection-review.cont
 import { FilmModule } from '../film/film.module';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CollectionReviewRepository } from './collection-review.repository';
+import { ReviewsController } from './controller/reviews.controller';
 
 @Module({
-  controllers: [CollectionReviewsController],
+  controllers: [CollectionReviewsController, ReviewsController],
   providers: [
     CollectionReviewService,
     CollectionReviewRepository,

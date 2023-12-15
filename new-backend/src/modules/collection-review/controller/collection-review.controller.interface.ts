@@ -5,12 +5,11 @@ import { GetReviewsResponse } from './responses/get-reviews.response';
 
 export interface ICollectionReviewsController {
   createReview(...args: any[]): Promise<CreateReviewResponse>;
-
-  getReview(...args: any[]): Promise<GetReviewResponse>;
-
   getReviews(...args: any[]): Promise<GetReviewsResponse>;
+}
 
+export interface IReviewsController {
   editReview(...args: any[]): Promise<EditReviewResponse>;
-
+  getReview(...args: any[]): Promise<GetReviewResponse>;
   deleteReview(...args: any[]): Promise<void>;
 }

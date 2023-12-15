@@ -12,6 +12,7 @@ import { CollectionSocialStats } from './models/collection-social-stats';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionLike } from 'src/modules/collection-comments/models/collection-like';
 import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
+import { Review } from '../collection-review/models/review';
 
 const TOP_COLLECTIONS_COEFFS = {
   likes: 3,
@@ -52,6 +53,17 @@ export class CollectionRepository extends PaginatedRepository {
       where: { id, deletedAt: null },
       select: selectCollection,
     });
+  }
+
+  async getCollectionByReviewId(
+    reviewId: Review['id'],
+  ): Promise<Collection | null> {
+    const data = await this.prismaService.review.findFirst({
+      where: { id: reviewId, deletedAt: null },
+      select: { list: { select: selectCollection } },
+    });
+
+    return data?.list ?? null;
   }
 
   async updateCollection({
