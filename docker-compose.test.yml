@@ -88,19 +88,6 @@ services:
     networks:
       - moofy-test-network
 
-  postgres-test-db:
-    image: postgres
-    restart: unless-stopped
-    container_name: postgres-test-db
-    environment:
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      POSTGRES_DB: "${POSTGRES_USER}"
-    ports:
-    - "5432:5432"
-    networks:
-      - moofy-test-network
-
   rmq-test:
     image: 'rabbitmq:3-management'
     restart: no

@@ -55,8 +55,8 @@ jobs:
           echo REDIS_KNOWN_HOST=redis-test-db >> .env
           echo RMQ_KNOWN_HOST=rmq-test >> .env
 
-          mkdir ./new-backend/config
-          cp .env ./new-backend/config
+          mkdir ./backend/config
+          cp .env z./backend/config
 
       - name: Configure SSH
         run: |
