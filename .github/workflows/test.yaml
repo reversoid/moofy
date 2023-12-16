@@ -56,7 +56,7 @@ jobs:
           echo RMQ_KNOWN_HOST=rmq-test >> .env
 
           mkdir ./backend/config
-          cp .env z./backend/config
+          cp .env ./backend/config
 
       - name: Configure SSH
         run: |
