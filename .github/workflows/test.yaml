@@ -74,7 +74,7 @@ jobs:
         run: |
           cd new-backend
           touch .env
-          echo DATABASE_URL="postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@postgres-test-db:5432/${{ secrets.POSTGRES_TEST_USER }}?schema=public" >> .env
+          echo DATABASE_URL="postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{secrets.POSTGRES_TEST_HOST}}:${{ secrets.POSTGRES_TEST_PORT}}/${{ secrets.POSTGRES_TEST_DB_NAME }}?schema=public" >> .env
 
       - name: Install dependencies
         run: |
