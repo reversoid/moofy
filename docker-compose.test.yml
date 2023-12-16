@@ -70,7 +70,7 @@ services:
     restart: unless-stopped
     container_name: backend-test
     build:
-      context: ./new-backend
+      context: ./backend
       dockerfile: ./Dockerfile.test
     depends_on:
       - redis-test-db
