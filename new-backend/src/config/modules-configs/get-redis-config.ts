@@ -1,6 +1,6 @@
-import { RedisModuleAsyncOptions } from '@liaoliaots/nestjs-redis';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import redisConfig from '../redis.config';
+import { RedisModuleAsyncOptions } from '@songkeys/nestjs-redis';
 
 export const getRedisConfig = (): RedisModuleAsyncOptions => ({
   imports: [ConfigModule],
