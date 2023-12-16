@@ -16,7 +16,6 @@ import globalConfig from './config/global.config';
 import apiKeysConfig from './config/api-keys.config';
 import s3Config from './config/s3.config';
 import rmqConfig from './config/rmq.config';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { getRedisConfig } from './config/modules-configs/get-redis-config';
 import { GlobalModule } from './modules/global/global.module';
 import { RMQModule } from 'nestjs-rmq';
@@ -25,6 +24,7 @@ import { ExploreModule } from './modules/explore/explore.module';
 import { CollectionCommentModule } from './modules/collection-comments/collection-comment.module';
 import { ExternalFilmProxyModule } from './modules/external-film-proxy/external-film-proxy.module';
 import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
+import { RedisModule } from '@songkeys/nestjs-redis';
 
 @Module({
   imports: [
