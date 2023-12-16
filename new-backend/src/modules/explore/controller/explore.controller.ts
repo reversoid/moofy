@@ -16,6 +16,7 @@ import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { ExploreService } from '../explore.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ParseStringPipe } from 'src/shared/parse-string-pipe';
+import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
 
 @Controller('explore')
 @ApiTags('Explore')
@@ -24,11 +25,17 @@ export class ExploreController implements IExploreController {
 
   @Get('collections')
   @HttpResponse(getPublicCollectionsResponseSchema)
+  @UseGuards(OptionalJwtAuthGuard)
   async getPublicCollections(
+    @AuthUser() user: User | null,
     @Query('search', new ParseStringPipe()) search: string | null = null,
     @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
   ) {
-    return this.exploreService.getPublicCollections(search, limit);
+    return this.exploreService.getPublicCollections(
+      search,
+      limit,
+      user?.id ?? null,
+    );
   }
 
   @Get('top-profiles')

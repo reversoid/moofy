@@ -5,6 +5,7 @@ import { ShortProfile } from '../profile/models/short-profile';
 import { Collection } from '../collection/models/collection';
 import { ProfileService } from '../profile/profile.service';
 import { CollectionService } from '../collection/collection.service';
+import { CollectionWithInfo } from '../collection/models/collection-with-info';
 
 @Injectable()
 export class ExploreService {
@@ -24,12 +25,24 @@ export class ExploreService {
   async getPublicCollections(
     search: string | null,
     limit: number,
-  ): Promise<PaginatedData<Collection>> {
+    userId: number | null,
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    let collections: PaginatedData<Collection> | null = null;
     if (!search) {
-      return this.collectionService.getTopPublicCollections(limit);
+      collections = await this.collectionService.getTopPublicCollections(limit);
+    } else {
+      collections = await this.collectionService.searchPublicCollections(
+        search,
+        limit,
+      );
     }
-
-    return this.collectionService.searchPublicCollections(search, limit);
+    return {
+      nextKey: collections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        collections.items,
+        userId,
+      ),
+    };
   }
 
   async getTopProfiles(
