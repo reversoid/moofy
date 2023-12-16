@@ -1,0 +1,299 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Comment {
+  id           Int           @id @default(autoincrement()) @map("id")
+  text         String        @map("text") @db.VarChar(400)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt    DateTime?     @map("deleted_at") @db.Timestamptz(6)
+  userId       Int           @map("user_id")
+  replyToId    Int?          @map("reply_to_id")
+  listId       Int?          @map("list_id")
+  user         Users         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  comment      Comment?      @relation("commentTocomment", fields: [replyToId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  otherComment Comment[]     @relation("commentTocomment")
+  list         List?         @relation(fields: [listId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  commentLike  CommentLike[]
+
+  @@index([deletedAt], name: "IDX_1f7c693bc26ed21008acead3b3")
+  @@index([text], name: "IDX_84eaa1e0d08e574fb78fd3c9b3")
+  @@index([createdAt], name: "IDX_9611a099501597c519429f2595")
+  @@map("comment")
+}
+
+model CommentLike {
+  id        Int       @id @default(autoincrement()) @map("id")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  userId    Int       @map("user_id")
+  commentId Int       @map("comment_id")
+  comment   Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([createdAt], name: "IDX_15eb3b90a408e3222e1ef34035")
+  @@index([deletedAt], name: "IDX_2e9f9d450d42a53a579dd00c38")
+  @@map("comment_like")
+}
+
+model FavoriteList {
+  id        Int       @id @default(autoincrement()) @map("id")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  userId    Int       @map("user_id")
+  listId    Int?      @map("list_id")
+  list      List?     @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([createdAt], name: "IDX_4d2005680706ade52516a9b24b")
+  @@index([deletedAt], name: "IDX_bcfc7a2063b16b9532c482ea27")
+  @@map("favorite_list")
+}
+
+model Film {
+  id               String         @id @map("id") @db.VarChar(32)
+  name             String         @map("name") @db.VarChar(128)
+  year             Int            @map("year") @db.SmallInt
+  type             film_type_enum @map("type")
+  filmLength       String?        @map("film_length") @db.Char(6)
+  posterPreviewUrl String?        @map("poster_preview_url") @db.VarChar(120)
+  posterUrl        String?        @map("poster_url") @db.VarChar(120)
+  genres           String[]       @map("genres") @db.VarChar(32)
+  review           Review[]
+  toWatch          ToWatch[]
+  metadata         FilmMetadata?
+
+  @@index([year], name: "IDX_5a82570b7c5f8d77972f7ef76a")
+  @@index([genres], name: "IDX_5aa49498820d9f4e5afb35254b")
+  @@index([name], name: "IDX_70c253d5411a4abf1c752a4699")
+  @@index([type], name: "IDX_c1b1047b4293e41323a080e220")
+  @@index([filmLength], name: "IDX_ff4c1609981279c3df153fda3c")
+  @@map("film")
+}
+
+model FilmMetadata {
+  searchDocument Unsupported("tsvector") @map("search_document")
+  film           Film                    @relation(fields: [filmId], references: [id])
+  filmId         String                  @id @map("film_id") @db.VarChar(32)
+
+  @@index([searchDocument], name: "search_film_document_idx", type: Gin)
+  @@map("film_metadata")
+}
+
+model List {
+  id              Int            @id @default(autoincrement()) @map("id")
+  name            String         @map("name") @db.VarChar(32)
+  description     String?        @map("description") @db.VarChar(400)
+  isPublic        Boolean        @default(false) @map("is_public")
+  showRating      Boolean        @default(false) @map("show_rating")
+  showDescription Boolean        @default(true) @map("show_description")
+  imageUrl        String?        @map("image_url") @db.VarChar(120)
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt       DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  userId          Int            @map("user_id")
+  comment         Comment[]
+  favoriteList    FavoriteList[]
+  user            Users          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  listLike        ListLike[]
+  listView        ListView[]
+  review          Review[]
+  metadata        ListMetadata?
+
+  @@index([deletedAt], name: "IDX_0e35629d588558a1871982f2d2")
+  @@index([updatedAt], name: "IDX_77b6e8e786643c3e78280800e1")
+  @@index([createdAt], name: "IDX_80b7c880992ddf646c03674f80")
+  @@index([name], name: "IDX_d7ff6872c82ac4a87ff986a38d")
+  @@map("list")
+}
+
+model ListMetadata {
+  searchDocument Unsupported("tsvector") @map("search_document")
+  list           List                    @relation(fields: [listId], references: [id])
+  listId         Int                     @id @map("list_id")
+
+  @@index([searchDocument], name: "search_list_document_idx", type: Gin)
+  @@map("list_metadata")
+}
+
+model ListLike {
+  id        Int       @id @default(autoincrement()) @map("id")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  userId    Int       @map("user_id")
+  listId    Int       @map("list_id")
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  list      List      @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([deletedAt], name: "IDX_0d47abc4c0e4671f5bf00af599")
+  @@index([createdAt], name: "IDX_72bcd910d3caf258faded7e777")
+  @@map("list_like")
+}
+
+model ListView {
+  id        Int       @id @default(autoincrement()) @map("id")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  userId    Int       @map("user_id")
+  listId    Int       @map("list_id")
+  list      List      @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("list_view")
+}
+
+model Migrations {
+  id        Int    @id @default(autoincrement()) @map("id")
+  timestamp BigInt @map("timestamp")
+  name      String @map("name") @db.VarChar
+
+  @@map("migrations")
+}
+
+model Event {
+  id           String          @id @default(dbgenerated("uuid_generate_v4()")) @map("id") @db.Uuid
+  targetId     Int             @map("target_id")
+  type         event_type_enum @map("type")
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt    DateTime?       @map("deleted_at") @db.Timestamptz(6)
+  notification Notification[]
+
+  @@map("event")
+}
+
+model Notification {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @map("id") @db.Uuid
+  event      Event     @relation(fields: [eventId], references: [id])
+  eventId    String    @map("event_id") @db.Uuid
+  seenAt     DateTime? @map("seen_at") @db.Timestamptz(6)
+  fromUser   Users     @relation(name: "from_user_relation", fields: [fromUserId], references: [id])
+  fromUserId Int       @map("from_user_id")
+  toUser     Users     @relation(name: "to_user_relation", fields: [toUserId], references: [id])
+  toUserId   Int       @map("to_user_id")
+
+  @@map("notification")
+}
+
+model Review {
+  id          Int             @id @default(autoincrement()) @map("id")
+  score       Int?            @map("score") @db.SmallInt
+  description String?         @map("description") @db.VarChar(400)
+  tags        String[]        @map("tags") @db.VarChar(32)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt   DateTime?       @map("deleted_at") @db.Timestamptz(6)
+  updatedAt   DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  filmId      String          @map("film_id") @db.VarChar(32)
+  userId      Int             @map("user_id")
+  listId      Int             @map("list_id")
+  user        Users           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  list        List            @relation(fields: [listId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  film        Film            @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  metadata    ReviewMetadata?
+
+  @@index([createdAt], name: "IDX_004547e1fee5af6fc9fd3de095")
+  @@index([deletedAt], name: "IDX_5fc50495948dd3c91bfec4276a")
+  @@index([updatedAt], name: "IDX_e045ebbb33ef7af0d13176f55b")
+  @@map("review")
+}
+
+model ReviewMetadata {
+  searchDocument Unsupported("tsvector") @map("search_document")
+  review         Review                  @relation(fields: [reviewId], references: [id])
+  reviewId       Int                     @id @map("review_id")
+
+  @@index([searchDocument], name: "search_review_document_idx", type: Gin)
+  @@map("review_metadata")
+}
+
+model Subscription {
+  id         Int       @id @default(autoincrement()) @map("id")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt  DateTime? @map("deleted_at") @db.Timestamptz(6)
+  followerId Int       @map("follower_id")
+  followedId Int       @map("followed_id")
+  follower   Users     @relation("followerRelation", fields: [followerId], references: [id])
+  followed   Users     @relation("followedRelation", fields: [followedId], references: [id])
+
+  @@index([deletedAt], name: "IDX_deleted_at")
+  @@index([createdAt], name: "IDX_created_at")
+  @@map("subscription")
+}
+
+model ToWatch {
+  id      Int     @id @default(autoincrement()) @map("id")
+  watched Boolean @default(false) @map("watched")
+  userId  Int     @map("user_id")
+  filmId  String  @map("film_id") @db.VarChar(32)
+  user    Users   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  film    Film    @relation(fields: [filmId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([watched], name: "IDX_2a0b9c4cf6de3f70c174a9a4c9")
+  @@index([userId], name: "IDX_9e1aabc3453a7c955553f498c6")
+  @@index([filmId], name: "IDX_b678c932a26ad586d6afd5ee42")
+  @@map("to_watch")
+}
+
+model Users {
+  id           Int            @id @default(autoincrement()) @map("id")
+  username     String         @unique @map("username") @db.VarChar(32)
+  email        String?        @unique @map("email") @db.VarChar(256)
+  description  String?        @map("description") @db.VarChar(400)
+  imageUrl     String?        @map("image_url") @db.VarChar(120)
+  passwordHash String         @map("password_hash") @db.Char(60)
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt    DateTime?      @map("deleted_at") @db.Timestamptz(6)
+  comment      Comment[]
+  commentLike  CommentLike[]
+  favoriteList FavoriteList[]
+  list         List[]
+  listLike     ListLike[]
+  listView     ListView[]
+  review       Review[]
+  toWatch      ToWatch[]
+  metadata     UserMetadata?
+
+  followers Subscription[] @relation("followerRelation")
+  followed  Subscription[] @relation("followedRelation")
+
+  userCreatedNotifications Notification[] @relation("from_user_relation")
+  userNotifications        Notification[] @relation("to_user_relation")
+
+  @@index([deletedAt], name: "IDX_22b81d3ed19a0bffcb660800f4")
+  @@index([updatedAt], name: "IDX_9cdce43fa0043c794281aa0905")
+  @@index([createdAt], name: "IDX_d091f1d36f18bbece2a9eabc6e")
+  @@map("users")
+}
+
+model UserMetadata {
+  user                   Users                   @relation(fields: [userId], references: [id])
+  userId                 Int                     @id @map("user_id")
+  usernameSearchDocument Unsupported("tsvector") @map("username_search_document")
+
+  @@index([usernameSearchDocument], name: "username_search_document_idx", type: Gin)
+  @@map("user_metadata")
+}
+
+enum film_type_enum {
+  FILM
+  TV_SERIES
+  TV_SHOW
+  MINI_SERIES
+  VIDEO
+}
+
+enum event_type_enum {
+  LIST_LIKED
+  LIST_VIEWED
+  COMMENT_LIKED
+  COMMENT_CREATED
+  REVIEW_CREATED
+  LIST_CREATED
+  SUBSCRIBED
+  USER_REGISTERED
+}

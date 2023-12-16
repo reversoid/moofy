@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres
+    restart: no
+    environment:
+      POSTGRES_USER: '${POSTGRES_USER}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+    ports:
+      - 5433:5433
+    command: -p 5433
+
+  redis-db:
+    image: redis:7.0.5-alpine
+    restart: no
+    ports:
+      - '6379:6379'
+    command: 'redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}'
+    volumes:
+      - redis-db:/data
+
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: '${RMQ_USER}'
+      RABBITMQ_DEFAULT_PASS: '${RMQ_PASS}'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+volumes:
+  redis-db:
+    driver: local
+  rabbitmq-data:
+    driver: local
