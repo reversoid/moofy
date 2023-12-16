@@ -15,6 +15,7 @@ import { User } from 'src/modules/user/models/user';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { ExploreService } from '../explore.service';
 import { ApiTags } from '@nestjs/swagger';
+import { ParseStringPipe } from 'src/shared/parse-string-pipe';
 
 @Controller('explore')
 @ApiTags('Explore')
@@ -24,8 +25,8 @@ export class ExploreController implements IExploreController {
   @Get('collections')
   @HttpResponse(getPublicCollectionsResponseSchema)
   async getPublicCollections(
-    @Query('search') search: string | null = null,
-    @Query('limit', ParseIntPipe) limit: number = 20,
+    @Query('search', new ParseStringPipe()) search: string | null = null,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
   ) {
     return this.exploreService.getPublicCollections(search, limit);
   }

@@ -3,7 +3,9 @@ import { ExternalFilmApiService } from './external-film-api.service';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { searchFilmsResponseSchema } from './controller/responses/search-films.response';
 import { IExternalFilmProxyController } from './controller/external-film-proxy.interface';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Films')
 @Controller('films')
 export class ExternalFilmProxyController
   implements IExternalFilmProxyController

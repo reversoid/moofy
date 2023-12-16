@@ -21,7 +21,9 @@ import { EditProfileDto } from './dto/edit-profile.dto';
 import { getProfileResponseSchema } from './responses/get-profile.response';
 import { getFavoriteCollectionsResponseSchema } from './responses/get-favorite-collections.response';
 import { getLatestUpdatedCollectionsResponseSchema } from './responses/get-latest-updated-collections.response';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Personal profile')
 @Controller('profile')
 export class PersonalProfileController implements IPersonalProfileController {
   constructor(private readonly profileService: ProfileService) {}
