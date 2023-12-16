@@ -298,24 +298,44 @@ export class ProfileRepository extends PaginatedRepository {
   async getLatestUpdatedCollections(
     userId: User['id'],
     limit: number,
-    excludeEmptyCollections: boolean,
     nextKey?: string,
   ): Promise<PaginatedData<Collection>> {
-    const key = super.parseNextKey(nextKey);
+    const key = this.parseNextKey(nextKey);
+    const dateKey = key ? new Date(key) : null;
 
-    const data = await this.prismaService.list.findMany({
-      where: {
-        deletedAt: null,
-        isPublic: true,
-        user: { followers: { some: { id: userId } } },
-        updatedAt: key ? { lte: new Date(key) } : undefined,
-      },
-      orderBy: { updatedAt: 'desc' },
-      take: limit + 1,
-      select: selectCollection,
-    });
+    const result = (await this.prismaService.$queryRaw`
+      SELECT
+        l.id as collection_id,
+        l.created_at as collection_created_at,
+        l.description as collection_description,
+        l.is_public as collection_is_public,
+        l.name as collection_name,
+        l.updated_at as collection_updated_at,
+        u.id as user_id,
+        u.created_at as user_created_at,
+        u.description as user_description,
+        u.image_url as user_image_url,
+        u.username as user_username
+      FROM list l
+      JOIN users u ON l.user_id = u.id
+      JOIN subscription s ON u.id = s.followed_id
+      WHERE s.follower_id = ${userId}
+      AND (
+          SELECT COUNT(*)
+          FROM review r
+          WHERE r.list_id = l.id AND r.deleted_at IS NULL
+      ) > 0
+      AND l.is_public = TRUE
+      AND l.deleted_at IS NULL
+      AND u.deleted_at IS NULL
+      AND l.updated_at <= COALESCE(${dateKey}, NOW())
+      ORDER BY l.updated_at DESC
+      LIMIT ${limit + 1};
+    `) as any[];
 
-    return super.getPaginatedData(data, limit, 'updatedAt');
+    const collections = this.parseUnseenCollections(result);
+
+    return super.getPaginatedData(collections, limit, 'updatedAt');
   }
 
   private parseRawUsers(rawData: any[]): User[] {

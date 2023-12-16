@@ -48,14 +48,12 @@ export class ProfileService {
   async getLatestUpdatedCollections(
     userId: User['id'],
     limit: number,
-    excludeEmptyCollections: boolean,
     nextKey?: string,
   ): Promise<PaginatedData<CollectionWithInfo>> {
     const latestCollections =
       await this.profileRepository.getLatestUpdatedCollections(
         userId,
         limit,
-        excludeEmptyCollections,
         nextKey,
       );
 

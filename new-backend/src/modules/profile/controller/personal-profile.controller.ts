@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Query,
@@ -89,12 +88,10 @@ export class PersonalProfileController implements IPersonalProfileController {
   async getLatestUpdatedCollections(
     @AuthUser() user: User,
     @Query() { limit, nextKey }: PaginatedQueryDto,
-    @Query('excludeEmpty', ParseBoolPipe) excludeEmpty: boolean,
   ) {
     return this.profileService.getLatestUpdatedCollections(
       user.id,
       limit ?? 20,
-      excludeEmpty,
       nextKey,
     );
   }
