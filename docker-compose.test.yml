@@ -74,7 +74,6 @@ services:
       dockerfile: ./Dockerfile.test
     depends_on:
       - redis-test-db
-      - rmq-test
     networks:
       - moofy-test-network
 
