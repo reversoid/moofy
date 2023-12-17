@@ -55,8 +55,8 @@ jobs:
           echo REDIS_KNOWN_HOST=redis-test-db >> .env
           echo RMQ_KNOWN_HOST=rmq-test >> .env
 
-          mkdir ./backend/config
-          cp .env ./backend/config
+          mkdir ./new-backend/config
+          cp .env ./new-backend/config
 
       - name: Configure SSH
         run: |
@@ -70,22 +70,22 @@ jobs:
           docker context create moofy-server --docker "host=ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
           docker context use moofy-server
 
-      # - name: Create .env file in new-backend
-      #   run: |
-      #     cd new-backend
-      #     touch .env
-      #     echo DATABASE_URL="postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{secrets.VPS_IP}}:5432/${{ secrets.POSTGRES_TEST_DB_NAME }}?schema=public" >> .env
+      - name: Create .env file in new-backend
+        run: |
+          cd new-backend
+          touch .env
+          echo DATABASE_URL="postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{ secrets.POSTGRES_TEST_HOST }}:${{ secrets.POSTGRES_TEST_PORT }}/${{ secrets.POSTGRES_TEST_DB_NAME }}?schema=public" >> .env
 
-      # - name: Install dependencies
-      #   run: |
-      #     cd new-backend
-      #     npm install
+      - name: Install dependencies
+        run: |
+          cd new-backend
+          npm install
 
       - name: Compose test docker
         run: docker --context moofy-server compose --env-file .env -f docker-compose.test.yml up --build -d
 
-      # - name: Prisma Migrate
-      #   run: |
-      #     cd new-backend
-      #     npx prisma migrate resolve --applied "0_init"
-      #     npx prisma migrate deploy
+      - name: Prisma Migrate
+        run: |
+          cd new-backend
+          npx prisma migrate resolve --applied "0_init"
+          npx prisma migrate deploy
