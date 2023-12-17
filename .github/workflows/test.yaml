@@ -82,7 +82,7 @@ jobs:
           npm install
 
       - name: Compose test docker
-        run: docker --context moofy-server compose --env-file .env -f docker-compose.test.yml up --build -d
+        run: docker --context moofy-server compose --env-file .env -f docker-compose.test.yml up --build -d --force-recreate
 
       - name: Prisma Migrate
         run: |
