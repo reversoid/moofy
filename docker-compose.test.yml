@@ -61,14 +61,14 @@ services:
       - VIRTUAL_PORT=5555
       - LETSENCRYPT_HOST=api.test.moofy.ru
     depends_on:
-      - new-backend-test
+      - backend-test
     networks:
       - moofy-test-network
 
-  new-backend-test:
-    image: new-moofy-backend-test
+  backend-test:
+    image: moofy-new-backend-test
     restart: unless-stopped
-    container_name: new-backend-test
+    container_name: backend-test
     build:
       context: ./new-backend
       dockerfile: ./Dockerfile.test
@@ -96,7 +96,7 @@ services:
     networks:
       - moofy-test-network
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbitmq-test-data:/var/lib/rabbitmq
 
 volumes:
   redis-db:
@@ -104,6 +104,8 @@ volumes:
   test-redis-db:
     driver: local
   rabbitmq-data:
+    driver: local
+  rabbitmq-test-data:
     driver: local
 
 networks:
