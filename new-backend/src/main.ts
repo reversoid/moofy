@@ -61,6 +61,6 @@ async function bootstrap() {
   });
 
   await app.register(multipart);
-  await app.listen(3333, 'localhost');
+  await app.listen(3333, '0.0.0.0');
 }
 bootstrap();
