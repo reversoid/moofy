@@ -6,12 +6,14 @@ import { Collection } from '../collection/models/collection';
 import { ProfileService } from '../profile/profile.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
+import { ExploreRepository } from './explore.repository';
 
 @Injectable()
 export class ExploreService {
   constructor(
     private readonly profileService: ProfileService,
     private readonly collectionService: CollectionService,
+    private readonly exploreRepository: ExploreRepository,
   ) {}
 
   async getProfiles(
@@ -50,5 +52,55 @@ export class ExploreService {
     forUserId: User['id'],
   ): Promise<PaginatedData<ShortProfile>> {
     return this.profileService.getTopProfiles(limit, forUserId);
+  }
+
+  async getUnseenCollections(
+    userId: User['id'],
+    limit: number,
+    nextKey?: string,
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    const updatedCollections =
+      await this.exploreRepository.getUnseenCollectionsFromFollowees(
+        userId,
+        limit,
+        nextKey,
+      );
+
+    return {
+      nextKey: updatedCollections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        updatedCollections.items,
+        userId,
+      ),
+    };
+  }
+
+  async getLatestUpdatedCollections(
+    userId: User['id'],
+    limit: number,
+    nextKey?: string,
+  ): Promise<PaginatedData<CollectionWithInfo>> {
+    const latestCollections =
+      await this.exploreRepository.getLatestUpdatedCollections(
+        userId,
+        limit,
+        nextKey,
+      );
+
+    return {
+      nextKey: latestCollections.nextKey,
+      items: await this.collectionService.getInfoForManyCollections(
+        latestCollections.items,
+        userId,
+      ),
+    };
+  }
+
+  async getAmountOfUnseenCollections(
+    userId: User['id'],
+  ): Promise<{ amount: number }> {
+    const amount =
+      await this.exploreRepository.getCollectionsUpdatesAmount(userId);
+    return { amount };
   }
 }

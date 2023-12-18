@@ -24,54 +24,6 @@ export class ProfileService {
     private readonly eventsService: EventsService,
   ) {}
 
-  async getUnseenCollections(
-    userId: User['id'],
-    limit: number,
-    nextKey?: string,
-  ): Promise<PaginatedData<CollectionWithInfo>> {
-    const updatedCollections =
-      await this.profileRepository.getUnseenCollectionsFromFollowees(
-        userId,
-        limit,
-        nextKey,
-      );
-
-    return {
-      nextKey: updatedCollections.nextKey,
-      items: await this.collectionService.getInfoForManyCollections(
-        updatedCollections.items,
-        userId,
-      ),
-    };
-  }
-
-  async getLatestUpdatedCollections(
-    userId: User['id'],
-    limit: number,
-    nextKey?: string,
-  ): Promise<PaginatedData<CollectionWithInfo>> {
-    const latestCollections =
-      await this.profileRepository.getLatestUpdatedCollections(
-        userId,
-        limit,
-        nextKey,
-      );
-
-    return {
-      nextKey: latestCollections.nextKey,
-      items: await this.collectionService.getInfoForManyCollections(
-        latestCollections.items,
-        userId,
-      ),
-    };
-  }
-
-  async getAmountOfUpdates(userId: User['id']): Promise<{ amount: number }> {
-    const amount =
-      await this.profileRepository.getCollectionsUpdatesAmount(userId);
-    return { amount };
-  }
-
   async getAllUserCollections(
     userId: User['id'],
     limit: number,

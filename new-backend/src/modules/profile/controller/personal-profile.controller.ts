@@ -7,21 +7,18 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
+import { User } from 'src/modules/user/models/user';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { ProfileService } from '../profile.service';
+import { EditProfileDto } from './dto/edit-profile.dto';
 import { IPersonalProfileController } from './profile.controller.interface';
 import { getCollectionsResponseSchema } from './responses/get-collections.response';
-import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
-import { User } from 'src/modules/user/models/user';
-import { getListUpdatesResponseSchema } from './responses/get-list-updates.response';
-import { getUpdatesAmountResponseSchema } from './responses/get-updates-amount.response';
-import { EditProfileDto } from './dto/edit-profile.dto';
-import { getProfileResponseSchema } from './responses/get-profile.response';
 import { getFavoriteCollectionsResponseSchema } from './responses/get-favorite-collections.response';
-import { getLatestUpdatedCollectionsResponseSchema } from './responses/get-latest-updated-collections.response';
-import { ApiTags } from '@nestjs/swagger';
+import { getProfileResponseSchema } from './responses/get-profile.response';
 
 @ApiTags('Personal profile')
 @Controller('profile')
@@ -68,41 +65,6 @@ export class PersonalProfileController implements IPersonalProfileController {
       limit ?? 20,
       nextKey,
     );
-  }
-
-  @Get('collections/updates')
-  @HttpResponse(getListUpdatesResponseSchema)
-  @UseGuards(JwtAuthGuard)
-  async getCollectionsUpdates(
-    @AuthUser() user: User,
-    @Query() { limit, nextKey }: PaginatedQueryDto,
-  ) {
-    return this.profileService.getUnseenCollections(
-      user.id,
-      limit ?? 20,
-      nextKey,
-    );
-  }
-
-  @Get('collections/latest-updated')
-  @HttpResponse(getLatestUpdatedCollectionsResponseSchema)
-  @UseGuards(JwtAuthGuard)
-  async getLatestUpdatedCollections(
-    @AuthUser() user: User,
-    @Query() { limit, nextKey }: PaginatedQueryDto,
-  ) {
-    return this.profileService.getLatestUpdatedCollections(
-      user.id,
-      limit ?? 20,
-      nextKey,
-    );
-  }
-
-  @Get('collections/updates/amount')
-  @HttpResponse(getUpdatesAmountResponseSchema)
-  @UseGuards(JwtAuthGuard)
-  async getAmountOfUpdates(@AuthUser() user: User) {
-    return this.profileService.getAmountOfUpdates(user.id);
   }
 
   @Get('collections/favorites')
