@@ -3,10 +3,13 @@ import {
   Controller,
   Get,
   Param,
+  ParseArrayPipe,
   ParseIntPipe,
   Post,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
@@ -19,9 +22,10 @@ import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorato
 import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { CreateReviewDto } from '../../collection/controller/dto/create-review.dto';
 import { UserCanViewCollectionGuard } from '../../collection/controller/guards/user-can-view-collection.guard';
-import { ICollectionReviewsController } from './collection-review.controller.interface';
+import { ICollectionReviewsController } from './controller.interface';
 import { createReviewResponseSchema } from './responses/create-review.response';
 import { getReviewsResponseSchema } from './responses/get-reviews.response';
+import { getRandomReviewResponseSchema } from './responses/get-random-review.response';
 
 @ApiTags('Collection reviews')
 @Controller('collections')
@@ -57,5 +61,20 @@ export class CollectionReviewsController
     @Query('search') search: string | null = null,
   ) {
     return this.reviewService.getReviews(id, search, limit ?? 20, nextKey);
+  }
+
+  @Get(':id/reviews/random')
+  @UseGuards(OptionalJwtAuthGuard, UserCanViewCollectionGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpResponse(getRandomReviewResponseSchema)
+  getRandomReview(
+    @Param('id', ParseIntPipe) id: number,
+    @Query(
+      'ignore',
+      new ParseArrayPipe({ items: Number, optional: true, separator: ',' }),
+    )
+    ignore: number[],
+  ) {
+    return this.reviewService.getRandomReview(id, ignore);
   }
 }

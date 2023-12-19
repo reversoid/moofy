@@ -58,6 +58,13 @@ export class CollectionReviewService {
     );
   }
 
+  async getRandomReview(
+    collectionId: Collection['id'],
+    ignoreIds: Array<Review['id']> = [],
+  ): Promise<Review | null> {
+    return this.reviewRepository.getRandomReview(collectionId, ignoreIds);
+  }
+
   private async validateReviewExistence(
     collectionId: Collection['id'],
     filmId: Film['id'],
