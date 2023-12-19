@@ -14,7 +14,7 @@ import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-aut
 import { CollectionReviewService } from 'src/modules/collection-review/collection-review.service';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { EditReviewDto } from '../../collection/controller/dto/edit-review.dto';
-import { IReviewsController } from './collection-review.controller.interface';
+import { IReviewsController } from './controller.interface';
 import { editReviewResponseSchema } from './responses/edit-review.response';
 import { getReviewResponseSchema } from './responses/get-review.response';
 import { UserCanSeeReviewGuard } from './guards/user-can-see-review';
