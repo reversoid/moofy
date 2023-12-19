@@ -61,6 +61,14 @@ async function bootstrap() {
   });
 
   await app.register(multipart);
-  await app.listen(3333); // TODO add 0.0.0.0 on deploy
+
+  if (
+    configService.getOrThrow<AppEnvironments>('global.environment') ===
+    AppEnvironments.dev
+  ) {
+    await app.listen(3333);
+  } else {
+    await app.listen(3333, '0.0.0.0');
+  }
 }
 bootstrap();
