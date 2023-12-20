@@ -14,8 +14,6 @@ import { Profile } from './models/profile';
 import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
-import { PersonalReviewService } from '../personal-review/personal-review.service';
-import { PersonalReview } from '../personal-review/models/personal-review';
 
 @Injectable()
 export class ProfileService {
@@ -24,7 +22,6 @@ export class ProfileService {
     private readonly userService: UserService,
     private readonly profileRepository: ProfileRepository,
     private readonly eventsService: EventsService,
-    private readonly personalReviewService: PersonalReviewService,
   ) {}
 
   async getAllUserCollections(

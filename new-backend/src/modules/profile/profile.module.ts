@@ -7,12 +7,11 @@ import { CollectionModule } from '../collection/collection.module';
 import { UserModule } from '../user/user.module';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { PersonalProfileController } from './controller/personal-profile.controller';
-import { PersonalReviewModule } from '../personal-review/personal-review.module';
 
 @Module({
   controllers: [ProfileController, PersonalProfileController],
   providers: [ProfileService, ProfileRepository, PrismaService],
-  imports: [EventsModule, CollectionModule, UserModule, PersonalReviewModule],
+  imports: [EventsModule, CollectionModule, UserModule],
   exports: [ProfileService],
 })
 export class ProfileModule {}
