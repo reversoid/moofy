@@ -80,4 +80,19 @@ export class PersonalProfileController implements IPersonalProfileController {
       nextKey,
     );
   }
+
+  @Get('personal-reviews')
+  @HttpResponse(getFavoriteCollectionsResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  getPersonalReviews(
+    @AuthUser() user: User,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+  ) {
+    return this.profileService.getPersonalReviews(
+      user.id,
+      limit ?? 20,
+      'all',
+      nextKey,
+    );
+  }
 }

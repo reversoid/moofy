@@ -15,6 +15,7 @@ import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
 import { PersonalReviewService } from '../personal-review/personal-review.service';
+import { PersonalReview } from '../personal-review/models/personal-review';
 
 @Injectable()
 export class ProfileService {
@@ -44,6 +45,20 @@ export class ProfileService {
         userId,
       ),
     };
+  }
+
+  async getPersonalReviews(
+    userId: User['id'],
+    limit: number,
+    type: 'all' | 'hidden' | 'visible',
+    nextKey?: string,
+  ): Promise<PaginatedData<PersonalReview>> {
+    return this.personalReviewService.getUserPersonalReviews(
+      userId,
+      limit,
+      type,
+      nextKey,
+    );
   }
 
   async editProfile(
