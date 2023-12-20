@@ -20,6 +20,7 @@ import { getCollectionsResponseSchema } from './responses/get-collections.respon
 import { getFavoriteCollectionsResponseSchema } from './responses/get-favorite-collections.response';
 import { getProfileResponseSchema } from './responses/get-profile.response';
 import { getPersonalCollectionReviewsResponseSchema } from './responses/get-personal-collection-reviews.response';
+import { getPersonalCollectionResponseSchema } from './responses/get-personal-collection';
 
 @ApiTags('Personal profile')
 @Controller('profile')
@@ -83,7 +84,7 @@ export class PersonalProfileController implements IPersonalProfileController {
   }
 
   @Get('collections/personal')
-  @HttpResponse(getFavoriteCollectionsResponseSchema)
+  @HttpResponse(getPersonalCollectionResponseSchema)
   @UseGuards(JwtAuthGuard)
   getPersonalCollection(
     @AuthUser() user: User,
