@@ -16,11 +16,14 @@ import { NotFoundProfileException } from './exceptions/not-found-profile-excepti
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
 import { FullCollection } from '../collection/models/full-collection';
 import { NoPersonalCollectionException } from './exceptions/no-personal-collection.exception';
+import { Review } from '../collection-review/models/review';
+import { CollectionReviewService } from '../collection-review/collection-review.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly collectionService: CollectionService,
+    private readonly collectionReviewService: CollectionReviewService,
     private readonly userService: UserService,
     private readonly profileRepository: ProfileRepository,
     private readonly eventsService: EventsService,
@@ -64,6 +67,28 @@ export class ProfileService {
       forUserId,
       type,
       limit,
+    );
+  }
+
+  async getPersonalCollectionReviews(
+    userId: User['id'],
+    limit: number,
+    type: 'all' | 'hidden' | 'visible',
+    nextKey?: string,
+  ): Promise<PaginatedData<Review>> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.getReviews(
+      personalCollection.id,
+      type,
+      null,
+      limit,
+      nextKey,
     );
   }
 

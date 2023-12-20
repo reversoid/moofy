@@ -5,7 +5,6 @@ import { CollectionWithInfo } from './models/collection-with-info';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Review } from 'src/modules/collection-review/models/review';
 import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
 import { CollectionNotLikedException } from './exceptions/not-liked.exception';
 import { MultipartFile } from '@fastify/multipart';
@@ -260,20 +259,6 @@ export class CollectionService {
     }
 
     return { link: response.Location };
-  }
-
-  async getReviews(
-    colelctionId: Collection['id'],
-    limit: number,
-    nextKey?: string,
-  ): Promise<PaginatedData<Review>> {
-    return this.collectionReviewService.getReviews(
-      colelctionId,
-      'visible',
-      null,
-      limit,
-      nextKey,
-    );
   }
 
   async getUserCollections(

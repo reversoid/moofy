@@ -3,6 +3,7 @@ import { GetFavoriteCollectionsResponse } from './responses/get-favorite-collect
 import { GetFolloweesResponse } from './responses/get-followees.response';
 import { GetFollowersResponse } from './responses/get-followers.response';
 import { GetPersonalCollectionResponse } from './responses/get-personal-collection';
+import { GetPersonalCollectionReviewsResponse } from './responses/get-personal-collection-reviews.response';
 import { GetProfileResponse } from './responses/get-profile.response';
 
 export interface IProfileController {
@@ -27,4 +28,8 @@ export interface IPersonalProfileController {
   getProfile(...args: any): Promise<GetProfileResponse>;
 
   getPersonalCollection(...args: any): Promise<GetPersonalCollectionResponse>;
+
+  getPersonalCollectionReviews(
+    ...args: any
+  ): Promise<GetPersonalCollectionReviewsResponse>;
 }

@@ -19,6 +19,7 @@ import { IPersonalProfileController } from './profile.controller.interface';
 import { getCollectionsResponseSchema } from './responses/get-collections.response';
 import { getFavoriteCollectionsResponseSchema } from './responses/get-favorite-collections.response';
 import { getProfileResponseSchema } from './responses/get-profile.response';
+import { getPersonalCollectionReviewsResponseSchema } from './responses/get-personal-collection-reviews.response';
 
 @ApiTags('Personal profile')
 @Controller('profile')
@@ -93,6 +94,21 @@ export class PersonalProfileController implements IPersonalProfileController {
       limit ?? 20,
       'visible',
       user.id,
+    );
+  }
+
+  @Get('collections/personal/reviews')
+  @HttpResponse(getPersonalCollectionReviewsResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  getPersonalCollectionReviews(
+    @AuthUser() user: User,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+  ) {
+    return this.profileService.getPersonalCollectionReviews(
+      user.id,
+      limit ?? 20,
+      'visible',
+      nextKey,
     );
   }
 }
