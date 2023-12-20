@@ -25,6 +25,7 @@ import { CollectionCommentModule } from './modules/collection-comments/collectio
 import { ExternalFilmProxyModule } from './modules/external-film-proxy/external-film-proxy.module';
 import { ProfileNotificationsModule } from './modules/profile-notifications/profile-notifications.module';
 import { RedisModule } from '@songkeys/nestjs-redis';
+import { PersonalReviewModule } from './modules/personal-review/personal-review.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { RedisModule } from '@songkeys/nestjs-redis';
     ExploreModule,
     CollectionCommentModule,
     ExternalFilmProxyModule,
+    PersonalReviewModule,
   ],
   providers: [
     {

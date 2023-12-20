@@ -14,6 +14,7 @@ import { Profile } from './models/profile';
 import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
+import { PersonalReviewService } from '../personal-review/personal-review.service';
 
 @Injectable()
 export class ProfileService {
@@ -22,6 +23,7 @@ export class ProfileService {
     private readonly userService: UserService,
     private readonly profileRepository: ProfileRepository,
     private readonly eventsService: EventsService,
+    private readonly personalReviewService: PersonalReviewService,
   ) {}
 
   async getAllUserCollections(
@@ -112,15 +114,12 @@ export class ProfileService {
 
     const isOwner = forUserId === userId;
 
-    const [collections, favCollections, stats] = await Promise.all([
+    const [collections, stats] = await Promise.all([
       this.collectionService.getUserCollections(
         userId,
         limit,
         isOwner ? 'all' : 'public',
       ),
-      isOwner
-        ? this.collectionService.getUserFavoriteCollections(userId, limit)
-        : Promise.resolve(null),
       this.getSocialStatsForUser(userId),
     ]);
 
@@ -137,16 +136,8 @@ export class ProfileService {
           forUserId,
         ),
       },
-      favoriteCollections:
-        isOwner && favCollections
-          ? {
-              nextKey: favCollections.nextKey,
-              items: await this.collectionService.getInfoForManyCollections(
-                favCollections.items,
-                forUserId,
-              ),
-            }
-          : undefined,
+      personalReviewsAmount:
+        await this.personalReviewService.getPersonalReviewAmount(userId),
       socialStats: stats ?? { followees: 0, followers: 0 },
     };
   }
@@ -207,14 +198,18 @@ export class ProfileService {
     userId: User['id'],
     users: User[],
   ): Promise<ShortProfile[]> {
-    const isSubscribedMap = await this.profileRepository.isFollowingUsers(
-      userId,
-      users.map((u) => u.id),
-    );
+    const [isSubscribedMap] = await Promise.all([
+      this.profileRepository.isFollowingUsers(
+        userId,
+        users.map((u) => u.id),
+      ),
+    ]);
 
     return users.map((user) => ({
       user,
-      additionalInfo: { isSubscribed: isSubscribedMap.get(user.id) ?? false },
+      additionalInfo: {
+        isSubscribed: isSubscribedMap.get(user.id) ?? false,
+      },
     }));
   }
 

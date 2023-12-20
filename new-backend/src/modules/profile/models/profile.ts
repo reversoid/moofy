@@ -10,9 +10,7 @@ export const profileSchema = z.object({
   additionalInfo: profileAdditionalInfoSchema,
   socialStats: profileSocialStatsSchema,
   collections: createPaginatedDataSchema(collectionWithInfoSchema),
-  favoriteCollections: createPaginatedDataSchema(
-    collectionWithInfoSchema,
-  ).optional(),
+  personalReviewsAmount: z.number().int(),
 });
 
 export type Profile = z.infer<typeof profileSchema>;
