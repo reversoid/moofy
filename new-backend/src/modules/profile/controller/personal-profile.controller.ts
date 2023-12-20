@@ -81,18 +81,18 @@ export class PersonalProfileController implements IPersonalProfileController {
     );
   }
 
-  @Get('personal-reviews')
+  @Get('collections/personal')
   @HttpResponse(getFavoriteCollectionsResponseSchema)
   @UseGuards(JwtAuthGuard)
-  getPersonalReviews(
+  getPersonalCollection(
     @AuthUser() user: User,
-    @Query() { limit, nextKey }: PaginatedQueryDto,
+    @Query() { limit }: PaginatedQueryDto,
   ) {
-    return this.profileService.getPersonalReviews(
+    return this.profileService.getPersonalCollection(
       user.id,
       limit ?? 20,
-      'all',
-      nextKey,
+      'visible',
+      user.id,
     );
   }
 }

@@ -38,6 +38,7 @@ export class CollectionReviewService {
   // TODO maybe make 2 methods?
   async getReviews(
     collectionId: Collection['id'],
+    type: 'all' | 'hidden' | 'visible',
     search: string | null,
     limit: number,
     nextKey?: string,
@@ -45,6 +46,7 @@ export class CollectionReviewService {
     if (search) {
       const reviews = await this.reviewRepository.searchReviewsFromCollection(
         collectionId,
+        type,
         search,
         limit,
       );
@@ -53,6 +55,7 @@ export class CollectionReviewService {
 
     return this.reviewRepository.getReviewsFromCollection(
       collectionId,
+      type,
       limit,
       nextKey,
     );

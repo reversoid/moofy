@@ -27,7 +27,6 @@ import { User } from 'src/modules/user/models/user';
 import { NumericIdParamDto } from './dto/numeric-id-param.dto';
 import { AuthUser } from 'src/shared/utils/decorators/auth-user.decorator';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
-import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
 import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
@@ -61,13 +60,13 @@ export class CollectionController implements ICollectionController {
   async getFullCollection(
     @AuthUser() user: User | null,
     @Param('id', ParseIntPipe) id: number,
-    @Query() { limit, nextKey }: PaginatedQueryDto,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
   ) {
     return this.collectionService.getFullCollection(
       id,
       user ? user.id : null,
-      limit ?? 20,
-      nextKey,
+      'visible',
+      limit,
     );
   }
 

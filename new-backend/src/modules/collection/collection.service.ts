@@ -4,8 +4,6 @@ import { Collection } from './models/collection';
 import { CollectionWithInfo } from './models/collection-with-info';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
-import { CollectionSocialStats } from './models/collection-social-stats';
-import { CollectionAdditionalInfo } from './models/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Review } from 'src/modules/collection-review/models/review';
 import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
@@ -28,6 +26,7 @@ import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
 import { AlreadyFavoriteCollectionException } from './exceptions/already-favorite-collection.exception';
 import { NotFavoriteCollectionException } from './exceptions/not-favorite-collection.exception';
+import { FullCollection } from './models/full-collection';
 
 @Injectable()
 export class CollectionService {
@@ -75,29 +74,45 @@ export class CollectionService {
   async getFullCollection(
     id: Collection['id'],
     userId: User['id'] | null,
+    type: 'all' | 'visible' | 'hidden',
     limit: number,
-    nextKey?: string,
-  ): Promise<{
-    collection: Collection;
-    socialStats: CollectionSocialStats;
-    additionalInfo: CollectionAdditionalInfo;
-    reviews: PaginatedData<Review>;
-  }> {
+  ): Promise<FullCollection> {
     const collection = await this.collectionRepository.getCollection(id);
     if (!collection) {
       throw new WrongCollectionIdException();
     }
+    return this.convertCollectionToFullCollection(
+      collection,
+      limit,
+      type,
+      userId,
+    );
+  }
 
+  async getPersonalCollection(userId: User['id']): Promise<Collection | null> {
+    return this.collectionRepository.getPersonalCollection(userId);
+  }
+
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.collectionRepository.getReviewsAmount(collectionId);
+  }
+
+  private async convertCollectionToFullCollection(
+    collection: Collection,
+    limit: number,
+    type: 'all' | 'hidden' | 'visible',
+    forUserId: User['id'] | null,
+  ): Promise<FullCollection> {
     const collectionWithInfo = await this.getInfoForCollection(
       collection,
-      userId,
+      forUserId,
     );
 
     const reviews = await this.collectionReviewService.getReviews(
-      id,
+      collection.id,
+      type,
       null,
       limit,
-      nextKey,
     );
 
     return { ...collectionWithInfo, reviews };
@@ -254,6 +269,7 @@ export class CollectionService {
   ): Promise<PaginatedData<Review>> {
     return this.collectionReviewService.getReviews(
       colelctionId,
+      'visible',
       null,
       limit,
       nextKey,

@@ -102,6 +102,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
 
   async getReviewsFromCollection(
     id: Collection['id'],
+    type: 'all' | 'hidden' | 'visible',
     limit: number,
     nextKey?: string,
   ): Promise<PaginatedData<Review>> {
@@ -112,6 +113,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
         listId: id,
         createdAt: parsedKey ? { lte: new Date(parsedKey) } : undefined,
         deletedAt: null,
+        isHidden: type === 'all' ? undefined : type === 'hidden' ? true : false,
       },
       select: selectReview,
       orderBy: { createdAt: 'desc' },
@@ -123,10 +125,19 @@ export class CollectionReviewRepository extends PaginatedRepository {
 
   async searchReviewsFromCollection(
     collectionId: Collection['id'],
+    type: 'all' | 'hidden' | 'visible',
     search: string,
     limit: number,
   ): Promise<Review[]> {
     const searchString = getTsQueryFromString(search);
+
+    const whereHiddenExpression = Prisma.raw(
+      type === 'all'
+        ? ''
+        : type === 'hidden'
+          ? 'AND review.is_hidden = TRUE'
+          : 'AND review.is_hidden = FALSE',
+    );
 
     const reviews = (await this.prismaService.$queryRaw`
     SELECT 
@@ -150,6 +161,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
     WHERE review.list_id = ${collectionId} 
       AND (film_metadata.search_document || review_metadata.search_document) @@ to_tsquery('simple', ${searchString})
       AND review.deleted_at IS NULL
+      ${whereHiddenExpression}
     ORDER BY rank DESC
     LIMIT ${limit}
     `) as any[];

@@ -55,6 +55,19 @@ export class CollectionRepository extends PaginatedRepository {
     });
   }
 
+  async getPersonalCollection(userId: User['id']): Promise<Collection | null> {
+    return this.prismaService.list.findFirst({
+      where: { deletedAt: null, isPersonal: true, userId },
+      select: selectCollection,
+    });
+  }
+
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.prismaService.review.count({
+      where: { deletedAt: null, list: { id: collectionId, deletedAt: null } },
+    });
+  }
+
   async getCollectionByReviewId(
     reviewId: Review['id'],
   ): Promise<Collection | null> {

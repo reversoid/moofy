@@ -14,6 +14,8 @@ import { Profile } from './models/profile';
 import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
+import { FullCollection } from '../collection/models/full-collection';
+import { NoPersonalCollectionException } from './exceptions/no-personal-collection.exception';
 
 @Injectable()
 export class ProfileService {
@@ -35,6 +37,7 @@ export class ProfileService {
       'all',
       nextKey,
     );
+
     return {
       nextKey: collections.nextKey,
       items: await this.collectionService.getInfoForManyCollections(
@@ -44,17 +47,23 @@ export class ProfileService {
     };
   }
 
-  async getPersonalReviews(
+  async getPersonalCollection(
     userId: User['id'],
     limit: number,
     type: 'all' | 'hidden' | 'visible',
-    nextKey?: string,
-  ): Promise<PaginatedData<PersonalReview>> {
-    return this.personalReviewService.getUserPersonalReviews(
-      userId,
-      limit,
+    forUserId: User['id'] | null,
+  ): Promise<FullCollection> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionService.getFullCollection(
+      personalCollection.id,
+      forUserId,
       type,
-      nextKey,
+      limit,
     );
   }
 
@@ -148,10 +157,19 @@ export class ProfileService {
           forUserId,
         ),
       },
-      personalReviewsAmount:
-        await this.personalReviewService.getPersonalReviewAmount(userId),
+      personalReviewsAmount: await this.getPersonalReviewsAmount(userId),
       socialStats: stats ?? { followees: 0, followers: 0 },
     };
+  }
+
+  private async getPersonalReviewsAmount(userId: User['id']): Promise<number> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      return 0;
+    }
+    return this.collectionService.getReviewsAmount(personalCollection.id);
   }
 
   async getSocialStatsForUser(

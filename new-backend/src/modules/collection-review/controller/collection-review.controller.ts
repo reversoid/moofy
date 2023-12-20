@@ -60,7 +60,13 @@ export class CollectionReviewsController
     @Query() { limit, nextKey }: PaginatedQueryDto,
     @Query('search') search: string | null = null,
   ) {
-    return this.reviewService.getReviews(id, search, limit ?? 20, nextKey);
+    return this.reviewService.getReviews(
+      id,
+      'visible',
+      search,
+      limit ?? 20,
+      nextKey,
+    );
   }
 
   @Get(':id/reviews/random')
