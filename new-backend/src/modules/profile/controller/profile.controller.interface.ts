@@ -1,3 +1,4 @@
+import { CreatePersonalCollectionResponse } from './responses/create-personal-collection';
 import { CreateReviewForPersonalCollectionResponse } from './responses/create-review-for-personal-collection.response';
 import { EditReviewFromPersonalCollectionResponse } from './responses/edit-review-from-personal-collection.response';
 import { GetCollectionsResponse } from './responses/get-collections.response';
@@ -31,6 +32,10 @@ export interface IPersonalProfileController {
   getProfile(...args: any): Promise<GetProfileResponse>;
 
   getPersonalCollection(...args: any): Promise<GetPersonalCollectionResponse>;
+
+  createPersonalCollection(
+    ...args: any
+  ): Promise<CreatePersonalCollectionResponse>;
 
   getPersonalCollectionReviews(
     ...args: any
