@@ -26,6 +26,14 @@ export class AuthService {
     return { tokens, user };
   }
 
+  async userExists(username: string): Promise<boolean> {
+    if (!username) {
+      return false;
+    }
+
+    return Boolean(await this.userService.getUserByUsername(username));
+  }
+
   async register({
     username,
     password,
