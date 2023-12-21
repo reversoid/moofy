@@ -19,3 +19,8 @@ export type UpdateCollectionProps = {
   id: Collection['id'];
   isPrivate?: boolean;
 };
+
+export type UpdatePersonalCollectionProps = Pick<
+  UpdateCollectionProps,
+  'description' | 'imageUrl' | 'name'
+>;

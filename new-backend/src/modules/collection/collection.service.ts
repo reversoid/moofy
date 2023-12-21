@@ -6,6 +6,7 @@ import {
   CreateCollectionProps,
   CreatePersonalCollectionProps,
   UpdateCollectionProps,
+  UpdatePersonalCollectionProps,
 } from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
@@ -32,6 +33,7 @@ import { NotFavoriteCollectionException } from './exceptions/not-favorite-collec
 import { FullCollection } from './models/full-collection';
 import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists';
 import { Review } from '../collection-review/models/review';
+import { NoPersonalCollectionException } from '../profile/exceptions/no-personal-collection.exception';
 
 @Injectable()
 export class CollectionService {
@@ -106,7 +108,7 @@ export class CollectionService {
     return this.collectionRepository.getPersonalCollection(userId);
   }
 
-  private async validatePersonalCollectionExistence(userId: User['id']) {
+  private async checkIfPersonalCollectionNotExists(userId: User['id']) {
     const existingPersonalCollection = await this.getPersonalCollection(userId);
     if (existingPersonalCollection) {
       throw new PersonalCollectionExistsException();
@@ -117,7 +119,7 @@ export class CollectionService {
     userId: User['id'],
     props: CreatePersonalCollectionProps,
   ): Promise<CollectionWithInfo> {
-    await this.validatePersonalCollectionExistence(userId);
+    await this.checkIfPersonalCollectionNotExists(userId);
 
     return this.createCollection(userId, {
       ...props,
@@ -130,7 +132,7 @@ export class CollectionService {
     newCollectionProps: CreatePersonalCollectionProps,
     collectionIds: Array<Collection['id']>,
   ): Promise<CollectionWithInfo> {
-    await this.validatePersonalCollectionExistence(userId);
+    await this.checkIfPersonalCollectionNotExists(userId);
 
     return this.uniteCollections(
       userId,
@@ -140,6 +142,23 @@ export class CollectionService {
       },
       collectionIds,
     );
+  }
+
+  async editPersonalCollection(
+    userId: User['id'],
+    props: UpdatePersonalCollectionProps,
+  ): Promise<CollectionWithInfo> {
+    const collection = await this.getPersonalCollection(userId);
+    if (!collection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.updateCollection(userId, {
+      id: collection.id,
+      description: props.description,
+      imageUrl: props.imageUrl,
+      name: props.name,
+    });
   }
 
   async uniteCollections(
