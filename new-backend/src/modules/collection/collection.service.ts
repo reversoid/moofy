@@ -131,9 +131,24 @@ export class CollectionService {
   ): Promise<CollectionWithInfo> {
     await this.validatePersonalCollectionExistence(userId);
 
+    return this.uniteCollections(
+      userId,
+      {
+        ...newCollectionProps,
+        isPrivate: false,
+      },
+      collectionIds,
+    );
+  }
+
+  async uniteCollections(
+    userId: User['id'],
+    newCollectionProps: CreateCollectionProps,
+    collectionIds: Array<Collection['id']>,
+  ) {
     const collection = await this.collectionRepository.createCollection(
       userId,
-      { ...newCollectionProps, isPrivate: false },
+      newCollectionProps,
     );
 
     await this.collectionReviewService.moveAllReviewsToAnotherCollection(
