@@ -35,6 +35,16 @@ export class CollectionReviewService {
     await this.reviewRepository.deleteReview(id);
   }
 
+  async moveAllReviewsToAnotherCollection(
+    fromCollectionsIds: Array<Collection['id']>,
+    toCollectionId: Collection['id'],
+  ): Promise<void> {
+    return this.reviewRepository.moveAllReviewsToAnotherCollection(
+      fromCollectionsIds,
+      toCollectionId,
+    );
+  }
+
   // TODO maybe make 2 methods?
   async getReviews(
     collectionId: Collection['id'],

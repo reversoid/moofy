@@ -74,6 +74,10 @@ export class CollectionService {
     await this.collectionRepository.deleteCollection(id);
   }
 
+  async deleteManyCollections(ids: Array<Collection['id']>) {
+    await this.collectionRepository.deleteManyCollections(ids);
+  }
+
   async updateCollection(userId: User['id'], props: UpdateCollectionProps) {
     const collection = await this.collectionRepository.updateCollection(props);
     return this.getInfoForCollection(collection, userId);
@@ -101,19 +105,44 @@ export class CollectionService {
     return this.collectionRepository.getPersonalCollection(userId);
   }
 
-  async createEmptyPersonalCollection(
-    userId: User['id'],
-    props: CreatePersonalCollectionProps,
-  ): Promise<CollectionWithInfo> {
+  private async validatePersonalCollectionExistence(userId: User['id']) {
     const existingPersonalCollection = await this.getPersonalCollection(userId);
     if (existingPersonalCollection) {
       throw new PersonalCollectionExistsException();
     }
+  }
+
+  async createEmptyPersonalCollection(
+    userId: User['id'],
+    props: CreatePersonalCollectionProps,
+  ): Promise<CollectionWithInfo> {
+    await this.validatePersonalCollectionExistence(userId);
 
     return this.createCollection(userId, {
       ...props,
       isPrivate: false,
     });
+  }
+
+  async createPersonalCollectionFromUnion(
+    userId: User['id'],
+    newCollectionProps: CreatePersonalCollectionProps,
+    collectionIds: Array<Collection['id']>,
+  ): Promise<CollectionWithInfo> {
+    await this.validatePersonalCollectionExistence(userId);
+
+    const collection = await this.collectionRepository.createCollection(
+      userId,
+      { ...newCollectionProps, isPrivate: false },
+    );
+
+    await this.collectionReviewService.moveAllReviewsToAnotherCollection(
+      collectionIds,
+      collection.id,
+    );
+
+    await this.deleteManyCollections(collectionIds);
+    return this.getInfoForCollection(collection, userId);
   }
 
   async getReviewsAmount(collectionId: Collection['id']): Promise<number> {

@@ -100,6 +100,20 @@ export class CollectionReviewRepository extends PaginatedRepository {
     return { id };
   }
 
+  async moveAllReviewsToAnotherCollection(
+    fromCollectionsIds: Array<Collection['id']>,
+    toCollectionId: Collection['id'],
+  ): Promise<void> {
+    await this.prismaService.review.updateMany({
+      where: {
+        listId: { in: fromCollectionsIds },
+      },
+      data: {
+        listId: toCollectionId,
+      },
+    });
+  }
+
   async getReviewsFromCollection(
     id: Collection['id'],
     type: 'all' | 'hidden' | 'visible',

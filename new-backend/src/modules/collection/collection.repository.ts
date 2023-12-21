@@ -105,6 +105,13 @@ export class CollectionRepository extends PaginatedRepository {
     return { id };
   }
 
+  async deleteManyCollections(ids: Array<Collection['id']>): Promise<void> {
+    await this.prismaService.list.updateMany({
+      where: { id: { in: ids }, isPersonal: false },
+      data: { deletedAt: new Date() },
+    });
+  }
+
   async getSocialStats(
     collectionId: Collection['id'],
   ): Promise<CollectionSocialStats | null> {
