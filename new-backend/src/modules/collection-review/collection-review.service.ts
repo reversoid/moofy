@@ -29,6 +29,48 @@ export class CollectionReviewService {
     return this.reviewRepository.getConflictingReviews(collectionId);
   }
 
+  async resolveConflictingReviews(
+    collectionId: Collection['id'],
+    reviewsIdsToSave: Set<Review['id']>,
+  ): Promise<void> {
+    const conflictReviews = await this.getConflictingReviews(collectionId);
+
+    for (const conflictReview of conflictReviews) {
+      if (!reviewsIdsToSave.has(conflictReview.id)) {
+        reviewsIdsToSave.delete(conflictReview.id);
+      }
+    }
+
+    await this.reviewRepository.makeReviewsVisible(
+      Array.from(reviewsIdsToSave),
+    );
+
+    const conflictGroups = this.groupConflictReviews(conflictReviews);
+
+    for (const [, reviewsIds] of conflictGroups) {
+      for (const id of reviewsIds) {
+        if (!reviewsIdsToSave.has(id)) {
+          await this.deleteReview(id);
+        }
+      }
+    }
+  }
+
+  private groupConflictReviews(reviews: Review[]) {
+    const result: Map<Film['id'], Set<Review['id']>> = new Map();
+
+    for (const review of reviews) {
+      const hasFilm = result.has(review.film.id);
+      if (hasFilm) {
+        result.get(review.film.id)?.add(review.id);
+      } else {
+        result.set(review.film.id, new Set([review.id]));
+      }
+    }
+
+    return result;
+  }
+
   async hideReviews(reviewsIds: Array<Review['id']>): Promise<void> {
     await this.reviewRepository.hideReviews(reviewsIds);
   }

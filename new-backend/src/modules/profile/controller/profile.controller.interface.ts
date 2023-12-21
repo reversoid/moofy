@@ -9,6 +9,7 @@ import { GetPersonalCollectionResponse } from './responses/get-personal-collecti
 import { GetPersonalCollectionReviewsResponse } from './responses/get-personal-collection-reviews.response';
 import { GetProfileResponse } from './responses/get-profile.response';
 import { GetReviewFromPersonalCollectionResponse } from './responses/get-review-from-personal-collection.response';
+import { GetPersonalCollectionConflictsResponse } from './responses/personal-collection-conflicts/get-personal-collection-conflicts.response';
 
 export interface IProfileController {
   getProfile(...args: any): Promise<GetProfileResponse>;
@@ -32,6 +33,12 @@ export interface IPersonalProfileController {
   getProfile(...args: any): Promise<GetProfileResponse>;
 
   getPersonalCollection(...args: any): Promise<GetPersonalCollectionResponse>;
+
+  getPersonalCollectionConflicts(
+    ...args: any
+  ): Promise<GetPersonalCollectionConflictsResponse>;
+
+  resolvePersonalCollectionConflicts(...args: any): Promise<void>;
 
   createPersonalCollection(
     ...args: any

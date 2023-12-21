@@ -42,6 +42,13 @@ export class CollectionReviewRepository extends PaginatedRepository {
     });
   }
 
+  async makeReviewsVisible(reviewsIds: Array<Review['id']>): Promise<void> {
+    await this.prismaService.review.updateMany({
+      where: { deletedAt: null, id: { in: reviewsIds }, isHidden: true },
+      data: { isHidden: false },
+    });
+  }
+
   async getConflictingReviews(
     collectionId: Collection['id'],
   ): Promise<Review[]> {
