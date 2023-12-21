@@ -31,6 +31,7 @@ import { AlreadyFavoriteCollectionException } from './exceptions/already-favorit
 import { NotFavoriteCollectionException } from './exceptions/not-favorite-collection.exception';
 import { FullCollection } from './models/full-collection';
 import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists';
+import { Review } from '../collection-review/models/review';
 
 @Injectable()
 export class CollectionService {
@@ -157,7 +158,17 @@ export class CollectionService {
     );
 
     await this.deleteManyCollections(collectionIds);
+
+    const conflictingReviews =
+      await this.collectionReviewService.getConflictingReviews(collection.id);
+
+    await this.hideReviews(conflictingReviews.map((r) => r.id));
+
     return this.getInfoForCollection(collection, userId);
+  }
+
+  async hideReviews(reviewIds: Array<Review['id']>) {
+    return this.collectionReviewService.hideReviews(reviewIds);
   }
 
   async getReviewsAmount(collectionId: Collection['id']): Promise<number> {

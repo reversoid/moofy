@@ -35,6 +35,44 @@ export class CollectionReviewRepository extends PaginatedRepository {
     });
   }
 
+  async hideReviews(reviewsIds: Array<Review['id']>): Promise<void> {
+    await this.prismaService.review.updateMany({
+      where: { deletedAt: null, id: { in: reviewsIds }, isHidden: false },
+      data: { isHidden: true },
+    });
+  }
+
+  async getConflictingReviews(
+    collectionId: Collection['id'],
+  ): Promise<Review[]> {
+    const rawReviews = (await this.prismaService.$queryRaw`
+      SELECT 
+        review.id AS review_id,
+        review.created_at AS review_created_at,
+        review.updated_at AS review_updated_at,
+        review.description AS review_description,
+        review.score AS review_score,
+        film.id AS film_id,
+        film.genres AS film_genres,
+        film.name AS film_name,
+        film.poster_preview_url AS film_poster_preview_url,
+        film.poster_url AS film_poster_url,
+        film.type AS film_type,
+        film.year AS film_year
+      FROM review
+      JOIN film ON film.id = review.film_id
+      JOIN (
+        SELECT film_id
+        FROM review
+        GROUP BY film_id
+        HAVING COUNT(*) > 1
+      ) r ON review.film_id = r.film_id;
+      WHERE review.deleted_at IS NULL
+        AND review.list_id = ${collectionId}`) as any[];
+
+    return this.parseRawReviews(rawReviews);
+  }
+
   async getRandomReview(
     collectionId: Collection['id'],
     ignoreIds?: Array<Review['id']>,

@@ -23,6 +23,16 @@ export class CollectionReviewService {
     return this.reviewRepository.createReview(props);
   }
 
+  async getConflictingReviews(
+    collectionId: Collection['id'],
+  ): Promise<Review[]> {
+    return this.reviewRepository.getConflictingReviews(collectionId);
+  }
+
+  async hideReviews(reviewsIds: Array<Review['id']>): Promise<void> {
+    await this.reviewRepository.hideReviews(reviewsIds);
+  }
+
   async getReviewById(id: Review['id']) {
     return this.reviewRepository.getReviewById(id);
   }
