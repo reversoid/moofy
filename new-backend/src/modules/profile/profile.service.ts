@@ -18,6 +18,10 @@ import { FullCollection } from '../collection/models/full-collection';
 import { NoPersonalCollectionException } from './exceptions/no-personal-collection.exception';
 import { Review } from '../collection-review/models/review';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
+import {
+  CreateReviewProps,
+  UpdateReviewProps,
+} from '../collection-review/types';
 
 @Injectable()
 export class ProfileService {
@@ -90,6 +94,54 @@ export class ProfileService {
       limit,
       nextKey,
     );
+  }
+
+  async createPersonalReview(
+    userId: User['id'],
+    props: Omit<CreateReviewProps, 'collectionId' | 'userId'>,
+  ): Promise<Review> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.createReview({
+      collectionId: personalCollection.id,
+      filmId: props.filmId,
+      userId,
+      description: props.description,
+      score: props.score,
+    });
+  }
+
+  async updatePersonalReview(
+    userId: User['id'],
+    props: UpdateReviewProps,
+  ): Promise<Review> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.updateReview(props);
+  }
+
+  async removePersonalReview(
+    userId: User['id'],
+    reviewId: Review['id'],
+  ): Promise<void> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.deleteReview(reviewId);
   }
 
   async editProfile(
