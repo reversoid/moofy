@@ -1,13 +1,16 @@
-import { User } from '../user/models/user';
 import { Collection } from './models/collection';
 
 export type CreateCollectionProps = {
   name: string;
   description: string | null;
   imageUrl: string | null;
-  userId: User['id'];
   isPrivate: boolean;
 };
+
+export type CreatePersonalCollectionProps = Pick<
+  CreateCollectionProps,
+  'name' | 'description' | 'imageUrl'
+>;
 
 export type UpdateCollectionProps = {
   name?: string;

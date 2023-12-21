@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
 import { Collection } from './models/collection';
 import { CollectionWithInfo } from './models/collection-with-info';
-import { CreateCollectionProps, UpdateCollectionProps } from './types';
+import {
+  CreateCollectionProps,
+  CreatePersonalCollectionProps,
+  UpdateCollectionProps,
+} from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
@@ -26,6 +30,7 @@ import { EventsService } from '../events/events.service';
 import { AlreadyFavoriteCollectionException } from './exceptions/already-favorite-collection.exception';
 import { NotFavoriteCollectionException } from './exceptions/not-favorite-collection.exception';
 import { FullCollection } from './models/full-collection';
+import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists';
 
 @Injectable()
 export class CollectionService {
@@ -46,11 +51,15 @@ export class CollectionService {
   }
 
   async createCollection(
+    userId: User['id'],
     props: CreateCollectionProps,
   ): Promise<CollectionWithInfo> {
-    const collection = await this.collectionRepository.createCollection(props);
+    const collection = await this.collectionRepository.createCollection(
+      userId,
+      props,
+    );
 
-    return this.getInfoForCollection(collection, props.userId);
+    return this.getInfoForCollection(collection, userId);
   }
 
   async markCollectionAsViewed(
@@ -90,6 +99,21 @@ export class CollectionService {
 
   async getPersonalCollection(userId: User['id']): Promise<Collection | null> {
     return this.collectionRepository.getPersonalCollection(userId);
+  }
+
+  async createEmptyPersonalCollection(
+    userId: User['id'],
+    props: CreatePersonalCollectionProps,
+  ): Promise<CollectionWithInfo> {
+    const existingPersonalCollection = await this.getPersonalCollection(userId);
+    if (existingPersonalCollection) {
+      throw new PersonalCollectionExistsException();
+    }
+
+    return this.createCollection(userId, {
+      ...props,
+      isPrivate: false,
+    });
   }
 
   async getReviewsAmount(collectionId: Collection['id']): Promise<number> {

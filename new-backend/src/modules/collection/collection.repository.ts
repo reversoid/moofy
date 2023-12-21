@@ -29,13 +29,10 @@ export class CollectionRepository extends PaginatedRepository {
     super();
   }
 
-  async createCollection({
-    description,
-    name,
-    imageUrl,
-    userId,
-    isPrivate,
-  }: CreateCollectionProps): Promise<Collection> {
+  async createCollection(
+    userId: User['id'],
+    { description, name, imageUrl, isPrivate }: CreateCollectionProps,
+  ): Promise<Collection> {
     return this.prismaService.list.create({
       data: {
         name,
@@ -102,7 +99,7 @@ export class CollectionRepository extends PaginatedRepository {
     id: Collection['id'],
   ): Promise<{ id: Collection['id'] }> {
     await this.prismaService.list.update({
-      where: { id },
+      where: { id, isPersonal: false },
       data: { deletedAt: new Date() },
     });
     return { id };
@@ -224,6 +221,7 @@ export class CollectionRepository extends PaginatedRepository {
         userId,
         deletedAt: null,
         updatedAt: key ? { lte: new Date(key) } : undefined,
+        isPersonal: false,
         isPublic:
           type === 'private' ? false : type === 'public' ? true : undefined,
       },
