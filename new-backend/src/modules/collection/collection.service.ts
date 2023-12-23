@@ -30,6 +30,7 @@ import { CollectionNotLikedException } from './exceptions/like-collection/not-li
 import { TooLargeImageException } from './exceptions/collection-image/too-large-image.exception';
 import { WrongImageFormatException } from './exceptions/collection-image/wrong-image-format.exception';
 import { DeletePersonalCollectionException } from './exceptions/personal-collection/delete-personal-collection.exception';
+import { MakePersonalCollectionPrivateException } from './exceptions/personal-collection/make-personal-collection-private.exception';
 
 @Injectable()
 export class CollectionService {
@@ -119,6 +120,11 @@ export class CollectionService {
       isPrivate?: boolean;
     },
   ) {
+    const isPersonal = await this.isPersonalCollection(collectionId);
+    if (isPersonal && collectionData.isPrivate === true) {
+      throw new MakePersonalCollectionPrivateException();
+    }
+
     const collection = await this.collectionRepository.updateCollection(
       collectionId,
       {
