@@ -15,7 +15,7 @@ import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
 import { FullCollection } from '../collection/models/full-collection';
-import { NoPersonalCollectionException } from './exceptions/no-personal-collection.exception';
+import { NoPersonalCollectionException } from '../collection/exceptions/personal-collection/no-personal-collection.exception';
 import { Review } from '../collection-review/models/review';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import {

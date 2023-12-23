@@ -10,8 +10,7 @@ import {
 } from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
-import { CollectionNotLikedException } from './exceptions/not-liked.exception';
+import { CollectionAlreadyLikedException } from './exceptions/like-collection/collection-already-liked.exception';
 import { MultipartFile } from '@fastify/multipart';
 import {
   MAX_COMPRESSED_FILE_SIZE,
@@ -19,21 +18,23 @@ import {
   getS3,
   supportedImageFormats,
 } from 'src/shared/utils/s3/s3';
-import { WrongImageFormatException } from './exceptions/wrong-image-format.exception';
-import { TooLargeImageException } from './exceptions/too-large-image.exception';
+
 import * as sharp from 'sharp';
-import { ImageLoadException } from './exceptions/image-load.exception';
+import { ImageLoadException } from './exceptions/collection-image/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
 import { CollectionRepository } from './collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
-import { AlreadyFavoriteCollectionException } from './exceptions/already-favorite-collection.exception';
-import { NotFavoriteCollectionException } from './exceptions/not-favorite-collection.exception';
+import { AlreadyFavoriteCollectionException } from './exceptions/favorite-collection/already-favorite-collection.exception';
+import { NotFavoriteCollectionException } from './exceptions/favorite-collection/not-favorite-collection.exception';
 import { FullCollection } from './models/full-collection';
-import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists';
 import { Review } from '../collection-review/models/review';
-import { NoPersonalCollectionException } from '../profile/exceptions/no-personal-collection.exception';
+import { NoPersonalCollectionException } from './exceptions/personal-collection/no-personal-collection.exception';
+import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists.exception';
+import { CollectionNotLikedException } from './exceptions/like-collection/not-liked.exception';
+import { TooLargeImageException } from './exceptions/collection-image/too-large-image.exception';
+import { WrongImageFormatException } from './exceptions/collection-image/wrong-image-format.exception';
 
 @Injectable()
 export class CollectionService {
