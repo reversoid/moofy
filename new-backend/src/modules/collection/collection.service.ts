@@ -29,6 +29,7 @@ import { PersonalCollectionExistsException } from './exceptions/personal-collect
 import { CollectionNotLikedException } from './exceptions/like-collection/not-liked.exception';
 import { TooLargeImageException } from './exceptions/collection-image/too-large-image.exception';
 import { WrongImageFormatException } from './exceptions/collection-image/wrong-image-format.exception';
+import { DeletePersonalCollectionException } from './exceptions/personal-collection/delete-personal-collection.exception';
 
 @Injectable()
 export class CollectionService {
@@ -78,11 +79,33 @@ export class CollectionService {
     await this.collectionRepository.viewCollection(collectionId, userId);
   }
 
+  private async isPersonalCollection(collectionId: Collection['id']) {
+    return this.collectionRepository.isPersonalCollection(collectionId);
+  }
+
+  private async arePersonalCollections(
+    collectionIds: Array<Collection['id']>,
+  ): Promise<boolean[]> {
+    return Promise.all(
+      collectionIds.map((id) => this.isPersonalCollection(id)),
+    );
+  }
+
   async deleteCollection(id: Collection['id']) {
+    const isPersonal = await this.isPersonalCollection(id);
+    if (isPersonal) {
+      throw new DeletePersonalCollectionException();
+    }
+
     await this.collectionRepository.deleteCollection(id);
   }
 
   async deleteManyCollections(ids: Array<Collection['id']>) {
+    const arePersonal = await this.arePersonalCollections(ids);
+    if (arePersonal.some((v) => v === true)) {
+      throw new DeletePersonalCollectionException();
+    }
+
     await this.collectionRepository.deleteManyCollections(ids);
   }
 

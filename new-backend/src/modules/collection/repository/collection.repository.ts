@@ -29,6 +29,14 @@ export class CollectionRepository extends PaginatedRepository {
     super();
   }
 
+  async isPersonalCollection(collectionId: number) {
+    return Boolean(
+      await this.prismaService.list.findFirst({
+        where: { id: collectionId, deletedAt: null, isPersonal: true },
+      }),
+    );
+  }
+
   async createCollection(
     userId: User['id'],
     { description, name, imageUrl, isPrivate }: CreateCollectionProps,
