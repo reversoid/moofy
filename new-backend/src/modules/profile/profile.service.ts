@@ -19,6 +19,7 @@ import { NoPersonalCollectionException } from '../collection/exceptions/personal
 import { Review } from '../collection-review/models/review';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { Film } from '../film/models/film';
+import { Collection } from '../collection/models/collection';
 
 @Injectable()
 export class ProfileService {
@@ -49,6 +50,24 @@ export class ProfileService {
         userId,
       ),
     };
+  }
+
+  async getPersonalCollectionConflicts(userId: User['id']): Promise<Review[]> {
+    const collection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!collection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.getConflictingReviews(collection.id);
+  }
+
+  async solvePersonalCollectionConflicts(
+    userId: User['id'],
+    reviewsId: Array<Review['id']>,
+  ): Promise<void> {
+    await this.solvePersonalCollectionConflicts(userId, reviewsId);
   }
 
   async getPersonalCollection(
@@ -90,6 +109,28 @@ export class ProfileService {
       null,
       limit,
       nextKey,
+    );
+  }
+
+  async createPersonalCollection(
+    userId: User['id'],
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
+    uniteCollectionsIds?: Array<Collection['id']>,
+  ): Promise<CollectionWithInfo> {
+    if (uniteCollectionsIds) {
+      return this.collectionService.createPersonalCollectionFromUnion(
+        userId,
+        collectionData,
+        uniteCollectionsIds,
+      );
+    }
+    return this.collectionService.createEmptyPersonalCollection(
+      userId,
+      collectionData,
     );
   }
 
@@ -138,6 +179,30 @@ export class ProfileService {
       description: props.description,
       score: props.score,
     });
+  }
+
+  async getPersonalReview(
+    userId: User['id'],
+    reviewId: Review['id'],
+  ): Promise<Review | null> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    const reviewIsInCollection =
+      await this.collectionReviewService.isReviewBelongsToCollection(
+        reviewId,
+        personalCollection.id,
+      );
+
+    if (!reviewIsInCollection) {
+      return null;
+    }
+
+    return this.collectionReviewService.getReviewById(reviewId);
   }
 
   async removePersonalReview(

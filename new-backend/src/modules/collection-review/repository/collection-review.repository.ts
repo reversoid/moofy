@@ -145,6 +145,21 @@ export class CollectionReviewRepository extends PaginatedRepository {
     return { id };
   }
 
+  async isReviewBelongsToCollection(
+    reviewId: Review['id'],
+    collectionId: Collection['id'],
+  ): Promise<boolean> {
+    return Boolean(
+      await this.prismaService.review.findFirst({
+        where: {
+          id: reviewId,
+          listId: collectionId,
+          deletedAt: null,
+        },
+      }),
+    );
+  }
+
   async moveAllReviewsToAnotherCollection(
     fromCollectionsIds: Array<Collection['id']>,
     toCollectionId: Collection['id'],

@@ -43,6 +43,16 @@ export class CollectionReviewService {
     return this.reviewRepository.getConflictingReviews(collectionId);
   }
 
+  async isReviewBelongsToCollection(
+    reviewId: Review['id'],
+    collectionId: Collection['id'],
+  ): Promise<boolean> {
+    return this.reviewRepository.isReviewBelongsToCollection(
+      reviewId,
+      collectionId,
+    );
+  }
+
   async resolveConflictingReviews(
     collectionId: Collection['id'],
     reviewsIdsToSave: Set<Review['id']>,
