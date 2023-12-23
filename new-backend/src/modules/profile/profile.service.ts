@@ -18,10 +18,7 @@ import { FullCollection } from '../collection/models/full-collection';
 import { NoPersonalCollectionException } from '../collection/exceptions/personal-collection/no-personal-collection.exception';
 import { Review } from '../collection-review/models/review';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
-import {
-  CreateReviewProps,
-  UpdateReviewProps,
-} from '../collection-review/types';
+import { Film } from '../film/models/film';
 
 @Injectable()
 export class ProfileService {
@@ -98,7 +95,11 @@ export class ProfileService {
 
   async createPersonalReview(
     userId: User['id'],
-    props: Omit<CreateReviewProps, 'collectionId' | 'userId'>,
+    props: {
+      filmId: Film['id'];
+      score?: number | null;
+      description?: string | null;
+    },
   ): Promise<Review> {
     const personalCollection =
       await this.collectionService.getPersonalCollection(userId);
@@ -107,18 +108,24 @@ export class ProfileService {
       throw new NoPersonalCollectionException();
     }
 
-    return this.collectionReviewService.createReview({
-      collectionId: personalCollection.id,
-      filmId: props.filmId,
+    return this.collectionReviewService.createReview(
       userId,
-      description: props.description,
-      score: props.score,
-    });
+      personalCollection.id,
+      {
+        filmId: props.filmId,
+        description: props.description,
+        score: props.score,
+      },
+    );
   }
 
   async updatePersonalReview(
     userId: User['id'],
-    props: UpdateReviewProps,
+    reviewId: Review['id'],
+    props: {
+      score?: number | null;
+      description?: string | null;
+    },
   ): Promise<Review> {
     const personalCollection =
       await this.collectionService.getPersonalCollection(userId);
@@ -127,7 +134,10 @@ export class ProfileService {
       throw new NoPersonalCollectionException();
     }
 
-    return this.collectionReviewService.updateReview(props);
+    return this.collectionReviewService.updateReview(reviewId, {
+      description: props.description,
+      score: props.score,
+    });
   }
 
   async removePersonalReview(

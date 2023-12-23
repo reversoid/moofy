@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReviewProps, UpdateReviewProps } from './types';
-import { CollectionReviewRepository } from './collection-review.repository';
+import { CollectionReviewRepository } from './repository/collection-review.repository';
 import { Review } from './models/review';
 import { Collection } from '../collection/models/collection';
 import { FilmService } from '../film/film.service';
@@ -8,6 +7,7 @@ import { WrongFilmIdException } from '../film/exceptions/wrong-film-id.exception
 import { ReviewOnFilmExists } from './exceptions/review-exists.exception';
 import { Film } from '../film/models/film';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
+import { User } from '../user/models/user';
 
 @Injectable()
 export class CollectionReviewService {
@@ -16,11 +16,25 @@ export class CollectionReviewService {
     private readonly filmService: FilmService,
   ) {}
 
-  async createReview(props: CreateReviewProps) {
-    await this.validateReviewExistence(props.collectionId, props.filmId);
-    await this.ensureFilmExists(props.filmId);
+  async createReview(
+    userId: User['id'],
+    collectionId: Collection['id'],
+    reviewData: {
+      filmId: Film['id'];
+      description?: string | null;
+      score?: number | null;
+    },
+  ) {
+    await this.validateReviewExistence(collectionId, reviewData.filmId);
+    await this.ensureFilmExists(reviewData.filmId);
 
-    return this.reviewRepository.createReview(props);
+    return this.reviewRepository.createReview({
+      collectionId,
+      userId,
+      filmId: reviewData.filmId,
+      description: reviewData.description,
+      score: reviewData.score,
+    });
   }
 
   async getConflictingReviews(
@@ -79,8 +93,18 @@ export class CollectionReviewService {
     return this.reviewRepository.getReviewById(id);
   }
 
-  async updateReview(props: UpdateReviewProps) {
-    return this.reviewRepository.updateReview(props);
+  async updateReview(
+    reviewId: Review['id'],
+    reviewData: {
+      score?: number | null;
+      description?: string | null;
+    },
+  ) {
+    return this.reviewRepository.updateReview({
+      id: reviewId,
+      description: reviewData.description,
+      score: reviewData.score,
+    });
   }
 
   async deleteReview(id: Review['id']) {

@@ -31,7 +31,7 @@ import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
 import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
 import { FastifyRequest } from 'fastify';
-import { NoImageProvidedException } from '../exceptions/no-image-provided.exception';
+import { NoImageProvidedException } from '../exceptions/collection-image/no-image-provided.exception';
 
 @ApiTags('Collections')
 @Controller('collections')
@@ -45,8 +45,7 @@ export class CollectionController implements ICollectionController {
     @AuthUser() user: User,
     @Body() { description, imageUrl, name, isPrivate }: CreateCollectionDto,
   ) {
-    return this.collectionService.createCollection({
-      userId: user.id,
+    return this.collectionService.createCollection(user.id, {
       description,
       imageUrl: imageUrl ?? null,
       name,
@@ -88,8 +87,7 @@ export class CollectionController implements ICollectionController {
     @Param('id', ParseIntPipe) id: number,
     @Body() props: UpdateCollectionDto,
   ) {
-    return this.collectionService.updateCollection(user.id, {
-      id,
+    return this.collectionService.updateCollection(user.id, id, {
       ...props,
     });
   }

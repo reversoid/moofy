@@ -2,12 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
 import { Collection } from './models/collection';
 import { CollectionWithInfo } from './models/collection-with-info';
-import {
-  CreateCollectionProps,
-  CreatePersonalCollectionProps,
-  UpdateCollectionProps,
-  UpdatePersonalCollectionProps,
-} from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionAlreadyLikedException } from './exceptions/like-collection/collection-already-liked.exception';
@@ -22,7 +16,7 @@ import {
 import * as sharp from 'sharp';
 import { ImageLoadException } from './exceptions/collection-image/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
-import { CollectionRepository } from './collection.repository';
+import { CollectionRepository } from './repository/collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
@@ -56,11 +50,21 @@ export class CollectionService {
 
   async createCollection(
     userId: User['id'],
-    props: CreateCollectionProps,
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+      isPrivate: boolean;
+    },
   ): Promise<CollectionWithInfo> {
     const collection = await this.collectionRepository.createCollection(
       userId,
-      props,
+      {
+        description: collectionData.description,
+        imageUrl: collectionData.imageUrl,
+        isPrivate: collectionData.isPrivate,
+        name: collectionData.name,
+      },
     );
 
     return this.getInfoForCollection(collection, userId);
@@ -82,8 +86,26 @@ export class CollectionService {
     await this.collectionRepository.deleteManyCollections(ids);
   }
 
-  async updateCollection(userId: User['id'], props: UpdateCollectionProps) {
-    const collection = await this.collectionRepository.updateCollection(props);
+  async updateCollection(
+    userId: User['id'],
+    collectionId: Collection['id'],
+    collectionData: {
+      name?: string;
+      description?: string | null;
+      imageUrl?: string | null;
+      isPrivate?: boolean;
+    },
+  ) {
+    const collection = await this.collectionRepository.updateCollection(
+      collectionId,
+      {
+        description: collectionData.description,
+        imageUrl: collectionData.description,
+        isPrivate: collectionData.isPrivate,
+        name: collectionData.name,
+      },
+    );
+
     return this.getInfoForCollection(collection, userId);
   }
 
@@ -118,19 +140,29 @@ export class CollectionService {
 
   async createEmptyPersonalCollection(
     userId: User['id'],
-    props: CreatePersonalCollectionProps,
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
   ): Promise<CollectionWithInfo> {
     await this.checkIfPersonalCollectionNotExists(userId);
 
     return this.createCollection(userId, {
-      ...props,
+      description: collectionData.description,
+      imageUrl: collectionData.imageUrl,
+      name: collectionData.name,
       isPrivate: false,
     });
   }
 
   async createPersonalCollectionFromUnion(
     userId: User['id'],
-    newCollectionProps: CreatePersonalCollectionProps,
+    newCollectionProps: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
     collectionIds: Array<Collection['id']>,
   ): Promise<CollectionWithInfo> {
     await this.checkIfPersonalCollectionNotExists(userId);
@@ -138,8 +170,10 @@ export class CollectionService {
     return this.uniteCollections(
       userId,
       {
-        ...newCollectionProps,
+        description: newCollectionProps.description,
+        imageUrl: newCollectionProps.imageUrl,
         isPrivate: false,
+        name: newCollectionProps.name,
       },
       collectionIds,
     );
@@ -147,29 +181,42 @@ export class CollectionService {
 
   async editPersonalCollection(
     userId: User['id'],
-    props: UpdatePersonalCollectionProps,
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
   ): Promise<CollectionWithInfo> {
     const collection = await this.getPersonalCollection(userId);
     if (!collection) {
       throw new NoPersonalCollectionException();
     }
 
-    return this.updateCollection(userId, {
-      id: collection.id,
-      description: props.description,
-      imageUrl: props.imageUrl,
-      name: props.name,
+    return this.updateCollection(userId, collection.id, {
+      description: collectionData.description,
+      imageUrl: collectionData.imageUrl,
+      name: collectionData.name,
     });
   }
 
   async uniteCollections(
     userId: User['id'],
-    newCollectionProps: CreateCollectionProps,
+    newCollectionProps: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+      isPrivate: boolean;
+    },
     collectionIds: Array<Collection['id']>,
   ) {
     const collection = await this.collectionRepository.createCollection(
       userId,
-      newCollectionProps,
+      {
+        description: newCollectionProps.description,
+        imageUrl: newCollectionProps.imageUrl,
+        isPrivate: newCollectionProps.isPrivate,
+        name: newCollectionProps.name,
+      },
     );
 
     await this.collectionReviewService.moveAllReviewsToAnotherCollection(

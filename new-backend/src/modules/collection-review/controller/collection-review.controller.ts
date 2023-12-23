@@ -42,12 +42,10 @@ export class CollectionReviewsController
     @AuthUser() user: User,
     @Body() dto: CreateReviewDto,
   ) {
-    const review = await this.reviewService.createReview({
-      userId: user.id,
+    const review = await this.reviewService.createReview(user.id, id, {
       filmId: dto.filmId,
       description: dto.description,
       score: dto.score,
-      collectionId: id,
     });
     return { review };
   }
