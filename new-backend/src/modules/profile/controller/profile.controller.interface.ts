@@ -21,6 +21,16 @@ export interface IProfileController {
   getFollowers(...args: any): Promise<GetFollowersResponse>;
 
   getFollowees(...args: any): Promise<GetFolloweesResponse>;
+
+  getPersonalCollection(...args: any): Promise<GetPersonalCollectionResponse>;
+
+  getPersonalCollectionReviews(
+    ...args: any
+  ): Promise<GetPersonalCollectionReviewsResponse>;
+
+  getReviewFromPersonalCollection(
+    ...args: any
+  ): Promise<GetReviewFromPersonalCollectionResponse>;
 }
 
 export interface IPersonalProfileController {
