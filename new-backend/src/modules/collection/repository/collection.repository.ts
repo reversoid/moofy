@@ -39,7 +39,13 @@ export class CollectionRepository extends PaginatedRepository {
 
   async createCollection(
     userId: User['id'],
-    { description, name, imageUrl, isPrivate }: CreateCollectionProps,
+    {
+      description,
+      name,
+      imageUrl,
+      isPrivate,
+      isPersonal,
+    }: CreateCollectionProps,
   ): Promise<Collection> {
     return this.prismaService.list.create({
       data: {
@@ -48,6 +54,7 @@ export class CollectionRepository extends PaginatedRepository {
         imageUrl: imageUrl,
         userId,
         isPublic: !isPrivate,
+        isPersonal,
       },
       select: selectCollection,
     });

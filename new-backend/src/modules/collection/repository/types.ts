@@ -3,6 +3,7 @@ export type CreateCollectionProps = {
   description: string | null;
   imageUrl: string | null;
   isPrivate: boolean;
+  isPersonal?: boolean;
 };
 
 export type UpdateCollectionProps = {

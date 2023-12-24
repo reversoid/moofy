@@ -57,6 +57,7 @@ export class CollectionService {
       description: string | null;
       imageUrl: string | null;
       isPrivate: boolean;
+      isPersonal?: boolean;
     },
   ): Promise<CollectionWithInfo> {
     const collection = await this.collectionRepository.createCollection(
@@ -66,6 +67,7 @@ export class CollectionService {
         imageUrl: collectionData.imageUrl,
         isPrivate: collectionData.isPrivate,
         name: collectionData.name,
+        isPersonal: collectionData.isPersonal,
       },
     );
 
@@ -162,6 +164,7 @@ export class CollectionService {
 
   private async checkIfPersonalCollectionNotExists(userId: User['id']) {
     const existingPersonalCollection = await this.getPersonalCollection(userId);
+
     if (existingPersonalCollection) {
       throw new PersonalCollectionExistsException();
     }
@@ -182,6 +185,7 @@ export class CollectionService {
       imageUrl: collectionData.imageUrl,
       name: collectionData.name,
       isPrivate: false,
+      isPersonal: true,
     });
   }
 
@@ -238,7 +242,10 @@ export class CollectionService {
       isPrivate: boolean;
     },
     collectionIds: Array<Collection['id']>,
-    options?: { onlyReviewsWithDescription?: boolean },
+    options?: {
+      onlyReviewsWithDescription?: boolean;
+      isPersonalCollection?: boolean;
+    },
   ) {
     const collection = await this.collectionRepository.createCollection(
       userId,
@@ -247,13 +254,14 @@ export class CollectionService {
         imageUrl: newCollectionProps.imageUrl,
         isPrivate: newCollectionProps.isPrivate,
         name: newCollectionProps.name,
+        isPersonal: options?.isPersonalCollection,
       },
     );
 
     await this.collectionReviewService.moveAllReviewsToAnotherCollection(
       collectionIds,
       collection.id,
-      options,
+      { onlyReviewsWithDescription: options?.onlyReviewsWithDescription },
     );
 
     await this.deleteManyCollections(collectionIds);
