@@ -40,7 +40,10 @@ export class ReviewsController implements IReviewsController {
     @Param('reviewId', ParseIntPipe) id: number,
     @Body() dto: EditReviewDto,
   ) {
-    const review = await this.reviewService.updateReview({ id, ...dto });
+    const review = await this.reviewService.updateReview(id, {
+      description: dto.description,
+      score: dto.score,
+    });
     return { review };
   }
 

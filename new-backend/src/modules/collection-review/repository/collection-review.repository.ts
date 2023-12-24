@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/shared/utils/prisma-service';
 import { CreateReviewProps, UpdateReviewProps } from './types';
-import { Review, reviewSchema, selectReview } from './models/review';
+import { Review, reviewSchema, selectReview } from '../models/review';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { Collection } from 'src/modules/collection/models/collection';
 import { PaginatedRepository } from 'src/shared/utils/pagination/paginated-repository';
@@ -35,6 +35,53 @@ export class CollectionReviewRepository extends PaginatedRepository {
     });
   }
 
+  async hideReviews(reviewsIds: Array<Review['id']>): Promise<void> {
+    await this.prismaService.review.updateMany({
+      where: { deletedAt: null, id: { in: reviewsIds }, isHidden: false },
+      data: { isHidden: true },
+    });
+  }
+
+  async makeReviewsVisible(reviewsIds: Array<Review['id']>): Promise<void> {
+    await this.prismaService.review.updateMany({
+      where: { deletedAt: null, id: { in: reviewsIds }, isHidden: true },
+      data: { isHidden: false },
+    });
+  }
+
+  async getConflictingReviews(
+    collectionId: Collection['id'],
+  ): Promise<Review[]> {
+    const rawReviews = (await this.prismaService.$queryRaw`
+      SELECT 
+        review.id AS review_id,
+        review.created_at AS review_created_at,
+        review.updated_at AS review_updated_at,
+        review.description AS review_description,
+        review.score AS review_score,
+        review.is_hidden as is_hidden,
+        film.id AS film_id,
+        film.genres AS film_genres,
+        film.name AS film_name,
+        film.poster_preview_url AS film_poster_preview_url,
+        film.poster_url AS film_poster_url,
+        film.type AS film_type,
+        film.year AS film_year
+      FROM review
+      JOIN film ON film.id = review.film_id
+      JOIN (
+        SELECT film_id
+        FROM review
+        WHERE review.list_id = ${collectionId} AND review.deleted_at IS NULL
+        GROUP BY film_id
+        HAVING COUNT(*) > 1
+      ) r ON review.film_id = r.film_id
+      WHERE review.deleted_at IS NULL
+        AND review.list_id = ${collectionId}`) as any[];
+
+    return this.parseRawReviews(rawReviews);
+  }
+
   async getRandomReview(
     collectionId: Collection['id'],
     ignoreIds?: Array<Review['id']>,
@@ -50,6 +97,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
         review.updated_at AS review_updated_at,
         review.description AS review_description,
         review.score AS review_score,
+        review.is_hidden AS is_hidden,
         film.id AS film_id,
         film.genres AS film_genres,
         film.name AS film_name,
@@ -100,8 +148,40 @@ export class CollectionReviewRepository extends PaginatedRepository {
     return { id };
   }
 
+  async isReviewBelongsToCollection(
+    reviewId: Review['id'],
+    collectionId: Collection['id'],
+  ): Promise<boolean> {
+    return Boolean(
+      await this.prismaService.review.findFirst({
+        where: {
+          id: reviewId,
+          listId: collectionId,
+          deletedAt: null,
+        },
+      }),
+    );
+  }
+
+  async moveAllReviewsToAnotherCollection(
+    fromCollectionsIds: Array<Collection['id']>,
+    toCollectionId: Collection['id'],
+    onlyWithDescription = false,
+  ): Promise<void> {
+    await this.prismaService.review.updateMany({
+      where: {
+        listId: { in: fromCollectionsIds },
+        description: onlyWithDescription ? { not: null } : undefined,
+      },
+      data: {
+        listId: toCollectionId,
+      },
+    });
+  }
+
   async getReviewsFromCollection(
     id: Collection['id'],
+    type: 'all' | 'hidden' | 'visible',
     limit: number,
     nextKey?: string,
   ): Promise<PaginatedData<Review>> {
@@ -112,6 +192,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
         listId: id,
         createdAt: parsedKey ? { lte: new Date(parsedKey) } : undefined,
         deletedAt: null,
+        isHidden: type === 'all' ? undefined : type === 'hidden' ? true : false,
       },
       select: selectReview,
       orderBy: { createdAt: 'desc' },
@@ -123,10 +204,19 @@ export class CollectionReviewRepository extends PaginatedRepository {
 
   async searchReviewsFromCollection(
     collectionId: Collection['id'],
+    type: 'all' | 'hidden' | 'visible',
     search: string,
     limit: number,
   ): Promise<Review[]> {
     const searchString = getTsQueryFromString(search);
+
+    const whereHiddenExpression = Prisma.raw(
+      type === 'all'
+        ? ''
+        : type === 'hidden'
+          ? 'AND review.is_hidden = TRUE'
+          : 'AND review.is_hidden = FALSE',
+    );
 
     const reviews = (await this.prismaService.$queryRaw`
     SELECT 
@@ -135,6 +225,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
       review.updated_at AS review_updated_at,
       review.description AS review_description,
       review.score AS review_score,
+      review.is_hidden AS is_hidden,
       film.id AS film_id,
       film.genres AS film_genres,
       film.name AS film_name,
@@ -150,6 +241,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
     WHERE review.list_id = ${collectionId} 
       AND (film_metadata.search_document || review_metadata.search_document) @@ to_tsquery('simple', ${searchString})
       AND review.deleted_at IS NULL
+      ${whereHiddenExpression}
     ORDER BY rank DESC
     LIMIT ${limit}
     `) as any[];
@@ -174,6 +266,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
           year: data.film_year,
         },
         score: data.review_score,
+        isHidden: data.is_hidden,
       } satisfies Review),
     );
   }

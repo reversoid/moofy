@@ -3,7 +3,7 @@ import { CollectionReviewService } from './collection-review.service';
 import { CollectionReviewsController } from './controller/collection-review.controller';
 import { FilmModule } from '../film/film.module';
 import { PrismaService } from 'src/shared/utils/prisma-service';
-import { CollectionReviewRepository } from './collection-review.repository';
+import { CollectionReviewRepository } from './repository/collection-review.repository';
 import { ReviewsController } from './controller/reviews.controller';
 
 @Module({

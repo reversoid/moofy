@@ -14,11 +14,18 @@ import { Profile } from './models/profile';
 import { ProfileSocialStats } from './models/profile-social-stats';
 import { NotFoundProfileException } from './exceptions/not-found-profile-exception';
 import { CollectionWithInfo } from '../collection/models/collection-with-info';
+import { FullCollection } from '../collection/models/full-collection';
+import { NoPersonalCollectionException } from '../collection/exceptions/personal-collection/no-personal-collection.exception';
+import { Review } from '../collection-review/models/review';
+import { CollectionReviewService } from '../collection-review/collection-review.service';
+import { Film } from '../film/models/film';
+import { Collection } from '../collection/models/collection';
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly collectionService: CollectionService,
+    private readonly collectionReviewService: CollectionReviewService,
     private readonly userService: UserService,
     private readonly profileRepository: ProfileRepository,
     private readonly eventsService: EventsService,
@@ -35,6 +42,7 @@ export class ProfileService {
       'all',
       nextKey,
     );
+
     return {
       nextKey: collections.nextKey,
       items: await this.collectionService.getInfoForManyCollections(
@@ -42,6 +50,183 @@ export class ProfileService {
         userId,
       ),
     };
+  }
+
+  async getPersonalCollectionConflicts(userId: User['id']): Promise<Review[]> {
+    const collection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!collection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.getConflictingReviews(collection.id);
+  }
+
+  async solvePersonalCollectionConflicts(
+    userId: User['id'],
+    reviewsId: Array<Review['id']>,
+  ): Promise<void> {
+    const collection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!collection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    await this.collectionReviewService.resolveConflictingReviews(
+      collection.id,
+      new Set(reviewsId),
+    );
+  }
+
+  async getPersonalCollection(
+    userId: User['id'],
+    limit: number,
+    type: 'all' | 'hidden' | 'visible',
+    forUserId: User['id'] | null,
+  ): Promise<FullCollection> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionService.getFullCollection(
+      personalCollection.id,
+      forUserId,
+      type,
+      limit,
+    );
+  }
+
+  async getPersonalCollectionReviews(
+    userId: User['id'],
+    limit: number,
+    type: 'all' | 'hidden' | 'visible',
+    nextKey?: string,
+  ): Promise<PaginatedData<Review>> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.getReviews(
+      personalCollection.id,
+      type,
+      null,
+      limit,
+      nextKey,
+    );
+  }
+
+  async createPersonalCollection(
+    userId: User['id'],
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
+    uniteCollectionsIds?: Array<Collection['id']>,
+  ): Promise<CollectionWithInfo> {
+    if (uniteCollectionsIds) {
+      return this.collectionService.createPersonalCollectionFromUnion(
+        userId,
+        collectionData,
+        uniteCollectionsIds,
+      );
+    }
+    return this.collectionService.createEmptyPersonalCollection(
+      userId,
+      collectionData,
+    );
+  }
+
+  async createPersonalReview(
+    userId: User['id'],
+    props: {
+      filmId: Film['id'];
+      score?: number | null;
+      description?: string | null;
+    },
+  ): Promise<Review> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.createReview(
+      userId,
+      personalCollection.id,
+      {
+        filmId: props.filmId,
+        description: props.description,
+        score: props.score,
+      },
+    );
+  }
+
+  async updatePersonalReview(
+    userId: User['id'],
+    reviewId: Review['id'],
+    props: {
+      score?: number | null;
+      description?: string | null;
+    },
+  ): Promise<Review> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.updateReview(reviewId, {
+      description: props.description,
+      score: props.score,
+    });
+  }
+
+  async getPersonalReview(
+    userId: User['id'],
+    reviewId: Review['id'],
+  ): Promise<Review | null> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    const reviewIsInCollection =
+      await this.collectionReviewService.isReviewBelongsToCollection(
+        reviewId,
+        personalCollection.id,
+      );
+
+    if (!reviewIsInCollection) {
+      return null;
+    }
+
+    return this.collectionReviewService.getReviewById(reviewId);
+  }
+
+  async removePersonalReview(
+    userId: User['id'],
+    reviewId: Review['id'],
+  ): Promise<void> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.collectionReviewService.deleteReview(reviewId);
   }
 
   async editProfile(
@@ -112,15 +297,12 @@ export class ProfileService {
 
     const isOwner = forUserId === userId;
 
-    const [collections, favCollections, stats] = await Promise.all([
+    const [collections, stats] = await Promise.all([
       this.collectionService.getUserCollections(
         userId,
         limit,
         isOwner ? 'all' : 'public',
       ),
-      isOwner
-        ? this.collectionService.getUserFavoriteCollections(userId, limit)
-        : Promise.resolve(null),
       this.getSocialStatsForUser(userId),
     ]);
 
@@ -137,18 +319,19 @@ export class ProfileService {
           forUserId,
         ),
       },
-      favoriteCollections:
-        isOwner && favCollections
-          ? {
-              nextKey: favCollections.nextKey,
-              items: await this.collectionService.getInfoForManyCollections(
-                favCollections.items,
-                forUserId,
-              ),
-            }
-          : undefined,
+      personalReviewsAmount: await this.getPersonalReviewsAmount(userId),
       socialStats: stats ?? { followees: 0, followers: 0 },
     };
+  }
+
+  private async getPersonalReviewsAmount(userId: User['id']): Promise<number> {
+    const personalCollection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!personalCollection) {
+      return 0;
+    }
+    return this.collectionService.getReviewsAmount(personalCollection.id);
   }
 
   async getSocialStatsForUser(
@@ -207,14 +390,18 @@ export class ProfileService {
     userId: User['id'],
     users: User[],
   ): Promise<ShortProfile[]> {
-    const isSubscribedMap = await this.profileRepository.isFollowingUsers(
-      userId,
-      users.map((u) => u.id),
-    );
+    const [isSubscribedMap] = await Promise.all([
+      this.profileRepository.isFollowingUsers(
+        userId,
+        users.map((u) => u.id),
+      ),
+    ]);
 
     return users.map((user) => ({
       user,
-      additionalInfo: { isSubscribed: isSubscribedMap.get(user.id) ?? false },
+      additionalInfo: {
+        isSubscribed: isSubscribedMap.get(user.id) ?? false,
+      },
     }));
   }
 

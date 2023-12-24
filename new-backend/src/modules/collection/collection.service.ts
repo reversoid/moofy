@@ -2,14 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
 import { Collection } from './models/collection';
 import { CollectionWithInfo } from './models/collection-with-info';
-import { CreateCollectionProps, UpdateCollectionProps } from './types';
 import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
-import { CollectionSocialStats } from './models/collection-social-stats';
-import { CollectionAdditionalInfo } from './models/collection-additional-info';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
-import { Review } from 'src/modules/collection-review/models/review';
-import { CollectionAlreadyLikedException } from './exceptions/collection-already-liked.exception';
-import { CollectionNotLikedException } from './exceptions/not-liked.exception';
+import { CollectionAlreadyLikedException } from './exceptions/like-collection/collection-already-liked.exception';
 import { MultipartFile } from '@fastify/multipart';
 import {
   MAX_COMPRESSED_FILE_SIZE,
@@ -17,17 +12,25 @@ import {
   getS3,
   supportedImageFormats,
 } from 'src/shared/utils/s3/s3';
-import { WrongImageFormatException } from './exceptions/wrong-image-format.exception';
-import { TooLargeImageException } from './exceptions/too-large-image.exception';
+
 import * as sharp from 'sharp';
-import { ImageLoadException } from './exceptions/image-load.exception';
+import { ImageLoadException } from './exceptions/collection-image/image-load.exception';
 import { ManagedUpload } from 'aws-sdk/clients/s3';
-import { CollectionRepository } from './collection.repository';
+import { CollectionRepository } from './repository/collection.repository';
 import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
 import { EventsService } from '../events/events.service';
-import { AlreadyFavoriteCollectionException } from './exceptions/already-favorite-collection.exception';
-import { NotFavoriteCollectionException } from './exceptions/not-favorite-collection.exception';
+import { AlreadyFavoriteCollectionException } from './exceptions/favorite-collection/already-favorite-collection.exception';
+import { NotFavoriteCollectionException } from './exceptions/favorite-collection/not-favorite-collection.exception';
+import { FullCollection } from './models/full-collection';
+import { Review } from '../collection-review/models/review';
+import { NoPersonalCollectionException } from './exceptions/personal-collection/no-personal-collection.exception';
+import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists.exception';
+import { CollectionNotLikedException } from './exceptions/like-collection/not-liked.exception';
+import { TooLargeImageException } from './exceptions/collection-image/too-large-image.exception';
+import { WrongImageFormatException } from './exceptions/collection-image/wrong-image-format.exception';
+import { DeletePersonalCollectionException } from './exceptions/personal-collection/delete-personal-collection.exception';
+import { MakePersonalCollectionPrivateException } from './exceptions/personal-collection/make-personal-collection-private.exception';
 
 @Injectable()
 export class CollectionService {
@@ -48,11 +51,27 @@ export class CollectionService {
   }
 
   async createCollection(
-    props: CreateCollectionProps,
+    userId: User['id'],
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+      isPrivate: boolean;
+      isPersonal?: boolean;
+    },
   ): Promise<CollectionWithInfo> {
-    const collection = await this.collectionRepository.createCollection(props);
+    const collection = await this.collectionRepository.createCollection(
+      userId,
+      {
+        description: collectionData.description,
+        imageUrl: collectionData.imageUrl,
+        isPrivate: collectionData.isPrivate,
+        name: collectionData.name,
+        isPersonal: collectionData.isPersonal,
+      },
+    );
 
-    return this.getInfoForCollection(collection, props.userId);
+    return this.getInfoForCollection(collection, userId);
   }
 
   async markCollectionAsViewed(
@@ -63,41 +82,223 @@ export class CollectionService {
     await this.collectionRepository.viewCollection(collectionId, userId);
   }
 
+  private async isPersonalCollection(collectionId: Collection['id']) {
+    return this.collectionRepository.isPersonalCollection(collectionId);
+  }
+
+  private async arePersonalCollections(
+    collectionIds: Array<Collection['id']>,
+  ): Promise<boolean[]> {
+    return Promise.all(
+      collectionIds.map((id) => this.isPersonalCollection(id)),
+    );
+  }
+
   async deleteCollection(id: Collection['id']) {
+    const isPersonal = await this.isPersonalCollection(id);
+    if (isPersonal) {
+      throw new DeletePersonalCollectionException();
+    }
+
     await this.collectionRepository.deleteCollection(id);
   }
 
-  async updateCollection(userId: User['id'], props: UpdateCollectionProps) {
-    const collection = await this.collectionRepository.updateCollection(props);
+  async deleteManyCollections(ids: Array<Collection['id']>) {
+    const arePersonal = await this.arePersonalCollections(ids);
+    if (arePersonal.some((v) => v === true)) {
+      throw new DeletePersonalCollectionException();
+    }
+
+    await this.collectionRepository.deleteManyCollections(ids);
+  }
+
+  async updateCollection(
+    userId: User['id'],
+    collectionId: Collection['id'],
+    collectionData: {
+      name?: string;
+      description?: string | null;
+      imageUrl?: string | null;
+      isPrivate?: boolean;
+    },
+  ) {
+    const isPersonal = await this.isPersonalCollection(collectionId);
+    if (isPersonal && collectionData.isPrivate === true) {
+      throw new MakePersonalCollectionPrivateException();
+    }
+
+    const collection = await this.collectionRepository.updateCollection(
+      collectionId,
+      {
+        description: collectionData.description,
+        imageUrl: collectionData.description,
+        isPrivate: collectionData.isPrivate,
+        name: collectionData.name,
+      },
+    );
+
     return this.getInfoForCollection(collection, userId);
   }
 
   async getFullCollection(
     id: Collection['id'],
     userId: User['id'] | null,
+    type: 'all' | 'visible' | 'hidden',
     limit: number,
-    nextKey?: string,
-  ): Promise<{
-    collection: Collection;
-    socialStats: CollectionSocialStats;
-    additionalInfo: CollectionAdditionalInfo;
-    reviews: PaginatedData<Review>;
-  }> {
+  ): Promise<FullCollection> {
     const collection = await this.collectionRepository.getCollection(id);
     if (!collection) {
       throw new WrongCollectionIdException();
     }
+    return this.convertCollectionToFullCollection(
+      collection,
+      limit,
+      type,
+      userId,
+    );
+  }
 
+  async getPersonalCollection(userId: User['id']): Promise<Collection | null> {
+    return this.collectionRepository.getPersonalCollection(userId);
+  }
+
+  private async checkIfPersonalCollectionNotExists(userId: User['id']) {
+    const existingPersonalCollection = await this.getPersonalCollection(userId);
+
+    if (existingPersonalCollection) {
+      throw new PersonalCollectionExistsException();
+    }
+  }
+
+  async createEmptyPersonalCollection(
+    userId: User['id'],
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
+  ): Promise<CollectionWithInfo> {
+    await this.checkIfPersonalCollectionNotExists(userId);
+
+    return this.createCollection(userId, {
+      description: collectionData.description,
+      imageUrl: collectionData.imageUrl,
+      name: collectionData.name,
+      isPrivate: false,
+      isPersonal: true,
+    });
+  }
+
+  async createPersonalCollectionFromUnion(
+    userId: User['id'],
+    newCollectionProps: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
+    collectionIds: Array<Collection['id']>,
+  ): Promise<CollectionWithInfo> {
+    await this.checkIfPersonalCollectionNotExists(userId);
+
+    return this.uniteCollections(
+      userId,
+      {
+        description: newCollectionProps.description,
+        imageUrl: newCollectionProps.imageUrl,
+        isPrivate: false,
+        name: newCollectionProps.name,
+        isPersonal: true,
+      },
+      collectionIds,
+      { onlyReviewsWithDescription: true },
+    );
+  }
+
+  async editPersonalCollection(
+    userId: User['id'],
+    collectionData: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+    },
+  ): Promise<CollectionWithInfo> {
+    const collection = await this.getPersonalCollection(userId);
+    if (!collection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    return this.updateCollection(userId, collection.id, {
+      description: collectionData.description,
+      imageUrl: collectionData.imageUrl,
+      name: collectionData.name,
+    });
+  }
+
+  async uniteCollections(
+    userId: User['id'],
+    newCollectionProps: {
+      name: string;
+      description: string | null;
+      imageUrl: string | null;
+      isPrivate: boolean;
+      isPersonal?: boolean;
+    },
+    collectionIds: Array<Collection['id']>,
+    options?: {
+      onlyReviewsWithDescription?: boolean;
+    },
+  ) {
+    const collection = await this.collectionRepository.createCollection(
+      userId,
+      {
+        description: newCollectionProps.description,
+        imageUrl: newCollectionProps.imageUrl,
+        isPrivate: newCollectionProps.isPrivate,
+        name: newCollectionProps.name,
+        isPersonal: newCollectionProps?.isPersonal,
+      },
+    );
+
+    await this.collectionReviewService.moveAllReviewsToAnotherCollection(
+      collectionIds,
+      collection.id,
+      { onlyReviewsWithDescription: options?.onlyReviewsWithDescription },
+    );
+
+    await this.deleteManyCollections(collectionIds);
+
+    const conflictingReviews =
+      await this.collectionReviewService.getConflictingReviews(collection.id);
+
+    await this.hideReviews(conflictingReviews.map((r) => r.id));
+
+    return this.getInfoForCollection(collection, userId);
+  }
+
+  async hideReviews(reviewIds: Array<Review['id']>) {
+    return this.collectionReviewService.hideReviews(reviewIds);
+  }
+
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.collectionRepository.getReviewsAmount(collectionId);
+  }
+
+  private async convertCollectionToFullCollection(
+    collection: Collection,
+    limit: number,
+    type: 'all' | 'hidden' | 'visible',
+    forUserId: User['id'] | null,
+  ): Promise<FullCollection> {
     const collectionWithInfo = await this.getInfoForCollection(
       collection,
-      userId,
+      forUserId,
     );
 
     const reviews = await this.collectionReviewService.getReviews(
-      id,
+      collection.id,
+      type,
       null,
       limit,
-      nextKey,
     );
 
     return { ...collectionWithInfo, reviews };
@@ -245,19 +446,6 @@ export class CollectionService {
     }
 
     return { link: response.Location };
-  }
-
-  async getReviews(
-    colelctionId: Collection['id'],
-    limit: number,
-    nextKey?: string,
-  ): Promise<PaginatedData<Review>> {
-    return this.collectionReviewService.getReviews(
-      colelctionId,
-      null,
-      limit,
-      nextKey,
-    );
   }
 
   async getUserCollections(

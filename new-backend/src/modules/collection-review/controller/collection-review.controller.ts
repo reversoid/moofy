@@ -42,12 +42,10 @@ export class CollectionReviewsController
     @AuthUser() user: User,
     @Body() dto: CreateReviewDto,
   ) {
-    const review = await this.reviewService.createReview({
-      userId: user.id,
+    const review = await this.reviewService.createReview(user.id, id, {
       filmId: dto.filmId,
       description: dto.description,
       score: dto.score,
-      collectionId: id,
     });
     return { review };
   }
@@ -60,7 +58,13 @@ export class CollectionReviewsController
     @Query() { limit, nextKey }: PaginatedQueryDto,
     @Query('search') search: string | null = null,
   ) {
-    return this.reviewService.getReviews(id, search, limit ?? 20, nextKey);
+    return this.reviewService.getReviews(
+      id,
+      'visible',
+      search,
+      limit ?? 20,
+      nextKey,
+    );
   }
 
   @Get(':id/reviews/random')
