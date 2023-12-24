@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TuiBrightness } from '@taiga-ui/core';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
