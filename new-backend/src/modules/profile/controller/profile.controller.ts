@@ -86,43 +86,44 @@ export class ProfileController implements IProfileController {
     return this.profileService.getFollowees(id, limit ?? 20, nextKey);
   }
 
-  @Get('collections/personal')
+  @Get(':id/collections/personal')
   @HttpResponse(getPersonalCollectionResponseSchema)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ProfileExistsGuard)
   getPersonalCollection(
     @AuthUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
     @Query() { limit }: PaginatedQueryDto,
   ) {
     return this.profileService.getPersonalCollection(
-      user.id,
+      id,
       limit ?? 20,
       'visible',
       user.id,
     );
   }
 
-  @Get('collections/personal/reviews')
+  @Get(':id/collections/personal/reviews')
   @HttpResponse(getPersonalCollectionReviewsResponseSchema)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ProfileExistsGuard)
   getPersonalCollectionReviews(
-    @AuthUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
     return this.profileService.getPersonalCollectionReviews(
-      user.id,
+      id,
       limit ?? 20,
       'visible',
       nextKey,
     );
   }
 
-  @Get('collections/personal/reviews/:reviewId')
+  @Get(':id/collections/personal/reviews/:reviewId')
   @UseGuards(JwtAuthGuard, ReviewInPersonalCollectionGuard)
   @HttpResponse(getReviewFromPersonalCollectionResponseSchema)
   async getReviewFromPersonalCollection(
-    @AuthUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ) {
-    return this.profileService.getPersonalReview(user.id, reviewId);
+    return this.profileService.getPersonalReview(id, reviewId);
   }
 }
