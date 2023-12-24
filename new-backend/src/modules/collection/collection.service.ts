@@ -207,6 +207,7 @@ export class CollectionService {
         imageUrl: newCollectionProps.imageUrl,
         isPrivate: false,
         name: newCollectionProps.name,
+        isPersonal: true,
       },
       collectionIds,
       { onlyReviewsWithDescription: true },
@@ -240,11 +241,11 @@ export class CollectionService {
       description: string | null;
       imageUrl: string | null;
       isPrivate: boolean;
+      isPersonal?: boolean;
     },
     collectionIds: Array<Collection['id']>,
     options?: {
       onlyReviewsWithDescription?: boolean;
-      isPersonalCollection?: boolean;
     },
   ) {
     const collection = await this.collectionRepository.createCollection(
@@ -254,7 +255,7 @@ export class CollectionService {
         imageUrl: newCollectionProps.imageUrl,
         isPrivate: newCollectionProps.isPrivate,
         name: newCollectionProps.name,
-        isPersonal: options?.isPersonalCollection,
+        isPersonal: newCollectionProps?.isPersonal,
       },
     );
 

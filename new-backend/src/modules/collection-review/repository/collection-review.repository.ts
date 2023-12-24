@@ -59,6 +59,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
         review.updated_at AS review_updated_at,
         review.description AS review_description,
         review.score AS review_score,
+        review.is_hidden as is_hidden,
         film.id AS film_id,
         film.genres AS film_genres,
         film.name AS film_name,
@@ -71,9 +72,10 @@ export class CollectionReviewRepository extends PaginatedRepository {
       JOIN (
         SELECT film_id
         FROM review
+        WHERE review.list_id = ${collectionId}
         GROUP BY film_id
         HAVING COUNT(*) > 1
-      ) r ON review.film_id = r.film_id;
+      ) r ON review.film_id = r.film_id
       WHERE review.deleted_at IS NULL
         AND review.list_id = ${collectionId}`) as any[];
 
@@ -95,6 +97,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
         review.updated_at AS review_updated_at,
         review.description AS review_description,
         review.score AS review_score,
+        review.is_hidden AS is_hidden,
         film.id AS film_id,
         film.genres AS film_genres,
         film.name AS film_name,
@@ -222,6 +225,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
       review.updated_at AS review_updated_at,
       review.description AS review_description,
       review.score AS review_score,
+      review.is_hidden AS is_hidden,
       film.id AS film_id,
       film.genres AS film_genres,
       film.name AS film_name,
@@ -262,6 +266,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
           year: data.film_year,
         },
         score: data.review_score,
+        isHidden: data.is_hidden,
       } satisfies Review),
     );
   }
