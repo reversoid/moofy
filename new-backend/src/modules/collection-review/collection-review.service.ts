@@ -8,6 +8,7 @@ import { ReviewOnFilmExists } from './exceptions/review-exists.exception';
 import { Film } from '../film/models/film';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { User } from '../user/models/user';
+import { IncorrectReviewsIdsToResolveConflictsException } from './exceptions/incorrect-reviews-id-to-resolve-conflicts.exception';
 
 @Injectable()
 export class CollectionReviewService {
@@ -63,6 +64,10 @@ export class CollectionReviewService {
       if (!reviewsIdsToSave.has(conflictReview.id)) {
         reviewsIdsToSave.delete(conflictReview.id);
       }
+    }
+
+    if (!reviewsIdsToSave) {
+      throw new IncorrectReviewsIdsToResolveConflictsException();
     }
 
     await this.reviewRepository.makeReviewsVisible(

@@ -72,7 +72,7 @@ export class CollectionReviewRepository extends PaginatedRepository {
       JOIN (
         SELECT film_id
         FROM review
-        WHERE review.list_id = ${collectionId}
+        WHERE review.list_id = ${collectionId} AND review.deleted_at IS NULL
         GROUP BY film_id
         HAVING COUNT(*) > 1
       ) r ON review.film_id = r.film_id

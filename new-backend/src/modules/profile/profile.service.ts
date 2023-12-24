@@ -67,7 +67,17 @@ export class ProfileService {
     userId: User['id'],
     reviewsId: Array<Review['id']>,
   ): Promise<void> {
-    await this.solvePersonalCollectionConflicts(userId, reviewsId);
+    const collection =
+      await this.collectionService.getPersonalCollection(userId);
+
+    if (!collection) {
+      throw new NoPersonalCollectionException();
+    }
+
+    await this.collectionReviewService.resolveConflictingReviews(
+      collection.id,
+      new Set(reviewsId),
+    );
   }
 
   async getPersonalCollection(
