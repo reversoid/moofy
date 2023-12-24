@@ -163,10 +163,12 @@ export class CollectionReviewRepository extends PaginatedRepository {
   async moveAllReviewsToAnotherCollection(
     fromCollectionsIds: Array<Collection['id']>,
     toCollectionId: Collection['id'],
+    onlyWithDescription = false,
   ): Promise<void> {
     await this.prismaService.review.updateMany({
       where: {
         listId: { in: fromCollectionsIds },
+        description: onlyWithDescription ? { not: null } : undefined,
       },
       data: {
         listId: toCollectionId,

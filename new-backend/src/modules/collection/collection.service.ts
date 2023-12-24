@@ -205,6 +205,7 @@ export class CollectionService {
         name: newCollectionProps.name,
       },
       collectionIds,
+      { onlyReviewsWithDescription: true },
     );
   }
 
@@ -237,6 +238,7 @@ export class CollectionService {
       isPrivate: boolean;
     },
     collectionIds: Array<Collection['id']>,
+    options?: { onlyReviewsWithDescription?: boolean },
   ) {
     const collection = await this.collectionRepository.createCollection(
       userId,
@@ -251,6 +253,7 @@ export class CollectionService {
     await this.collectionReviewService.moveAllReviewsToAnotherCollection(
       collectionIds,
       collection.id,
+      options,
     );
 
     await this.deleteManyCollections(collectionIds);

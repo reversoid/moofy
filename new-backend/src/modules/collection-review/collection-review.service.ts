@@ -124,10 +124,12 @@ export class CollectionReviewService {
   async moveAllReviewsToAnotherCollection(
     fromCollectionsIds: Array<Collection['id']>,
     toCollectionId: Collection['id'],
+    options?: { onlyReviewsWithDescription?: boolean },
   ): Promise<void> {
     return this.reviewRepository.moveAllReviewsToAnotherCollection(
       fromCollectionsIds,
       toCollectionId,
+      Boolean(options?.onlyReviewsWithDescription),
     );
   }
 
