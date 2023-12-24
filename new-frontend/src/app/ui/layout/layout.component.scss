@@ -1,0 +1,13 @@
+.page-content {
+  flex-grow: 2;
+  display: flex;
+
+  .content {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+app-wrapper {
+  height: 100%;
+}

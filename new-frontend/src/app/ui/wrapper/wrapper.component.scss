@@ -1,5 +1,6 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   max-width: 1400px;
   padding-left: 1rem;
   padding-right: 1rem;

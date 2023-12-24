@@ -1,8 +1,7 @@
 <tui-theme-night *ngIf="themeService.theme === 'onDark'"></tui-theme-night>
 
-<app-wrapper>
-  <tui-root [tuiMode]="themeService.theme">
-    <button (click)="toggleTheme()" tuiButton>Click</button>
+<tui-root [tuiMode]="themeService.theme">
+  <app-layout>
     <router-outlet></router-outlet>
-  </tui-root>
-</app-wrapper>
+  </app-layout>
+</tui-root>
