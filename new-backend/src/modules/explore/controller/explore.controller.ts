@@ -17,6 +17,10 @@ import { ExploreService } from '../explore.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ParseStringPipe } from 'src/shared/parse-string-pipe';
 import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-auth.guard';
+import { getUnseenCollectionsResponseSchema } from './responses/get-unseen-collections.response';
+import { PaginatedQueryDto } from 'src/shared/utils/pagination/paginated-query.dto';
+import { getLatestUpdatedCollectionsResponseSchema } from './responses/get-latest-updated-collections.response';
+import { getUnseenAmountResponseSchema } from './responses/get-unseen-amount.response';
 
 @Controller('explore')
 @ApiTags('Explore')
@@ -57,5 +61,40 @@ export class ExploreController implements IExploreController {
     @Query('limit', ParseIntPipe) limit: number = 20,
   ) {
     return this.exploreService.getProfiles(username, limit, user.id);
+  }
+
+  @Get('collections/unseen')
+  @HttpResponse(getUnseenCollectionsResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  async getUnseenCollections(
+    @AuthUser() user: User,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+  ) {
+    return this.exploreService.getUnseenCollections(
+      user.id,
+      limit ?? 20,
+      nextKey,
+    );
+  }
+
+  @Get('collections/unseen/amount')
+  @HttpResponse(getUnseenAmountResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  async getUnseenCollectionsAmount(@AuthUser() user: User) {
+    return this.exploreService.getAmountOfUnseenCollections(user.id);
+  }
+
+  @Get('collections/latest-updated')
+  @HttpResponse(getLatestUpdatedCollectionsResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  async getLatestUpdatedCollections(
+    @AuthUser() user: User,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+  ) {
+    return this.exploreService.getLatestUpdatedCollections(
+      user.id,
+      limit ?? 20,
+      nextKey,
+    );
   }
 }

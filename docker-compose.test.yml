@@ -66,7 +66,7 @@ services:
       - moofy-test-network
 
   backend-test:
-    image: moofy-backend-test
+    image: moofy-new-backend-test
     restart: unless-stopped
     container_name: backend-test
     build:
@@ -96,7 +96,7 @@ services:
     networks:
       - moofy-test-network
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbitmq-test-data:/var/lib/rabbitmq
 
 volumes:
   redis-db:
@@ -104,6 +104,8 @@ volumes:
   test-redis-db:
     driver: local
   rabbitmq-data:
+    driver: local
+  rabbitmq-test-data:
     driver: local
 
 networks:

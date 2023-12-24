@@ -7,12 +7,12 @@ import {
   Collection,
   collectionSchema,
   selectCollection,
-} from './models/collection';
-import { CollectionSocialStats } from './models/collection-social-stats';
+} from '../models/collection';
+import { CollectionSocialStats } from '../models/collection-social-stats';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionLike } from 'src/modules/collection-comments/models/collection-like';
 import { getTsQueryFromString } from 'src/shared/utils/full-text-search/get-ts-query-from-string';
-import { Review } from '../collection-review/models/review';
+import { Review } from '../../collection-review/models/review';
 
 const TOP_COLLECTIONS_COEFFS = {
   likes: 3,
@@ -29,13 +29,24 @@ export class CollectionRepository extends PaginatedRepository {
     super();
   }
 
-  async createCollection({
-    description,
-    name,
-    imageUrl,
-    userId,
-    isPrivate,
-  }: CreateCollectionProps): Promise<Collection> {
+  async isPersonalCollection(collectionId: number) {
+    return Boolean(
+      await this.prismaService.list.findFirst({
+        where: { id: collectionId, deletedAt: null, isPersonal: true },
+      }),
+    );
+  }
+
+  async createCollection(
+    userId: User['id'],
+    {
+      description,
+      name,
+      imageUrl,
+      isPrivate,
+      isPersonal,
+    }: CreateCollectionProps,
+  ): Promise<Collection> {
     return this.prismaService.list.create({
       data: {
         name,
@@ -43,6 +54,7 @@ export class CollectionRepository extends PaginatedRepository {
         imageUrl: imageUrl,
         userId,
         isPublic: !isPrivate,
+        isPersonal,
       },
       select: selectCollection,
     });
@@ -52,6 +64,19 @@ export class CollectionRepository extends PaginatedRepository {
     return this.prismaService.list.findUnique({
       where: { id, deletedAt: null },
       select: selectCollection,
+    });
+  }
+
+  async getPersonalCollection(userId: User['id']): Promise<Collection | null> {
+    return this.prismaService.list.findFirst({
+      where: { deletedAt: null, isPersonal: true, userId },
+      select: selectCollection,
+    });
+  }
+
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.prismaService.review.count({
+      where: { deletedAt: null, list: { id: collectionId, deletedAt: null } },
     });
   }
 
@@ -66,15 +91,12 @@ export class CollectionRepository extends PaginatedRepository {
     return data?.list ?? null;
   }
 
-  async updateCollection({
-    id,
-    description,
-    imageUrl,
-    name,
-    isPrivate,
-  }: UpdateCollectionProps): Promise<Collection> {
+  async updateCollection(
+    collectionId: Collection['id'],
+    { description, imageUrl, name, isPrivate }: UpdateCollectionProps,
+  ): Promise<Collection> {
     return this.prismaService.list.update({
-      where: { id },
+      where: { id: collectionId },
       data: {
         description,
         imageUrl: imageUrl,
@@ -89,10 +111,17 @@ export class CollectionRepository extends PaginatedRepository {
     id: Collection['id'],
   ): Promise<{ id: Collection['id'] }> {
     await this.prismaService.list.update({
-      where: { id },
+      where: { id, isPersonal: false },
       data: { deletedAt: new Date() },
     });
     return { id };
+  }
+
+  async deleteManyCollections(ids: Array<Collection['id']>): Promise<void> {
+    await this.prismaService.list.updateMany({
+      where: { id: { in: ids }, isPersonal: false },
+      data: { deletedAt: new Date() },
+    });
   }
 
   async getSocialStats(
@@ -211,6 +240,7 @@ export class CollectionRepository extends PaginatedRepository {
         userId,
         deletedAt: null,
         updatedAt: key ? { lte: new Date(key) } : undefined,
+        isPersonal: false,
         isPublic:
           type === 'private' ? false : type === 'public' ? true : undefined,
       },

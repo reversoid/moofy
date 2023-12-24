@@ -1,23 +1,28 @@
 import { CookieSerializeOptions } from '@fastify/cookie';
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { AppEnvironments } from 'src/config/global.config';
 import { HttpResponse } from 'src/shared/utils/decorators/http-response.decorator';
 import { AuthService } from '../auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import {
-  LoginResponse,
-  loginResponseSchema,
-} from './dto/responses/login.response';
+import { LoginResponse, loginResponseSchema } from './responses/login.response';
 import {
   RefreshResponse,
   refreshResponseSchema,
-} from './dto/responses/refresh.response';
+} from './responses/refresh.response';
 import {
   RegisterResponse,
   registerResponseSchema,
-} from './dto/responses/register.response';
+} from './responses/register.response';
 
 import { ApiTags } from '@nestjs/swagger';
 import { GlobalConfig } from '../../global/global.config';
@@ -26,6 +31,10 @@ import { RefreshToken } from './decorators/refresh-token.decorator';
 import { HasRefreshGuard } from './guards/has-refresh-token.guard';
 import { REFRESH_TOKEN_KEY } from './utils/refresh-token-key';
 import { ParseStringPipe } from 'src/shared/parse-string-pipe';
+import {
+  UserExistsResponse,
+  userExistsResponseSchema,
+} from './responses/user-exists.response';
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieSerializeOptions = {
   signed: true,
@@ -93,6 +102,15 @@ export class AuthController {
       response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
       throw error;
     }
+  }
+
+  @Get('user-exists')
+  @HttpResponse(userExistsResponseSchema)
+  async userExists(
+    @Query('username') username: string = '',
+  ): Promise<UserExistsResponse> {
+    const exists = await this.authService.userExists(username);
+    return { exists };
   }
 
   @Post('protected/refresh')

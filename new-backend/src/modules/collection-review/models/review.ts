@@ -9,6 +9,7 @@ export const reviewSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   film: filmSchema,
+  isHidden: z.boolean(),
 });
 
 export type Review = z.infer<typeof reviewSchema>;
@@ -22,4 +23,5 @@ export const selectReview: PrismaSelectEntity<Review> = {
   id: true,
   score: true,
   updatedAt: true,
+  isHidden: true,
 };

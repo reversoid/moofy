@@ -22,6 +22,10 @@ import { getFolloweesResponseSchema } from './responses/get-followees.response';
 import { getFollowersResponseSchema } from './responses/get-followers.response';
 import { getProfileResponseSchema } from './responses/get-profile.response';
 import { ProfileExistsGuard } from './guards/profile-exists.guard';
+import { getPersonalCollectionResponseSchema } from './responses/get-personal-collection';
+import { getPersonalCollectionReviewsResponseSchema } from './responses/get-personal-collection-reviews.response';
+import { ReviewInPersonalCollectionGuard } from './guards/review-in-personal-collection.guard';
+import { getReviewFromPersonalCollectionResponseSchema } from './responses/get-review-from-personal-collection.response';
 
 @Controller('profiles')
 @ApiTags('Profiles')
@@ -80,5 +84,46 @@ export class ProfileController implements IProfileController {
     @Query() { limit, nextKey }: PaginatedQueryDto,
   ) {
     return this.profileService.getFollowees(id, limit ?? 20, nextKey);
+  }
+
+  @Get(':id/collections/personal')
+  @HttpResponse(getPersonalCollectionResponseSchema)
+  @UseGuards(JwtAuthGuard, ProfileExistsGuard)
+  getPersonalCollection(
+    @AuthUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+    @Query() { limit }: PaginatedQueryDto,
+  ) {
+    return this.profileService.getPersonalCollection(
+      id,
+      limit ?? 20,
+      'visible',
+      user.id,
+    );
+  }
+
+  @Get(':id/collections/personal/reviews')
+  @HttpResponse(getPersonalCollectionReviewsResponseSchema)
+  @UseGuards(JwtAuthGuard, ProfileExistsGuard)
+  getPersonalCollectionReviews(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() { limit, nextKey }: PaginatedQueryDto,
+  ) {
+    return this.profileService.getPersonalCollectionReviews(
+      id,
+      limit ?? 20,
+      'visible',
+      nextKey,
+    );
+  }
+
+  @Get(':id/collections/personal/reviews/:reviewId')
+  @UseGuards(JwtAuthGuard, ReviewInPersonalCollectionGuard)
+  @HttpResponse(getReviewFromPersonalCollectionResponseSchema)
+  async getReviewFromPersonalCollection(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('reviewId', ParseIntPipe) reviewId: number,
+  ) {
+    return this.profileService.getPersonalReview(id, reviewId);
   }
 }
