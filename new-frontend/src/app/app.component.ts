@@ -7,12 +7,13 @@ import {
   TuiThemeNightModule,
   TuiModeModule,
 } from '@taiga-ui/core';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { WrapperComponent } from './wrapper/wrapper.component';
 import { NightService } from './utils/night.service';
+import { UniversalModule } from '@ng-web-apis/universal';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +32,7 @@ import { NightService } from './utils/night.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [{ provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   constructor(public themeService: NightService) {}

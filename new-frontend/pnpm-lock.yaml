@@ -35,6 +35,9 @@ dependencies:
   '@angular/ssr':
     specifier: ^17.0.7
     version: 17.0.7(@angular/common@17.0.7)(@angular/core@17.0.7)
+  '@ng-web-apis/universal':
+    specifier: 3.0.7
+    version: 3.0.7(@angular/core@17.0.7)(@ng-web-apis/common@3.0.6)(@types/node@18.19.3)(rxjs@7.8.1)
   '@ngrx/store':
     specifier: ^17.0.1
     version: 17.0.1(@angular/core@17.0.7)(rxjs@7.8.1)
@@ -2277,6 +2280,21 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@ng-web-apis/universal@3.0.7(@angular/core@17.0.7)(@ng-web-apis/common@3.0.6)(@types/node@18.19.3)(rxjs@7.8.1):
+    resolution: {integrity: sha512-8ERn17ed5jijG2Qd0aswmlB983U0TrYuUZW2x7pfZLuq3V+PDAW2jbWE+GDDBqzrCOZDKiH+N7hvkEN0exk16Q==}
+    peerDependencies:
+      '@angular/core': '>=12.0.0'
+      '@ng-web-apis/common': '>=2.0.0'
+      '@types/node': '>=10.0.0'
+      rxjs: '>=6.0.0'
+    dependencies:
+      '@angular/core': 17.0.7(rxjs@7.8.1)(zone.js@0.14.2)
+      '@ng-web-apis/common': 3.0.6(@angular/common@17.0.7)(@angular/core@17.0.7)(rxjs@7.8.1)
+      '@types/node': 18.19.3
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    dev: false
+
   /@ngrx/store@17.0.1(@angular/core@17.0.7)(rxjs@7.8.1):
     resolution: {integrity: sha512-BmVzN+fqyz0ZrVEmJ+jrNwePMKcpNL49vb8sbQ3yDDftxgZz2HqRKFMexqlXpz5ixwK5LqTOblHNQOgi9irsTw==}
     peerDependencies:
@@ -2756,7 +2774,6 @@ packages:
     resolution: {integrity: sha512-k5fggr14DwAytoA/t8rPrIz++lXK7/DqckthCmoZOKNsEbJkId4Z//BqgApXBUGrGddrigYa1oqheo/7YmW4rg==}
     dependencies:
       undici-types: 5.26.5
-    dev: true
 
   /@types/qs@6.9.10:
     resolution: {integrity: sha512-3Gnx08Ns1sEoCrWssEgTSJs/rsT2vhGP+Ja9cnnk9k4ALxinORlQneLXFeFKOTJMOeZUFD1s7w+w2AphTpvzZw==}
@@ -7260,7 +7277,6 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-    dev: true
 
   /undici@5.27.2:
     resolution: {integrity: sha512-iS857PdOEy/y3wlM3yRp+6SNQQ6xU0mmZcwRSriqk+et/cwWAtwmIGf6WkoDN2EK/AMdCO/dfXzIwi+rFMrjjQ==}

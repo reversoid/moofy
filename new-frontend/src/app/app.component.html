@@ -1,9 +1,7 @@
-<tui-theme-night
-  *ngIf="(themeService.theme | async) === 'onDark'"
-></tui-theme-night>
+<tui-theme-night *ngIf="themeService.theme === 'onDark'"></tui-theme-night>
 
 <app-wrapper>
-  <tui-root [tuiMode]="themeService.theme | async">
+  <tui-root [tuiMode]="themeService.theme">
     <button (click)="toggleTheme()" tuiButton>Click</button>
     <router-outlet></router-outlet>
   </tui-root>
