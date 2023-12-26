@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "./fonts.scss";
 
 tui-root {
   height: 100%;
@@ -18,11 +19,7 @@ tui-root {
 
   --tui-radius-m: 1rem;
 
-  --tui-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif !important;
+  --tui-font-heading: "SF Pro Display", "sans-serif" !important;
 
-  --tui-font-text: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif !important;
+  --tui-font-text: "SF Pro Display", sans-serif !important;
 }
