@@ -2,11 +2,25 @@
   <img ngSrc="/assets/logo.svg" width="128" height="64" priority />
 
   <div class="controls">
-    <img
-      class="profile-image"
-      ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-      width="48"
-      height="48"
-    />
+    <button tuiIconButton (click)="onClick()">
+      <div
+        tuiDropdown
+        [tuiDropdown]="profileDropdownContent"
+        [tuiDropdownManual]="open"
+        (click)="onClick()"
+        (tuiActiveZoneChange)="onActiveZone($event)"
+        (tuiObscured)="onObscured($event)"
+      ></div>
+      <img
+        class="profile-image"
+        ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
+        width="48"
+        height="48"
+      />
+
+      <ng-template #profileDropdownContent>
+        <div class="dropdown">But there is nothing to choose...</div>
+      </ng-template>
+    </button>
   </div>
 </header>
