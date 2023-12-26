@@ -12,8 +12,10 @@
   .controls {
     display: flex;
     align-items: center;
-    .profile-image {
-      border-radius: 50%;
+    .profile-button {
+      .profile-image {
+        border-radius: 50%;
+      }
     }
   }
 }
