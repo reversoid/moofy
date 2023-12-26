@@ -1,1 +1,28 @@
-<p>register-page works!</p>
+<div class="wrapper">
+  <h1 class="tui-text_h1">Войти</h1>
+
+  <div class="form">
+    <div class="tui-form__row">
+      <tui-input>
+        Имя пользователя
+        <input tuiTextfield />
+      </tui-input>
+    </div>
+
+    <div class="tui-form__row">
+      <tui-input>
+        Пароль
+        <input tuiTextfield />
+      </tui-input>
+    </div>
+
+    <div class="tui-form__buttons">
+      <button tuiButton type="button">Зарегистрироваться</button>
+    </div>
+
+    <p class="already-registered">
+      Уже есть аккаунт?
+      <a routerLink="/auth/login" tuiLink>Войти</a>
+    </p>
+  </div>
+</div>

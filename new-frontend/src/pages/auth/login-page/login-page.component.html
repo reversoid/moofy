@@ -1,15 +1,28 @@
-<div class="form">
-  <h1>Войти</h1>
+<div class="wrapper">
+  <h1 class="tui-text_h1">Войти</h1>
 
-  <tui-input>
-    Имя пользователя
-    <input tuiTextfield />
-  </tui-input>
+  <div class="form">
+    <div class="tui-form__row">
+      <tui-input>
+        Имя пользователя
+        <input tuiTextfield />
+      </tui-input>
+    </div>
 
-  <tui-input>
-    Пароль
-    <input tuiTextfield />
-  </tui-input>
+    <div class="tui-form__row">
+      <tui-input>
+        Пароль
+        <input tuiTextfield />
+      </tui-input>
+    </div>
 
-  <button tuiButton type="button">Войти</button>
+    <div class="tui-form__buttons">
+      <button tuiButton type="button">Войти</button>
+    </div>
+
+    <p class="not-registered">
+      Еще нет аккаунта?
+      <a routerLink="/auth/register" tuiLink>Зарегистрироваться</a>
+    </p>
+  </div>
 </div>

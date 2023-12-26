@@ -1,8 +1,13 @@
-.form {
+.wrapper {
   margin-left: auto;
   margin-right: auto;
   max-width: 600px;
-  display: flex;
-  gap: 2rem;
-  flex-direction: column;
+}
+
+.not-registered {
+  color: var(--tui-text-03);
+
+  a {
+    color: var(--tui-link);
+  }
 }
