@@ -1,7 +1,14 @@
-import { NgOptimizedImage } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
-import { TuiButtonModule, TuiDropdownModule } from '@taiga-ui/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TuiActiveZoneModule, TuiObscuredModule, tuiPure } from '@taiga-ui/cdk';
+import {
+  TuiAnimationOptions,
+  TuiButtonModule,
+  TuiDropdownModule,
+  TuiDurationOptions,
+  tuiDropdownAnimation,
+} from '@taiga-ui/core';
 
 @Component({
   selector: 'app-header',
