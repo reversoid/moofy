@@ -7,6 +7,10 @@ tui-root {
   }
 
   --tui-duration: 190ms !important;
+
+  tui-dropdown {
+    border: none !important;
+  }
 }
 
 :root {
