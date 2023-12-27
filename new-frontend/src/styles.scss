@@ -1,6 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./fonts.scss";
-
 tui-root {
   height: 100%;
 
@@ -19,7 +17,8 @@ tui-root {
 
   --tui-radius-m: 1rem;
 
-  --tui-font-heading: "SF Pro Display", "sans-serif" !important;
+  --tui-font-text-s: normal 0.875rem/1.25rem var(--tui-font-text);
 
-  --tui-font-text: "SF Pro Display", sans-serif !important;
+  --tui-text_body-s: 0.875rem !important;
+  --tui-text_body-s-2: 0.875rem !important;
 }
