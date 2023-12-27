@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CollectionComponent } from '../../entities/collection/collection.component';
 
 @Component({
   selector: 'app-collection-page',
   standalone: true,
-  imports: [],
+  imports: [CollectionComponent],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionPageComponent {
-
-}
+export class CollectionPageComponent {}
