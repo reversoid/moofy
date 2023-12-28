@@ -1,0 +1,17 @@
+<h1 class="tui-text_h1">Мои коллекции</h1>
+
+<tui-input
+  [tuiTextfieldLabelOutside]="true"
+  tuiTextfieldIconLeft="tuiIconAlertCircle"
+  class="search-input tui-space_bottom-5"
+>
+  Поиск
+  <input [formControl]="search" tuiTextfield role="search" />
+</tui-input>
+
+<div class="collections-grid">
+  <app-collection></app-collection>
+  <app-collection></app-collection>
+  <app-collection></app-collection>
+  <app-collection></app-collection>
+</div>

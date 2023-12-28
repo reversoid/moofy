@@ -13,6 +13,13 @@ export const appRoutes: Routes = [
   {
     path: 'welcome',
     loadComponent: () =>
+      import('../pages/my-collections-page/my-collections-page.component').then(
+        (r) => r.MyCollectionsPageComponent
+      ),
+  },
+  {
+    path: 'collections/:id',
+    loadComponent: () =>
       import('../pages/collection-page/collection-page.component').then(
         (r) => r.CollectionPageComponent
       ),
