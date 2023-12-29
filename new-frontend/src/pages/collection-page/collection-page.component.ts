@@ -1,9 +1,10 @@
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import {
   TuiButtonModule,
+  TuiDialogService,
   TuiLinkModule,
   TuiSvgModule,
   TuiTextfieldControllerModule,
@@ -36,5 +37,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionPageComponent {
+  constructor(private readonly dialogService: TuiDialogService) {}
+
   search = new FormControl<string>('');
+
+  openCommentsDialog() {
+    this.dialogService
+      .open('Some comments here', { label: 'Комментарии' })
+      .subscribe();
+  }
 }
