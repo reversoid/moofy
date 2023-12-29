@@ -23,6 +23,20 @@ tui-island.stats {
   .controls {
     gap: 0.5rem;
     display: flex;
+
+    .control-with-number {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      font-weight: 700;
+
+      p {
+        margin: 0;
+        color: var(--tui-text-02);
+      }
+    }
   }
 }
 
