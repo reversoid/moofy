@@ -13,6 +13,7 @@ import {
   TuiCheckboxModule,
   TuiInputModule,
   TuiIslandModule,
+  TuiTagModule,
   TuiTextareaModule,
 } from '@taiga-ui/kit';
 
@@ -31,6 +32,7 @@ import {
     TuiButtonModule,
     TuiCheckboxModule,
     TuiSvgModule,
+    TuiTagModule,
   ],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
