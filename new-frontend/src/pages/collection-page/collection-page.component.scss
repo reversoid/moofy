@@ -1,0 +1,31 @@
+.collection-info-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+}
+
+tui-island.creator {
+  //   grid-row: 0 2;
+  .some-figure {
+    width: 3rem;
+    height: 3rem;
+    position: relative;
+
+    img {
+      border-radius: 100%;
+    }
+  }
+}
+
+tui-island.stats {
+  grid-column: 2;
+
+  .controls {
+    gap: 0.5rem;
+    display: flex;
+  }
+}
+
+tui-island {
+  background-color: var(--tui-base-02);
+}

@@ -11,7 +11,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
     provideRouter(appRoutes),
-    provideClientHydration(),
+    // provideClientHydration(),
     importProvidersFrom(TuiRootModule),
     provideStore(),
   ],

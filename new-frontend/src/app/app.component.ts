@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Sanitizer } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  NgModule,
+  Sanitizer,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {
   TUI_SANITIZER,

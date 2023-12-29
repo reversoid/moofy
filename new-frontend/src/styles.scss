@@ -11,6 +11,12 @@ tui-root {
   tui-dropdown {
     border: none !important;
   }
+
+  tui-island {
+    &::before {
+      border: none !important;
+    }
+  }
 }
 
 :root {

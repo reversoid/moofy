@@ -1,1 +1,62 @@
-<h1 class="tui-text_h1">Сын под собакой</h1>
+<h1 class="tui-text_h1">Мой топ топчииик!</h1>
+
+<div class="collection-info-grid">
+  <tui-island class="description">
+    <h4 class="tui-island__title">Описание</h4>
+    <p class="tui-island__paragraph">
+      Это полный треш! Мой топ фильмов от самых всратых режиссеров!
+    </p>
+  </tui-island>
+
+  <tui-island class="creator">
+    <h4 class="tui-island__title">
+      Создатель:
+      <a tuiLink routerLink="/welcome" class=".tui-island__paragraph_link"
+        >floppa</a
+      >
+    </h4>
+
+    <div class="tui-island__content">
+      <figure class="tui-island__figure">
+        <div class="some-figure">
+          <img
+            ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
+            fill
+          />
+        </div>
+      </figure>
+      <div>
+        <p class="tui-island__paragraph">
+          Привет друзья! Добро пожаловать на вебсайт!!!!
+        </p>
+      </div>
+    </div>
+  </tui-island>
+
+  <!-- <tui-island class="info">
+    <ul>
+      <li>Создано</li>
+      <li>Обновлено</li>
+      <li>Лайков</li>
+      <li>Комментариев</li>
+    </ul>
+  </tui-island> -->
+
+  <tui-island class="stats">
+    <div class="controls">
+      <button tuiIconButton></button>
+      <button tuiIconButton></button>
+      <button tuiIconButton></button>
+    </div>
+  </tui-island>
+</div>
+
+<h3 class="tui-text_h3">Обзоры</h3>
+<tui-input
+  [tuiTextfieldLabelOutside]="true"
+  class="search-input tui-space_bottom-5"
+  [formControl]="search"
+>
+  Поиск
+  <input tuiTextfield role="search" />
+</tui-input>
