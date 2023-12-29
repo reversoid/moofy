@@ -4,8 +4,11 @@
   gap: 1rem;
 }
 
+tui-island.description {
+  grid-row: span 2;
+}
+
 tui-island.creator {
-  //   grid-row: 0 2;
   .some-figure {
     width: 3rem;
     height: 3rem;
