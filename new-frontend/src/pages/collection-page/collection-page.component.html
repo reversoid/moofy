@@ -49,15 +49,19 @@
   <tui-island class="stats">
     <div class="controls">
       <div class="control-with-number">
-        <button tuiIconButton></button>
+        <button tuiIconButton icon="tuiIconHeartLarge"></button>
         <p>123</p>
       </div>
       <div class="control-with-number">
-        <button (click)="openCommentsDialog()" tuiIconButton></button>
+        <button
+          (click)="openCommentsDialog()"
+          tuiIconButton
+          icon="tuiIconMessageCircleLarge"
+        ></button>
         <p>1234</p>
       </div>
       <div class="control-with-number">
-        <button tuiIconButton></button>
+        <button tuiIconButton icon="tuiIconBookmarkLarge"></button>
         <p>17</p>
       </div>
     </div>
@@ -68,6 +72,8 @@
 <tui-input
   [tuiTextfieldLabelOutside]="true"
   class="search-input tui-space_bottom-5"
+  tuiTextfieldIconLeft="tuiIconSearchLarge"
+  [tuiTextfieldCleaner]="true"
   [formControl]="search"
 >
   Поиск

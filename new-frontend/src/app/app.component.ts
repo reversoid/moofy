@@ -15,7 +15,7 @@ import {
   TuiRootModule,
   TuiThemeNightModule,
 } from '@taiga-ui/core';
-import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
+import { NgDompurifyModule, NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { LayoutComponent } from './ui/layout/layout.component';
 import { NightService } from './utils/night.service';
 
