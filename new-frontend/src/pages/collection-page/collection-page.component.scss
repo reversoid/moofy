@@ -1,5 +1,11 @@
 @import "@taiga-ui/core/styles/taiga-ui-local.scss";
 
+@mixin hide-mobile {
+  @media #{$tui-mobile} {
+    display: none;
+  }
+}
+
 .collection-info-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;
@@ -23,6 +29,8 @@ tui-island.description {
 }
 
 tui-island.creator {
+  @include hide-mobile();
+
   .some-figure {
     width: 3rem;
     height: 3rem;
@@ -112,22 +120,21 @@ tui-island {
 }
 
 .metadata-grid {
-  grid-row: 3;
+  grid-row: 2;
   grid-column: 2;
   display: flex;
   gap: 1rem;
-  @media #{$tui-mobile} {
-    grid-column: span 2;
-  }
 
-  .info {
+  @include hide-mobile();
+
+  tui-island.info {
     flex-grow: 2;
     h4 {
       color: var(--tui-text-02);
     }
   }
 
-  .collection-image {
+  tui-island.collection-image {
     .image-wrapper {
       width: 4rem;
       height: 4rem;
@@ -137,5 +144,11 @@ tui-island {
         border-radius: calc(var(--tui-radius-xl) - 1rem);
       }
     }
+  }
+}
+
+button.about-collection {
+  @media #{$tui-tablet-min} {
+    display: none;
   }
 }

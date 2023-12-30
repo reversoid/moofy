@@ -56,4 +56,10 @@ export class CollectionPageComponent {
   handleBookmark() {
     console.log('collection bookmarked');
   }
+
+  showInfoAboutCollection() {
+    this.dialogService
+      .open('Some modal here', { label: 'О коллекции' })
+      .subscribe();
+  }
 }
