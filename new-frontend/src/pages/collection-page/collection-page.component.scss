@@ -10,11 +10,16 @@
   }
 
   @media #{$tui-mobile} {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 tui-island.description {
   grid-row: span 2;
+
+  @media #{$tui-mobile} {
+    grid-column: span 2;
+  }
 }
 
 tui-island.creator {
@@ -26,6 +31,9 @@ tui-island.creator {
     img {
       border-radius: 100%;
     }
+  }
+  @media #{$tui-mobile} {
+    grid-column: span 2;
   }
 }
 
@@ -55,6 +63,9 @@ tui-island.stats {
         color: var(--tui-text-02);
       }
     }
+  }
+  @media #{$tui-mobile} {
+    grid-column: span 2;
   }
 }
 
@@ -105,6 +116,9 @@ tui-island {
   grid-column: 2;
   display: flex;
   gap: 1rem;
+  @media #{$tui-mobile} {
+    grid-column: span 2;
+  }
 
   .info {
     flex-grow: 2;
