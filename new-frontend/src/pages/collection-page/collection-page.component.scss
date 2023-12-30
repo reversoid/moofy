@@ -1,7 +1,16 @@
+@import "@taiga-ui/core/styles/taiga-ui-local.scss";
+
 .collection-info-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 1rem;
+
+  @media #{$tui-tablet} {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  @media #{$tui-mobile} {
+  }
 }
 
 tui-island.description {
