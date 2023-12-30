@@ -48,4 +48,12 @@ export class CollectionPageComponent {
       .open('Some comments here', { label: 'Комментарии' })
       .subscribe();
   }
+
+  handleLike() {
+    console.log('collection liked');
+  }
+
+  handleBookmark() {
+    console.log('collection bookmarked');
+  }
 }
