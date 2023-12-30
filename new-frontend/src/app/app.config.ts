@@ -1,12 +1,16 @@
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { TUI_SANITIZER, TuiRootModule } from '@taiga-ui/core';
+import { TuiRootModule } from '@taiga-ui/core';
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { appRoutes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
-import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideClientHydration(),
     importProvidersFrom(TuiRootModule),
+    provideHttpClient(withFetch()),
     provideStore(),
   ],
 };

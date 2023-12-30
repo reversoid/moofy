@@ -1,4 +1,5 @@
-import { NgOptimizedImage } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -16,11 +17,13 @@ import {
   TuiTagModule,
   TuiTextareaModule,
 } from '@taiga-ui/kit';
+import { filter, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-collection-page',
   standalone: true,
   imports: [
+    AsyncPipe,
     TuiTextfieldControllerModule,
     FormsModule,
     ReactiveFormsModule,
@@ -39,9 +42,16 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionPageComponent {
-  constructor(private readonly dialogService: TuiDialogService) {}
+  constructor(
+    private readonly dialogService: TuiDialogService,
+    private readonly httpClient: HttpClient
+  ) {}
 
   search = new FormControl<string>('');
+
+  response = this.httpClient
+    .get<{ ok: boolean }>('https://api.test.moofy.ru/internal/health')
+    .pipe(map(() => 'Yeah!!!'));
 
   openCommentsDialog() {
     this.dialogService
