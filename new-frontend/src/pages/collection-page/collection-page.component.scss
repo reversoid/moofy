@@ -96,8 +96,12 @@ tui-island {
   grid-column: 2;
   display: flex;
   gap: 1rem;
+
   .info {
     flex-grow: 2;
+    h4 {
+      color: var(--tui-text-02);
+    }
   }
 
   .collection-image {
