@@ -50,7 +50,7 @@ export class CollectionPageComponent {
   search = new FormControl<string>('');
 
   response = this.httpClient
-    .get<{ ok: boolean }>('internal/health')
+    .get<{ ok: boolean }>('profile')
     .pipe(map((v) => v.ok));
 
   openCommentsDialog() {
