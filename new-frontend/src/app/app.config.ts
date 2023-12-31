@@ -14,6 +14,7 @@ import { appRoutes } from './app.routes';
 import { apiInterceptor } from './interceptors/api.interceptor';
 import { ENVIRONMENT } from '../environments/provider';
 import { environment } from '../environments/environment';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,7 +22,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideClientHydration(),
     importProvidersFrom(TuiRootModule),
-    provideHttpClient(withFetch(), withInterceptors([apiInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([apiInterceptor, authInterceptor])
+    ),
     provideStore(),
     { provide: ENVIRONMENT, useValue: environment },
   ],
