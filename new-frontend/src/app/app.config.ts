@@ -10,6 +10,8 @@ import {
   HttpClientModule,
   provideHttpClient,
   withFetch,
+  withInterceptors,
+  withInterceptorsFromDi,
 } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {

@@ -51,7 +51,7 @@ export class CollectionPageComponent {
 
   response = this.httpClient
     .get<{ ok: boolean }>('https://api.test.moofy.ru/internal/health')
-    .pipe(map(() => 'Yeah!!!'));
+    .pipe(map((v) => v.ok));
 
   openCommentsDialog() {
     this.dialogService
