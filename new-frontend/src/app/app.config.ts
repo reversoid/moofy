@@ -1,18 +1,19 @@
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { TuiRootModule } from '@taiga-ui/core';
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
+import { TuiRootModule } from '@taiga-ui/core';
 
-import { appRoutes } from './app.routes';
-import { provideClientHydration } from '@angular/platform-browser';
-import { provideStore } from '@ngrx/store';
 import {
-  HttpClientModule,
   provideHttpClient,
   withFetch,
   withInterceptors,
-  withInterceptorsFromDi,
 } from '@angular/common/http';
+import { provideClientHydration } from '@angular/platform-browser';
+import { provideStore } from '@ngrx/store';
+import { appRoutes } from './app.routes';
+import { apiInterceptor } from './interceptors/api.interceptor';
+import { ENVIRONMENT } from '../environments/provider';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +21,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideClientHydration(),
     importProvidersFrom(TuiRootModule),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([apiInterceptor])),
     provideStore(),
+    { provide: ENVIRONMENT, useValue: environment },
   ],
 };

@@ -50,7 +50,7 @@ export class CollectionPageComponent {
   search = new FormControl<string>('');
 
   response = this.httpClient
-    .get<{ ok: boolean }>('https://api.test.moofy.ru/internal/health')
+    .get<{ ok: boolean }>('internal/health')
     .pipe(map((v) => v.ok));
 
   openCommentsDialog() {
