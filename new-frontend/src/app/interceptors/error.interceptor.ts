@@ -1,46 +1,57 @@
 import {
+  HttpClient,
   HttpErrorResponse,
-  HttpHeaders,
   HttpInterceptorFn,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { catchError, switchMap, throwError } from 'rxjs';
+import { AuthService } from '../utils/auth.service';
 import { NotificationService } from '../utils/notification.service';
-import { tap } from 'rxjs';
 
 interface ApiError {
   message: string;
   statusCode: number;
 }
 
-const isApiError = (value: any): value is ApiError => {
-  return (
-    typeof value === 'object' &&
-    typeof value.statusCode === 'number' &&
-    typeof value.message === 'string'
-  );
-};
-
 // TODO fill messages
 const ERROR_TRANSLATION: Record<string, string> = {};
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationService = inject(NotificationService);
+  const httpClient = inject(HttpClient);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
-    tap({
-      error(err) {
-        if (!(err instanceof HttpErrorResponse)) {
-          return;
-        }
-        if (!isApiError(err.error)) {
-          return;
-        }
+    catchError((error) => {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        return (
+          httpClient
+            // TODO make some typings
+            .post<{ accessToken: string }>('auth/protected/refresh', {})
+            .pipe(
+              switchMap((response) => {
+                const newToken = response.accessToken;
+                authService.accessToken = newToken;
+                return next(req);
+              }),
+              catchError((refreshError) => {
+                return throwError(() => refreshError);
+              })
+            )
+        );
+      }
+      return throwError(() => error);
+    }),
+    catchError((err: HttpErrorResponse) => {
+      if (
+        err.error &&
+        err.error.message &&
+        ERROR_TRANSLATION[err.error.message]
+      ) {
         const translation = ERROR_TRANSLATION[err.error.message];
-        if (!translation) {
-          return;
-        }
         notificationService.createNotification(translation);
-      },
+      }
+      return throwError(() => err);
     })
   );
 };
