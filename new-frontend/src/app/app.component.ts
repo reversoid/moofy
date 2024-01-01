@@ -16,6 +16,8 @@ import { NightService } from './utils/night.service';
 import { NotificationService } from './utils/notification.service';
 import { takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { Store } from '@ngrx/store';
+import { AppState } from './store';
 
 @Component({
   selector: 'app-root',

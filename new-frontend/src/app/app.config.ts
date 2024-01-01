@@ -17,6 +17,8 @@ import { environment } from '../environments/environment';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
 
+import { reducers } from './store';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
@@ -27,7 +29,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([apiInterceptor, authInterceptor, errorInterceptor])
     ),
-    provideStore(),
+    provideStore(reducers),
     { provide: ENVIRONMENT, useValue: environment },
   ],
 };
