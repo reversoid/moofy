@@ -51,7 +51,7 @@ export class CollectionPageComponent {
 
   response = this.httpClient
     .get<{ ok: boolean }>('profile')
-    .pipe(map((v) => v.ok));
+    .pipe(map((v) => v));
 
   openCommentsDialog() {
     this.dialogService
