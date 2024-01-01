@@ -1,7 +1,10 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { REFRESH_TOKEN_KEY } from '../utils/refresh-token-key';
-import { UnauthorizedException } from '../../exceptions/unauthorized.exception';
 
 export type FastifyRequestWithRefresh = FastifyRequest & {
   refresh?: string;
@@ -27,6 +30,6 @@ export class HasRefreshGuard implements CanActivate {
       return unsignResult.valid;
     }
 
-    throw new UnauthorizedException();
+    throw new BadRequestException();
   }
 }
