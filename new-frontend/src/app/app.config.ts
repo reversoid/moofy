@@ -3,11 +3,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { TuiRootModule } from '@taiga-ui/core';
 
-import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-} from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
 import { appRoutes } from './app.routes';
@@ -27,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(TuiRootModule),
     provideHttpClient(
       withFetch(),
-      withInterceptors([apiInterceptor, authInterceptor, errorInterceptor])
+      withInterceptors([apiInterceptor, authInterceptor, errorInterceptor]),
     ),
     provideStore(reducers),
     { provide: ENVIRONMENT, useValue: environment },

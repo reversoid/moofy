@@ -16,6 +16,8 @@ tui-root {
     &::before {
       border: none !important;
     }
+
+    background-color: var(--tui-base-02) !important;
   }
 }
 
@@ -31,4 +33,8 @@ tui-root {
 
   --tui-text_body-s: 0.875rem !important;
   --tui-text_body-s-2: 0.875rem !important;
+
+  * {
+    box-sizing: border-box;
+  }
 }

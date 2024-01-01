@@ -1,4 +1,4 @@
-@import "@taiga-ui/core/styles/taiga-ui-local.scss";
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
 
 @mixin hide-mobile {
   @media #{$tui-mobile} {
@@ -20,7 +20,15 @@
   }
 }
 
-tui-island.description {
+app-stats-island {
+  grid-column: 2;
+
+  @media #{$tui-mobile} {
+    grid-column: span 2;
+  }
+}
+
+app-description-island {
   grid-row: span 2;
 
   @media #{$tui-mobile} {
@@ -28,88 +36,10 @@ tui-island.description {
   }
 }
 
-tui-island.creator {
+app-creator-island {
   @include hide-mobile();
-
-  .some-figure {
-    width: 3rem;
-    height: 3rem;
-    position: relative;
-
-    img {
-      border-radius: 100%;
-    }
-  }
   @media #{$tui-mobile} {
     grid-column: span 2;
-  }
-}
-
-tui-island.stats {
-  grid-column: 2;
-
-  .controls {
-    gap: 0.5rem;
-    display: flex;
-
-    .control-with-number {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.375rem;
-      font-weight: 700;
-
-      p {
-        margin: 0;
-        color: var(--tui-text-02);
-      }
-    }
-  }
-  @media #{$tui-mobile} {
-    grid-column: span 2;
-  }
-}
-
-tui-island {
-  background-color: var(--tui-base-02);
-}
-
-.review {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-
-  .review-title {
-    margin: 0;
-  }
-
-  .image-wrapper {
-    height: 10rem;
-    position: relative;
-    width: 6.75rem;
-
-    img {
-      border-radius: calc(var(--tui-radius-xl) - 1rem);
-    }
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-
-    .heading {
-      gap: 0.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .description {
-      color: var(--tui-text-02);
-      margin: 0;
-    }
   }
 }
 
@@ -121,23 +51,8 @@ tui-island {
 
   @include hide-mobile();
 
-  tui-island.info {
+  app-updated-island {
     flex-grow: 2;
-    h4 {
-      color: var(--tui-text-02);
-    }
-  }
-
-  tui-island.collection-image {
-    .image-wrapper {
-      width: 4rem;
-      height: 4rem;
-      position: relative;
-
-      img {
-        border-radius: calc(var(--tui-radius-xl) - 1rem);
-      }
-    }
   }
 }
 

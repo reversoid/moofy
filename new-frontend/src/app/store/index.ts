@@ -17,8 +17,6 @@ export const reducers: ActionReducerMap<AppState> = {
   [fromNotifications.featureKey]: fromNotifications.notificationsReducer,
   [fromPersonalReviews.featureKey]: fromPersonalReviews.personalReviewsReducer,
   [fromUserCollections.featureKey]: fromUserCollections.userCollectionsReducer,
-  [fromUserFavCollections.featureKey]:
-    fromUserFavCollections.userFavCollectionsReducer,
-  [fromUserSubscriptions.featureKey]:
-    fromUserSubscriptions.userSubscriptionsReducer,
+  [fromUserFavCollections.featureKey]: fromUserFavCollections.userFavCollectionsReducer,
+  [fromUserSubscriptions.featureKey]: fromUserSubscriptions.userSubscriptionsReducer,
 };

@@ -1,23 +1,17 @@
-import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import {
-  TuiButtonModule,
-  TuiDialogService,
-  TuiLinkModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule,
-} from '@taiga-ui/core';
-import {
-  TuiCheckboxModule,
-  TuiInputModule,
-  TuiIslandModule,
-  TuiTagModule,
-  TuiTextareaModule,
-} from '@taiga-ui/kit';
-import { filter, map, of } from 'rxjs';
+import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiInputModule } from '@taiga-ui/kit';
+import { map } from 'rxjs';
+import { ReviewComponent } from '../../entities/review/review.component';
+import { CreatorIslandComponent } from './ui/creator-island/creator-island.component';
+import { DescriptionIslandComponent } from './ui/description-island/description-island.component';
+import { ImageIslandComponent } from './ui/image-island/image-island.component';
+import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
+import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -28,14 +22,14 @@ import { filter, map, of } from 'rxjs';
     FormsModule,
     ReactiveFormsModule,
     TuiInputModule,
-    TuiIslandModule,
-    NgOptimizedImage,
     RouterModule,
-    TuiLinkModule,
     TuiButtonModule,
-    TuiCheckboxModule,
-    TuiSvgModule,
-    TuiTagModule,
+    CreatorIslandComponent,
+    DescriptionIslandComponent,
+    ImageIslandComponent,
+    StatsIslandComponent,
+    UpdatedIslandComponent,
+    ReviewComponent,
   ],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
@@ -44,32 +38,14 @@ import { filter, map, of } from 'rxjs';
 export class CollectionPageComponent {
   constructor(
     private readonly dialogService: TuiDialogService,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
   ) {}
 
   search = new FormControl<string>('');
 
-  response = this.httpClient
-    .get<{ ok: boolean }>('profile')
-    .pipe(map((v) => v));
-
-  openCommentsDialog() {
-    this.dialogService
-      .open('Some comments here', { label: 'Комментарии' })
-      .subscribe();
-  }
-
-  handleLike() {
-    console.log('collection liked');
-  }
-
-  handleBookmark() {
-    console.log('collection bookmarked');
-  }
+  response = this.httpClient.get<{ ok: boolean }>('profile').pipe(map((v) => v));
 
   showInfoAboutCollection() {
-    this.dialogService
-      .open('Some modal here', { label: 'О коллекции' })
-      .subscribe();
+    this.dialogService.open('Some modal here', { label: 'О коллекции' }).subscribe();
   }
 }

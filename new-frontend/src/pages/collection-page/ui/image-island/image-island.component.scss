@@ -1,0 +1,11 @@
+tui-island.collection-image {
+  .image-wrapper {
+    width: 4rem;
+    height: 4rem;
+    position: relative;
+
+    img {
+      border-radius: calc(var(--tui-radius-xl) - 1rem);
+    }
+  }
+}

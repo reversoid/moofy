@@ -1,83 +1,15 @@
 <h1 class="tui-text_h1">Мой топ топчииик!</h1>
 
 <div class="collection-info-grid">
-  <tui-island class="description">
-    <h4 class="tui-island__title">Описание</h4>
-    <p class="tui-island__paragraph">
-      Это полный треш! Мой топ фильмов от самых всратых режиссеров!
-    </p>
-  </tui-island>
-
-  <tui-island class="creator">
-    <h4 class="tui-island__title">
-      Создатель:
-      <a tuiLink routerLink="/welcome" class=".tui-island__paragraph_link"
-        >floppa</a
-      >
-    </h4>
-
-    <div class="tui-island__content">
-      <figure class="tui-island__figure">
-        <div class="some-figure">
-          <img
-            ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-            fill
-          />
-        </div>
-      </figure>
-      <div>
-        <p class="tui-island__paragraph">
-          Привет друзья! Добро пожаловать на вебсайт!!!!
-        </p>
-      </div>
-    </div>
-  </tui-island>
+  <app-description-island></app-description-island>
+  <app-creator-island></app-creator-island>
 
   <div class="metadata-grid">
-    <tui-island class="info">
-      <h4 class="tui-island__title">Обновлено</h4>
-
-      <data class="tui-island__paragraph"> 12.13.2023 </data>
-    </tui-island>
-
-    <tui-island class="collection-image">
-      <div class="image-wrapper">
-        <img
-          ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-          fill
-        />
-      </div>
-    </tui-island>
+    <app-updated-island></app-updated-island>
+    <app-image-island></app-image-island>
   </div>
 
-  <tui-island class="stats">
-    <div class="controls">
-      <div class="control-with-number">
-        <button
-          (click)="handleLike()"
-          tuiIconButton
-          icon="tuiIconHeartLarge"
-        ></button>
-        <p>123</p>
-      </div>
-      <div class="control-with-number">
-        <button
-          (click)="openCommentsDialog()"
-          tuiIconButton
-          icon="tuiIconMessageCircleLarge"
-        ></button>
-        <p>1234</p>
-      </div>
-      <div class="control-with-number">
-        <button
-          (click)="handleBookmark()"
-          tuiIconButton
-          icon="tuiIconBookmarkLarge"
-        ></button>
-        <p>17</p>
-      </div>
-    </div>
-  </tui-island>
+  <app-stats-island></app-stats-island>
 </div>
 
 <button
@@ -101,24 +33,4 @@
   <input tuiTextfield role="search" />
 </tui-input>
 
-<p>{{ response | async }}</p>
-
-<tui-island class="review">
-  <div class="image-wrapper">
-    <img
-      ngSrc="https://kinopoiskapiunofficial.tech/images/posters/kp_small/5002282.jpg"
-      fill
-    />
-  </div>
-
-  <div class="content">
-    <div class="heading">
-      <a tuiLink href="https://google.com">
-        <h4 class="review-title tui-text_h6">Однажды в голливуде</h4>
-      </a>
-      <tui-tag class="year" value="2023"></tui-tag>
-    </div>
-
-    <p class="description">Super film really!</p>
-  </div>
-</tui-island>
+<app-review></app-review>
