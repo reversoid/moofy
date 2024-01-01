@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LayoutComponent } from './ui/layout/layout.component';
 import {
   TUI_SANITIZER,
   TuiAlertModule,
@@ -11,13 +12,10 @@ import {
   TuiThemeNightModule,
 } from '@taiga-ui/core';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
-import { LayoutComponent } from './ui/layout/layout.component';
 import { NightService } from './utils/night.service';
 import { NotificationService } from './utils/notification.service';
 import { takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { Store } from '@ngrx/store';
-import { AppState } from './store';
 
 @Component({
   selector: 'app-root',
@@ -35,10 +33,7 @@ import { AppState } from './store';
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [
-    { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer },
-    TuiDestroyService,
-  ],
+  providers: [{ provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }, TuiDestroyService],
 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,7 +41,7 @@ export class AppComponent implements OnInit {
   constructor(
     public readonly themeService: NightService,
     private readonly notificationService: NotificationService,
-    private readonly _destroy$: TuiDestroyService
+    private readonly _destroy$: TuiDestroyService,
   ) {}
 
   ngOnInit(): void {
@@ -59,14 +54,10 @@ export class AppComponent implements OnInit {
   }
 
   private initializeNotifications() {
-    this.notificationService.notifications$
-      .pipe(takeUntil(this._destroy$))
-      .subscribe(console.log);
+    this.notificationService.notifications$.pipe(takeUntil(this._destroy$)).subscribe(console.log);
   }
 
   private initializeErrorNotifications() {
-    this.notificationService.errors$
-      .pipe(takeUntil(this._destroy$))
-      .subscribe(console.log);
+    this.notificationService.errors$.pipe(takeUntil(this._destroy$)).subscribe(console.log);
   }
 }
