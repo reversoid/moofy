@@ -85,6 +85,9 @@ devDependencies:
   '@angular/compiler-cli':
     specifier: ^17.0.0
     version: 17.0.7(@angular/compiler@17.0.7)(typescript@5.2.2)
+  '@ngrx/schematics':
+    specifier: ^17.0.1
+    version: 17.0.1
   '@types/dompurify':
     specifier: 2.2.3
     version: 2.2.3
@@ -2328,6 +2331,10 @@ packages:
       rxjs: 7.8.1
       tslib: 2.6.2
     dev: false
+
+  /@ngrx/schematics@17.0.1:
+    resolution: {integrity: sha512-yOQxy6PWKbxS2JhE54Li5qAJVruZGkUrsVCcx6pFKssKMGBG1R0EHBZ0BAmFtkiHvyHz3P/RUiaNf+UbWPPgIw==}
+    dev: true
 
   /@ngrx/store@17.0.1(@angular/core@17.0.7)(rxjs@7.8.1):
     resolution: {integrity: sha512-BmVzN+fqyz0ZrVEmJ+jrNwePMKcpNL49vb8sbQ3yDDftxgZz2HqRKFMexqlXpz5ixwK5LqTOblHNQOgi9irsTw==}
