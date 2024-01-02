@@ -1,3 +1,5 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
 /* You can add global styles to this file, and also import other style files */
 tui-root {
   height: 100%;
@@ -36,5 +38,25 @@ tui-root {
 
   * {
     box-sizing: border-box;
+  }
+}
+
+.tui-text_h1 {
+  @media #{$tui-mobile} {
+    font-size: 2.75rem;
+    line-height: 3rem;
+  }
+}
+
+.tui-text_h2 {
+}
+
+.tui-text_h3 {
+  margin-block-start: 0.75em;
+  margin-block-end: 0.75em;
+
+  @media #{$tui-mobile} {
+    font-size: 2rem;
+    line-height: 2.25rem;
   }
 }
