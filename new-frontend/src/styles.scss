@@ -60,3 +60,11 @@ tui-root {
     line-height: 2.25rem;
   }
 }
+
+aside {
+  margin-top: 76px; // TOOD make height of header
+
+  .t-wrapper {
+    flex-grow: 2;
+  }
+}

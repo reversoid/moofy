@@ -25,9 +25,8 @@
     </button>
   </div>
 
-  <button tuiButton type="button" (click)="toggle(true)" (tuiActiveZoneChange)="toggle($event)">
+  <button tuiButton type="button" (click)="toggle()">
     Show sidebar
-    <!-- Nest the directive so it is considered the same active zone -->
-    <div *tuiSidebar="sidebarOpen; direction: 'left'">hello there</div>
+    <div class="sidebar" *tuiSidebar="sidebarOpen; direction: 'right'">hello there</div>
   </button>
 </header>

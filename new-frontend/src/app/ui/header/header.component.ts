@@ -38,9 +38,7 @@ export class HeaderComponent {
     this.dropdownOpen = active && this.dropdownOpen;
   }
 
-  toggle(open: boolean): void {
-    console.log(open);
-
-    this.sidebarOpen = open;
+  toggle(): void {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 }
