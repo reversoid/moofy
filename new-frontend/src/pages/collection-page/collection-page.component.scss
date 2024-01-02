@@ -1,5 +1,6 @@
 @import '@taiga-ui/core/styles/taiga-ui-local.scss';
 
+// TODO make reusable
 @mixin hide-mobile {
   @media #{$tui-mobile} {
     display: none;

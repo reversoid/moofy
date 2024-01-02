@@ -1,3 +1,6 @@
+// TODO can be simplified?
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
 :host {
   display: flex;
 }
@@ -13,6 +16,11 @@
     display: flex;
     align-items: center;
     .profile-button {
+      // TODO use hide-mobile
+      @media #{$tui-mobile} {
+        display: none;
+      }
+
       .profile-image {
         border-radius: 50%;
       }
@@ -25,4 +33,12 @@
 }
 
 .sidebar {
+}
+
+.burger {
+  // TODO use show-mobile
+  display: none;
+  @media #{$tui-mobile} {
+    display: block;
+  }
 }
