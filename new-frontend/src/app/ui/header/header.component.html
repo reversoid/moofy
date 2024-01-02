@@ -8,7 +8,7 @@
       appearance="mono"
       type="button"
       [tuiDropdown]="dropdownContent"
-      [tuiDropdownManual]="open"
+      [tuiDropdownManual]="dropdownOpen"
       (click)="onClick()"
       (tuiActiveZoneChange)="onActiveZone($event)"
       (tuiObscured)="onObscured($event)"
@@ -24,4 +24,10 @@
       </ng-template>
     </button>
   </div>
+
+  <button tuiButton type="button" (click)="toggle(true)" (tuiActiveZoneChange)="toggle($event)">
+    Show sidebar
+    <!-- Nest the directive so it is considered the same active zone -->
+    <div *tuiSidebar="sidebarOpen; direction: 'left'">hello there</div>
+  </button>
 </header>

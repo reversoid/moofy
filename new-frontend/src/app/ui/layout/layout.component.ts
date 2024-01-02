@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { WrapperComponent } from '../wrapper/wrapper.component';
-import { FooterComponent } from '../footer/footer.component';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-layout',

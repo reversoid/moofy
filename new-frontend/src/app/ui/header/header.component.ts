@@ -1,14 +1,8 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TuiActiveZoneModule, TuiObscuredModule, tuiPure } from '@taiga-ui/cdk';
-import {
-  TuiAnimationOptions,
-  TuiButtonModule,
-  TuiDropdownModule,
-  TuiDurationOptions,
-  tuiDropdownAnimation,
-} from '@taiga-ui/core';
+import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
+import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
+import { TuiButtonModule, TuiDropdownModule } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-header',
@@ -19,25 +13,34 @@ import {
     TuiDropdownModule,
     TuiActiveZoneModule,
     TuiObscuredModule,
+    TuiSidebarModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  open = false;
+  sidebarOpen = false;
+
+  dropdownOpen = false;
 
   onClick(): void {
-    this.open = !this.open;
+    this.dropdownOpen = !this.dropdownOpen;
   }
 
   onObscured(obscured: boolean): void {
     if (obscured) {
-      this.open = false;
+      this.dropdownOpen = false;
     }
   }
 
   onActiveZone(active: boolean): void {
-    this.open = active && this.open;
+    this.dropdownOpen = active && this.dropdownOpen;
+  }
+
+  toggle(open: boolean): void {
+    console.log(open);
+
+    this.sidebarOpen = open;
   }
 }
