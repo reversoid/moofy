@@ -1,4 +1,4 @@
-import { NgOptimizedImage } from '@angular/common';
+import { NgClass, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
@@ -8,6 +8,7 @@ import { TuiButtonModule, TuiDropdownModule } from '@taiga-ui/core';
   selector: 'app-header',
   standalone: true,
   imports: [
+    NgClass,
     NgOptimizedImage,
     TuiButtonModule,
     TuiDropdownModule,
