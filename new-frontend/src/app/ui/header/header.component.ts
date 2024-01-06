@@ -43,7 +43,7 @@ export class HeaderComponent {
   constructor(public readonly nightService: NightService) {}
 
   get themeButtonIcon() {
-    return this.nightService.theme === 'onDark' ? 'tuiIconMoonLarge' : 'tuiIconSunLarge';
+    return this.nightService.theme.value === 'onDark' ? 'tuiIconMoonLarge' : 'tuiIconSunLarge';
   }
 
   toggleTheme() {
