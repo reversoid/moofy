@@ -1,7 +1,15 @@
 <header class="header">
-  <img ngSrc="/assets/logo.svg" width="128" height="64" priority />
+  <div class="logo-with-content">
+    <img ngSrc="/assets/logo.svg" width="128" height="64" priority />
+  </div>
 
   <div class="controls">
+    <div class="header-links">
+      <a tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
+      <a tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
+      <a class="no-gap" tuiLink icon="tuiIconBookmarkLarge" iconAlign="left">Избранное</a>
+    </div>
+
     <button
       class="profile-button"
       tuiIconButton
@@ -20,7 +28,7 @@
         height="48"
       />
       <ng-template #dropdownContent>
-        <tui-data-list role="menu">
+        <tui-data-list class="dropdown-menu" role="menu">
           <!-- <a
             *ngFor="let item of menuItems"
             [routerLink]="item.routerLink"
@@ -43,7 +51,28 @@
             tuiOption
           >
             <span class="profile-title">Выполнен вход за</span>
-            <span>reversoid</span>
+            <span class="profile-username">reversoid</span>
+          </a>
+          <a
+            routerLink="welcome"
+            [attr.aria-checked]="rla.isActive"
+            #rla="routerLinkActive"
+            routerLinkActive
+            role="menuitemradio"
+            tuiOption
+          >
+            <span>Настройки</span>
+          </a>
+          <a
+            class="exit-item"
+            routerLink="welcome"
+            [attr.aria-checked]="rla.isActive"
+            #rla="routerLinkActive"
+            routerLinkActive
+            role="menuitemradio"
+            tuiOption
+          >
+            <span>Выйти</span>
           </a>
         </tui-data-list>
       </ng-template>

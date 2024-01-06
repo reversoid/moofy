@@ -7,8 +7,11 @@ import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiGroupModule,
+  TuiLinkModule,
   TuiSvgModule,
 } from '@taiga-ui/core';
+import { TuiActionModule } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-header',
@@ -25,6 +28,9 @@ import {
     RouterModule,
     NgFor,
     TuiSvgModule,
+    TuiLinkModule,
+    TuiActionModule,
+    TuiGroupModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
