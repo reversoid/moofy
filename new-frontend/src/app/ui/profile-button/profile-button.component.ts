@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiDataListModule, TuiDropdownModule } from '@taiga-ui/core';
@@ -21,6 +21,8 @@ import { TuiButtonModule, TuiDataListModule, TuiDropdownModule } from '@taiga-ui
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileButtonComponent {
+  constructor(private readonly cdr: ChangeDetectorRef) {}
+
   dropdownOpen = false;
 
   onClick(): void {
@@ -29,6 +31,7 @@ export class ProfileButtonComponent {
 
   closeDropdown() {
     this.dropdownOpen = false;
+    this.cdr.markForCheck();
   }
 
   onObscured(obscured: boolean): void {
