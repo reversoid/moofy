@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LayoutComponent } from './ui/layout/layout.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
   TUI_SANITIZER,
   TuiAlertModule,
@@ -9,13 +9,13 @@ import {
   TuiDialogModule,
   TuiModeModule,
   TuiRootModule,
-  TuiThemeNightModule,
 } from '@taiga-ui/core';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
+import { takeUntil } from 'rxjs';
+import { LayoutComponent } from './ui/layout/layout.component';
+import { NightThemeComponent } from './ui/night-theme/night-theme.component';
 import { NightService } from './utils/night.service';
 import { NotificationService } from './utils/notification.service';
-import { takeUntil } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-root',
@@ -27,9 +27,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
     TuiDialogModule,
     TuiAlertModule,
     TuiButtonModule,
-    TuiThemeNightModule,
     TuiModeModule,
     LayoutComponent,
+    NightThemeComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
