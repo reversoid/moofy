@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgOptimizedImage } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
@@ -14,11 +14,13 @@ import {
 import { TuiActionModule } from '@taiga-ui/kit';
 import { NightService } from '../../utils/night.service';
 import { LogoComponent } from '../../../assets/logo/logo.component';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
+    AsyncPipe,
     NgClass,
     NgOptimizedImage,
     TuiButtonModule,
@@ -43,7 +45,11 @@ export class HeaderComponent {
   constructor(public readonly nightService: NightService) {}
 
   get themeButtonIcon() {
-    return this.nightService.theme.value === 'onDark' ? 'tuiIconMoonLarge' : 'tuiIconSunLarge';
+    return this.nightService.theme.pipe(
+      map((v) => {
+        return v === 'onDark' ? 'tuiIconMoonLarge' : 'tuiIconSunLarge';
+      }),
+    );
   }
 
   toggleTheme() {

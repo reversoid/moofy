@@ -6,13 +6,15 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class NightService {
-  theme = new BehaviorSubject<TuiBrightness>('onDark');
+  private _theme = new BehaviorSubject<TuiBrightness>('onDark');
+
+  theme = this._theme.asObservable();
 
   toggleTheme() {
-    if (this.theme.value === 'onDark') {
-      this.theme.next('onLight');
+    if (this._theme.value === 'onDark') {
+      this._theme.next('onLight');
     } else {
-      this.theme.next('onDark');
+      this._theme.next('onDark');
     }
   }
 }

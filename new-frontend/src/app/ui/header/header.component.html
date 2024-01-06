@@ -12,7 +12,7 @@
     <button
       (click)="toggleTheme()"
       tuiIconButton
-      [icon]="themeButtonIcon"
+      [icon]="themeButtonIcon | async"
       appearance="flat"
       size="m"
     ></button>
