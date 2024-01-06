@@ -5,9 +5,17 @@
 
   <div class="controls">
     <div class="header-links">
-      <a tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
-      <a tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
+      <a routerLink="/" tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
+      <a routerLink="/" tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
     </div>
+
+    <button
+      (click)="toggleTheme()"
+      tuiIconButton
+      [icon]="themeButtonIcon"
+      appearance="flat"
+      size="m"
+    ></button>
 
     <button
       class="profile-button"

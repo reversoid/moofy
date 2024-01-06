@@ -12,6 +12,7 @@ import {
   TuiSvgModule,
 } from '@taiga-ui/core';
 import { TuiActionModule } from '@taiga-ui/kit';
+import { NightService } from '../../utils/night.service';
 
 @Component({
   selector: 'app-header',
@@ -37,6 +38,16 @@ import { TuiActionModule } from '@taiga-ui/kit';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  constructor(public readonly nightService: NightService) {}
+
+  get themeButtonIcon() {
+    return this.nightService.theme === 'onDark' ? 'tuiIconMoonLarge' : 'tuiIconSunLarge';
+  }
+
+  toggleTheme() {
+    this.nightService.toggleTheme();
+  }
+
   sidebarOpen = false;
 
   dropdownOpen = false;
