@@ -1,7 +1,6 @@
 import { AsyncPipe, NgClass, NgFor, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
 import {
   TuiButtonModule,
@@ -15,6 +14,9 @@ import { TuiActionModule } from '@taiga-ui/kit';
 import { NightService } from '../../utils/night.service';
 import { LogoComponent } from '../../../assets/logo/logo.component';
 import { map } from 'rxjs';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { BurgerMenuComponent } from '../burger-menu/burger-menu.component';
+import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 
 @Component({
   selector: 'app-header',
@@ -27,7 +29,6 @@ import { map } from 'rxjs';
     TuiDropdownModule,
     TuiActiveZoneModule,
     TuiObscuredModule,
-    TuiSidebarModule,
     TuiDataListModule,
     RouterModule,
     NgFor,
@@ -36,6 +37,9 @@ import { map } from 'rxjs';
     TuiActionModule,
     TuiGroupModule,
     LogoComponent,
+    SidebarComponent,
+    BurgerMenuComponent,
+    TuiSidebarModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -76,10 +80,6 @@ export class HeaderComponent {
 
   onActiveZone(active: boolean): void {
     this.dropdownOpen = active && this.dropdownOpen;
-  }
-
-  toggle(): void {
-    this.sidebarOpen = !this.sidebarOpen;
   }
 
   menuItems = [

@@ -77,15 +77,8 @@
     </button>
 
     <!-- TODO make more straight -->
-    <button
-      (click)="toggle()"
-      [ngClass]="sidebarOpen ? 'open-menu' : 'close-menu'"
-      class="menu-burger"
-      type="button"
-    >
-      <span></span>
-
-      <div class="sidebar" *tuiSidebar="sidebarOpen; direction: 'right'">hello there</div>
-    </button>
+    <app-burger-menu [(sidebarOpen)]="sidebarOpen">
+      <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
+    </app-burger-menu>
   </div>
 </header>
