@@ -1,8 +1,4 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpInterceptorFn,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../utils/auth.service';
@@ -36,22 +32,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               }),
               catchError((refreshError) => {
                 return throwError(() => refreshError);
-              })
+              }),
             )
         );
       }
       return throwError(() => error);
     }),
     catchError((err: HttpErrorResponse) => {
-      if (
-        err.error &&
-        err.error.message &&
-        ERROR_TRANSLATION[err.error.message]
-      ) {
+      if (err.error && err.error.message && ERROR_TRANSLATION[err.error.message]) {
         const translation = ERROR_TRANSLATION[err.error.message];
         notificationService.createNotification(translation);
       }
       return throwError(() => err);
-    })
+    }),
   );
 };
