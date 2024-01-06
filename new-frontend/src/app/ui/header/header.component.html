@@ -9,74 +9,9 @@
       <a routerLink="/" tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
     </div>
 
-    <button
-      (click)="toggleTheme()"
-      tuiIconButton
-      [icon]="themeButtonIcon | async"
-      appearance="flat"
-      size="m"
-    ></button>
+    <app-theme-toggler></app-theme-toggler>
+    <app-profile-button></app-profile-button>
 
-    <button
-      class="profile-button"
-      tuiIconButton
-      appearance="mono"
-      type="button"
-      [tuiDropdown]="dropdownContent"
-      [tuiDropdownManual]="dropdownOpen"
-      (click)="onClick()"
-      (tuiActiveZoneChange)="onActiveZone($event)"
-      (tuiObscured)="onObscured($event)"
-    >
-      <img
-        class="profile-image"
-        ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-        width="48"
-        height="48"
-      />
-      <ng-template #dropdownContent>
-        <tui-data-list class="dropdown-menu" role="menu">
-          <a
-            class="profile-link"
-            routerLink="/welcome"
-            [attr.aria-checked]="rla.isActive"
-            #rla="routerLinkActive"
-            routerLinkActive
-            role="menuitemradio"
-            tuiOption
-            (click)="closeDropdown()"
-          >
-            <span class="profile-title">Выполнен вход за</span>
-            <span class="profile-username">reversoid</span>
-          </a>
-          <a
-            routerLink="/welcome"
-            [attr.aria-checked]="rla.isActive"
-            #rla="routerLinkActive"
-            routerLinkActive
-            role="menuitemradio"
-            tuiOption
-            (click)="closeDropdown()"
-          >
-            <span>Настройки</span>
-          </a>
-          <a
-            class="exit-item"
-            routerLink="/welcome"
-            [attr.aria-checked]="rla.isActive"
-            #rla="routerLinkActive"
-            routerLinkActive
-            role="menuitemradio"
-            tuiOption
-            (click)="closeDropdown()"
-          >
-            <span>Выйти</span>
-          </a>
-        </tui-data-list>
-      </ng-template>
-    </button>
-
-    <!-- TODO make more straight -->
     <app-burger-menu [(sidebarOpen)]="sidebarOpen">
       <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
     </app-burger-menu>
