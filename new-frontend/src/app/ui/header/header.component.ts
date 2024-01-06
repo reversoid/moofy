@@ -13,6 +13,7 @@ import {
 } from '@taiga-ui/core';
 import { TuiActionModule } from '@taiga-ui/kit';
 import { NightService } from '../../utils/night.service';
+import { LogoComponent } from '../../../assets/logo/logo.component';
 
 @Component({
   selector: 'app-header',
@@ -32,6 +33,7 @@ import { NightService } from '../../utils/night.service';
     TuiLinkModule,
     TuiActionModule,
     TuiGroupModule,
+    LogoComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',

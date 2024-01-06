@@ -64,6 +64,14 @@ tui-root {
   }
 }
 
+.logo__letter {
+  fill: var(--tui-text-01);
+}
+
+.logo__smile {
+  stroke: var(--tui-text-01);
+}
+
 aside {
   margin-top: 76px; // TOOD make height of header
 

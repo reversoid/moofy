@@ -1,6 +1,12 @@
 // TODO can be simplified?
 @import '@taiga-ui/core/styles/taiga-ui-local.scss';
 
+app-logo {
+  display: block;
+  width: 128px;
+  height: 64px;
+}
+
 :host {
   display: flex;
 }
