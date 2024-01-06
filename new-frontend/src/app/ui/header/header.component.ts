@@ -1,8 +1,14 @@
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { NgClass, NgFor, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
-import { TuiButtonModule, TuiDropdownModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
+  TuiSvgModule,
+} from '@taiga-ui/core';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +21,10 @@ import { TuiButtonModule, TuiDropdownModule } from '@taiga-ui/core';
     TuiActiveZoneModule,
     TuiObscuredModule,
     TuiSidebarModule,
+    TuiDataListModule,
+    RouterModule,
+    NgFor,
+    TuiSvgModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -27,6 +37,10 @@ export class HeaderComponent {
 
   onClick(): void {
     this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  closeDropdown() {
+    this.dropdownOpen = false;
   }
 
   onObscured(obscured: boolean): void {
@@ -42,4 +56,22 @@ export class HeaderComponent {
   toggle(): void {
     this.sidebarOpen = !this.sidebarOpen;
   }
+
+  menuItems = [
+    {
+      label: 'Мой профиль',
+      routerLink: '/welcome',
+      icon: 'tuiIconUserLarge',
+    },
+    {
+      label: 'Настройки',
+      routerLink: '/collections/1',
+      icon: 'tuiIconSettingsLarge',
+    },
+    {
+      label: 'Выйти',
+      routerLink: '/settings',
+      icon: 'tuiIconLogOutLarge',
+    },
+  ];
 }

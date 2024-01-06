@@ -20,7 +20,32 @@
         height="48"
       />
       <ng-template #dropdownContent>
-        <div class="dropdown">But there is nothing to choose...</div>
+        <tui-data-list role="menu">
+          <!-- <a
+            *ngFor="let item of menuItems"
+            [routerLink]="item.routerLink"
+            [attr.aria-checked]="rla.isActive"
+            #rla="routerLinkActive"
+            routerLinkActive
+            role="menuitemradio"
+            tuiOption
+          >
+            <tui-svg [src]="item.icon"></tui-svg>
+            <span>{{ item.label }}</span>
+          </a> -->
+          <a
+            class="profile-link"
+            routerLink="welcome"
+            [attr.aria-checked]="rla.isActive"
+            #rla="routerLinkActive"
+            routerLinkActive
+            role="menuitemradio"
+            tuiOption
+          >
+            <span class="profile-title">Выполнен вход за</span>
+            <span>reversoid</span>
+          </a>
+        </tui-data-list>
       </ng-template>
     </button>
   </div>

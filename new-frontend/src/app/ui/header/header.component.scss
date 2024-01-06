@@ -113,3 +113,18 @@
   transform: rotate(0);
   transition: 0.15s;
 }
+
+.profile-title {
+  font: var(tui-text_body-xl);
+  font-weight: 700;
+}
+.profile-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  span {
+    display: block;
+    text-align: start;
+    width: 100%;
+  }
+}
