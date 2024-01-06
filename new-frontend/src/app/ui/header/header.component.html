@@ -36,65 +36,56 @@
       />
       <ng-template #dropdownContent>
         <tui-data-list class="dropdown-menu" role="menu">
-          <!-- <a
-            *ngFor="let item of menuItems"
-            [routerLink]="item.routerLink"
-            [attr.aria-checked]="rla.isActive"
-            #rla="routerLinkActive"
-            routerLinkActive
-            role="menuitemradio"
-            tuiOption
-          >
-            <tui-svg [src]="item.icon"></tui-svg>
-            <span>{{ item.label }}</span>
-          </a> -->
           <a
             class="profile-link"
-            routerLink="welcome"
+            routerLink="/welcome"
             [attr.aria-checked]="rla.isActive"
             #rla="routerLinkActive"
             routerLinkActive
             role="menuitemradio"
             tuiOption
+            (click)="closeDropdown()"
           >
             <span class="profile-title">Выполнен вход за</span>
             <span class="profile-username">reversoid</span>
           </a>
           <a
-            routerLink="welcome"
+            routerLink="/welcome"
             [attr.aria-checked]="rla.isActive"
             #rla="routerLinkActive"
             routerLinkActive
             role="menuitemradio"
             tuiOption
+            (click)="closeDropdown()"
           >
             <span>Настройки</span>
           </a>
           <a
             class="exit-item"
-            routerLink="welcome"
+            routerLink="/welcome"
             [attr.aria-checked]="rla.isActive"
             #rla="routerLinkActive"
             routerLinkActive
             role="menuitemradio"
             tuiOption
+            (click)="closeDropdown()"
           >
             <span>Выйти</span>
           </a>
         </tui-data-list>
       </ng-template>
     </button>
+
+    <!-- TODO make more straight -->
+    <button
+      (click)="toggle()"
+      [ngClass]="sidebarOpen ? 'open-menu' : 'close-menu'"
+      class="menu-burger"
+      type="button"
+    >
+      <span></span>
+
+      <div class="sidebar" *tuiSidebar="sidebarOpen; direction: 'right'">hello there</div>
+    </button>
   </div>
-
-  <!-- TODO make more straight -->
-  <button
-    (click)="toggle()"
-    [ngClass]="sidebarOpen ? 'open-menu' : 'close-menu'"
-    class="menu-burger"
-    type="button"
-  >
-    <span></span>
-
-    <div class="sidebar" *tuiSidebar="sidebarOpen; direction: 'right'">hello there</div>
-  </button>
 </header>

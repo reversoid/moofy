@@ -28,6 +28,10 @@ app-logo {
     display: flex;
     align-items: center;
     gap: 1.25rem;
+    // TODO use hide-mobile
+    @media #{$tui-mobile} {
+      display: none;
+    }
 
     a {
       display: flex;
@@ -87,7 +91,7 @@ app-logo {
   width: 100%;
   position: absolute;
   left: 0;
-  background: #fff;
+  background: var(--tui-text-01);
   margin: 0 auto;
   border-radius: 10px;
 }
