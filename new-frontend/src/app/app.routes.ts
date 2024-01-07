@@ -8,20 +8,20 @@ export const appRoutes: Routes = [
   {
     path: 'feed',
     loadComponent: () =>
-      import('../pages/feed/feed.component').then((r) => r.FeedComponent),
+      import('../pages/feed-page/feed-page.component').then((r) => r.FeedPageComponent),
   },
   {
     path: 'welcome',
     loadComponent: () =>
       import('../pages/my-collections-page/my-collections-page.component').then(
-        (r) => r.MyCollectionsPageComponent
+        (r) => r.MyCollectionsPageComponent,
       ),
   },
   {
     path: 'collections/:id',
     loadComponent: () =>
       import('../pages/collection-page/collection-page.component').then(
-        (r) => r.CollectionPageComponent
+        (r) => r.CollectionPageComponent,
       ),
   },
 ];
