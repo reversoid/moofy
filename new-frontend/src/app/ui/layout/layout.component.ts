@@ -25,12 +25,12 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.notificationService.errors$
-      .pipe(mergeMap((message) => this.alert.open(message, { status: 'error' })))
+      .pipe(mergeMap((message) => this.alert.open(message, { status: 'error', autoClose: 1500 })))
       .pipe(takeUntil(this._destroy$))
       .subscribe();
 
     this.notificationService.notifications$
-      .pipe(mergeMap((message) => this.alert.open(message, { status: 'info' })))
+      .pipe(mergeMap((message) => this.alert.open(message, { status: 'info', autoClose: 1500 })))
       .pipe(takeUntil(this._destroy$))
       .subscribe();
   }
