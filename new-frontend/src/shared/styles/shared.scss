@@ -1,0 +1,14 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
+@mixin hide-mobile {
+  @media #{$tui-mobile} {
+    display: none;
+  }
+}
+
+@mixin show-mobile($display) {
+  display: none;
+  @media #{$tui-mobile} {
+    display: $display;
+  }
+}

@@ -1,10 +1,6 @@
-@import '@taiga-ui/core/styles/taiga-ui-local.scss';
-
+@import 'shared';
 .profile-button {
-  // TODO use hide-mobile
-  @media #{$tui-mobile} {
-    display: none;
-  }
+  @include hide-mobile;
 
   .profile-image {
     border-radius: 50%;

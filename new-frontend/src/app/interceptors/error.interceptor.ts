@@ -4,10 +4,10 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../utils/auth.service';
 import { NotificationService } from '../utils/notification.service';
 
-interface ApiError {
-  message: string;
-  statusCode: number;
-}
+// interface ApiError {
+//   message: string;
+//   statusCode: number;
+// }
 
 // TODO fill messages
 const ERROR_TRANSLATION: Record<string, string> = {};

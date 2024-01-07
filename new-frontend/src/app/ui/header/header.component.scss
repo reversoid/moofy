@@ -1,5 +1,4 @@
-// TODO can be simplified?
-@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+@import 'shared';
 
 app-logo {
   display: block;
@@ -15,7 +14,7 @@ app-logo {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  height: 76px; // TODO use variable
+  height: var(--header-height);
   align-items: center;
 
   .logo-with-content {
@@ -28,10 +27,8 @@ app-logo {
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    // TODO use hide-mobile
-    @media #{$tui-mobile} {
-      display: none;
-    }
+
+    @include hide-mobile;
 
     a {
       display: flex;

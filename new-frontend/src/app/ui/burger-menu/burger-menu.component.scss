@@ -1,11 +1,7 @@
-@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+@import 'shared';
 
 .menu-burger {
-  // TODO use show-mobile
-  display: none;
-  @media #{$tui-mobile} {
-    display: block;
-  }
+  @include show-mobile(block);
 }
 
 .menu-burger {

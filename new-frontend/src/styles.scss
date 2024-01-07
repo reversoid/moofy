@@ -24,6 +24,8 @@ tui-root {
 }
 
 :root {
+  --header-height: 76px;
+
   --tui-radius-m: 1rem;
 
   --tui-font-text-s: normal 1rem/1.5rem var(--tui-font-text);
