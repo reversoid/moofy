@@ -6,12 +6,12 @@ import { RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { map } from 'rxjs';
-import { ReviewComponent } from '../../entities/review/review.component';
 import { CreatorIslandComponent } from './ui/creator-island/creator-island.component';
 import { DescriptionIslandComponent } from './ui/description-island/description-island.component';
 import { ImageIslandComponent } from './ui/image-island/image-island.component';
 import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
+import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -29,7 +29,7 @@ import { UpdatedIslandComponent } from './ui/updated-island/updated-island.compo
     ImageIslandComponent,
     StatsIslandComponent,
     UpdatedIslandComponent,
-    ReviewComponent,
+    ReviewListComponent,
   ],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
