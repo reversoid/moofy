@@ -1,22 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TuiLabelModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiInputModule } from '@taiga-ui/kit';
 import { CollectionComponent } from '../../entities/collection/collection.component';
-import { TuiInputModule, TuiMarkerIconModule } from '@taiga-ui/kit';
-import {
-  TUI_SANITIZER,
-  TuiLabelModule,
-  TuiPrimitiveTextfieldModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule,
-  TuiTextfieldIconDirective,
-  TuiTextfieldIconLeftDirective,
-} from '@taiga-ui/core';
-import { NgDompurifyModule, NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
-import {
-  FormBuilder,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -28,6 +15,7 @@ import {
     TuiTextfieldControllerModule,
     ReactiveFormsModule,
     FormsModule,
+    CollectionGridComponent,
   ],
   templateUrl: './my-collections-page.component.html',
   styleUrl: './my-collections-page.component.scss',
