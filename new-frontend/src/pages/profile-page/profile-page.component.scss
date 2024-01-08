@@ -1,3 +1,5 @@
+@import 'shared';
+
 .profile-header {
   display: flex;
   justify-content: center;
@@ -21,23 +23,56 @@
   grid-template-columns: 4fr 1fr;
   width: min(100%, 780px);
   gap: 1rem;
+  @media #{$tui-mobile} {
+    gap: 0.75rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  & > * {
+    @media #{$tui-mobile} {
+      padding-right: 0.25rem;
+    }
+  }
 
   .description {
     grid-row: span 2;
+
+    @media #{$tui-mobile} {
+      grid-column: span 3;
+      grid-row: 1;
+    }
   }
   .followers {
     grid-column: 2;
+
+    @media #{$tui-mobile} {
+      grid-row: 2;
+    }
   }
   .followees {
     grid-column: 2;
+    @media #{$tui-mobile} {
+      grid-row: 2;
+      grid-column: 1;
+    }
   }
   .reviews {
     grid-column: 2;
+    @media #{$tui-mobile} {
+      grid-row: 2;
+      grid-column: 3;
+    }
   }
   .other-info {
     display: flex;
     gap: 1rem;
     grid-row: 3;
+
+    @media #{$tui-mobile} {
+      gap: 0.75rem;
+      flex-direction: column;
+      grid-column: span 3;
+    }
 
     .actions {
       flex-grow: 2;
@@ -58,19 +93,35 @@
     }
   }
 
-  .island-title {
-    font: var(--tui-font-text-l);
-    margin: 0;
-    font-weight: 600;
-    color: var(--tui-text-02);
-    line-height: 1;
-    margin-bottom: 0.75rem;
-  }
+  .island-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+    justify-content: space-between;
 
-  .island-amount {
-    margin: 0;
+    .island-title {
+      font: var(--tui-font-text-l);
+      margin: 0;
+      font-weight: 600;
+      color: var(--tui-text-02);
+      line-height: 1;
 
-    font: var(--tui-font-heading-6);
-    line-height: 1;
+      @media #{$tui-mobile} {
+        font-size: 0.875rem;
+        word-break: break-word;
+      }
+    }
+
+    .island-value {
+      margin: 0;
+
+      font: var(--tui-font-heading-6);
+      line-height: 1;
+    }
   }
+}
+
+.collections-title {
+  margin-block-start: 2rem;
 }

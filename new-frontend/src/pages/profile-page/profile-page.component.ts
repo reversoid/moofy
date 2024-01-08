@@ -19,4 +19,6 @@ import { TuiButtonModule } from '@taiga-ui/core';
   styleUrl: './profile-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfilePageComponent {}
+export class ProfilePageComponent {
+  follow() {}
+}

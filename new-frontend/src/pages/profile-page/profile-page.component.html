@@ -15,35 +15,42 @@
     </tui-island>
 
     <a routerLink="/" tuiIsland [hoverable]="true" class="followees">
-      <h4 class="island-title">Подписки</h4>
-      <p class="island-amount">123</p>
+      <div class="island-content">
+        <h4 class="island-title">Подписки</h4>
+        <p class="island-value">123</p>
+      </div>
     </a>
 
     <a routerLink="/" tuiIsland [hoverable]="true" class="followers">
-      <h4 class="island-title">Подписчики</h4>
-      <p class="island-amount">123</p>
+      <div class="island-content">
+        <h4 class="island-title">Подписчики</h4>
+        <p class="island-value">123</p>
+      </div>
     </a>
 
     <a routerLink="/" tuiIsland [hoverable]="true" class="reviews">
-      <h4 class="island-title">Обзоры</h4>
-      <p class="island-amount">341</p>
+      <div class="island-content">
+        <h4 class="island-title">Обзоры</h4>
+        <p class="island-value">341</p>
+      </div>
     </a>
 
     <div class="other-info">
       <tui-island>
-        <h4 class="island-title">Дата регистрации</h4>
-        <p class="island-amount">12.01.2024</p>
+        <div class="island-content">
+          <h4 class="island-title">Дата регистрации</h4>
+          <p class="island-value">12.01.2024</p>
+        </div>
       </tui-island>
 
       <tui-island class="actions">
         <div class="actions-buttons">
-          <button class="follow-button" tuiButton>Подписаться</button>
-          <button tuiIconButton icon="tuiIconFlagLarge"></button>
+          <button (click)="follow()" class="follow-button" tuiButton>Подписаться</button>
         </div>
       </tui-island>
     </div>
   </div>
 </div>
 
-<h2 class="tui-text_h3">Коллекции</h2>
+<h2 class="collections-title tui-text_h3">Коллекции</h2>
 <app-collection-grid></app-collection-grid>
