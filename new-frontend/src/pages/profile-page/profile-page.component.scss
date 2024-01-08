@@ -19,7 +19,7 @@
 .profile-info-grid {
   display: grid;
   grid-template-columns: 4fr 1fr;
-  width: 780px;
+  width: min(100%, 780px);
   gap: 1rem;
 
   .description {
@@ -51,6 +51,10 @@
       flex-grow: 3;
       display: flex;
       gap: 1rem;
+
+      .follow-button {
+        flex-grow: 2;
+      }
     }
   }
 
