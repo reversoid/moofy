@@ -1,0 +1,26 @@
+<tui-elastic-container>
+  <tui-input
+    *tuiLet="users$ | async as users"
+    [tuiTextfieldLabelOutside]="true"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    [tuiTextfieldCleaner]="true"
+  >
+    Название
+    <input tuiTextfield role="search" tuiTextfield />
+    <ng-container *ngIf="users?.length">
+      <tui-data-list *tuiDataList>
+        <button *ngFor="let user of users" (click)="select(user)" tuiOption [value]="user.username">
+          {{ user.username }}
+        </button>
+      </tui-data-list>
+    </ng-container>
+  </tui-input>
+
+  <div *ngIf="user" class="film">
+    <div class="image-wrapper"></div>
+    <p>Some name</p>
+    <p>some year</p>
+  </div>
+
+  <button class="tui-space_top-4" tuiButton>Добавить</button>
+</tui-elastic-container>

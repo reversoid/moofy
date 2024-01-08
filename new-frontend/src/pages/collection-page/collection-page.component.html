@@ -21,7 +21,16 @@
   О коллекции
 </button>
 
-<h3 class="tui-text_h3">Обзоры</h3>
+<div class="reviews-title">
+  <h3 class="tui-text_h3">Фильмы</h3>
+  <button
+    (click)="createReview()"
+    tuiIconButton
+    icon="tuiIconPlusLarge"
+    appearance="secondary"
+  ></button>
+</div>
+
 <tui-input
   [tuiTextfieldLabelOutside]="true"
   class="search-input tui-space_bottom-5"

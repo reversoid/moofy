@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
@@ -12,6 +12,8 @@ import { ImageIslandComponent } from './ui/image-island/image-island.component';
 import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { CreateReviewModalComponent } from './ui/create-review-modal/create-review-modal.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -39,6 +41,7 @@ export class CollectionPageComponent {
   constructor(
     private readonly dialogService: TuiDialogService,
     private readonly httpClient: HttpClient,
+    private readonly injector: Injector,
   ) {}
 
   search = new FormControl<string>('');
@@ -47,5 +50,13 @@ export class CollectionPageComponent {
 
   showInfoAboutCollection() {
     this.dialogService.open('Some modal here', { label: 'О коллекции' }).subscribe();
+  }
+
+  createReview() {
+    this.dialogService
+      .open(new PolymorpheusComponent(CreateReviewModalComponent, this.injector), {
+        label: 'Добавить фильм',
+      })
+      .subscribe();
   }
 }

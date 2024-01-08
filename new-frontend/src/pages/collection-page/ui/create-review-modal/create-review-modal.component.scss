@@ -1,0 +1,10 @@
+.film {
+  display: flex;
+  flex-direction: column;
+
+  .image-wrapper {
+    width: 3rem;
+    height: 4.5rem;
+    background-color: black;
+  }
+}
