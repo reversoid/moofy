@@ -1,1 +1,35 @@
-<p>profile-page works!</p>
+<div class="profile-header">
+  <div class="image-wrapper">
+    <img
+      ngSrc="https://moofy.storage.yandexcloud.net/list-images/75f8e535-2e34-4f8b-8148-fccba89471d1.webp"
+      fill
+    />
+  </div>
+
+  <h1 class="tui-text_h2">floppa</h1>
+
+  <div class="profile-info-grid">
+    <tui-island class="description">
+      <h4 class="tui-island__title">Описание</h4>
+      <p class="tui-island__paragraph">Добро пожаловать на наш сайт друзья!</p>
+    </tui-island>
+
+    <a routerLink="/" tuiIsland [hoverable]="true" class="followees">
+      <h4 class="island-title">Подписки</h4>
+      <p class="island-amount">123</p>
+    </a>
+
+    <a routerLink="/" tuiIsland [hoverable]="true" class="followers">
+      <h4 class="island-title">Подписчики</h4>
+      <p class="island-amount">123</p>
+    </a>
+
+    <a routerLink="/" tuiIsland [hoverable]="true" class="reviews">
+      <h4 class="island-title">Обзоров</h4>
+      <p class="island-amount">341</p>
+    </a>
+  </div>
+</div>
+
+<h2 class="tui-text_h3">Коллекции</h2>
+<app-collection-grid></app-collection-grid>

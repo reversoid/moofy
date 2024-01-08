@@ -11,6 +11,11 @@ export const appRoutes: Routes = [
       import('../pages/feed-page/feed-page.component').then((r) => r.FeedPageComponent),
   },
   {
+    path: 'profile',
+    loadComponent: () =>
+      import('../pages/profile-page/profile-page.component').then((r) => r.ProfilePageComponent),
+  },
+  {
     path: 'welcome',
     loadComponent: () =>
       import('../pages/my-collections-page/my-collections-page.component').then(

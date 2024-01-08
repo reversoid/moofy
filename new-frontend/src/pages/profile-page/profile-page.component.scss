@@ -1,0 +1,53 @@
+.profile-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+
+  .image-wrapper {
+    width: 6rem;
+    height: 6rem;
+    position: relative;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+}
+
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  width: 780px;
+  gap: 1rem;
+
+  .description {
+    grid-row: span 2;
+  }
+  .followers {
+    grid-column: 2;
+  }
+  .followees {
+    grid-column: 2;
+  }
+  .reviews {
+    grid-column: 2;
+  }
+
+  .island-title {
+    font: var(--tui-font-text-l);
+    margin: 0;
+    font-weight: 600;
+    color: var(--tui-text-02);
+    line-height: 1;
+  }
+
+  .island-amount {
+    margin: 0;
+
+    margin-top: 0.75rem;
+    font: var(--tui-font-heading-6);
+    line-height: 1;
+  }
+}
