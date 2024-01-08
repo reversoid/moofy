@@ -6,8 +6,8 @@
   width: 100%;
 
   .image-wrapper {
-    width: 6rem;
-    height: 6rem;
+    width: 7rem;
+    height: 7rem;
     position: relative;
 
     img {
@@ -34,6 +34,25 @@
   .reviews {
     grid-column: 2;
   }
+  .other-info {
+    display: flex;
+    gap: 1rem;
+    grid-row: 3;
+
+    .actions {
+      flex-grow: 2;
+    }
+
+    p {
+      color: var(--tui-text-02);
+    }
+
+    .actions-buttons {
+      flex-grow: 3;
+      display: flex;
+      gap: 1rem;
+    }
+  }
 
   .island-title {
     font: var(--tui-font-text-l);
@@ -41,12 +60,12 @@
     font-weight: 600;
     color: var(--tui-text-02);
     line-height: 1;
+    margin-bottom: 0.75rem;
   }
 
   .island-amount {
     margin: 0;
 
-    margin-top: 0.75rem;
     font: var(--tui-font-heading-6);
     line-height: 1;
   }
