@@ -8,3 +8,11 @@
     background-color: black;
   }
 }
+
+.score {
+  color: #faaf00;
+  --tui-rating-size: 2.75rem;
+  --tui-rating-gap: 1rem;
+  --tui-icon-size: 10rem;
+  display: block;
+}
