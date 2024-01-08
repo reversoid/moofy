@@ -20,77 +20,66 @@
 
 .profile-info-grid {
   display: grid;
-  grid-template-columns: 4fr 1fr;
-  width: min(100%, 780px);
+  grid-template-columns: 2fr 2fr 1fr;
+  width: min(100%, 800px);
   gap: 1rem;
-  @media #{$tui-mobile} {
-    gap: 0.5rem;
-    grid-template-columns: repeat(3, 1fr);
-  }
 
-  .decreased-padding-mobile {
-    @media #{$tui-mobile} {
-      padding-right: 0;
-      padding-left: 0.75rem;
-    }
+  @media #{$tui-mobile} {
+    gap: 0.75rem;
+    grid-template-columns: 1fr 1fr;
   }
 
   .description {
     grid-row: span 2;
+    grid-column: span 2;
 
     @media #{$tui-mobile} {
-      grid-column: span 3;
       grid-row: 1;
+      grid-column: span 2;
     }
   }
-  .followers {
-    grid-column: 2;
 
-    @media #{$tui-mobile} {
-      grid-row: 2;
-    }
-  }
   .followees {
-    grid-column: 2;
+    grid-column: 3;
+
     @media #{$tui-mobile} {
       grid-row: 2;
       grid-column: 1;
     }
   }
-  .reviews {
-    grid-column: 2;
+  .followers {
+    grid-column: 3;
+
     @media #{$tui-mobile} {
       grid-row: 2;
-      grid-column: 3;
+      grid-column: 2;
     }
   }
-  .other-info {
-    display: flex;
-    gap: 1rem;
+  .reviews {
+    grid-column: 3;
+    @media #{$tui-mobile} {
+      grid-row: 3;
+      grid-column: 2;
+    }
+  }
+  .register-date {
+    grid-row: 3;
+    @media #{$tui-mobile} {
+      grid-row: 3;
+      grid-column: 1;
+    }
+  }
+  .actions {
     grid-row: 3;
 
-    @media #{$tui-mobile} {
-      gap: 0.5rem;
-      flex-direction: column;
-      grid-column: span 3;
-    }
-
-    .actions {
-      flex-grow: 2;
-    }
-
-    p {
-      color: var(--tui-text-02);
-    }
-
     .actions-buttons {
-      flex-grow: 3;
-      display: flex;
-      gap: 1rem;
-
       .follow-button {
-        flex-grow: 2;
+        width: 100%;
       }
+    }
+    @media #{$tui-mobile} {
+      grid-row: 4;
+      grid-column: span 2;
     }
   }
 
@@ -106,12 +95,7 @@
       margin: 0;
       font-weight: 600;
       color: var(--tui-text-02);
-      line-height: 1;
-
-      @media #{$tui-mobile} {
-        font-size: 0.875rem;
-        word-break: break-word;
-      }
+      line-height: 1.15;
     }
 
     .island-value {
