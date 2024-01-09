@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { AuthService } from '../utils/auth.service';
+import { AuthTokenService } from '../utils/auth-token.service';
 import { NotificationService } from '../utils/notification.service';
 
 // interface ApiError {
@@ -15,7 +15,7 @@ const ERROR_TRANSLATION: Record<string, string> = {};
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationService = inject(NotificationService);
   const httpClient = inject(HttpClient);
-  const authService = inject(AuthService);
+  const authService = inject(AuthTokenService);
 
   return next(req).pipe(
     catchError((error) => {

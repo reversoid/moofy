@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class AuthService {
+export class AuthTokenService {
   private _accessToken: string | null = null;
 
   get accessToken(): string | null {

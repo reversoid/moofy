@@ -1,9 +1,9 @@
 import { HttpHeaders, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from '../utils/auth.service';
+import { AuthTokenService } from '../utils/auth-token.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+  const authService = inject(AuthTokenService);
   const accessToken = authService.accessToken;
 
   let newHeaders: HttpHeaders = req.headers;

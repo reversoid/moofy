@@ -1,28 +1,44 @@
 <div class="wrapper">
   <h1 class="tui-text_h1">Регистрация</h1>
 
-  <div class="form">
+  <form [formGroup]="registerForm" class="form">
     <div class="tui-form__row">
-      <tui-input>
+      <tui-input
+        formControlName="username"
+        [tuiHintContent]="[] | tuiFieldErrorContent"
+        tuiHintAppearance="error"
+      >
         Имя пользователя
         <input tuiTextfield />
       </tui-input>
     </div>
 
     <div class="tui-form__row">
-      <tui-input>
+      <tui-input-password
+        formControlName="password"
+        [tuiHintContent]="[] | tuiFieldErrorContent"
+        tuiHintAppearance="error"
+      >
         Пароль
         <input tuiTextfield />
-      </tui-input>
+      </tui-input-password>
     </div>
 
     <div class="tui-form__buttons">
-      <button tuiButton type="button">Зарегистрироваться</button>
+      <button
+        (click)="register()"
+        [disabled]="buttonDisabled"
+        tuiButton
+        [showLoader]="isLoading"
+        type="button"
+      >
+        Зарегистрироваться
+      </button>
     </div>
 
     <p class="already-registered">
       Уже есть аккаунт?
       <a routerLink="/auth/login" tuiLink>Войти</a>
     </p>
-  </div>
+  </form>
 </div>
