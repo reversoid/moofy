@@ -1,13 +1,20 @@
-import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { AsyncPipe, NgIf, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TuiActiveZoneModule, TuiObscuredModule } from '@taiga-ui/cdk';
-import { TuiButtonModule, TuiDataListModule, TuiDropdownModule } from '@taiga-ui/core';
+import { TuiActiveZoneModule, TuiLetModule, TuiObscuredModule } from '@taiga-ui/cdk';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
+  TuiSvgModule,
+} from '@taiga-ui/core';
+import { User } from '../../../shared/types';
 
 @Component({
   selector: 'app-profile-button',
   standalone: true,
   imports: [
+    AsyncPipe,
     TuiButtonModule,
     TuiDropdownModule,
     TuiActiveZoneModule,
@@ -15,6 +22,9 @@ import { TuiButtonModule, TuiDataListModule, TuiDropdownModule } from '@taiga-ui
     TuiDataListModule,
     RouterModule,
     NgOptimizedImage,
+    TuiLetModule,
+    TuiSvgModule,
+    NgIf,
   ],
   templateUrl: './profile-button.component.html',
   styleUrl: './profile-button.component.scss',
@@ -22,6 +32,8 @@ import { TuiButtonModule, TuiDataListModule, TuiDropdownModule } from '@taiga-ui
 })
 export class ProfileButtonComponent {
   constructor(private readonly cdr: ChangeDetectorRef) {}
+
+  @Input({ required: true }) user!: User;
 
   dropdownOpen = false;
 

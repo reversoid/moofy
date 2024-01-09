@@ -4,13 +4,21 @@
   </div>
 
   <div class="controls">
-    <div class="header-links">
+    <div *ngIf="user$ | async" class="header-links">
       <a routerLink="/" tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
       <a routerLink="/welcome" tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
     </div>
 
     <app-theme-toggler></app-theme-toggler>
-    <app-profile-button></app-profile-button>
+
+    <app-profile-button
+      *ngIf="user$ | async as user; else authButton"
+      [user]="user"
+    ></app-profile-button>
+
+    <ng-template #authButton>
+      <a appearance="secondary" routerLink="/auth" tuiIconButton icon="tuiIconLogInLarge"></a>
+    </ng-template>
 
     <app-burger-menu [(sidebarOpen)]="sidebarOpen">
       <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>

@@ -9,12 +9,14 @@
   (tuiActiveZoneChange)="onActiveZone($event)"
   (tuiObscured)="onObscured($event)"
 >
-  <img
-    class="profile-image"
-    ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-    width="48"
-    height="48"
-  />
+  <ng-container *ngIf="user.imageUrl; else noImage">
+    <img class="profile-image" [ngSrc]="user.imageUrl" width="48" height="48" />
+  </ng-container>
+
+  <ng-template #noImage>
+    <tui-svg src="tuiIconImageLarge"></tui-svg>
+  </ng-template>
+
   <ng-template #dropdownContent>
     <tui-data-list class="dropdown-menu" role="menu">
       <a
@@ -28,7 +30,7 @@
         (click)="closeDropdown()"
       >
         <span class="profile-title">Выполнен вход за</span>
-        <span class="profile-username">reversoid</span>
+        <span class="profile-username">{{ user.username }}</span>
       </a>
       <a
         routerLink="/welcome"

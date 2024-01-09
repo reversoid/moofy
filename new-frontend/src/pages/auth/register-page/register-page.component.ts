@@ -23,7 +23,7 @@ import { AsyncPipe } from '@angular/common';
 import { maxLength, minLength, pattern, required } from '../../../shared/utils/validators';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../app/store';
-import { currentUserActions } from '../../../entities/current-user';
+import { currentUserActions } from '../../../entities/current-user/actions';
 
 @Component({
   selector: 'app-register-page',
