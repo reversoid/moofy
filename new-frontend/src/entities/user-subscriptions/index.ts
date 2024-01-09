@@ -1,5 +1,4 @@
-import { createActionGroup, createReducer } from '@ngrx/store';
-import { Collection } from '../user-collections';
+import { createReducer } from '@ngrx/store';
 
 export const featureKey = 'user-subscriptions';
 

@@ -1,14 +1,7 @@
-import {
-  createActionGroup,
-  createFeatureSelector,
-  createReducer,
-  createSelector,
-} from '@ngrx/store';
+import { createFeatureSelector, createReducer, createSelector } from '@ngrx/store';
+import { Collection } from '../../shared/types';
 
 export const featureKey = 'user-collections';
-
-// TODO move somewhere else
-export interface Collection {}
 
 export interface State {
   collections: Collection[];
@@ -22,7 +15,4 @@ export const userCollectionsReducer = createReducer(initialState);
 
 const featureSelector = createFeatureSelector<State>(featureKey);
 
-export const selectUserCollections = createSelector(
-  featureSelector,
-  (s) => s.collections
-);
+export const selectUserCollections = createSelector(featureSelector, (s) => s.collections);

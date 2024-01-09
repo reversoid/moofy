@@ -6,7 +6,7 @@ import { TuiRootModule } from '@taiga-ui/core';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
-import { appRoutes } from './app.routes';
+import { appRoutes } from '../pages/routes';
 import { apiInterceptor } from './interceptors/api.interceptor';
 import { ENVIRONMENT } from '../environments/provider';
 import { environment } from '../environments/environment';

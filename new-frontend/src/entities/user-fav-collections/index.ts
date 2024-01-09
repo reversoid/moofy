@@ -1,5 +1,5 @@
-import { createActionGroup, createReducer } from '@ngrx/store';
-import { Collection } from '../user-collections';
+import { createReducer } from '@ngrx/store';
+import { Collection } from '../../shared/types';
 
 export const featureKey = 'user-fav-collections';
 

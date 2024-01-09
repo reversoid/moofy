@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
   TuiButtonModule,
@@ -21,6 +21,9 @@ import { USERNAME_PATTERN } from '../utils/username-pattern';
 import { IsUsernameTakenValidator } from './utils/is-username-taken.validator';
 import { AsyncPipe } from '@angular/common';
 import { maxLength, minLength, pattern, required } from '../../../shared/utils/validators';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../app/store';
+import { currentUserActions } from '../../../entities/current-user';
 
 @Component({
   selector: 'app-register-page',
@@ -64,6 +67,8 @@ export class RegisterPageComponent {
     private readonly destroy$: TuiDestroyService,
     private readonly isUsernameTakenValidator: IsUsernameTakenValidator,
     private readonly cdr: ChangeDetectorRef,
+    private readonly store: Store<AppState>,
+    private readonly router: Router,
   ) {}
 
   isLoading = false;
@@ -103,7 +108,8 @@ export class RegisterPageComponent {
         }),
       )
       .subscribe((v) => {
-        console.log(v);
+        this.store.dispatch(currentUserActions.set({ user: v.user }));
+        this.router.navigateByUrl('');
       });
   }
 }

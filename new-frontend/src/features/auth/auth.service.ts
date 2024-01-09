@@ -1,14 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-
-interface User {
-  id: number;
-  username: string;
-  description: string | null;
-  imageUrl: string | null;
-  createdAt: string | null;
-}
+import { User } from '../../shared/types';
 
 export interface AuthResponse {
   accessToken: string;
