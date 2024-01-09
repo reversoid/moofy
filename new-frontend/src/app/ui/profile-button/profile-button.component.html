@@ -1,7 +1,7 @@
 <button
   class="profile-button"
   tuiIconButton
-  appearance="mono"
+  [appearance]="user.imageUrl ? 'mono' : 'secondary'"
   type="button"
   [tuiDropdown]="dropdownContent"
   [tuiDropdownManual]="dropdownOpen"
@@ -14,7 +14,7 @@
   </ng-container>
 
   <ng-template #noImage>
-    <tui-svg src="tuiIconImageLarge"></tui-svg>
+    <tui-svg src="tuiIconUserLarge"></tui-svg>
   </ng-template>
 
   <ng-template #dropdownContent>
