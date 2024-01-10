@@ -6,14 +6,16 @@ export const featureKey = 'current-user';
 
 export interface State {
   user: User | null;
+  isLoading: boolean;
 }
 
 const initialState: State = {
   user: null,
+  isLoading: true,
 };
 
 export const currentUserReducer = createReducer(
   initialState,
-  on(currentUserActions.set, (_, payload) => ({ user: payload.user })),
-  on(currentUserActions.remove, () => ({ user: null })),
+  on(currentUserActions.set, (_, payload) => ({ user: payload.user, isLoading: false })),
+  on(currentUserActions.clear, () => ({ user: null, isLoading: false })),
 );

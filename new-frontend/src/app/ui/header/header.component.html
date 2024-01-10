@@ -20,7 +20,7 @@
       <a appearance="secondary" routerLink="/auth" tuiIconButton icon="tuiIconLogInLarge"></a>
     </ng-template>
 
-    <app-burger-menu [(sidebarOpen)]="sidebarOpen">
+    <app-burger-menu *ngIf="user$ | async" [(sidebarOpen)]="sidebarOpen">
       <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
     </app-burger-menu>
   </div>
