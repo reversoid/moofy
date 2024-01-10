@@ -1,13 +1,7 @@
 <h1 class="tui-text_h1">Мои коллекции</h1>
 
-<tui-input
-  [tuiTextfieldLabelOutside]="true"
-  tuiTextfieldIconLeft="tuiIconSearchLarge"
-  [tuiTextfieldCleaner]="true"
-  class="search-input tui-space_bottom-5"
->
-  Поиск
-  <input [formControl]="search" tuiTextfield role="search" />
-</tui-input>
-
-<app-collection-grid></app-collection-grid>
+<app-collection-grid>
+  <app-link-card title="Новая коллекция">
+    <div class="gradient"></div>
+  </app-link-card>
+</app-collection-grid>

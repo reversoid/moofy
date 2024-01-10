@@ -9,6 +9,7 @@ export interface User {
 export interface Collection {
   id: number;
   name: string;
+  imageUrl: string;
   description: string | null;
   createdAt: string;
   updatedAt: string;

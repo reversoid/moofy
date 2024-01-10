@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.image-wrapper {
+  width: 100%;
+  position: relative;
+  border-radius: calc(var(--tui-radius-xl) - 1rem);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    padding-top: 100%;
+    display: block;
+  }
+}
+
+.island {
+  overflow: hidden;
+  height: 100%;
+}
+
+.title {
+  margin-bottom: 0;
+}
