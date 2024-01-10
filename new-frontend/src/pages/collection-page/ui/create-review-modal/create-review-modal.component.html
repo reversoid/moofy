@@ -1,34 +1,38 @@
-<tui-elastic-container class="tui-space_top-2">
+<tui-elastic-container class="tui-space_top-5">
   <tui-elastic-container *ngIf="isSelectFilmStep">
     <tui-input
-      *tuiLet="users$ | async as users"
+      *tuiLet="films$ | async as films"
       [tuiTextfieldLabelOutside]="true"
       tuiTextfieldIconLeft="tuiIconSearchLarge"
       [tuiTextfieldCleaner]="true"
     >
       Название
       <input tuiTextfield role="search" tuiTextfield />
-      <ng-container *ngIf="users?.length">
+      <ng-container *ngIf="films?.length">
         <tui-data-list *tuiDataList>
-          <button
-            *ngFor="let user of users"
-            (click)="select(user)"
-            tuiOption
-            [value]="user.username"
-          >
-            {{ user.username }}
+          <button *ngFor="let film of films" (click)="select(film)" tuiOption [value]="film.name">
+            {{ film.name }}
           </button>
         </tui-data-list>
       </ng-container>
     </tui-input>
 
-    <div *ngIf="user" class="film">
-      <div class="image-wrapper"></div>
-      <p>Some name</p>
-      <p>some year</p>
+    <div *ngIf="film" class="film tui-space_top-5">
+      <div class="image-wrapper">
+        <img ngSrc="https://kinopoiskapiunofficial.tech/images/posters/kp_small/7147.jpg" fill />
+      </div>
+      <h6 class="title tui-text_h6">Some name</h6>
+      <tui-tag value="2023"></tui-tag>
     </div>
 
-    <button (click)="finishSelectFilmStep()" class="tui-space_top-4" tuiButton>Далее</button>
+    <button
+      (click)="finishSelectFilmStep()"
+      [disabled]="!film"
+      class="submit-button tui-space_top-5"
+      tuiButton
+    >
+      Далее
+    </button>
   </tui-elastic-container>
 
   <tui-elastic-container *ngIf="isScoreAndDescriptionStep">
@@ -36,6 +40,8 @@
 
     <tui-rating class="score tui-space_top-3" [max]="5"></tui-rating>
 
-    <button (click)="createReview()" class="tui-space_top-4" tuiButton>Добавить</button>
+    <button (click)="createReview()" class="submit-button tui-space_top-5" tuiButton>
+      Добавить
+    </button>
   </tui-elastic-container>
 </tui-elastic-container>

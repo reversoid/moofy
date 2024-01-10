@@ -56,6 +56,7 @@ export class CollectionPageComponent {
     this.dialogService
       .open(new PolymorpheusComponent(CreateReviewModalComponent, this.injector), {
         label: 'Добавить фильм',
+        size: 's',
       })
       .subscribe();
   }

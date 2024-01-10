@@ -1,11 +1,20 @@
 .film {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 
   .image-wrapper {
-    width: 3rem;
-    height: 4.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 108px;
+    height: 160px;
     background-color: black;
+    position: relative;
+  }
+
+  .title {
+    margin: 0;
   }
 }
 
@@ -15,4 +24,15 @@
   --tui-rating-gap: 1rem;
   --tui-icon-size: 10rem;
   display: block;
+
+  ::ng-deep {
+    label {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+button.submit-button {
+  width: 100%;
 }

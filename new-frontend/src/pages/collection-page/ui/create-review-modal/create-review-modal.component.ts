@@ -1,4 +1,4 @@
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiDataListModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
@@ -6,6 +6,7 @@ import {
   TuiElasticContainerModule,
   TuiInputModule,
   TuiRatingModule,
+  TuiTagModule,
   TuiTextareaModule,
 } from '@taiga-ui/kit';
 import { of } from 'rxjs';
@@ -15,7 +16,6 @@ enum CreateReviewSteps {
   scoreAndDescription,
 }
 
-// TODO make it lazy routable
 @Component({
   selector: 'app-create-review-modal',
   standalone: true,
@@ -31,22 +31,24 @@ enum CreateReviewSteps {
     TuiElasticContainerModule,
     TuiTextareaModule,
     TuiRatingModule,
+    NgOptimizedImage,
+    TuiTagModule,
   ],
   templateUrl: './create-review-modal.component.html',
   styleUrl: './create-review-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateReviewModalComponent {
-  users$ = of([{ username: 'aboba' }, { username: 'grenka' }, { username: 'floppa' }]);
+  films$ = of([{ name: 'aboba' }, { name: 'grenka' }, { name: 'floppa' }]);
 
-  user: any;
+  film: any;
 
   get content(): any {
-    return this.user?.username;
+    return this.film?.name;
   }
 
-  select(user: any) {
-    this.user = user;
+  select(film: any) {
+    this.film = film;
   }
 
   step: CreateReviewSteps = CreateReviewSteps.selectFilm;
