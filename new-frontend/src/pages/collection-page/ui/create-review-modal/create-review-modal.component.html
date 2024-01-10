@@ -1,23 +1,23 @@
 <tui-elastic-container class="tui-space_top-5">
-  <tui-elastic-container *ngIf="isSelectFilmStep">
-    <tui-input
-      *tuiLet="films$ | async as films"
-      [tuiTextfieldLabelOutside]="true"
-      tuiTextfieldIconLeft="tuiIconSearchLarge"
-      [tuiTextfieldCleaner]="true"
-    >
-      Название
-      <input tuiTextfield role="search" tuiTextfield />
-      <ng-container *ngIf="films?.length">
-        <tui-data-list *tuiDataList>
-          <button *ngFor="let film of films" (click)="select(film)" tuiOption [value]="film.name">
-            {{ film.name }}
-          </button>
-        </tui-data-list>
-      </ng-container>
-    </tui-input>
+  <tui-input
+    *tuiLet="films$ | async as films"
+    [tuiTextfieldLabelOutside]="true"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    [tuiTextfieldCleaner]="true"
+  >
+    Название
+    <input tuiTextfield role="search" tuiTextfield />
+    <ng-container *ngIf="films?.length">
+      <tui-data-list *tuiDataList>
+        <button *ngFor="let film of films" (click)="select(film)" tuiOption [value]="film.name">
+          {{ film.name }}
+        </button>
+      </tui-data-list>
+    </ng-container>
+  </tui-input>
 
-    <div *ngIf="film" class="film tui-space_top-5">
+  <ng-container *ngIf="film">
+    <div class="film tui-space_top-5">
       <div class="image-wrapper">
         <img ngSrc="https://kinopoiskapiunofficial.tech/images/posters/kp_small/7147.jpg" fill />
       </div>
@@ -25,23 +25,23 @@
       <tui-tag value="2023"></tui-tag>
     </div>
 
-    <button
-      (click)="finishSelectFilmStep()"
-      [disabled]="!film"
-      class="submit-button tui-space_top-5"
-      tuiButton
+    <tui-rating class="score tui-space_top-5" [max]="5"></tui-rating>
+
+    <tui-textarea
+      [tuiTextfieldLabelOutside]="true"
+      formControlName="testValue1"
+      class="tui-space_top-5"
     >
-      Далее
-    </button>
-  </tui-elastic-container>
+      Описание
+    </tui-textarea>
+  </ng-container>
 
-  <tui-elastic-container *ngIf="isScoreAndDescriptionStep">
-    <tui-textarea formControlName="testValue1" class=""> Описание </tui-textarea>
-
-    <tui-rating class="score tui-space_top-3" [max]="5"></tui-rating>
-
-    <button (click)="createReview()" class="submit-button tui-space_top-5" tuiButton>
-      Добавить
-    </button>
-  </tui-elastic-container>
+  <button
+    (click)="createReview()"
+    [disabled]="!film"
+    class="submit-button tui-space_top-5"
+    tuiButton
+  >
+    Добавить
+  </button>
 </tui-elastic-container>

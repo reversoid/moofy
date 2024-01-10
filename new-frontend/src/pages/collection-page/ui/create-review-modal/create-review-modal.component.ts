@@ -11,11 +11,6 @@ import {
 } from '@taiga-ui/kit';
 import { of } from 'rxjs';
 
-enum CreateReviewSteps {
-  selectFilm,
-  scoreAndDescription,
-}
-
 @Component({
   selector: 'app-create-review-modal',
   standalone: true,
@@ -49,20 +44,6 @@ export class CreateReviewModalComponent {
 
   select(film: any) {
     this.film = film;
-  }
-
-  step: CreateReviewSteps = CreateReviewSteps.selectFilm;
-
-  get isSelectFilmStep() {
-    return this.step === CreateReviewSteps.selectFilm;
-  }
-
-  get isScoreAndDescriptionStep() {
-    return this.step === CreateReviewSteps.scoreAndDescription;
-  }
-
-  finishSelectFilmStep() {
-    this.step = CreateReviewSteps.scoreAndDescription;
   }
 
   createReview() {}

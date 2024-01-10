@@ -21,6 +21,12 @@ tui-root {
 
     background-color: var(--tui-base-02) !important;
   }
+
+  tui-textarea {
+    [tuiWrapper][data-appearance='textfield'][data-appearance='textfield']:after {
+      color: transparent;
+    }
+  }
 }
 
 :root {
