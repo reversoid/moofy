@@ -12,7 +12,11 @@ export const createPersonalCollectionDtoSchema = z.object({
       withDescription: z.boolean().optional(),
       strategy: z.enum(['move', 'copy']),
     }),
-    removeUnitedCollections: z.boolean().or(z.enum(['emptyAfterMove'])),
+    actionAfterMergingCollections: z.enum([
+      'removeEmpty',
+      'saveAll',
+      'removeAll',
+    ]),
   }),
 });
 

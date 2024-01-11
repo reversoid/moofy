@@ -38,7 +38,7 @@ export type UniteCollectionsOptions = {
     withDescription?: boolean;
     strategy: 'move' | 'copy';
   };
-  removeUnitedCollections: boolean | 'emptyAfterMove';
+  actionAfterMergingCollections: 'saveAll' | 'removeAll' | 'removeEmpty';
 };
 
 @Injectable()
@@ -287,6 +287,7 @@ export class CollectionService {
       );
     }
 
+    // TODO check for removing collections
     await this.deleteManyCollections(collectionIds);
 
     const conflictingReviews =
