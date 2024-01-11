@@ -94,36 +94,44 @@ export interface ProfileDirectNotification {
   created_at: string;
   type: 'COLLECTION_LIKE' | 'COMMENT_LIKE' | 'NEW_COMMENT' | 'NEW_REPLY' | 'NEW_FOLLOWER';
   payload: {
-    collection_like?: CollectionLikePayload;
-    comment_like?: CommentLike;
-    subscribe?: SubscribeNotification;
-    comment?: CommentNotification;
-    reply?: ReplyNotification;
+    collection_like?: CollectionLikeNotificationPayload;
+    comment_like?: CommentLikeNotificationPayload;
+    subscribe?: SubscribeNotificationPayload;
+    comment?: CommentNotificationPayload;
+    reply?: ReplyNotificationPayload;
   };
 }
 
-type CollectionLikePayload = {
+type CollectionLikeNotificationPayload = {
   user_from: User;
   collection: Collection;
 };
 
-type CommentLike = {
+type CommentLikeNotificationPayload = {
   user_from: User;
   comment: Comment;
   collection: Collection;
 };
 
-type SubscribeNotification = {
+type SubscribeNotificationPayload = {
   user_from: User;
 };
 
-type CommentNotification = {
+type CommentNotificationPayload = {
   comment: Comment;
   collection: Collection;
 };
 
-type ReplyNotification = {
+type ReplyNotificationPayload = {
   comment: Comment;
   reply: Comment;
   collection: Collection;
 };
+
+export interface ProfileCounterNotification {
+  eventId: string;
+}
+
+export interface ProfileSeenNotification {
+  notificationId: string;
+}
