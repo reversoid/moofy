@@ -87,3 +87,43 @@ export interface CommentWithInfo {
     isLiked: boolean;
   };
 }
+
+export interface ProfileDirectNotification {
+  id: string;
+  seen_at: string;
+  created_at: string;
+  type: 'COLLECTION_LIKE' | 'COMMENT_LIKE' | 'NEW_COMMENT' | 'NEW_REPLY' | 'NEW_FOLLOWER';
+  payload: {
+    collection_like?: CollectionLikePayload;
+    comment_like?: CommentLike;
+    subscribe?: SubscribeNotification;
+    comment?: CommentNotification;
+    reply?: ReplyNotification;
+  };
+}
+
+type CollectionLikePayload = {
+  user_from: User;
+  collection: Collection;
+};
+
+type CommentLike = {
+  user_from: User;
+  comment: Comment;
+  collection: Collection;
+};
+
+type SubscribeNotification = {
+  user_from: User;
+};
+
+type CommentNotification = {
+  comment: Comment;
+  collection: Collection;
+};
+
+type ReplyNotification = {
+  comment: Comment;
+  reply: Comment;
+  collection: Collection;
+};
