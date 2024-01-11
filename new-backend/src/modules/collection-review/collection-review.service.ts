@@ -104,6 +104,10 @@ export class CollectionReviewService {
     await this.reviewRepository.hideReviews(reviewsIds);
   }
 
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.reviewRepository.getReviewsAmount(collectionId);
+  }
+
   async getReviewById(id: Review['id']) {
     return this.reviewRepository.getReviewById(id);
   }
@@ -126,15 +130,27 @@ export class CollectionReviewService {
     await this.reviewRepository.deleteReview(id);
   }
 
-  async moveAllReviewsToAnotherCollection(
+  async moveReviewsToAnotherCollection(
     fromCollectionsIds: Array<Collection['id']>,
     toCollectionId: Collection['id'],
-    options?: { onlyReviewsWithDescription?: boolean },
+    moveOptions: { withDescription?: boolean; withScore?: boolean },
   ): Promise<void> {
-    return this.reviewRepository.moveAllReviewsToAnotherCollection(
+    return this.reviewRepository.moveReviewsToAnotherCollection(
       fromCollectionsIds,
       toCollectionId,
-      Boolean(options?.onlyReviewsWithDescription),
+      moveOptions,
+    );
+  }
+
+  async copyReviewsToAnotherCollection(
+    fromCollectionsIds: Array<Collection['id']>,
+    toCollectionId: Collection['id'],
+    copyOptions: { withDescription?: boolean; withScore?: boolean },
+  ): Promise<void> {
+    return this.reviewRepository.moveReviewsToAnotherCollection(
+      fromCollectionsIds,
+      toCollectionId,
+      copyOptions,
     );
   }
 

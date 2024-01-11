@@ -10,6 +10,7 @@ export const collectionSchema = z.object({
   updatedAt: z.date(),
   user: userSchema,
   isPublic: z.boolean(),
+  imageUrl: z.string().nullable(),
 });
 
 export type Collection = z.infer<typeof collectionSchema>;
@@ -24,4 +25,5 @@ export const selectCollection: PrismaSelectEntity<Collection> = {
     select: selectUser,
   },
   isPublic: true,
+  imageUrl: true,
 };
