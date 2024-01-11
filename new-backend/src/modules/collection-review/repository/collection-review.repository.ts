@@ -163,20 +163,65 @@ export class CollectionReviewRepository extends PaginatedRepository {
     );
   }
 
-  async moveAllReviewsToAnotherCollection(
+  async moveReviewsToAnotherCollection(
     fromCollectionsIds: Array<Collection['id']>,
     toCollectionId: Collection['id'],
-    onlyWithDescription = false,
+    moveOptions: { withScore?: boolean; withDescription?: boolean },
   ): Promise<void> {
     await this.prismaService.review.updateMany({
       where: {
         listId: { in: fromCollectionsIds },
-        description: onlyWithDescription ? { not: null } : undefined,
+        description:
+          moveOptions.withDescription === true
+            ? { not: null }
+            : moveOptions.withDescription === false
+              ? null
+              : undefined,
+        score:
+          moveOptions.withScore === true
+            ? { not: null }
+            : moveOptions.withScore === false
+              ? null
+              : undefined,
       },
       data: {
         listId: toCollectionId,
       },
     });
+  }
+
+  async copyReviewsToAnotherCollection(
+    fromCollectionsIds: Array<Collection['id']>,
+    toCollectionId: Collection['id'],
+    copyOptions: { withScore?: boolean; withDescription?: boolean },
+  ): Promise<void> {
+    const inQuery = Prisma.raw(`IN (${fromCollectionsIds.join(', ')})`);
+
+    const optionsQueryParts = [];
+    if (copyOptions.withScore) {
+      optionsQueryParts.push('score IS NOT NULL');
+    } else if (copyOptions.withScore === false) {
+      optionsQueryParts.push('score IS NULL');
+    }
+
+    if (copyOptions.withDescription) {
+      optionsQueryParts.push('description IS NOT NULL');
+    } else if (copyOptions.withScore === false) {
+      optionsQueryParts.push('description IS NULL');
+    }
+
+    const optionsQuery =
+      optionsQueryParts.length > 0
+        ? Prisma.raw('AND ' + optionsQueryParts.join(' AND '))
+        : Prisma.raw('');
+
+    await this.prismaService.$executeRaw`
+      INSERT INTO review (score, description, tags, film_id, user_id, list_id, is_hidden)
+      SELECT score, description, tags, film_id, user_id, ${toCollectionId}, is_hidden
+      FROM review
+      WHERE list_id ${inQuery}
+      ${optionsQuery}
+    `;
   }
 
   async getReviewsFromCollection(
