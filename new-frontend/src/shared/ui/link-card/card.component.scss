@@ -22,5 +22,9 @@
 }
 
 .title {
+  min-width: 100%;
   margin-bottom: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

@@ -4,7 +4,7 @@ import { TuiButtonModule, TuiLabelModule, TuiTextfieldControllerModule } from '@
 import { TuiInputModule } from '@taiga-ui/kit';
 import { CollectionComponent } from '../../entities/collection/collection.component';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
-import { LinkCardComponent } from '../../shared/ui/link-card/link-card.component';
+import { CardComponent } from '../../shared/ui/link-card/card.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -18,7 +18,7 @@ import { LinkCardComponent } from '../../shared/ui/link-card/link-card.component
     FormsModule,
     CollectionGridComponent,
     TuiButtonModule,
-    LinkCardComponent,
+    CardComponent,
   ],
   templateUrl: './my-collections-page.component.html',
   styleUrl: './my-collections-page.component.scss',
@@ -27,4 +27,8 @@ import { LinkCardComponent } from '../../shared/ui/link-card/link-card.component
 })
 export class MyCollectionsPageComponent {
   search = new FormControl<string>('');
+
+  openCreateCollectionModal() {
+    console.log('hi');
+  }
 }

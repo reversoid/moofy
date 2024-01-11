@@ -21,7 +21,7 @@ export class CollectionGridComponent {
     updatedAt: new Date().toISOString(),
     description: 'desc',
     isPublic: true,
-    name: 'Some collection',
+    name: 'Some collection and yeah it is very long word',
     user: {
       id: 1,
       createdAt: new Date().toISOString(),

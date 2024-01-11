@@ -1,7 +1,9 @@
 <h1 class="tui-text_h1">Мои коллекции</h1>
 
 <app-collection-grid>
-  <app-link-card title="Новая коллекция">
-    <div class="gradient"></div>
-  </app-link-card>
+  <div (click)="openCreateCollectionModal()">
+    <app-card title="Новая коллекция" [hoverable]="true">
+      <div class="gradient"></div>
+    </app-card>
+  </div>
 </app-collection-grid>

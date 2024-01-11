@@ -1,3 +1,5 @@
-<app-link-card [link]="link" [title]="collection.name">
-  <img fill [ngSrc]="collection.imageUrl ?? ''" />
-</app-link-card>
+<a [routerLink]="link">
+  <app-card [title]="collection.name" [hoverable]="true">
+    <img fill [ngSrc]="collection.imageUrl ?? ''" />
+  </app-card>
+</a>
