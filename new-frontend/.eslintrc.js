@@ -16,7 +16,9 @@ module.exports = {
             'prettier',
             'plugin:prettier/recommended'
         ],
-        rules: {}
+        rules: {
+          '@typescript-eslint/no-redeclare': 'off'
+        }
       },
       {
         files: ["*.component.html"],

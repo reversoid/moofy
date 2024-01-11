@@ -69,7 +69,6 @@ export interface Review {
   isHidden: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export interface Comment {
   id: number;
   text: string;
