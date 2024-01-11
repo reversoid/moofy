@@ -130,7 +130,7 @@ type ReplyNotificationPayload = {
 };
 
 export interface ProfileCounterNotification {
-  eventId: string;
+  notificationId: string;
 }
 
 export interface ProfileSeenNotification {
