@@ -42,6 +42,12 @@ export class CollectionReviewRepository extends PaginatedRepository {
     });
   }
 
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.prismaService.review.count({
+      where: { deletedAt: null, listId: collectionId },
+    });
+  }
+
   async makeReviewsVisible(reviewsIds: Array<Review['id']>): Promise<void> {
     await this.prismaService.review.updateMany({
       where: { deletedAt: null, id: { in: reviewsIds }, isHidden: true },

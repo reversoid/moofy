@@ -287,8 +287,25 @@ export class CollectionService {
       );
     }
 
-    // TODO check for removing collections
-    await this.deleteManyCollections(collectionIds);
+    if (options.actionAfterMergingCollections === 'removeAll') {
+      await this.deleteManyCollections(collectionIds);
+    } else if (options.actionAfterMergingCollections === 'removeEmpty') {
+      const reviewsAmount = await Promise.all(
+        collectionIds.map((id) =>
+          this.collectionReviewService.getReviewsAmount(id),
+        ),
+      );
+
+      await Promise.all(
+        collectionIds
+          .map<{ id: Collection['id']; amount: number }>((id, index) => ({
+            id,
+            amount: reviewsAmount[index],
+          }))
+          .filter(({ amount }) => amount !== 0)
+          .map(({ id }) => this.deleteCollection(id)),
+      );
+    }
 
     const conflictingReviews =
       await this.collectionReviewService.getConflictingReviews(collection.id);

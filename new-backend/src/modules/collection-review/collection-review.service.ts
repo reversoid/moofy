@@ -104,6 +104,10 @@ export class CollectionReviewService {
     await this.reviewRepository.hideReviews(reviewsIds);
   }
 
+  async getReviewsAmount(collectionId: Collection['id']): Promise<number> {
+    return this.reviewRepository.getReviewsAmount(collectionId);
+  }
+
   async getReviewById(id: Review['id']) {
     return this.reviewRepository.getReviewById(id);
   }
