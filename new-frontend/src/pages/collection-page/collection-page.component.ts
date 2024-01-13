@@ -13,7 +13,7 @@ import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { CreateReviewModalComponent } from './ui/create-review-modal/create-review-modal.component';
+import { CreateReviewDialogComponent } from './ui/create-review-dialog/create-review-dialog.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -54,7 +54,7 @@ export class CollectionPageComponent {
 
   createReview() {
     this.dialogService
-      .open(new PolymorpheusComponent(CreateReviewModalComponent, this.injector), {
+      .open(new PolymorpheusComponent(CreateReviewDialogComponent, this.injector), {
         label: 'Добавить фильм',
         size: 's',
       })

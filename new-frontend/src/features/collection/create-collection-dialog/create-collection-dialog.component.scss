@@ -1,3 +1,31 @@
 .submit-button {
   width: 100%;
 }
+
+.file-input {
+  height: 12rem;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  div.content {
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+
+    .image-wrapper {
+      border-radius: var(--tui-radius-xs);
+      overflow: hidden;
+      width: 6rem;
+      height: 6rem;
+      position: relative;
+    }
+  }
+}

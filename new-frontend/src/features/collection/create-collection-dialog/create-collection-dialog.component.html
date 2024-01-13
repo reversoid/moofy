@@ -1,10 +1,70 @@
-<tui-input [tuiTextfieldLabelOutside]="true" class="tui-space_top-5">
-  Название <input tuiTextfield />
-</tui-input>
-<tui-textarea [tuiTextfieldLabelOutside]="true" class="tui-space_top-4" [expandable]="true">
-  Описание
-</tui-textarea>
+<form (ngSubmit)="createCollection()" [formGroup]="createCollectionForm" class="tui-space_top-5">
+  <tui-input formControlName="name" [tuiTextfieldLabelOutside]="true">
+    Название <input tuiTextfield />
+  </tui-input>
+  <tui-textarea
+    formControlName="description"
+    [tuiTextfieldLabelOutside]="true"
+    class="tui-space_top-4"
+    [expandable]="true"
+  >
+    Описание
+  </tui-textarea>
 
-<tui-checkbox-labeled class="tui-space_top-4" size="l">Сделать приватной</tui-checkbox-labeled>
+  <tui-checkbox-labeled formControlName="isPrivate" class="tui-space_top-4" size="l"
+    >Сделать приватной</tui-checkbox-labeled
+  >
 
-<button class="tui-space_top-5 submit-button" tuiButton>Создать</button>
+  <tui-input-files class="tui-space_top-5 file-input" [formControl]="fileControl">
+    <ng-template let-dragged>
+      <div *ngIf="dragged; else base" class="file-input__content">
+        <tui-marker-icon mode="link" src="tuiIconDropletLarge"></tui-marker-icon>
+        <div>Drop it like it's hot!</div>
+      </div>
+      <ng-template #base>
+        <div class="file-input__content">
+          <div class="content">
+            @switch (uploadState) {
+              @case ('notLoaded') {
+                <tui-marker-icon
+                  size="l"
+                  mode="link"
+                  src="tuiIconUploadCloudLarge"
+                ></tui-marker-icon>
+              }
+              @case ('loading') {
+                <tui-loader size="l"></tui-loader>
+              }
+              @case ('loaded') {
+                <div class="image-wrapper">
+                  <img
+                    ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
+                    fill
+                  />
+                </div>
+              }
+            }
+          </div>
+
+          <div>
+            <a tuiLink>Загрузить</a>
+            обложку
+          </div>
+        </div>
+      </ng-template>
+    </ng-template>
+    <ng-template #icon>
+      <tui-svg src="tuiIconFileLarge"></tui-svg>
+    </ng-template>
+  </tui-input-files>
+
+  <button
+    [disabled]="buttonDisabled"
+    [showLoader]="isLoading"
+    type="submit"
+    class="tui-space_top-5 submit-button"
+    tuiButton
+  >
+    Создать
+  </button>
+</form>

@@ -12,7 +12,7 @@ import {
 import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-create-review-modal',
+  selector: 'app-create-review-dialog',
   standalone: true,
   imports: [
     TuiInputModule,
@@ -29,11 +29,11 @@ import { of } from 'rxjs';
     NgOptimizedImage,
     TuiTagModule,
   ],
-  templateUrl: './create-review-modal.component.html',
-  styleUrl: './create-review-modal.component.scss',
+  templateUrl: './create-review-dialog.component.html',
+  styleUrl: './create-review-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateReviewModalComponent {
+export class CreateReviewDialogComponent {
   films$ = of([{ name: 'aboba' }, { name: 'grenka' }, { name: 'floppa' }]);
 
   film: any;
