@@ -15,7 +15,12 @@
     >Сделать приватной</tui-checkbox-labeled
   >
 
-  <tui-input-files class="tui-space_top-5 file-input" [formControl]="fileControl">
+  <tui-input-files
+    [accept]="imageAccept"
+    class="tui-space_top-5 file-input"
+    [formControl]="fileControl"
+    [multiple]="false"
+  >
     <ng-template let-dragged>
       <div *ngIf="dragged; else base" class="file-input__content">
         <tui-marker-icon mode="link" src="tuiIconDropletLarge"></tui-marker-icon>
@@ -59,7 +64,7 @@
   </tui-input-files>
 
   <button
-    [disabled]="buttonDisabled"
+    [disabled]="shouldNotCreateCollection"
     [showLoader]="isLoading"
     type="submit"
     class="tui-space_top-5 submit-button"

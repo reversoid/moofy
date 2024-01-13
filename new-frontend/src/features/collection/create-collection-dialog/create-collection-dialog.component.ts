@@ -1,5 +1,5 @@
 import { NgIf, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
@@ -16,8 +16,11 @@ import {
   TuiMarkerIconModule,
   TuiTextareaModule,
 } from '@taiga-ui/kit';
-import { catchError, takeUntil } from 'rxjs';
+import { catchError, filter, mergeMap, of, takeUntil, tap } from 'rxjs';
 import { CollectionService } from '../utils/collection.service';
+import { ImageTooLargeError, ImageWrongFormatError } from '../utils/errors';
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/file';
+import { NotificationService } from '../../../app/utils/notification.service';
 
 type UploadState = 'loading' | 'loaded' | 'notLoaded';
 
@@ -50,31 +53,45 @@ export class CreateCollectionDialogComponent {
     private readonly fb: FormBuilder,
     private readonly destroy$: TuiDestroyService,
     private readonly collectionService: CollectionService,
+    private readonly notificationService: NotificationService,
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.setupImageUpload();
   }
 
   setupImageUpload() {
-    this.fileControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((file: File | null) => {
-      if (!file) {
-        this.createCollectionForm.patchValue({ imageUrl: null });
-        return;
-      }
+    this.fileControl.valueChanges
+      .pipe(
+        tap((file) => {
+          if (!file) this.createCollectionForm.patchValue({ imageUrl: null });
+        }),
+        filter(Boolean),
+        tap(() => {
+          this.uploadState = 'loading';
+          this.cdr.markForCheck();
+        }),
+        mergeMap((f) => this.collectionService.uploadCollectionImage(f)),
+        tap(() => {
+          this.uploadState = 'loaded';
+          this.cdr.markForCheck();
+        }),
+        catchError((e) => {
+          this.uploadState = 'notLoaded';
+          throw e;
+        }),
+        catchError((e) => {
+          if (e instanceof ImageWrongFormatError) {
+            this.notificationService.createError('Неверное расширение файла');
+          }
 
-      this.createCollectionForm.markAsPending();
-      return this.collectionService
-        .uploadCollectionImage(file)
-        .pipe(
-          catchError((v) => {
-            console.log(v);
-            throw v;
-          }),
-        )
-        .subscribe((v) => {
-          console.log(v.link);
-          this.createCollectionForm.markAsPristine();
-        });
-    });
+          if (e instanceof ImageTooLargeError) {
+            this.notificationService.createError('Файл очень большой');
+          }
+          return of();
+        }),
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   createCollectionForm = this.fb.group({
@@ -86,15 +103,19 @@ export class CreateCollectionDialogComponent {
 
   fileControl = this.fb.control<File | null>(null);
 
-  uploadState: UploadState = 'loaded';
+  uploadState: UploadState = 'notLoaded';
 
   isLoading = false;
 
-  get buttonDisabled() {
-    return this.createCollectionForm.pending || this.isLoading || this.createCollectionForm.invalid;
+  get shouldNotCreateCollection() {
+    return this.isLoading || this.createCollectionForm.invalid;
   }
 
   createCollection() {
-    console.log('some logic of creating collection');
+    if (this.shouldNotCreateCollection) {
+      return;
+    }
   }
+
+  imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
 }

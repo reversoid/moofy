@@ -1,14 +1,14 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
-import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
 import {
   MAX_IMAGE_UPLOAD_SIZE_MB,
   SUPPORTED_IMAGE_EXTENSIONS,
   getFileExtension,
   getFileSizeInMb,
 } from '../../../shared/utils/file';
-import { ImageTooLargeError, WrongImageExtensionError } from './errors';
+import { ImageTooLargeError, ImageWrongFormatError } from './errors';
 
 @Injectable({
   providedIn: 'root',
@@ -21,20 +21,21 @@ export class CollectionService {
       this.validateImage,
       this.createFormData,
       switchMap((formData) => {
-        return this.http.post<{ link: string }>('collections/image-upload', formData);
-      }),
-      catchError((e) => {
-        if (e instanceof HttpErrorResponse) {
-          if (e.error.message === 'IMAGE_WRONG_FORMAT') {
-            throw new WrongImageExtensionError();
-          }
+        return this.http.post<{ link: string }>('collections/image-upload', formData).pipe(
+          catchError((e) => {
+            if (e instanceof HttpErrorResponse) {
+              if (e.error.message === 'IMAGE_WRONG_FORMAT') {
+                throw new ImageWrongFormatError();
+              }
 
-          if (e.error.message === 'IMAGE_TOO_LARGE') {
-            throw new ImageTooLargeError();
-          }
-        }
+              if (e.error.message === 'IMAGE_TOO_LARGE') {
+                throw new ImageTooLargeError();
+              }
+            }
 
-        throw e;
+            throw e;
+          }),
+        );
       }),
     );
   }
@@ -46,11 +47,16 @@ export class CollectionService {
   private validateImage(source: Observable<File>): Observable<File> {
     return source.pipe(
       map((f) => {
+        console.log('file?', f);
+
         if (!SUPPORTED_IMAGE_EXTENSIONS.includes(getFileExtension(f))) {
-          throw new WrongImageExtensionError();
+          throw new ImageWrongFormatError();
         }
+        console.log(f);
 
         if (getFileSizeInMb(f) > MAX_IMAGE_UPLOAD_SIZE_MB) {
+          console.log('will be too large!');
+
           throw new ImageTooLargeError();
         }
 
