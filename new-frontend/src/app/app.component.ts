@@ -37,27 +37,10 @@ import { NotificationService } from './utils/notification.service';
 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
-  constructor(
-    public readonly themeService: NightService,
-    private readonly notificationService: NotificationService,
-    private readonly _destroy$: TuiDestroyService,
-  ) {}
-
-  ngOnInit(): void {
-    this.initializeErrorNotifications();
-    this.initializeNotifications();
-  }
+export class AppComponent {
+  constructor(public readonly themeService: NightService) {}
 
   toggleTheme() {
     this.themeService.toggleTheme();
-  }
-
-  private initializeNotifications() {
-    this.notificationService.notifications$.pipe(takeUntil(this._destroy$)).subscribe(console.log);
-  }
-
-  private initializeErrorNotifications() {
-    this.notificationService.errors$.pipe(takeUntil(this._destroy$)).subscribe(console.log);
   }
 }

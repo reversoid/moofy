@@ -20,6 +20,8 @@
     class="tui-space_top-5 file-input"
     [formControl]="fileControl"
     [multiple]="false"
+    [maxFileSize]="maxFileSize"
+    (reject)="showReject($event)"
   >
     <ng-template let-dragged>
       <div *ngIf="dragged; else base" class="file-input__content">
@@ -41,11 +43,8 @@
                 <tui-loader size="l"></tui-loader>
               }
               @case ('loaded') {
-                <div class="image-wrapper">
-                  <img
-                    ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-                    fill
-                  />
+                <div *ngIf="uploadedImageUrl as imageUrl" class="image-wrapper">
+                  <img [ngSrc]="imageUrl" fill />
                 </div>
               }
             }

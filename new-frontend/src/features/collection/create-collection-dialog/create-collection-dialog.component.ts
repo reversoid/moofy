@@ -1,5 +1,5 @@
 import { NgIf, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
@@ -16,7 +16,7 @@ import {
   TuiMarkerIconModule,
   TuiTextareaModule,
 } from '@taiga-ui/kit';
-import { catchError, filter, mergeMap, of, takeUntil, tap } from 'rxjs';
+import { catchError, filter, of, switchMap, takeUntil, tap } from 'rxjs';
 import { CollectionService } from '../utils/collection.service';
 import { ImageTooLargeError, ImageWrongFormatError } from '../utils/errors';
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/file';
@@ -48,14 +48,16 @@ type UploadState = 'loading' | 'loaded' | 'notLoaded';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
 })
-export class CreateCollectionDialogComponent {
+export class CreateCollectionDialogComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly destroy$: TuiDestroyService,
     private readonly collectionService: CollectionService,
     private readonly notificationService: NotificationService,
     private readonly cdr: ChangeDetectorRef,
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.setupImageUpload();
   }
 
@@ -63,6 +65,8 @@ export class CreateCollectionDialogComponent {
     this.fileControl.valueChanges
       .pipe(
         tap((file) => {
+          console.log('file', file);
+
           if (!file) this.createCollectionForm.patchValue({ imageUrl: null });
         }),
         filter(Boolean),
@@ -70,13 +74,16 @@ export class CreateCollectionDialogComponent {
           this.uploadState = 'loading';
           this.cdr.markForCheck();
         }),
-        mergeMap((f) => this.collectionService.uploadCollectionImage(f)),
-        tap(() => {
+        switchMap((f) => this.collectionService.uploadCollectionImage(f)),
+        tap(({ link }) => {
           this.uploadState = 'loaded';
+          this.createCollectionForm.patchValue({ imageUrl: link });
           this.cdr.markForCheck();
         }),
         catchError((e) => {
-          this.uploadState = 'notLoaded';
+          this.uploadState = this.uploadedImageUrl ? 'loaded' : 'notLoaded';
+          this.cdr.markForCheck();
+
           throw e;
         }),
         catchError((e) => {
@@ -85,7 +92,7 @@ export class CreateCollectionDialogComponent {
           }
 
           if (e instanceof ImageTooLargeError) {
-            this.notificationService.createError('Файл очень большой');
+            this.notificationService.createError('Слишком большой файл');
           }
           return of();
         }),
@@ -101,6 +108,10 @@ export class CreateCollectionDialogComponent {
     imageUrl: this.fb.control<string | null>(null),
   });
 
+  showReject(v: any) {
+    console.log(v);
+  }
+
   fileControl = this.fb.control<File | null>(null);
 
   uploadState: UploadState = 'notLoaded';
@@ -111,6 +122,10 @@ export class CreateCollectionDialogComponent {
     return this.isLoading || this.createCollectionForm.invalid;
   }
 
+  get uploadedImageUrl(): string | null {
+    return this.createCollectionForm.controls.imageUrl.getRawValue();
+  }
+
   createCollection() {
     if (this.shouldNotCreateCollection) {
       return;
@@ -118,4 +133,6 @@ export class CreateCollectionDialogComponent {
   }
 
   imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
+
+  readonly maxFileSize = Number.POSITIVE_INFINITY;
 }

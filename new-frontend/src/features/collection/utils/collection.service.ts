@@ -1,7 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateCollectionProps, UpdateCollectionProps } from './types';
-import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import {
   MAX_IMAGE_UPLOAD_SIZE_MB,
   SUPPORTED_IMAGE_EXTENSIONS,
@@ -9,6 +8,7 @@ import {
   getFileSizeInMb,
 } from '../../../shared/utils/file';
 import { ImageTooLargeError, ImageWrongFormatError } from './errors';
+import { CreateCollectionProps, UpdateCollectionProps } from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -47,16 +47,10 @@ export class CollectionService {
   private validateImage(source: Observable<File>): Observable<File> {
     return source.pipe(
       map((f) => {
-        console.log('file?', f);
-
         if (!SUPPORTED_IMAGE_EXTENSIONS.includes(getFileExtension(f))) {
           throw new ImageWrongFormatError();
         }
-        console.log(f);
-
         if (getFileSizeInMb(f) > MAX_IMAGE_UPLOAD_SIZE_MB) {
-          console.log('will be too large!');
-
           throw new ImageTooLargeError();
         }
 
