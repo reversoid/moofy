@@ -21,7 +21,6 @@
     [formControl]="fileControl"
     [multiple]="false"
     [maxFileSize]="maxFileSize"
-    (reject)="showReject($event)"
   >
     <ng-template let-dragged>
       <div *ngIf="dragged; else base" class="file-input__content">
