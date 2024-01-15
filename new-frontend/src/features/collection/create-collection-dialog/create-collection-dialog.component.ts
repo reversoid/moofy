@@ -70,7 +70,7 @@ export class CreateCollectionDialogComponent implements OnInit {
 
   isLoading = false;
 
-  imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
+  readonly imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
 
   readonly maxFileSize = Number.POSITIVE_INFINITY;
 
@@ -94,8 +94,6 @@ export class CreateCollectionDialogComponent implements OnInit {
         }),
         filter(Boolean),
         tap(() => {
-          console.log('loading');
-
           this.uploadState = 'loading';
           this.cdr.markForCheck();
         }),
@@ -129,7 +127,7 @@ export class CreateCollectionDialogComponent implements OnInit {
         }),
       )
       .pipe(takeUntil(this.destroy$))
-      .subscribe(console.log);
+      .subscribe();
   }
 
   createCollection() {
