@@ -1,9 +1,16 @@
 import { NgIf, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+} from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
   TuiButtonModule,
+  TuiDialogContext,
   TuiLinkModule,
   TuiLoaderModule,
   TuiSvgModule,
@@ -17,10 +24,12 @@ import {
   TuiTextareaModule,
 } from '@taiga-ui/kit';
 import { EMPTY, catchError, filter, mergeMap, takeUntil, tap } from 'rxjs';
+import { NotificationService } from '../../../app/utils/notification.service';
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/file';
 import { CollectionService } from '../utils/collection.service';
 import { ImageTooLargeError, ImageWrongFormatError } from '../utils/errors';
-import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/file';
-import { NotificationService } from '../../../app/utils/notification.service';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { CollectionWithInfo } from '../../../shared/types';
 
 type UploadState = 'loading' | 'loaded' | 'notLoaded';
 
@@ -55,6 +64,8 @@ export class CreateCollectionDialogComponent implements OnInit {
     private readonly collectionService: CollectionService,
     private readonly notificationService: NotificationService,
     private readonly cdr: ChangeDetectorRef,
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<CollectionWithInfo, void>,
   ) {}
 
   createCollectionForm = this.fb.group({
@@ -134,5 +145,19 @@ export class CreateCollectionDialogComponent implements OnInit {
     if (this.shouldNotCreateCollection) {
       return;
     }
+
+    const { description, imageUrl, isPrivate, name } = this.createCollectionForm.getRawValue();
+
+    this.collectionService
+      .createCollection({
+        description,
+        imageUrl,
+        isPublic: !isPrivate,
+        name: name!,
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((collectionWithInfo) => {
+        this.context.completeWith(collectionWithInfo);
+      });
   }
 }

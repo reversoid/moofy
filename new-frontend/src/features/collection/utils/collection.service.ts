@@ -9,6 +9,7 @@ import {
 } from '../../../shared/utils/file';
 import { ImageTooLargeError, ImageWrongFormatError } from './errors';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
+import { CollectionWithInfo } from '../../../shared/types';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,14 @@ export class CollectionService {
     );
   }
 
-  createCollection(props: CreateCollectionProps) {}
+  createCollection(props: CreateCollectionProps) {
+    return this.http.post<CollectionWithInfo>('collections', {
+      name: props.name,
+      description: props.description,
+      imageUrl: props.imageUrl,
+      isPrivate: !props.isPublic,
+    });
+  }
 
   updateCollection(props: UpdateCollectionProps) {}
 
