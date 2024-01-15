@@ -45,3 +45,7 @@ app-logo {
     gap: 1.25rem;
   }
 }
+
+app-burger-menu {
+  @include show-mobile(block);
+}
