@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { AuthTokenService } from '../utils/auth-token.service';
+import { AuthService } from '../../features/auth/auth.service';
 import { NotificationService } from '../utils/notification.service';
 
 // interface ApiError {
@@ -14,26 +14,20 @@ const ERROR_TRANSLATION: Record<string, string> = {};
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationService = inject(NotificationService);
-  const httpClient = inject(HttpClient);
-  const authService = inject(AuthTokenService);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error) => {
       if (error instanceof HttpErrorResponse && error.status === 401) {
-        return (
-          httpClient
-            // TODO make some typings
-            .post<{ accessToken: string }>('auth/protected/refresh', {})
-            .pipe(
-              switchMap((response) => {
-                const newToken = response.accessToken;
-                authService.accessToken = newToken;
-                return next(req);
-              }),
-              catchError((refreshError) => {
-                return throwError(() => refreshError);
-              }),
-            )
+        return authService.refresh().pipe(
+          switchMap((response) => {
+            const newToken = response.accessToken;
+            authService.accessToken = newToken;
+            return next(req);
+          }),
+          catchError((refreshError) => {
+            return throwError(() => refreshError);
+          }),
         );
       }
       return throwError(() => error);

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
@@ -11,11 +11,13 @@ import {
   TuiRootModule,
 } from '@taiga-ui/core';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
-import { takeUntil } from 'rxjs';
 import { LayoutComponent } from './ui/layout/layout.component';
 import { NightThemeComponent } from './ui/night-theme/night-theme.component';
 import { NightService } from './utils/night.service';
-import { NotificationService } from './utils/notification.service';
+import { AuthService } from '../features/auth/auth.service';
+import { Store } from '@ngrx/store';
+import { AppState } from './store';
+import { currentUserActions } from '../entities/current-user/actions';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +40,17 @@ import { NotificationService } from './utils/notification.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  constructor(public readonly themeService: NightService) {}
+  constructor(
+    public readonly themeService: NightService,
+    public readonly authService: AuthService,
+    private readonly store: Store<AppState>,
+  ) {
+    afterNextRender(() => {
+      this.authService.refresh().subscribe((authInfo) => {
+        this.store.dispatch(currentUserActions.set({ user: authInfo.user }));
+      });
+    });
+  }
 
   toggleTheme() {
     this.themeService.toggleTheme();
