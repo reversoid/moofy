@@ -2,8 +2,14 @@
   width: 100%;
 }
 
+.cover-block {
+  .cover-title {
+    margin: 0;
+  }
+}
+
 .file-input {
-  height: 12rem;
+  height: 11rem;
 
   &__content {
     display: flex;
@@ -14,8 +20,8 @@
   }
 
   div.content {
-    width: 6rem;
-    height: 6rem;
+    width: 8rem;
+    height: 8rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,8 +34,8 @@
     .image-wrapper {
       border-radius: var(--tui-radius-xs);
       overflow: hidden;
-      width: 6rem;
-      height: 6rem;
+      width: 8rem;
+      height: 8rem;
       position: relative;
 
       img {
