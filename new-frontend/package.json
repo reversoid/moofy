@@ -13,7 +13,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:new-frontend": "node dist/new-frontend/server/server.mjs",
+    "serve:ssr": "node dist/new-frontend/server/server.mjs",
     "lint": "ng lint"
   },
   "private": true,
