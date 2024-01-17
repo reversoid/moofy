@@ -26,5 +26,10 @@ export const appRoutes: Routes = [
     loadComponent: () =>
       import('./collection-page/collection-page.component').then((r) => r.CollectionPageComponent),
   },
-  { path: '**', redirectTo: 'welcome' },
+  {
+    path: 'explore',
+    loadChildren: () => import('./explore-page/routes').then((r) => r.routes),
+  },
+
+  { path: '**', redirectTo: '' },
 ];
