@@ -15,8 +15,4 @@ import { User } from '../../shared/types';
 })
 export class UserCardComponent {
   @Input({ required: true }) user!: User;
-
-  get linkToProfile() {
-    return `/profile/${this.user.id}`;
-  }
 }

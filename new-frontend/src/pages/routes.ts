@@ -10,7 +10,7 @@ export const appRoutes: Routes = [
     loadComponent: () => import('./feed-page/feed-page.component').then((r) => r.FeedPageComponent),
   },
   {
-    path: 'profile',
+    path: 'profile/:id',
     loadComponent: () =>
       import('./profile-page/profile-page.component').then((r) => r.ProfilePageComponent),
   },

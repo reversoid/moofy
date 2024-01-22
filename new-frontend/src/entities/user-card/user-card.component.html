@@ -1,5 +1,5 @@
 <tui-island>
-  <a tuiLink [routerLink]="linkToProfile">
+  <a tuiLink [routerLink]="['/profile', user.id]">
     <div class="image-wrapper">
       <img [ngSrc]="user.imageUrl ?? ''" fill />
     </div>
