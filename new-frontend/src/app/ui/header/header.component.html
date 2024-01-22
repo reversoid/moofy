@@ -9,7 +9,7 @@
       <a routerLink="/welcome" tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
     </div>
 
-    <app-theme-toggler></app-theme-toggler>
+    <app-notification-button></app-notification-button>
 
     <app-profile-button
       *ngIf="user$ | async as user; else authButton"

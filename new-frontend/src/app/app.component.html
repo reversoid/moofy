@@ -1,4 +1,4 @@
-<app-night-theme *ngIf="(themeService.theme | async) === 'onDark'"></app-night-theme>
-<tui-root [tuiMode]="themeService.theme | async">
+<app-night-theme></app-night-theme>
+<tui-root tuiMode="onDark">
   <app-layout></app-layout>
 </tui-root>

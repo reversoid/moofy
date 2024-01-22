@@ -11,7 +11,7 @@ import { AppState } from '../../store';
 import { BurgerMenuComponent } from '../burger-menu/burger-menu.component';
 import { ProfileButtonComponent } from '../profile-button/profile-button.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { ThemeTogglerComponent } from '../theme-toggler/theme-toggler.component';
+import { NotificationButtonComponent } from '../notification-button/notification-button.component';
 
 @Component({
   selector: 'app-header',
@@ -28,7 +28,7 @@ import { ThemeTogglerComponent } from '../theme-toggler/theme-toggler.component'
     BurgerMenuComponent,
     TuiSidebarModule,
     ProfileButtonComponent,
-    ThemeTogglerComponent,
+    NotificationButtonComponent,
     NgIf,
     AsyncPipe,
   ],

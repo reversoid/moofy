@@ -13,7 +13,6 @@ import {
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { LayoutComponent } from './ui/layout/layout.component';
 import { NightThemeComponent } from './ui/night-theme/night-theme.component';
-import { NightService } from './utils/night.service';
 import { AuthService } from '../features/auth/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from './store';
@@ -41,7 +40,6 @@ import { currentUserActions } from '../entities/current-user/actions';
 })
 export class AppComponent {
   constructor(
-    public readonly themeService: NightService,
     public readonly authService: AuthService,
     private readonly store: Store<AppState>,
   ) {
@@ -50,9 +48,5 @@ export class AppComponent {
         this.store.dispatch(currentUserActions.set({ user: authInfo.user }));
       });
     });
-  }
-
-  toggleTheme() {
-    this.themeService.toggleTheme();
   }
 }
