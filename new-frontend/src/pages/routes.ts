@@ -22,6 +22,13 @@ export const appRoutes: Routes = [
       ),
   },
   {
+    path: 'favorites',
+    loadComponent: () =>
+      import('./favorites-collections-page/favorites-collections-page.component').then(
+        (r) => r.FavoritesCollectionsPageComponent,
+      ),
+  },
+  {
     path: 'collections/:id',
     loadComponent: () =>
       import('./collection-page/collection-page.component').then((r) => r.CollectionPageComponent),
