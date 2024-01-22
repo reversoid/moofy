@@ -1,25 +1,7 @@
 @import 'shared';
 
 .collections-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-
-  gap: 1rem;
-
-  @media #{$tui-tablet} {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-
-  @media #{$tui-mobile} {
-    gap: 0.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
-
-  @media screen and (max-width: 420px) {
-    // TODO fix
-    gap: 0.5rem;
-    grid-template-columns: 1fr 1fr;
-  }
+  @include grid;
 }
 
 .loader {

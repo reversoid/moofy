@@ -20,6 +20,10 @@ export const routes: Routes = [
             (c) => c.ExploreCollectionsPageComponent,
           ),
       },
+      {
+        path: '**',
+        redirectTo: 'profiles',
+      },
     ],
   },
 ];

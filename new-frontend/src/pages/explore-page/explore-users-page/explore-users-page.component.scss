@@ -1,0 +1,4 @@
+@import 'shared';
+.user-grid {
+  @include grid;
+}

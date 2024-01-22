@@ -1,0 +1,29 @@
+@import 'shared';
+
+tui-island {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-wrapper {
+  width: 6rem;
+  height: 6rem;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.username {
+  margin: 0;
+  @include tui-space(top, 3);
+}
+
+.description {
+  @include tui-space(top, 3);
+  color: var(--tui-text-02);
+}
+
+button {
+  width: 100%;
+}

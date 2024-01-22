@@ -1,1 +1,15 @@
-<p>user-card works!</p>
+<tui-island>
+  <a tuiLink [routerLink]="linkToProfile">
+    <div class="image-wrapper">
+      <img [ngSrc]="user.imageUrl ?? ''" fill />
+    </div>
+
+    <h6 class="username tui-text_h6">{{ user.username }}</h6>
+  </a>
+
+  <div class="description">
+    {{ user.description }}
+  </div>
+
+  <ng-content class="tui-space_top-4"></ng-content>
+</tui-island>

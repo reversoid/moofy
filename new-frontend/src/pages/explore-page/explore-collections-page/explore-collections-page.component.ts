@@ -6,8 +6,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   imports: [],
   templateUrl: './explore-collections-page.component.html',
   styleUrl: './explore-collections-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExploreCollectionsPageComponent {
-
-}
+export class ExploreCollectionsPageComponent {}
