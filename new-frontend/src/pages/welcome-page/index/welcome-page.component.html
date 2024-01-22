@@ -1,0 +1,14 @@
+<h1 class="tui-text_h1">Добро пожаловать!</h1>
+
+<tui-tabs [(activeItemIndex)]="activeItemIndex" class="tui-space_bottom-5">
+  <a tuiTab routerLink="/welcome/collections" routerLinkActive>
+    <tui-svg src="tuiIconCoffeeLarge" class="tui-space_right-2"></tui-svg>
+    Мои коллекции
+  </a>
+  <a tuiTab routerLink="/welcome/favorites" routerLinkActive>
+    <tui-svg src="tuiIconStarLarge" class="tui-space_right-2"></tui-svg>
+    Избранное
+  </a>
+</tui-tabs>
+
+<router-outlet></router-outlet>

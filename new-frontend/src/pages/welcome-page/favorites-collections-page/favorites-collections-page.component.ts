@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
+import { CollectionGridComponent } from '../../../widgets/collection-grid/collection-grid.component';
 
 @Component({
   selector: 'app-favorites-collections-page',

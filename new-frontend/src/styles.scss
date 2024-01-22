@@ -99,3 +99,10 @@ aside {
     flex-grow: 2;
   }
 }
+
+tui-tabs {
+  a,
+  button {
+    box-shadow: none !important;
+  }
+}

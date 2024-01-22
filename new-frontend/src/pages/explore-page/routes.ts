@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ExplorePageComponent } from './explore-page/explore-page.component';
+import { ExplorePageComponent } from './index/explore-page.component';
 
 export const routes: Routes = [
   {

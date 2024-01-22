@@ -1,11 +1,11 @@
 <header class="header">
-  <div class="logo-with-content">
+  <a routerLink="/" class="logo-with-content">
     <app-logo></app-logo>
-  </div>
+  </a>
 
   <div class="controls">
     <div *ngIf="user$ | async" class="header-links">
-      <a routerLink="/" tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
+      <a routerLink="/feed" tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
       <a routerLink="/welcome" tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
     </div>
 

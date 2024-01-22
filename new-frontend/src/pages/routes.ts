@@ -16,18 +16,9 @@ export const appRoutes: Routes = [
   },
   {
     path: 'welcome',
-    loadComponent: () =>
-      import('./my-collections-page/my-collections-page.component').then(
-        (r) => r.MyCollectionsPageComponent,
-      ),
+    loadChildren: () => import('./welcome-page/routes').then((r) => r.routes),
   },
-  {
-    path: 'favorites',
-    loadComponent: () =>
-      import('./favorites-collections-page/favorites-collections-page.component').then(
-        (r) => r.FavoritesCollectionsPageComponent,
-      ),
-  },
+
   {
     path: 'collections/:id',
     loadComponent: () =>
