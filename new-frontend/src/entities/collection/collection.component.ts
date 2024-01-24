@@ -14,6 +14,9 @@ import { TuiLinkModule } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionComponent {
+  //TODO implement
+  @Input() view?: 'vertical' | 'horizontal';
+
   @Input({ required: true }) collection!: Collection;
 
   get link() {

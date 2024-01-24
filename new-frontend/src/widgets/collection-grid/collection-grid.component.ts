@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CollectionComponent } from '../../entities/collection/collection.component';
 import { TuiLoaderModule } from '@taiga-ui/core';
 import { NgIf } from '@angular/common';
@@ -13,6 +13,9 @@ import { Collection } from '../../shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionGridComponent {
+  // TODO implement
+  @Input() view?: 'grid' | 'list';
+
   loading = true;
 
   collection: Collection = {
