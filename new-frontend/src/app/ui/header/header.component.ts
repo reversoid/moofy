@@ -9,9 +9,9 @@ import { LogoComponent } from '../../../assets/logo/logo.component';
 import { selectCurrentUser } from '../../../entities/current-user/selectors';
 import { AppState } from '../../store';
 import { BurgerMenuComponent } from '../burger-menu/burger-menu.component';
+import { NotificationButtonComponent } from '../notification-button/notification-button.component';
 import { ProfileButtonComponent } from '../profile-button/profile-button.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { NotificationButtonComponent } from '../notification-button/notification-button.component';
 
 @Component({
   selector: 'app-header',

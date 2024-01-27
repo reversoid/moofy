@@ -27,11 +27,18 @@ type ReplyNotificationPayload = {
   collection: Collection;
 };
 
+export type DirectNotificationType =
+  | 'COLLECTION_LIKE'
+  | 'COMMENT_LIKE'
+  | 'NEW_COMMENT'
+  | 'NEW_REPLY'
+  | 'NEW_FOLLOWER';
+
 export interface ProfileDirectNotification {
   id: string;
   seen_at: string;
   created_at: string;
-  type: 'COLLECTION_LIKE' | 'COMMENT_LIKE' | 'NEW_COMMENT' | 'NEW_REPLY' | 'NEW_FOLLOWER';
+  type: DirectNotificationType;
   payload: {
     collection_like?: CollectionLikeNotificationPayload;
     comment_like?: CommentLikeNotificationPayload;
