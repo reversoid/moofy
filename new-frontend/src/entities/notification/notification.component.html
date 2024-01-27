@@ -14,21 +14,23 @@
 
       @switch (notification.type) {
         @case ('COLLECTION_LIKE') {
-          нравится ваша <a routerLink="/collections/1" tuiLink>коллекция</a>
+          нравится ваша коллекция
         }
         @case ('COMMENT_LIKE') {
-          нравится ваш <a routerLink="/collections/1" tuiLink>комментарий</a>
+          нравится ваш комментарий
         }
         @case ('NEW_COMMENT') {
-          добавил <a routerLink="/collections/1" tuiLink>комментарий</a>
+          добавил комментарий
         }
         @case ('NEW_FOLLOWER') {
           подписался на вас
         }
         @case ('NEW_REPLY') {
-          ответил на <a routerLink="/collections/1" tuiLink>комментарий</a>
+          ответил на комментарий
         }
       }
     </p>
   </div>
+
+  <button appearance="flat" class="go-button" tuiIconButton icon="tuiIconArrowRightLarge"></button>
 </tui-island>

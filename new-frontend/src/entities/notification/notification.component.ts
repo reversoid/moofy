@@ -1,14 +1,14 @@
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TuiLinkModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLinkModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { ProfileDirectNotification } from '../../shared/types';
 
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [TuiIslandModule, NgOptimizedImage, RouterModule, TuiLinkModule],
+  imports: [TuiIslandModule, NgOptimizedImage, RouterModule, TuiLinkModule, TuiButtonModule],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
