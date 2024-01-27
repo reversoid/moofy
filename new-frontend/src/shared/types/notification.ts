@@ -36,7 +36,7 @@ export type DirectNotificationType =
 
 export interface ProfileDirectNotification {
   id: string;
-  seen_at: string;
+  seen_at: string | null;
   created_at: string;
   type: DirectNotificationType;
   payload: {

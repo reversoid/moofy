@@ -1,18 +1,3 @@
 <div class="notifications tui-space_top-5">
-  <div *ngFor="let t of mock" class="row">
-    <tui-island class="notification">
-      <a routerLink="/profile/1">
-        <div class="img-wrapper">
-          <img
-            ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-            fill
-          />
-        </div>
-      </a>
-
-      <div class="notification__content">
-        <p class=""><a routerLink="/profile/1" tuiLink>reversoid</a> {{ t }}</p>
-      </div>
-    </tui-island>
-  </div>
+  <app-notification *ngFor="let t of mock"></app-notification>
 </div>

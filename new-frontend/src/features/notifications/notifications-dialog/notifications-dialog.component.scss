@@ -1,51 +1,5 @@
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.img-wrapper {
-  width: 3rem;
-  height: 3rem;
-  position: relative;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
 .notifications {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.row {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-
-  .notification {
-    flex-grow: 2;
-
-    display: flex;
-    gap: 1rem;
-  }
-}
-
-.notification {
-  display: flex;
-  gap: 1rem;
-
-  p {
-    margin: 0;
-  }
-
-  &__content {
-    display: flex;
-    align-items: center;
-  }
-
-  .checkbox {
-    margin-left: auto;
-    align-self: center;
-  }
 }
