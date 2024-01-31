@@ -3,8 +3,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
-import { TuiButtonModule, TuiGroupModule, TuiLinkModule, TuiSvgModule } from '@taiga-ui/core';
-import { TuiActionModule } from '@taiga-ui/kit';
+import {
+  TuiButtonModule,
+  TuiGroupModule,
+  TuiLinkModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule,
+} from '@taiga-ui/core';
+import { TuiActionModule, TuiInputModule, TuiIslandModule } from '@taiga-ui/kit';
 import { LogoComponent } from '../../../assets/logo/logo.component';
 import { selectCurrentUser } from '../../../entities/current-user/selectors';
 import { AppState } from '../../store';
@@ -31,6 +37,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     NotificationButtonComponent,
     NgIf,
     AsyncPipe,
+    TuiIslandModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',

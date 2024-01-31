@@ -14,6 +14,7 @@ app-logo {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: 1.25rem;
   height: var(--header-height);
   align-items: center;
 
@@ -23,26 +24,36 @@ app-logo {
     gap: 2rem;
   }
 
-  .header-links {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-
-    @include hide-mobile;
-
-    a {
-      display: flex;
-      gap: 0.25rem;
-      align-items: center;
-      font: var(--tui-font-text-l);
-      font-weight: 500;
-    }
-  }
-
   .controls {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      flex-grow: 2;
+      gap: 0.5rem;
+      background: var(--tui-elevation-02) !important;
+      justify-content: flex-end;
+
+      padding: 0.375rem;
+      box-sizing: border-box;
+      height: 3.5rem;
+      @include hide-mobile;
+
+      a {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+        font: var(--tui-font-text-l);
+        font-weight: 500;
+      }
+
+      .search-input {
+        flex-grow: 2;
+      }
+    }
   }
 }
 

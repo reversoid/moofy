@@ -4,10 +4,13 @@
   </a>
 
   <div class="controls">
-    <div *ngIf="user$ | async" class="header-links">
-      <a routerLink="/feed" tuiLink icon="tuiIconFilmLarge" iconAlign="left">Лента</a>
-      <a routerLink="/welcome" tuiLink icon="tuiIconCoffeeLarge" iconAlign="left">Мои коллекции</a>
-    </div>
+    <tui-island *ngIf="user$ | async" class="header-links">
+      <a routerLink="/explore" tuiButton appearance="secondary" size="m" iconAlign="left">Поиск</a>
+      <a routerLink="/feed" tuiButton appearance="secondary" size="m" iconAlign="left">Лента</a>
+      <a routerLink="/welcome" tuiButton appearance="secondary" size="m" iconAlign="left"
+        >Мои коллекции</a
+      >
+    </tui-island>
 
     <app-notification-button></app-notification-button>
 
