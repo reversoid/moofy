@@ -1,16 +1,24 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TuiLinkModule, TuiSvgModule } from '@taiga-ui/core';
-import { TuiTabsModule } from '@taiga-ui/kit';
+import { TuiLinkModule } from '@taiga-ui/core';
+import {
+  LinkItem,
+  LinksGroupComponent,
+} from '../../../shared/ui/links-group/links-group.component';
 
 @Component({
   selector: 'app-welcome-page',
   standalone: true,
-  imports: [TuiTabsModule, TuiSvgModule, RouterModule, TuiLinkModule],
+  imports: [RouterModule, TuiLinkModule, LinksGroupComponent],
   templateUrl: './welcome-page.component.html',
   styleUrl: './welcome-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WelcomePageComponent {
   activeItemIndex = 0;
+
+  linkItems: LinkItem[] = [
+    { label: 'Мои коллекции', link: '' },
+    { label: 'Избранное', link: '' },
+  ];
 }

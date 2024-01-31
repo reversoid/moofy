@@ -1,8 +1,8 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { TuiInputModule, TuiTabsModule } from '@taiga-ui/kit';
+import { TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiInputModule } from '@taiga-ui/kit';
 import { filter, map } from 'rxjs';
 import {
   LinkItem,
@@ -14,8 +14,6 @@ import {
   standalone: true,
   imports: [
     RouterModule,
-    TuiTabsModule,
-    TuiSvgModule,
     TuiInputModule,
     TuiTextfieldControllerModule,
     LinksGroupComponent,
@@ -30,7 +28,7 @@ export class ExplorePageComponent {
 
   activeItemIndex = 0;
 
-  links: LinkItem[] = [
+  linkItems: LinkItem[] = [
     { label: 'Пользователи', link: 'profiles' },
     { label: 'Коллекции', link: 'collections' },
   ];
