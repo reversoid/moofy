@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { TuiInputModule, TuiTabsModule } from '@taiga-ui/kit';
+import { TuiButtonModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import { TuiInputModule, TuiIslandModule, TuiTabsModule } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-explore-page',
@@ -12,6 +12,8 @@ import { TuiInputModule, TuiTabsModule } from '@taiga-ui/kit';
     TuiSvgModule,
     TuiInputModule,
     TuiTextfieldControllerModule,
+    TuiIslandModule,
+    TuiButtonModule,
   ],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.scss',

@@ -1,11 +1,18 @@
 @import 'shared';
 
 .search {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-
   @media #{$tui-mobile} {
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
   }
+}
+
+.group {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 20rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.375rem;
+  background-color: var(--tui-elevation-02);
 }

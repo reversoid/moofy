@@ -1,12 +1,4 @@
 <h1 class="tui-text_h1">Поиск</h1>
-<tui-tabs [(activeItemIndex)]="activeItemIndex">
-  <a tuiTab routerLink="/explore/profiles" routerLinkActive
-    ><tui-svg src="tuiIconUserLarge" class="tui-space_right-2"></tui-svg> Пользователи
-  </a>
-  <a tuiTab routerLink="/explore/collections" routerLinkActive
-    ><tui-svg src="tuiIconGridLarge" class="tui-space_right-2"></tui-svg> Коллекции
-  </a>
-</tui-tabs>
 
 <tui-input
   [tuiTextfieldLabelOutside]="true"
@@ -17,5 +9,10 @@
   Поиск
   <input tuiTextfield role="search" />
 </tui-input>
+
+<tui-island class="group">
+  <button appearance="primary" size="m" tuiButton type="button">Пользователи</button>
+  <button appearance="secondary" size="m" tuiButton type="button">Коллекции</button>
+</tui-island>
 
 <router-outlet></router-outlet>
