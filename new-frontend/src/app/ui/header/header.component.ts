@@ -3,14 +3,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
-import {
-  TuiButtonModule,
-  TuiGroupModule,
-  TuiLinkModule,
-  TuiSvgModule,
-  TuiTextfieldControllerModule,
-} from '@taiga-ui/core';
-import { TuiActionModule, TuiInputModule, TuiIslandModule } from '@taiga-ui/kit';
+import { TuiButtonModule, TuiGroupModule, TuiLinkModule, TuiSvgModule } from '@taiga-ui/core';
+import { TuiActionModule, TuiIslandModule } from '@taiga-ui/kit';
 import { LogoComponent } from '../../../assets/logo/logo.component';
 import { selectCurrentUser } from '../../../entities/current-user/selectors';
 import { AppState } from '../../store';
@@ -18,6 +12,7 @@ import { BurgerMenuComponent } from '../burger-menu/burger-menu.component';
 import { NotificationButtonComponent } from '../notification-button/notification-button.component';
 import { ProfileButtonComponent } from '../profile-button/profile-button.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { WrapperComponent } from '../wrapper/wrapper.component';
 
 @Component({
   selector: 'app-header',
@@ -38,8 +33,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     NgIf,
     AsyncPipe,
     TuiIslandModule,
-    TuiInputModule,
-    TuiTextfieldControllerModule,
+    WrapperComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',

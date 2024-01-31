@@ -1,5 +1,14 @@
 @import 'shared';
 
+app-wrapper.header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  backdrop-filter: saturate(180%) blur(10px);
+}
+
 app-logo {
   display: block;
   width: 128px;
@@ -8,6 +17,7 @@ app-logo {
 
 :host {
   display: flex;
+  position: relative;
 }
 
 .header {
