@@ -19,4 +19,13 @@ export class ExploreUsersPageComponent {
     id: 1,
     username: 'reversoid',
   };
+
+  user2: User = {
+    imageUrl:
+      'https://moofy.storage.yandexcloud.net/list-images/75f8e535-2e34-4f8b-8148-fccba89471d1.webp',
+    createdAt: new Date().toISOString(),
+    description: 'Hello there!! sjajsd sjssj sdjs djsd sjds djs dsjds djsdjs d djsjdsj',
+    id: 1,
+    username: 'reversoid',
+  };
 }

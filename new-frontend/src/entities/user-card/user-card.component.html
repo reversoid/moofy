@@ -1,4 +1,4 @@
-<tui-island>
+<tui-island class="user-card">
   <a tuiLink [routerLink]="['/profile', user.id]">
     <div class="image-wrapper">
       <img [ngSrc]="user.imageUrl ?? ''" fill />
@@ -7,9 +7,11 @@
     <h6 class="username tui-text_h6">{{ user.username }}</h6>
   </a>
 
-  <div class="description">
-    {{ user.description }}
-  </div>
+  <tui-island class="description-wrapper">
+    <div class="description">
+      {{ user.description }}
+    </div>
+  </tui-island>
 
   <ng-content class="tui-space_top-4"></ng-content>
 </tui-island>

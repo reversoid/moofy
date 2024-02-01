@@ -1,9 +1,10 @@
 @import 'shared';
 
-tui-island {
+tui-island.user-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
 }
 
 .image-wrapper {
@@ -19,9 +20,16 @@ tui-island {
   @include tui-space(top, 3);
 }
 
-.description {
+.description-wrapper {
   @include tui-space(top, 3);
-  color: var(--tui-text-02);
+  flex-grow: 2;
+
+  width: 100%;
+  background-color: var(--tui-elevation-01) !important;
+
+  .description {
+    color: var(--tui-text-02);
+  }
 }
 
 button {
