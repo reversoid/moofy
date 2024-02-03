@@ -2,6 +2,7 @@
 
 .collections-grid {
   @include grid;
+  grid-template-columns: 1fr !important;
 }
 
 .loader {

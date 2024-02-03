@@ -1,9 +1,9 @@
 <div class="collections-grid">
   <ng-content></ng-content>
-  <app-collection [collection]="collection"></app-collection>
-  <app-collection [collection]="collection"></app-collection>
-  <app-collection [collection]="collection"></app-collection>
-  <app-collection [collection]="collection"></app-collection>
+  <app-collection view="horizontal" [collection]="collection"></app-collection>
+  <app-collection view="horizontal" [collection]="collection"></app-collection>
+  <app-collection view="horizontal" [collection]="collection"></app-collection>
+  <app-collection view="horizontal" [collection]="collection"></app-collection>
 </div>
 
 <tui-loader *ngIf="loading" class="loader"></tui-loader>

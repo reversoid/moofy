@@ -1,7 +1,18 @@
-<tui-island class="island" tuiIsland [hoverable]="hoverable">
-  <div class="image-wrapper">
-    <ng-content></ng-content>
+<tui-island
+  class="island"
+  tuiIsland
+  [hoverable]="hoverable"
+  [ngClass]="{ horizontal: view === 'horizontal', vertical: view === 'vertical', fixedImageSize }"
+>
+  <div class="image-container">
+    <div class="image-wrapper">
+      <ng-content select="[image]"></ng-content>
+    </div>
   </div>
 
-  <h4 class="title">{{ title }}</h4>
+  <div class="content">
+    <h4 class="title">{{ title }}</h4>
+    <ng-content select="[image]"></ng-content>
+    <ng-content select="[text-content]"></ng-content>
+  </div>
 </tui-island>

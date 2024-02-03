@@ -22,7 +22,7 @@ export class CollectionGridComponent {
     id: 1,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    description: 'desc',
+    description: 'description',
     isPublic: true,
     name: 'Some collection and yeah it is very long word',
     user: {
