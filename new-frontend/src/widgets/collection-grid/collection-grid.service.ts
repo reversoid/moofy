@@ -4,7 +4,7 @@ export type CollectionsView = 'list' | 'grid';
 
 @Injectable()
 export class CollectionGridService {
-  collectionsView: CollectionsView = 'list';
+  collectionsView: CollectionsView = 'grid';
 
   toggleCollectionsView() {
     this.collectionsView = this.toggleViewMap[this.collectionsView];
