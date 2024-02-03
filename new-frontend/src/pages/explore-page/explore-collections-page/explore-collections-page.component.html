@@ -4,9 +4,9 @@
     class="toggle-view-button"
     tuiIconButton
     appearance="secondary"
-    [icon]="collectionsViewIcon"
-    (click)="toggleCollectionsView()"
+    [icon]="collectionGridService.collectionsViewIcon"
+    (click)="collectionGridService.toggleCollectionsView()"
   ></button>
 </div>
 
-<app-collection-grid [view]="collectionsView"></app-collection-grid>
+<app-collection-grid [view]="collectionGridService.collectionsView"></app-collection-grid>

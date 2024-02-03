@@ -1,11 +1,15 @@
 @import 'shared';
 
-.collections-grid {
+:host {
+  display: block;
+}
+
+.user-grid {
   display: grid;
   @include grid-gap;
 
   &.list {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr;
   }
 
   &.grid {
@@ -15,8 +19,4 @@
 
 .loader {
   margin-top: 2rem;
-}
-
-:host {
-  display: block;
 }

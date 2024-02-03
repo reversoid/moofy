@@ -1,4 +1,14 @@
 @import 'shared';
-.user-grid {
-  @include grid;
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  h2 {
+    margin: 0;
+  }
+}
+
+app-user-grid {
+  margin-top: 1rem;
 }

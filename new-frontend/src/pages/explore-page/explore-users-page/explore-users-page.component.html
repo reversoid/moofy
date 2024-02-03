@@ -1,6 +1,12 @@
-<div class="user-grid">
-  <app-user-card [user]="user"></app-user-card>
-  <app-user-card [user]="user"></app-user-card>
-  <app-user-card [user]="user"></app-user-card>
-  <app-user-card [user]="user2"></app-user-card>
+<div class="heading">
+  <h2 class="tui-text_h3">Пользователи</h2>
+  <button
+    class="toggle-view-button"
+    tuiIconButton
+    appearance="secondary"
+    [icon]="collectionGridService.collectionsViewIcon"
+    (click)="collectionGridService.toggleCollectionsView()"
+  ></button>
 </div>
+
+<app-user-grid [view]="collectionGridService.collectionsView"></app-user-grid>
