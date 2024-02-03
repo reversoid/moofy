@@ -1,9 +1,30 @@
-<div class="collections-grid">
-  <ng-content></ng-content>
-  <app-collection view="horizontal" [collection]="collection"></app-collection>
-  <app-collection view="horizontal" [collection]="collection"></app-collection>
-  <app-collection view="horizontal" [collection]="collection"></app-collection>
-  <app-collection view="horizontal" [collection]="collection"></app-collection>
+<div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
+  <app-collection
+    [view]="view === 'list' ? 'horizontal' : 'vertical'"
+    [collection]="collection"
+    [hideDescription]="hideDescription"
+  ></app-collection>
+
+  <app-collection
+    [view]="view === 'list' ? 'horizontal' : 'vertical'"
+    [collection]="collection"
+    [hideDescription]="hideDescription"
+  ></app-collection>
+  <app-collection
+    [view]="view === 'list' ? 'horizontal' : 'vertical'"
+    [collection]="collection"
+    [hideDescription]="hideDescription"
+  ></app-collection>
+  <app-collection
+    [view]="view === 'list' ? 'horizontal' : 'vertical'"
+    [collection]="collection"
+    [hideDescription]="hideDescription"
+  ></app-collection>
+  <app-collection
+    [view]="view === 'list' ? 'horizontal' : 'vertical'"
+    [collection]="collection"
+    [hideDescription]="hideDescription"
+  ></app-collection>
 </div>
 
 <tui-loader *ngIf="loading" class="loader"></tui-loader>

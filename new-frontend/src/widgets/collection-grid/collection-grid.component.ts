@@ -1,20 +1,21 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CollectionComponent } from '../../entities/collection/collection.component';
 import { TuiLoaderModule } from '@taiga-ui/core';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { Collection } from '../../shared/types';
 
 @Component({
   selector: 'app-collection-grid',
   standalone: true,
-  imports: [NgIf, CollectionComponent, TuiLoaderModule],
+  imports: [NgIf, CollectionComponent, TuiLoaderModule, NgClass],
   templateUrl: './collection-grid.component.html',
   styleUrl: './collection-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionGridComponent {
-  // TODO implement
-  @Input() view?: 'grid' | 'list';
+  @Input() view?: 'grid' | 'list' = 'grid';
+
+  @Input() hideDescription?: boolean = false;
 
   loading = true;
 

@@ -11,3 +11,13 @@
   display: block;
   overflow: hidden;
 }
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  .search-input {
+    flex-grow: 2;
+  }
+}

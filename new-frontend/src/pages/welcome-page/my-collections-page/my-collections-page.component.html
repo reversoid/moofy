@@ -1,7 +1,15 @@
-<app-collection-grid>
-  <div (click)="openCreateCollectionModal()" class="create-collection-button">
-    <app-card title="Новая коллекция" [hoverable]="true">
-      <div class="gradient"></div>
-    </app-card>
-  </div>
-</app-collection-grid>
+<div class="controls tui-space_bottom-5">
+  <button tuiButton>Создать</button>
+  <tui-input
+    [tuiTextfieldLabelOutside]="true"
+    class="search-input"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    [tuiTextfieldCleaner]="true"
+    [formControl]="search"
+  >
+    Поиск
+    <input tuiTextfield role="search" />
+  </tui-input>
+</div>
+
+<app-collection-grid [hideDescription]="true"></app-collection-grid>

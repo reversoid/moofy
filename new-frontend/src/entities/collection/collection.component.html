@@ -1,6 +1,6 @@
 <a [routerLink]="link">
   <app-card [view]="view" [title]="collection.name" [hoverable]="true">
     <img image fill [ngSrc]="collection.imageUrl ?? ''" />
-    <p text-content>{{ collection.description }}</p>
+    <p *ngIf="!hideDescription" text-content>{{ collection.description }}</p>
   </app-card>
 </a>
