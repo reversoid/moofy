@@ -1,5 +1,11 @@
 <h1 class="tui-text_h1">Поиск</h1>
 
+<!-- <app-links-group
+  [selectedLinkItem]="selectedLinkIndex$ | async"
+  [linkItems]="linkItems"
+  class="group"
+></app-links-group> -->
+
 <tui-input
   [tuiTextfieldLabelOutside]="true"
   class="search"
@@ -9,11 +15,5 @@
   Поиск
   <input tuiTextfield role="search" />
 </tui-input>
-
-<app-links-group
-  [selectedLinkItem]="selectedLinkIndex$ | async"
-  [linkItems]="linkItems"
-  class="group"
-></app-links-group>
 
 <router-outlet></router-outlet>

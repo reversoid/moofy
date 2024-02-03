@@ -61,12 +61,6 @@
     overflow: hidden;
   }
 
-  .content {
-    .text-content {
-      margin-top: 0.5rem;
-    }
-  }
-
   &.vertical {
     @include vertical-view();
   }

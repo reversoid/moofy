@@ -1,6 +1,9 @@
 @import 'shared';
 
 .collections-grid {
+  display: grid;
+  @include grid-gap;
+
   &.list {
     grid-template-columns: 1fr !important;
   }

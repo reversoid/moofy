@@ -1,19 +1,26 @@
+@mixin grid-gap {
+  gap: 1rem;
+
+  @media #{$tui-mobile} {
+    gap: 0.75rem;
+  }
+}
+
 @mixin grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-
-  gap: 1rem;
 
   @media #{$tui-tablet} {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
   @media #{$tui-mobile} {
-    gap: 0.75rem;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 
   @media screen and (max-width: 420px) {
     grid-template-columns: 1fr 1fr;
   }
+
+  @include grid-gap();
 }
