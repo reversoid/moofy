@@ -18,7 +18,7 @@ export class WelcomePageComponent {
   activeItemIndex = 0;
 
   linkItems: LinkItem[] = [
-    { label: 'Мои коллекции', link: '' },
-    { label: 'Избранное', link: '' },
+    { label: 'Мои коллекции', link: '/welcome/collections' },
+    { label: 'Избранное', link: '/welcome/favorites' },
   ];
 }
