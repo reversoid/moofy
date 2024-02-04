@@ -123,6 +123,8 @@ export class CollectionFormComponent implements OnInit {
   }
 
   private setupInitialForm() {
+    console.log(this.collectionDto?.isPrivate);
+
     if (this.collectionDto) {
       this.collectionForm.setValue({
         name: this.collectionDto.name,
