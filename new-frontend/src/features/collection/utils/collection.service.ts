@@ -52,7 +52,14 @@ export class CollectionService {
     });
   }
 
-  updateCollection(props: UpdateCollectionProps) {}
+  updateCollection(props: UpdateCollectionProps) {
+    return this.http.put<CollectionWithInfo>('collections', {
+      name: props.name,
+      description: props.description,
+      imageUrl: props.imageUrl,
+      isPrivate: !props.isPublic,
+    });
+  }
 
   private validateImage(file: File): File {
     if (!SUPPORTED_IMAGE_EXTENSIONS.includes(getFileExtension(file))) {

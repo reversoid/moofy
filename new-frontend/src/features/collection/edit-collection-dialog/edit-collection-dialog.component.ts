@@ -3,7 +3,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { takeUntil } from 'rxjs';
-import { CollectionWithInfo } from '../../../shared/types';
+import { Collection, CollectionWithInfo } from '../../../shared/types';
 import {
   CollectionDto,
   CollectionFormComponent,
@@ -11,24 +11,35 @@ import {
 import { CollectionService } from '../utils/collection.service';
 
 @Component({
-  selector: 'app-create-collection-dialog',
+  selector: 'app-edit-collection-dialog',
   standalone: true,
   imports: [CollectionFormComponent],
-  templateUrl: './create-collection-dialog.component.html',
-  styleUrl: './create-collection-dialog.component.scss',
+  templateUrl: './edit-collection-dialog.component.html',
+  styleUrl: './edit-collection-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateCollectionDialogComponent {
+export class EditCollectionDialogComponent {
   constructor(
     private readonly collectionService: CollectionService,
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<CollectionWithInfo>,
+    private readonly context: TuiDialogContext<CollectionWithInfo, Collection>,
   ) {}
 
-  createCollection({ description, imageUrl, isPrivate, name }: CollectionDto) {
+  get existingCollectionDto(): CollectionDto {
+    const existingCollection = this.context.data;
+
+    return {
+      description: existingCollection.description,
+      imageUrl: existingCollection.imageUrl,
+      isPrivate: !existingCollection.isPublic,
+      name: existingCollection.name,
+    };
+  }
+
+  editCollection({ description, imageUrl, isPrivate, name }: CollectionDto) {
     this.collectionService
-      .createCollection({
+      .updateCollection({
         description,
         imageUrl,
         isPublic: !isPrivate,

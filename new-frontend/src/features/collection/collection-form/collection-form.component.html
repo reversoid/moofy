@@ -1,0 +1,70 @@
+<form (ngSubmit)="submitCollection()" [formGroup]="collectionForm">
+  <tui-input formControlName="name" [tuiTextfieldLabelOutside]="true">
+    Название <input tuiTextfield />
+  </tui-input>
+  <tui-textarea
+    formControlName="description"
+    [tuiTextfieldLabelOutside]="true"
+    class="tui-space_top-4"
+    [expandable]="true"
+  >
+    Описание
+  </tui-textarea>
+
+  <tui-checkbox-labeled formControlName="isPrivate" class="tui-space_top-4" size="l"
+    >Сделать приватной</tui-checkbox-labeled
+  >
+
+  <div class="cover-block tui-space_top-5">
+    <h3 class="tui-text_h6 cover-title">Обложка</h3>
+
+    <tui-input-files
+      [accept]="imageAccept"
+      class="tui-space_top-5 file-input"
+      [formControl]="fileControl"
+      [multiple]="false"
+      [maxFileSize]="maxFileSize"
+    >
+      <ng-template let-dragged>
+        <div *ngIf="dragged; else base" class="file-input__content">
+          <tui-marker-icon mode="link" src="tuiIconDropletLarge"></tui-marker-icon>
+          <div>Drop it like it's hot!</div>
+        </div>
+        <ng-template #base>
+          <div class="file-input__content">
+            <div class="content">
+              @switch (uploadState) {
+                @case ('notLoaded') {
+                  <tui-marker-icon
+                    class="file-icon"
+                    size="xl"
+                    mode="link"
+                    src="tuiIconUploadCloudLarge"
+                  ></tui-marker-icon>
+                }
+                @case ('loading') {
+                  <tui-loader size="l"></tui-loader>
+                }
+                @case ('loaded') {
+                  <div *ngIf="uploadedImageUrl as imageUrl" class="image-wrapper">
+                    <img [ngSrc]="imageUrl" fill />
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </ng-template>
+      </ng-template>
+    </tui-input-files>
+  </div>
+
+  <button
+    [disabled]="shouldNotSubmitCollection"
+    [showLoader]="uploadState === 'loading'"
+    type="submit"
+    class="tui-space_top-5 submit-button"
+    tuiButton
+  >
+    {{ submutButtonText }}
+  </button>
+</form>
