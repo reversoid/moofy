@@ -5,6 +5,8 @@ import { NgClass } from '@angular/common';
 
 export type UsersView = 'list' | 'grid';
 
+// TODO create shared component for grid. MOVE CollectionGridService to that shared one. Because it duplicates.
+
 @Component({
   selector: 'app-user-grid',
   standalone: true,
