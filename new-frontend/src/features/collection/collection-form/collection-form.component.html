@@ -60,7 +60,7 @@
 
   <button
     [disabled]="shouldNotSubmitCollection"
-    [showLoader]="uploadState === 'loading'"
+    [showLoader]="formSubmitting"
     type="submit"
     class="tui-space_top-5 submit-button"
     tuiButton

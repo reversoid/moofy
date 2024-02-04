@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { takeUntil } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs';
 import { CollectionWithInfo } from '../../../shared/types';
 import {
   CollectionDto,
@@ -24,7 +24,10 @@ export class EditCollectionDialogComponent {
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<CollectionWithInfo, CollectionDto>,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
+
+  loading = false;
 
   get existingCollectionDto(): CollectionDto {
     const existingCollection = this.context.data;
@@ -38,14 +41,23 @@ export class EditCollectionDialogComponent {
   }
 
   editCollection({ description, imageUrl, isPrivate, name }: CollectionDto) {
+    this.loading = true;
+
     this.collectionService
       .updateCollection({
         description,
         imageUrl,
         isPublic: !isPrivate,
         name: name!,
+        id: 1,
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        }),
+        takeUntil(this.destroy$),
+      )
       .subscribe((e) => {
         this.context.completeWith(e);
       });

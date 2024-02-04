@@ -7,5 +7,5 @@ export type CreateCollectionProps = Pick<
 
 export type UpdateCollectionProps = Pick<
   Collection,
-  'name' | 'description' | 'imageUrl' | 'isPublic'
+  'name' | 'description' | 'imageUrl' | 'isPublic' | 'id'
 >;

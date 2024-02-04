@@ -72,6 +72,8 @@ export class CollectionFormComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
+  @Input() formSubmitting = false;
+
   @Input() collectionDto?: CollectionDto;
 
   @Input({ required: true }) submutButtonText!: string;
@@ -94,7 +96,7 @@ export class CollectionFormComponent implements OnInit {
   readonly maxFileSize = Number.POSITIVE_INFINITY;
 
   get shouldNotSubmitCollection() {
-    return this.uploadState === 'loading' || this.collectionForm.invalid;
+    return this.uploadState === 'loading' || this.collectionForm.invalid || this.formSubmitting;
   }
 
   get uploadedImageUrl(): string | null {

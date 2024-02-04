@@ -53,7 +53,7 @@ export class CollectionService {
   }
 
   updateCollection(props: UpdateCollectionProps) {
-    return this.http.put<CollectionWithInfo>('collections', {
+    return this.http.patch<CollectionWithInfo>(`collections/${props.id}`, {
       name: props.name,
       description: props.description,
       imageUrl: props.imageUrl,
