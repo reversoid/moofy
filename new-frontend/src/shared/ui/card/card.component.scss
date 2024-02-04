@@ -35,10 +35,6 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-
-  ::ng-deep [title] {
-    text-align: center;
-  }
 }
 
 :host {

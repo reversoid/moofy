@@ -31,7 +31,15 @@
   gap: 0.5rem;
 }
 
+@mixin centered-username {
+  text-align: center;
+}
+
 .vertical {
+  .username {
+    @include centered-username();
+  }
+
   .description-wrapper {
     margin-top: 0.25rem;
   }
@@ -44,7 +52,14 @@
 
     @media #{$tui-mobile} {
       padding: 1rem;
+      margin-top: 0.25rem;
       @include description-wrapper-default();
+    }
+  }
+
+  @media #{$tui-mobile} {
+    .username {
+      @include centered-username();
     }
   }
 }
