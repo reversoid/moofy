@@ -1,0 +1,28 @@
+@import 'shared';
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.image {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 100%;
+  background-color: rgb(57, 57, 57);
+  align-self: center;
+  margin-bottom: 0.5rem;
+}
+
+.submit-button {
+  align-self: start;
+  margin-top: 0.5rem;
+
+  @media #{$tui-mobile} {
+    align-self: stretch;
+  }
+}

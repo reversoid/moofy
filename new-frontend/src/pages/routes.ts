@@ -15,6 +15,11 @@ export const appRoutes: Routes = [
       import('./profile-page/profile-page.component').then((r) => r.ProfilePageComponent),
   },
   {
+    path: 'settings',
+    loadComponent: () =>
+      import('./settings-page/settings-page.component').then((r) => r.SettingsPageComponent),
+  },
+  {
     path: 'welcome',
     loadChildren: () => import('./welcome-page/routes').then((r) => r.routes),
   },
