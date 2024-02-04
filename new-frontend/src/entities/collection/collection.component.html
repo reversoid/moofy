@@ -3,6 +3,9 @@
     <div image class="image-wrapper">
       <img fill [ngSrc]="collection.imageUrl ?? ''" />
     </div>
+
+    <h4 title class="title">{{ collection.name }}</h4>
+
     <p *ngIf="!hideDescription" class="description" content>{{ collection.description }}</p>
   </app-card>
 </a>

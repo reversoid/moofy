@@ -1,12 +1,5 @@
 @import 'shared';
 
-tui-island.user-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-}
-
 .image-wrapper {
   width: 6rem;
   height: 6rem;
@@ -15,23 +8,43 @@ tui-island.user-card {
   overflow: hidden;
 }
 
-.username {
-  margin: 0;
-  @include tui-space(top, 3);
-}
-
-.description-wrapper {
-  @include tui-space(top, 3);
+@mixin description-wrapper-default {
   flex-grow: 2;
 
   width: 100%;
   background-color: var(--tui-elevation-01) !important;
 
   .description {
+    margin: 0;
     color: var(--tui-text-02);
   }
 }
 
-button {
-  width: 100%;
+.description-wrapper {
+  @include description-wrapper-default();
+}
+
+.user-content {
+  display: flex;
+  flex-grow: 2;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vertical {
+  .description-wrapper {
+    margin-top: 0.25rem;
+  }
+}
+
+.horizontal {
+  .description-wrapper {
+    padding: 0;
+    background: none !important;
+
+    @media #{$tui-mobile} {
+      padding: 1rem;
+      @include description-wrapper-default();
+    }
+  }
 }
