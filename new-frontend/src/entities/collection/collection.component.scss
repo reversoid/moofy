@@ -1,9 +1,46 @@
-a {
-  text-decoration: none;
-}
+@import 'shared';
+
 :host {
   display: block;
   overflow: hidden;
+}
+
+.image-wrapper {
+  position: relative;
+  position: relative;
+  border-radius: calc(var(--tui-radius-xl) - 1rem);
+  overflow: hidden;
+}
+
+.horizontal {
+  .image-wrapper {
+    width: 10rem;
+    height: 10rem;
+    flex-shrink: 0;
+  }
+
+  @media #{$tui-mobile} {
+    .image-wrapper {
+      width: 10rem;
+      height: 10rem;
+
+      &::before {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.vertical {
+  .image-wrapper {
+    width: 100%;
+
+    &::before {
+      content: '';
+      padding-top: 100%;
+      display: block;
+    }
+  }
 }
 
 p.description {

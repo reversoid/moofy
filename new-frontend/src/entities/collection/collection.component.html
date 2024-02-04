@@ -1,6 +1,8 @@
-<a [routerLink]="link">
-  <app-card [view]="view" [title]="collection.name" [hoverable]="true">
-    <img image fill [ngSrc]="collection.imageUrl ?? ''" />
-    <p class="description" *ngIf="!hideDescription" text-content>{{ collection.description }}</p>
+<a tuiLink [routerLink]="link">
+  <app-card [ngClass]="view" [view]="view" [title]="collection.name">
+    <div image class="image-wrapper">
+      <img fill [ngSrc]="collection.imageUrl ?? ''" />
+    </div>
+    <p *ngIf="!hideDescription" class="description" content>{{ collection.description }}</p>
   </app-card>
 </a>

@@ -1,0 +1,15 @@
+<tui-island
+  class="island"
+  tuiIsland
+  [ngClass]="{ horizontal: view === 'horizontal', vertical: view === 'vertical' }"
+>
+  <div class="image-container">
+    <ng-content select="[image]"></ng-content>
+  </div>
+
+  <div class="content">
+    <h4 class="title">{{ title }}</h4>
+
+    <ng-content select="[content]"></ng-content>
+  </div>
+</tui-island>

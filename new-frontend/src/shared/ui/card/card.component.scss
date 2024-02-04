@@ -5,12 +5,6 @@
   flex-direction: row;
   gap: 1rem;
 
-  .image-wrapper {
-    width: 10rem;
-    height: 10rem;
-    flex-shrink: 0;
-  }
-
   .content {
     display: flex;
     flex-direction: column;
@@ -24,21 +18,16 @@
 @mixin vertical-view {
   display: flex;
   flex-direction: column;
-
-  .image-wrapper {
-    width: 100%;
-
-    &::before {
-      content: '';
-      padding-top: 100%;
-      display: block;
-    }
-  }
+  gap: 1rem;
 
   .content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
     .title {
       min-width: 100%;
-      margin-bottom: 0;
+      margin: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -55,12 +44,6 @@
   overflow: hidden;
   height: 100%;
 
-  .image-wrapper {
-    position: relative;
-    border-radius: calc(var(--tui-radius-xl) - 1rem);
-    overflow: hidden;
-  }
-
   &.vertical {
     @include vertical-view();
   }
@@ -75,15 +58,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-
-      .image-wrapper {
-        width: 10rem;
-        height: 10rem;
-
-        &::before {
-          padding: 0;
-        }
       }
     }
   }
