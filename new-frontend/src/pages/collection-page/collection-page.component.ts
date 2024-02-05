@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { map } from 'rxjs';
@@ -42,11 +42,16 @@ export class CollectionPageComponent {
     private readonly dialogService: TuiDialogService,
     private readonly httpClient: HttpClient,
     private readonly injector: Injector,
+    private readonly activatedRoute: ActivatedRoute,
   ) {}
 
   search = new FormControl<string>('');
 
   response = this.httpClient.get<{ ok: boolean }>('profile').pipe(map((v) => v));
+
+  private readonly isPersonal$ = this.activatedRoute.data.pipe(
+    map((v) => Boolean(v['isPersonal'])),
+  );
 
   showInfoAboutCollection() {
     this.dialogService.open('Some modal here', { label: 'О коллекции' }).subscribe();

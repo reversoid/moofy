@@ -10,9 +10,8 @@ export const appRoutes: Routes = [
     loadComponent: () => import('./feed-page/feed-page.component').then((r) => r.FeedPageComponent),
   },
   {
-    path: 'profile/:id',
-    loadComponent: () =>
-      import('./profile-page/profile-page.component').then((r) => r.ProfilePageComponent),
+    path: 'profile',
+    loadChildren: () => import('./profile-page/routes').then((m) => m.routes),
   },
   {
     path: 'settings',
