@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+// TODO make guards for personal collection redirects: if not exists and if already exists
 export const routes: Routes = [
   {
     path: ':id',
@@ -13,5 +14,12 @@ export const routes: Routes = [
     data: {
       isPersonal: true,
     },
+  },
+  {
+    path: ':id/personal-collection/new',
+    loadComponent: () =>
+      import('./new-personal-collection-page/new-personal-collection-page.component').then(
+        (c) => c.NewPersonalCollectionPageComponent,
+      ),
   },
 ];

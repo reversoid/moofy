@@ -1,0 +1,32 @@
+h1 {
+  text-align: center;
+}
+
+.options {
+  display: grid;
+  margin-top: 1rem;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+
+  h3 {
+    text-align: center;
+  }
+
+  .from-scratch {
+    border-radius: 2rem;
+    flex-grow: 2;
+    background-color: var(--tui-base-02);
+  }
+
+  .from-existing {
+    background-color: var(--tui-base-02);
+
+    border-radius: 2rem;
+    flex-grow: 2;
+  }
+
+  &__block {
+    padding: 1rem;
+    padding-top: 0;
+  }
+}

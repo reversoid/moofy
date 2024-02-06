@@ -1,0 +1,21 @@
+@switch (currentStep) {
+  @case ('welcome') {
+    <app-welcome-step></app-welcome-step>
+  }
+
+  @case ('select-method') {
+    <app-select-method-step></app-select-method-step>
+  }
+
+  @case ('select-collections-to-combine') {
+    <app-select-collections-to-combine-step></app-select-collections-to-combine-step>
+  }
+
+  @case ('select-combine-options') {
+    <app-select-combine-options-step></app-select-combine-options-step>
+  }
+
+  @case ('collection-options') {
+    <app-collection-options-step></app-collection-options-step>
+  }
+}
