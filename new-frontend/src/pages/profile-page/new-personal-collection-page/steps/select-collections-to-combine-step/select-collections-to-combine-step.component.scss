@@ -1,3 +1,5 @@
+@import 'shared';
+
 h1 {
   text-align: center;
 }
@@ -52,7 +54,11 @@ app-collection {
   bottom: 0;
   left: 0;
   right: 0;
+  display: flex;
+  justify-content: flex-end;
   a {
-    width: 100%;
+    @media #{$tui-mobile} {
+      width: 100%;
+    }
   }
 }
