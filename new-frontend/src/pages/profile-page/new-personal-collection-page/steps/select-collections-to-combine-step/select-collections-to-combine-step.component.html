@@ -1,11 +1,11 @@
 <h1 class="tui-text_h1">Выберите коллекции для объединения</h1>
 
 <div class="collections">
-  <tui-checkbox-block size="l">
+  <tui-checkbox-block size="l" [hideCheckbox]="true">
     <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
   </tui-checkbox-block>
 
-  <tui-checkbox-block size="l">
+  <tui-checkbox-block size="l" [hideCheckbox]="true">
     <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
   </tui-checkbox-block>
 </div>

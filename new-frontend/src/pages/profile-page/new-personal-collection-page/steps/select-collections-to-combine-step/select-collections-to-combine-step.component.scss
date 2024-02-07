@@ -12,13 +12,16 @@ h1 {
 
 .collections {
   app-collection {
-    width: 100%;
+    width: 100% !important;
     ::ng-deep tui-island {
       background: none !important;
     }
   }
 
   ::ng-deep {
+    .t-content {
+      width: 100%;
+    }
     label.t-wrapper {
       padding: 0 !important;
     }
