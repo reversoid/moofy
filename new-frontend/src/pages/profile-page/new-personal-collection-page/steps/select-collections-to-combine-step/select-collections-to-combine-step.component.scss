@@ -51,14 +51,16 @@ app-collection {
 
 .next-container {
   position: fixed;
-  bottom: 0;
+  bottom: 1.5rem;
   left: 0;
   right: 0;
   display: flex;
-  justify-content: flex-end;
-  a {
-    @media #{$tui-mobile} {
+  justify-content: center;
+
+  @media #{$tui-mobile} {
+    a {
       width: 100%;
     }
+    bottom: 0;
   }
 }
