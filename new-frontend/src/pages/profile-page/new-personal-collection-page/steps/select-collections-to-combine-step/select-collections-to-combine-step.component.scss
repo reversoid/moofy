@@ -10,37 +10,17 @@ h1 {
   gap: 1rem;
 }
 
-.collections button {
-  max-width: none !important;
-  height: auto !important;
-  width: 100% !important;
-  background: transparent !important;
-
-  ::ng-deep .t-wrapper {
-    padding: 0 !important;
-    background: transparent !important;
-  }
-
-  border-radius: var(--tui-radius-xl);
-  outline: none;
-
-  transition: background-color 0.1s ease-in-out;
-
-  &.selected {
+.collections {
+  app-collection {
+    width: 100%;
     ::ng-deep tui-island {
-      border-color: var(--tui-base-03);
+      background: none !important;
     }
   }
 
-  ::ng-deep tui-island {
-    border: 2px solid transparent;
-
-    transition: all 0.1s linear;
-  }
-
-  &:hover {
-    ::ng-deep tui-island {
-      background: var(--tui-secondary) !important;
+  ::ng-deep {
+    label.t-wrapper {
+      padding: 0 !important;
     }
   }
 }

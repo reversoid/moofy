@@ -1,41 +1,13 @@
 <h1 class="tui-text_h1">Выберите коллекции для объединения</h1>
 
 <div class="collections">
-  <button
-    (click)="isSelected = !isSelected"
-    [ngClass]="{ selected: isSelected }"
-    tuiButton
-    appearance="flat"
-  >
+  <tui-checkbox-block size="l">
     <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
-  </button>
+  </tui-checkbox-block>
 
-  <button
-    (click)="isSelected = !isSelected"
-    [ngClass]="{ selected: isSelected }"
-    tuiButton
-    appearance="flat"
-  >
+  <tui-checkbox-block size="l">
     <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
-  </button>
-
-  <button
-    (click)="isSelected = !isSelected"
-    [ngClass]="{ selected: isSelected }"
-    tuiButton
-    appearance="flat"
-  >
-    <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
-  </button>
-
-  <button
-    (click)="isSelected = !isSelected"
-    [ngClass]="{ selected: isSelected }"
-    tuiButton
-    appearance="flat"
-  >
-    <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
-  </button>
+  </tui-checkbox-block>
 </div>
 
 <div *ngIf="isSelected" class="next-container">
