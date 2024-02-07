@@ -1,5 +1,6 @@
 import { CookieSerializeOptions } from '@fastify/cookie';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -132,7 +133,8 @@ export class AuthController {
       return { accessToken: tokens.access, user };
     } catch (error: unknown) {
       if (error instanceof UnauthorizedException) {
-        // response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
+        response.clearCookie(REFRESH_TOKEN_KEY, DEFAULT_REFRESH_COOKIE_OPTIONS);
+        throw new BadRequestException();
       }
       throw error;
     }

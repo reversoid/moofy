@@ -163,7 +163,7 @@ export class PersonalProfileController implements IPersonalProfileController {
         imageUrl: dto.imageUrl,
         name: dto.name,
       },
-      dto.uniteCollectionsIds,
+      { collectionsIds: dto.uniteCollectionsIds ?? [], options: dto.options },
     );
   }
 

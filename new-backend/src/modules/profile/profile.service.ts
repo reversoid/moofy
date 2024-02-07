@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../user/models/user';
 import { EditProfileProps } from './types';
-import { CollectionService } from '../collection/collection.service';
+import {
+  CollectionService,
+  UniteCollectionsOptions,
+} from '../collection/collection.service';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { ShortProfile } from './models/short-profile';
 import { UserService } from '../user/user.service';
@@ -129,13 +132,17 @@ export class ProfileService {
       description: string | null;
       imageUrl: string | null;
     },
-    uniteCollectionsIds?: Array<Collection['id']>,
+    uniteOptions?: {
+      collectionsIds: Array<Collection['id']>;
+      options: UniteCollectionsOptions;
+    },
   ): Promise<CollectionWithInfo> {
-    if (uniteCollectionsIds) {
+    if (uniteOptions) {
       return this.collectionService.createPersonalCollectionFromUnion(
         userId,
         collectionData,
-        uniteCollectionsIds,
+        uniteOptions.collectionsIds,
+        uniteOptions.options,
       );
     }
     return this.collectionService.createEmptyPersonalCollection(

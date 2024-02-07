@@ -6,6 +6,18 @@ export const createPersonalCollectionDtoSchema = z.object({
   description: z.string().nullable(),
   imageUrl: z.string().url().nullable(),
   uniteCollectionsIds: z.array(z.number().int()).optional(),
+  options: z.object({
+    reviews: z.object({
+      withScore: z.boolean().optional(),
+      withDescription: z.boolean().optional(),
+      strategy: z.enum(['move', 'copy']),
+    }),
+    actionAfterMergingCollections: z.enum([
+      'removeEmpty',
+      'saveAll',
+      'removeAll',
+    ]),
+  }),
 });
 
 export class CreatePersonalCollectionDto extends createZodDto(

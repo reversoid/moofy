@@ -89,7 +89,7 @@ export class ProfileNotificationsGateway
   @RMQRoute(PROFILE_COUNTER_NOTIFICATION_TOPIC)
   async handleCounterNotification(notification: ProfileNotification) {
     return await this.sendCounterNotificationToUser(notification.toUser.id, {
-      eventId: notification.id,
+      notificationId: notification.id,
     });
   }
 
@@ -117,9 +117,13 @@ export class ProfileNotificationsGateway
 
   private async sendCounterNotificationToUser(
     userId: number,
-    event: ProfileCounterNotification,
+    notification: ProfileCounterNotification,
   ) {
-    return this.sendNotificationToUser('notification:counter', userId, event);
+    return this.sendNotificationToUser(
+      'notification:counter',
+      userId,
+      notification,
+    );
   }
 
   private async sendNotificationToUser(

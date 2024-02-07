@@ -27,6 +27,7 @@ export class ExploreRepository extends PaginatedRepository {
           l.is_public as collection_is_public,
           l.name as collection_name,
           l.updated_at as collection_updated_at,
+          l.image_url as collection_image_url,
 
           u.id as user_id,
           u.created_at as user_created_at,
@@ -69,6 +70,7 @@ export class ExploreRepository extends PaginatedRepository {
         l.is_public as collection_is_public,
         l.name as collection_name,
         l.updated_at as collection_updated_at,
+        l.image_url as collection_image_url,
         u.id as user_id,
         u.created_at as user_created_at,
         u.description as user_description,
@@ -105,6 +107,7 @@ export class ExploreRepository extends PaginatedRepository {
         isPublic: data.collection_is_public,
         name: data.collection_name,
         updatedAt: data.collection_updated_at,
+        imageUrl: data.collection_image_url,
         user: {
           id: data.user_id,
           createdAt: data.user_created_at,

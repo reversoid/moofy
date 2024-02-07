@@ -32,6 +32,15 @@ import { WrongImageFormatException } from './exceptions/collection-image/wrong-i
 import { DeletePersonalCollectionException } from './exceptions/personal-collection/delete-personal-collection.exception';
 import { MakePersonalCollectionPrivateException } from './exceptions/personal-collection/make-personal-collection-private.exception';
 
+export type UniteCollectionsOptions = {
+  reviews: {
+    withScore?: boolean;
+    withDescription?: boolean;
+    strategy: 'move' | 'copy';
+  };
+  actionAfterMergingCollections: 'saveAll' | 'removeAll' | 'removeEmpty';
+};
+
 @Injectable()
 export class CollectionService {
   constructor(
@@ -197,6 +206,7 @@ export class CollectionService {
       imageUrl: string | null;
     },
     collectionIds: Array<Collection['id']>,
+    options: UniteCollectionsOptions,
   ): Promise<CollectionWithInfo> {
     await this.checkIfPersonalCollectionNotExists(userId);
 
@@ -210,7 +220,7 @@ export class CollectionService {
         isPersonal: true,
       },
       collectionIds,
-      { onlyReviewsWithDescription: true },
+      options,
     );
   }
 
@@ -244,10 +254,8 @@ export class CollectionService {
       isPersonal?: boolean;
     },
     collectionIds: Array<Collection['id']>,
-    options?: {
-      onlyReviewsWithDescription?: boolean;
-    },
-  ) {
+    options: UniteCollectionsOptions,
+  ): Promise<CollectionWithInfo> {
     const collection = await this.collectionRepository.createCollection(
       userId,
       {
@@ -259,13 +267,45 @@ export class CollectionService {
       },
     );
 
-    await this.collectionReviewService.moveAllReviewsToAnotherCollection(
-      collectionIds,
-      collection.id,
-      { onlyReviewsWithDescription: options?.onlyReviewsWithDescription },
-    );
+    if (options.reviews.strategy === 'move') {
+      await this.collectionReviewService.moveReviewsToAnotherCollection(
+        collectionIds,
+        collection.id,
+        {
+          withDescription: options.reviews.withDescription,
+          withScore: options.reviews.withScore,
+        },
+      );
+    } else {
+      await this.collectionReviewService.copyReviewsToAnotherCollection(
+        collectionIds,
+        collection.id,
+        {
+          withDescription: options.reviews.withDescription,
+          withScore: options.reviews.withScore,
+        },
+      );
+    }
 
-    await this.deleteManyCollections(collectionIds);
+    if (options.actionAfterMergingCollections === 'removeAll') {
+      await this.deleteManyCollections(collectionIds);
+    } else if (options.actionAfterMergingCollections === 'removeEmpty') {
+      const reviewsAmount = await Promise.all(
+        collectionIds.map((id) =>
+          this.collectionReviewService.getReviewsAmount(id),
+        ),
+      );
+
+      await Promise.all(
+        collectionIds
+          .map<{ id: Collection['id']; amount: number }>((id, index) => ({
+            id,
+            amount: reviewsAmount[index],
+          }))
+          .filter(({ amount }) => amount !== 0)
+          .map(({ id }) => this.deleteCollection(id)),
+      );
+    }
 
     const conflictingReviews =
       await this.collectionReviewService.getConflictingReviews(collection.id);
