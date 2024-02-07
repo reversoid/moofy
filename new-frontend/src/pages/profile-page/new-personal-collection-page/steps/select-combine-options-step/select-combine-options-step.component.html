@@ -1,3 +1,46 @@
 <h1 class="tui-text_h1">Настройки объединения</h1>
 
-<p>Что делать с объединенными коллекциями?</p>
+<form>
+  <div class="form-block">
+    <h2 class="tui-text_h3">Какие обзоры выбирать?</h2>
+
+    <tui-radio-list
+      size="l"
+      [itemContent]="tariff1ItemContent3"
+      [items]="whatReviews"
+    ></tui-radio-list>
+
+    <ng-template #tariff1ItemContent3 let-data>
+      <div>{{ data.name }}</div>
+      <div class="description">{{ data.description }}</div>
+    </ng-template>
+  </div>
+
+  <div class="form-block">
+    <h2 class="tui-text_h3">Что делать с обзорами?</h2>
+
+    <tui-radio-list
+      size="l"
+      [itemContent]="tariff1ItemContent2"
+      [items]="reviewOptions"
+    ></tui-radio-list>
+
+    <ng-template #tariff1ItemContent2 let-data>
+      <div>{{ data.name }}</div>
+      <div class="description">{{ data.description }}</div>
+    </ng-template>
+  </div>
+
+  <div class="form-block">
+    <h2 class="tui-text_h3">Что делать с объединенными коллекциями?</h2>
+
+    <tui-radio-list size="l" [itemContent]="tariff1ItemContent" [items]="items"></tui-radio-list>
+
+    <ng-template #tariff1ItemContent let-data>
+      <div>{{ data.name }}</div>
+      <div class="description">{{ data.description }}</div>
+    </ng-template>
+  </div>
+</form>
+
+<button class="submit-button" tuiButton>Продолжить</button>
