@@ -17,9 +17,6 @@ export const routes: Routes = [
   },
   {
     path: ':id/personal-collection/new',
-    loadComponent: () =>
-      import('./new-personal-collection-page/new-personal-collection-page.component').then(
-        (c) => c.NewPersonalCollectionPageComponent,
-      ),
+    loadChildren: () => import('./new-personal-collection-page/routes').then((c) => c.routes),
   },
 ];

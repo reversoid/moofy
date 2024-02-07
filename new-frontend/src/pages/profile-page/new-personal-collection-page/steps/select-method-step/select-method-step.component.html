@@ -2,15 +2,23 @@
 
 <p>Выберите, на основе чего создавать персональную коллекцию</p>
 
-<div class="options-">
-  <div class="options__block from-scratch">
-    <h3 class="tui-text_h4">Пустая коллекция</h3>
-    <p>Изначально в персональной коллекции не будет обзоров</p>
-  </div>
+<div class="options">
+  <tui-island>
+    <div class="content">
+      <h3 class="tui-text_h4">Существующие коллекции</h3>
+      <p>Можно объединить существующие коллекции в персональную.</p>
+      <p>У вас будет выбор, что делать с объединенными коллекциями – удалить или оставить.</p>
+    </div>
 
-  <div class="options__block from-existing">
-    <h3 class="tui-text_h4">Существующие коллекции</h3>
-    <p>Можно объединить существующие коллекции в персональную.</p>
-    <p>У вас будет выбор, что делать с объединенными коллекциями – удалить или оставить.</p>
-  </div>
+    <a routerLink="../select-collections" tuiButton>Продолжить</a>
+  </tui-island>
+
+  <tui-island>
+    <div class="content">
+      <h3 class="tui-text_h4">Пустая коллекция</h3>
+      <p>Изначально в персональной коллекции не будет обзоров</p>
+    </div>
+
+    <a routerLink="../collection-options" tuiButton>Продолжить</a>
+  </tui-island>
 </div>

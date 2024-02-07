@@ -6,6 +6,7 @@ import { SelectCombineOptionsStepComponent } from './steps/select-combine-option
 import { SelectCollectionsToCombineStepComponent } from './steps/select-collections-to-combine-step/select-collections-to-combine-step.component';
 import { CollectionOptionsStepComponent } from './steps/collection-options-step/collection-options-step.component';
 import { Collection } from '../../../shared/types';
+import { RouterOutlet } from '@angular/router';
 
 export type CreatePersonalCollectionSteps =
   | 'welcome'
@@ -35,6 +36,7 @@ export interface PersonalCollectionData {
     SelectCombineOptionsStepComponent,
     SelectCollectionsToCombineStepComponent,
     CollectionOptionsStepComponent,
+    RouterOutlet,
   ],
   templateUrl: './new-personal-collection-page.component.html',
   styleUrl: './new-personal-collection-page.component.scss',

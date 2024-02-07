@@ -2,9 +2,13 @@ h1 {
   text-align: center;
 }
 
+p {
+  text-align: center;
+}
+
 .options {
   display: grid;
-  margin-top: 1rem;
+  margin-top: 2rem;
   gap: 1rem;
   grid-template-columns: 1fr 1fr;
 
@@ -12,21 +16,10 @@ h1 {
     text-align: center;
   }
 
-  .from-scratch {
-    border-radius: 2rem;
-    flex-grow: 2;
-    background-color: var(--tui-base-02);
-  }
-
-  .from-existing {
-    background-color: var(--tui-base-02);
-
-    border-radius: 2rem;
-    flex-grow: 2;
-  }
-
-  &__block {
-    padding: 1rem;
+  tui-island {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding-top: 0;
   }
 }
