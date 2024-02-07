@@ -163,7 +163,20 @@ export class PersonalProfileController implements IPersonalProfileController {
         imageUrl: dto.imageUrl,
         name: dto.name,
       },
-      { collectionsIds: dto.uniteCollectionsIds ?? [], options: dto.options },
+      dto.mergeOptions
+        ? {
+            collectionsIds: dto.mergeOptions.collectionsIds,
+            options: {
+              reviews: {
+                strategy: dto.mergeOptions.reviews.strategy,
+                withScore: dto.mergeOptions.reviews.withScore,
+                withDescription: true,
+              },
+              actionAfterMergingCollections:
+                dto.mergeOptions.actionAfterMergingCollections,
+            },
+          }
+        : undefined,
     );
   }
 
