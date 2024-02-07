@@ -1,30 +1,35 @@
 <div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <app-collection
-    [view]="view === 'list' ? 'horizontal' : 'vertical'"
-    [collection]="collection"
-    [hideDescription]="hideDescription"
-  ></app-collection>
+  <a [routerLink]="['/collection', collection.id]" tuiLink>
+    <app-collection
+      [view]="view === 'list' ? 'horizontal' : 'vertical'"
+      [collection]="collection"
+      [hideDescription]="hideDescription"
+    ></app-collection>
+  </a>
 
-  <app-collection
-    [view]="view === 'list' ? 'horizontal' : 'vertical'"
-    [collection]="collection"
-    [hideDescription]="hideDescription"
-  ></app-collection>
-  <app-collection
-    [view]="view === 'list' ? 'horizontal' : 'vertical'"
-    [collection]="collection"
-    [hideDescription]="hideDescription"
-  ></app-collection>
-  <app-collection
-    [view]="view === 'list' ? 'horizontal' : 'vertical'"
-    [collection]="collection"
-    [hideDescription]="hideDescription"
-  ></app-collection>
-  <app-collection
-    [view]="view === 'list' ? 'horizontal' : 'vertical'"
-    [collection]="collection"
-    [hideDescription]="hideDescription"
-  ></app-collection>
+  <a [routerLink]="['/collection', collection.id]" tuiLink>
+    <app-collection
+      [view]="view === 'list' ? 'horizontal' : 'vertical'"
+      [collection]="collection"
+      [hideDescription]="hideDescription"
+    ></app-collection>
+  </a>
+
+  <a [routerLink]="['/collection', collection.id]" tuiLink>
+    <app-collection
+      [view]="view === 'list' ? 'horizontal' : 'vertical'"
+      [collection]="collection"
+      [hideDescription]="hideDescription"
+    ></app-collection>
+  </a>
+
+  <a [routerLink]="['/collection', collection.id]" tuiLink>
+    <app-collection
+      [view]="view === 'list' ? 'horizontal' : 'vertical'"
+      [collection]="collection"
+      [hideDescription]="hideDescription"
+    ></app-collection>
+  </a>
 </div>
 
 <tui-loader *ngIf="loading" class="loader"></tui-loader>
