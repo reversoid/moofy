@@ -12,8 +12,13 @@ type Option<ID = unknown> = {
   name: string;
   description: string;
   mood: 'neutral' | 'positive' | 'negative';
-  disabled?: boolean;
 };
+
+type ReviewsToPick = 'DESC' | 'DESC_SCORE';
+
+type ReviewsStrategy = 'COPY' | 'MOVE';
+
+type CollectionStrategy = 'SAVE' | 'REMOVE_EMPTY' | 'REMOVE_ALL';
 
 @Component({
   selector: 'app-select-combine-options-step',
@@ -40,7 +45,7 @@ export class SelectCombineOptionsStepComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
   ) {}
 
-  reviewsToPickOptions: Option<'DESC' | 'DESC_SCORE'>[] = [
+  reviewsToPickOptions: Option<ReviewsToPick>[] = [
     {
       id: 'DESC',
       name: 'Все с описанием',
@@ -56,7 +61,7 @@ export class SelectCombineOptionsStepComponent implements OnInit {
     },
   ];
 
-  reviewsStrategyOptions: Option<'COPY' | 'MOVE'>[] = [
+  reviewsStrategyOptions: Option<ReviewsStrategy>[] = [
     {
       id: 'COPY',
       name: 'Скопировать',
@@ -72,7 +77,7 @@ export class SelectCombineOptionsStepComponent implements OnInit {
     },
   ];
 
-  collectionsStrategyOptions: Option<'SAVE' | 'REMOVE_EMPTY' | 'REMOVE_ALL'>[] = [
+  collectionsStrategyOptions: Option<CollectionStrategy>[] = [
     {
       id: 'SAVE',
       name: 'Сохранять',
@@ -96,13 +101,17 @@ export class SelectCombineOptionsStepComponent implements OnInit {
   ];
 
   form = this.fb.group({
-    reviewsToPick: this.fb.control<'DESC' | 'DESC_SCORE'>('DESC'),
-    reviewsStrategy: this.fb.control<'COPY' | 'MOVE'>('COPY'),
-    collectionsStrategy: this.fb.control<'SAVE' | 'REMOVE_EMPTY' | 'REMOVE_ALL'>('SAVE'),
+    reviewsToPick: this.fb.control<ReviewsToPick>('DESC'),
+    reviewsStrategy: this.fb.control<ReviewsStrategy>('COPY'),
+    collectionsStrategy: this.fb.control<CollectionStrategy>('SAVE'),
   });
 
   submitForm() {
     console.log(this.form.value);
+  }
+
+  get isSelectedCopyReviewsStrategy() {
+    return this.form.value.reviewsStrategy === 'COPY';
   }
 
   ngOnInit(): void {
@@ -112,9 +121,5 @@ export class SelectCombineOptionsStepComponent implements OnInit {
         this.form.controls.collectionsStrategy.patchValue('SAVE');
       }
     });
-  }
-
-  get isSelectedCopyReviewsStrategy() {
-    return this.form.value.reviewsStrategy === 'COPY';
   }
 }
