@@ -4,44 +4,61 @@
   <tui-island class="form-block">
     <h2 class="tui-text_h4">Какие обзоры выбирать?</h2>
 
-    <tui-radio-list
-      formControlName="reviewsToPick"
-      size="l"
-      [itemContent]="radioItem"
-      [items]="reviewsToPickOptions"
-    ></tui-radio-list>
+    <div class="radio-group">
+      <tui-radio-labeled
+        *ngFor="let o of reviewsToPickOptions"
+        [item]="o.id"
+        formControlName="reviewsToPick"
+        size="l"
+      >
+        <app-radio-content
+          [name]="o.name"
+          [description]="o.description"
+          [mood]="o.mood"
+        ></app-radio-content>
+      </tui-radio-labeled>
+    </div>
   </tui-island>
 
   <tui-island class="form-block">
     <h2 class="tui-text_h4">Что делать с обзорами?</h2>
 
-    <tui-radio-list
-      formControlName="reviewsStrategy"
-      size="l"
-      [itemContent]="radioItem"
-      [items]="reviewsStrategyOptions"
-    ></tui-radio-list>
+    <div class="radio-group">
+      <tui-radio-labeled
+        *ngFor="let o of reviewsStrategyOptions"
+        [item]="o.id"
+        formControlName="reviewsStrategy"
+        size="l"
+      >
+        <app-radio-content
+          [name]="o.name"
+          [description]="o.description"
+          [mood]="o.mood"
+        ></app-radio-content>
+      </tui-radio-labeled>
+    </div>
   </tui-island>
 
   <tui-island class="form-block">
     <h2 class="tui-text_h4">Что делать с объединенными коллекциями?</h2>
-
-    <tui-radio-list
-      formControlName="collectionsStrategy"
-      size="l"
-      [itemContent]="radioItem"
-      [items]="collectionsStrategyOptions"
-    ></tui-radio-list>
+    <div class="radio-group">
+      <tui-radio-labeled
+        *ngFor="let o of collectionsStrategyOptions"
+        [item]="o.id"
+        [pseudoDisabled]="o.id === 'REMOVE_EMPTY' && isSelectedCopyReviewsStrategy"
+        formControlName="collectionsStrategy"
+        size="l"
+      >
+        <app-radio-content
+          [name]="o.name"
+          [description]="o.description"
+          [mood]="o.mood"
+        ></app-radio-content>
+      </tui-radio-labeled>
+    </div>
   </tui-island>
 </form>
 
 <button type="submit" form="combine-options-form" class="submit-button" tuiButton>
   Продолжить
 </button>
-
-<ng-template #radioItem let-data>
-  <div>{{ data.name }}</div>
-  <div [ngClass]="data.mood" class="description">
-    {{ data.description }}
-  </div>
-</ng-template>

@@ -1,20 +1,18 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { PersonalCollectionData } from '../../new-personal-collection-page.component';
-import { TuiIslandModule, TuiRadioListModule } from '@taiga-ui/kit';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { TuiIslandModule, TuiRadioLabeledModule, TuiRadioListModule } from '@taiga-ui/kit';
 import { TuiButtonModule } from '@taiga-ui/core';
-import { NgClass } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RadioContentComponent } from './radio-content/radio-content.component';
+import { TuiDestroyService, TuiMapperPipeModule } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs';
 
-type CombineOptions = Pick<
-  NonNullable<PersonalCollectionData['combineOptions']>,
-  'actionAfterMerging' | 'collectionIdsToCombine'
->;
-
-type Option<ID> = {
+type Option<ID = unknown> = {
   id: ID;
   name: string;
   description: string;
   mood: 'neutral' | 'positive' | 'negative';
+  disabled?: boolean;
 };
 
 @Component({
@@ -24,16 +22,23 @@ type Option<ID> = {
     TuiRadioListModule,
     TuiButtonModule,
     TuiIslandModule,
-    NgClass,
     FormsModule,
     ReactiveFormsModule,
+    TuiRadioLabeledModule,
+    NgFor,
+    RadioContentComponent,
+    TuiMapperPipeModule,
   ],
   templateUrl: './select-combine-options-step.component.html',
   styleUrl: './select-combine-options-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
 })
-export class SelectCombineOptionsStepComponent {
-  constructor(private readonly fb: FormBuilder) {}
+export class SelectCombineOptionsStepComponent implements OnInit {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly destroy$: TuiDestroyService,
+  ) {}
 
   reviewsToPickOptions: Option<'DESC' | 'DESC_SCORE'>[] = [
     {
@@ -91,12 +96,25 @@ export class SelectCombineOptionsStepComponent {
   ];
 
   form = this.fb.group({
-    reviewsToPick: this.fb.control(this.reviewsToPickOptions[0]),
-    reviewsStrategy: this.fb.control(this.reviewsStrategyOptions[0]),
-    collectionsStrategy: this.fb.control(this.collectionsStrategyOptions[0]),
+    reviewsToPick: this.fb.control<'DESC' | 'DESC_SCORE'>('DESC'),
+    reviewsStrategy: this.fb.control<'COPY' | 'MOVE'>('COPY'),
+    collectionsStrategy: this.fb.control<'SAVE' | 'REMOVE_EMPTY' | 'REMOVE_ALL'>('SAVE'),
   });
 
   submitForm() {
     console.log(this.form.value);
+  }
+
+  ngOnInit(): void {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((f) => {
+      const cannotBeBoth = f.reviewsStrategy !== 'MOVE' && f.collectionsStrategy === 'REMOVE_EMPTY';
+      if (cannotBeBoth) {
+        this.form.controls.collectionsStrategy.patchValue('SAVE');
+      }
+    });
+  }
+
+  get isSelectedCopyReviewsStrategy() {
+    return this.form.value.reviewsStrategy === 'COPY';
   }
 }

@@ -22,12 +22,8 @@ tui-island.form-block {
   }
 }
 
-.description {
-  &.negative {
-    color: var(--tui-negative);
-  }
-
-  &.positive {
-    color: var(--tui-positive);
-  }
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
