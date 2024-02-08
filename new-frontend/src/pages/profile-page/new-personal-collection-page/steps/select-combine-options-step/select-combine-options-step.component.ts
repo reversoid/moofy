@@ -51,14 +51,14 @@ export class SelectCombineOptionsStepComponent implements OnInit {
   reviewsToPickOptions: Option<ReviewsToPick>[] = [
     {
       id: 'DESC',
-      name: 'Все с описанием',
+      name: 'С описанием',
       description: 'Все обзоры с описанием будут участвовать в объединении',
       mood: 'neutral',
     },
 
     {
       id: 'DESC_SCORE',
-      name: 'Все с оценкой и описанием',
+      name: 'С оценкой и описанием',
       description: 'Все обзоры с оценкой и описанием будут участвовать в объединении',
       mood: 'neutral',
     },
