@@ -6,6 +6,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RadioContentComponent } from './radio-content/radio-content.component';
 import { TuiDestroyService, TuiMapperPipeModule } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 type Option<ID = unknown> = {
   id: ID;
@@ -43,6 +44,8 @@ export class SelectCombineOptionsStepComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly destroy$: TuiDestroyService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {}
 
   reviewsToPickOptions: Option<ReviewsToPick>[] = [
@@ -108,6 +111,7 @@ export class SelectCombineOptionsStepComponent implements OnInit {
 
   submitForm() {
     console.log(this.form.value);
+    this.router.navigate(['..', 'collection-options'], { relativeTo: this.route });
   }
 
   get isSelectedCopyReviewsStrategy() {
