@@ -1,24 +1,43 @@
 <h1 class="tui-text_h1">Настройки объединения</h1>
 
-<form>
+<form (ngSubmit)="submitForm()" [formGroup]="form" id="combine-options-form">
   <tui-island class="form-block">
     <h2 class="tui-text_h4">Какие обзоры выбирать?</h2>
 
-    <tui-radio-list size="l" [itemContent]="radioItem" [items]="whatReviews"></tui-radio-list>
+    <tui-radio-list
+      formControlName="reviewsToPick"
+      size="l"
+      [itemContent]="radioItem"
+      [items]="reviewsToPickOptions"
+    ></tui-radio-list>
   </tui-island>
 
   <tui-island class="form-block">
     <h2 class="tui-text_h4">Что делать с обзорами?</h2>
 
-    <tui-radio-list size="l" [itemContent]="radioItem" [items]="reviewOptions"></tui-radio-list>
+    <tui-radio-list
+      formControlName="reviewsStrategy"
+      size="l"
+      [itemContent]="radioItem"
+      [items]="reviewsStrategyOptions"
+    ></tui-radio-list>
   </tui-island>
 
   <tui-island class="form-block">
     <h2 class="tui-text_h4">Что делать с объединенными коллекциями?</h2>
 
-    <tui-radio-list size="l" [itemContent]="radioItem" [items]="items"></tui-radio-list>
+    <tui-radio-list
+      formControlName="collectionsStrategy"
+      size="l"
+      [itemContent]="radioItem"
+      [items]="collectionsStrategyOptions"
+    ></tui-radio-list>
   </tui-island>
 </form>
+
+<button type="submit" form="combine-options-form" class="submit-button" tuiButton>
+  Продолжить
+</button>
 
 <ng-template #radioItem let-data>
   <div>{{ data.name }}</div>
@@ -26,5 +45,3 @@
     {{ data.description }}
   </div>
 </ng-template>
-
-<button class="submit-button" tuiButton>Продолжить</button>
