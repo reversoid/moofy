@@ -7,9 +7,27 @@ form {
 }
 
 .submit-button {
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 
   @media #{$tui-mobile} {
     width: 100%;
+  }
+}
+
+tui-island.form-block {
+  padding: 1rem 1.5rem 1.25rem 1.5rem;
+
+  h2 {
+    margin-top: 0;
+  }
+}
+
+.description {
+  &.negative {
+    color: var(--tui-negative);
+  }
+
+  &.positive {
+    color: var(--tui-positive);
   }
 }

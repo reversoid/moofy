@@ -1,46 +1,30 @@
 <h1 class="tui-text_h1">Настройки объединения</h1>
 
 <form>
-  <div class="form-block">
-    <h2 class="tui-text_h3">Какие обзоры выбирать?</h2>
+  <tui-island class="form-block">
+    <h2 class="tui-text_h4">Какие обзоры выбирать?</h2>
 
-    <tui-radio-list
-      size="l"
-      [itemContent]="tariff1ItemContent3"
-      [items]="whatReviews"
-    ></tui-radio-list>
+    <tui-radio-list size="l" [itemContent]="radioItem" [items]="whatReviews"></tui-radio-list>
+  </tui-island>
 
-    <ng-template #tariff1ItemContent3 let-data>
-      <div>{{ data.name }}</div>
-      <div class="description">{{ data.description }}</div>
-    </ng-template>
-  </div>
+  <tui-island class="form-block">
+    <h2 class="tui-text_h4">Что делать с обзорами?</h2>
 
-  <div class="form-block">
-    <h2 class="tui-text_h3">Что делать с обзорами?</h2>
+    <tui-radio-list size="l" [itemContent]="radioItem" [items]="reviewOptions"></tui-radio-list>
+  </tui-island>
 
-    <tui-radio-list
-      size="l"
-      [itemContent]="tariff1ItemContent2"
-      [items]="reviewOptions"
-    ></tui-radio-list>
+  <tui-island class="form-block">
+    <h2 class="tui-text_h4">Что делать с объединенными коллекциями?</h2>
 
-    <ng-template #tariff1ItemContent2 let-data>
-      <div>{{ data.name }}</div>
-      <div class="description">{{ data.description }}</div>
-    </ng-template>
-  </div>
-
-  <div class="form-block">
-    <h2 class="tui-text_h3">Что делать с объединенными коллекциями?</h2>
-
-    <tui-radio-list size="l" [itemContent]="tariff1ItemContent" [items]="items"></tui-radio-list>
-
-    <ng-template #tariff1ItemContent let-data>
-      <div>{{ data.name }}</div>
-      <div class="description">{{ data.description }}</div>
-    </ng-template>
-  </div>
+    <tui-radio-list size="l" [itemContent]="radioItem" [items]="items"></tui-radio-list>
+  </tui-island>
 </form>
+
+<ng-template #radioItem let-data>
+  <div>{{ data.name }}</div>
+  <div [ngClass]="data.mood" class="description">
+    {{ data.description }}
+  </div>
+</ng-template>
 
 <button class="submit-button" tuiButton>Продолжить</button>
