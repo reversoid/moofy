@@ -1,15 +1,21 @@
 <h1 class="tui-text_h1">Выберите коллекции для объединения</h1>
 
-<div class="collections">
-  <tui-checkbox-block size="l" [hideCheckbox]="true">
-    <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
+<form
+  (submit)="handleFormSubmit()"
+  [formGroup]="form"
+  id="collections-to-combine-form"
+  class="collections"
+>
+  <tui-checkbox-block
+    *ngFor="let c of collections"
+    [formControlName]="c.id"
+    size="l"
+    [hideCheckbox]="true"
+  >
+    <app-collection [view]="'horizontal'" [collection]="c"></app-collection>
   </tui-checkbox-block>
+</form>
 
-  <tui-checkbox-block size="l" [hideCheckbox]="true">
-    <app-collection [view]="'horizontal'" [collection]="collection"></app-collection>
-  </tui-checkbox-block>
-</div>
-
-<div *ngIf="isSelected" class="next-container">
-  <a routerLink="../combine-options" tuiButton>Продолжить</a>
+<div *ngIf="isSelectedAnyCollection" class="next-container">
+  <button type="submit" form="collections-to-combine-form" tuiButton>Продолжить</button>
 </div>

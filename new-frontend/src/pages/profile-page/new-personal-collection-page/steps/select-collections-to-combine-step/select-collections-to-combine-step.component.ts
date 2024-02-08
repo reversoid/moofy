@@ -1,38 +1,46 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiCheckboxBlockModule } from '@taiga-ui/kit';
 import { CollectionComponent } from '../../../../../entities/collection/collection.component';
 import { Collection } from '../../../../../shared/types';
 import { collectionMock } from '../../../../../widgets/collection-grid/collection-grid.component';
-import { TuiCheckboxBlockModule, TuiCheckboxModule } from '@taiga-ui/kit';
-import { TuiButtonModule } from '@taiga-ui/core';
-import { NgClass, NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-select-collections-to-combine-step',
   standalone: true,
   imports: [
     CollectionComponent,
-    TuiCheckboxModule,
     TuiButtonModule,
-    NgClass,
     NgIf,
-    RouterLink,
     TuiCheckboxBlockModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgFor,
   ],
   templateUrl: './select-collections-to-combine-step.component.html',
   styleUrl: './select-collections-to-combine-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectCollectionsToCombineStepComponent {
-  @Output() completed = new EventEmitter<number[]>();
+export class SelectCollectionsToCombineStepComponent implements OnInit {
+  constructor(private readonly fb: FormBuilder) {}
 
-  selectedCollectionsIds = [];
+  form = this.fb.group<Record<string, boolean>>({});
 
-  handleSubmitSelectedCollections() {
-    this.completed.emit(this.selectedCollectionsIds);
+  collections: Collection[] = [collectionMock];
+
+  get isSelectedAnyCollection() {
+    return Object.values(this.form.value).some(Boolean);
   }
 
-  collection: Collection = collectionMock;
+  ngOnInit(): void {
+    for (const collection of this.collections) {
+      this.form.addControl(String(collection.id), this.fb.control(false));
+    }
+  }
 
-  isSelected = true;
+  handleFormSubmit() {
+    console.log(this.form.value);
+  }
 }
