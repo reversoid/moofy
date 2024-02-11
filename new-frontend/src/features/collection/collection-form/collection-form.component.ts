@@ -57,6 +57,7 @@ type ImageUploadState = 'loading' | 'loaded' | 'notLoaded';
     TuiLoaderModule,
     TuiSvgModule,
     NgOptimizedImage,
+    NgIf,
   ],
   templateUrl: './collection-form.component.html',
   styleUrl: './collection-form.component.scss',
@@ -75,6 +76,8 @@ export class CollectionFormComponent implements OnInit {
   @Input() formSubmitting = false;
 
   @Input() collectionDto?: CollectionDto;
+
+  @Input() removeIsPrivate = false;
 
   @Input({ required: true }) submutButtonText!: string;
 
@@ -125,8 +128,6 @@ export class CollectionFormComponent implements OnInit {
   }
 
   private setupInitialForm() {
-    console.log(this.collectionDto?.isPrivate);
-
     if (this.collectionDto) {
       this.collectionForm.setValue({
         name: this.collectionDto.name,

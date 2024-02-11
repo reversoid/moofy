@@ -17,6 +17,7 @@ import { CollectionService } from '../utils/collection.service';
   templateUrl: './create-collection-dialog.component.html',
   styleUrl: './create-collection-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
 })
 export class CreateCollectionDialogComponent {
   constructor(

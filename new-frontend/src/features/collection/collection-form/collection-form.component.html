@@ -11,7 +11,11 @@
     Описание
   </tui-textarea>
 
-  <tui-checkbox-labeled formControlName="isPrivate" class="tui-space_top-4" size="l"
+  <tui-checkbox-labeled
+    *ngIf="!removeIsPrivate"
+    formControlName="isPrivate"
+    class="tui-space_top-4"
+    size="l"
     >Сделать приватной</tui-checkbox-labeled
   >
 

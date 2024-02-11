@@ -31,11 +31,9 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'collection-options',
+        path: 'confirm',
         loadComponent: () =>
-          import('./steps/collection-options-step/collection-options-step.component').then(
-            (c) => c.CollectionOptionsStepComponent,
-          ),
+          import('./steps/confirm-step/confirm-step.component').then((c) => c.ConfirmStepComponent),
       },
     ],
   },

@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiIslandModule, TuiRadioLabeledModule, TuiRadioListModule } from '@taiga-ui/kit';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
 import { NgFor } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RadioContentComponent } from './radio-content/radio-content.component';
 import { TuiDestroyService, TuiMapperPipeModule } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { CreatePersonalCollectionDialogComponent } from '../../../../../features/collection/create-personal-collection-dialog/create-personal-collection-dialog.component';
+import { Collection } from '../../../../../shared/types';
 
 type Option<ID = unknown> = {
   id: ID;
@@ -46,6 +49,7 @@ export class SelectCombineOptionsStepComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly dialogService: TuiDialogService,
   ) {}
 
   reviewsToPickOptions: Option<ReviewsToPick>[] = [
@@ -110,8 +114,19 @@ export class SelectCombineOptionsStepComponent implements OnInit {
   });
 
   submitForm() {
-    console.log(this.form.value);
-    this.router.navigate(['..', 'collection-options'], { relativeTo: this.route });
+    this.dialogService
+      .open<Pick<Collection, 'name' | 'imageUrl' | 'description'>>(
+        new PolymorpheusComponent(CreatePersonalCollectionDialogComponent),
+        {
+          size: 's',
+          label: 'Настройки коллекции',
+        },
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((v) => {
+        console.log(v);
+        this.router.navigate(['..', 'confirm'], { relativeTo: this.route });
+      });
   }
 
   get isSelectedCopyReviewsStrategy() {
