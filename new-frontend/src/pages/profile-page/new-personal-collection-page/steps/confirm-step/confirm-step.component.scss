@@ -1,0 +1,21 @@
+@import 'shared';
+
+ul {
+  list-style: disc;
+  list-style-position: inside;
+}
+
+tui-island {
+  width: fit-content;
+
+  @media #{$tui-mobile} {
+    width: 100%;
+  }
+}
+
+button {
+  margin-top: 1rem;
+  @media #{$tui-mobile} {
+    width: 100%;
+  }
+}
