@@ -1,18 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Collection } from '../../../shared/types';
-
-export interface PersonalCollectionData {
-  collectionData?: Pick<Collection, 'name' | 'description' | 'imageUrl'>;
-  mergeOptions?: {
-    collectionIds: number[];
-    reviews: {
-      withScore: boolean;
-      strategy: 'copy' | 'move';
-    };
-    actionAfterMerging: 'saveAll' | 'removeAll' | 'removeEmpty';
-  };
-}
+import { CreatePersonalCollectionFlowService } from './create-personal-collection-flow.service';
 
 @Component({
   selector: 'app-new-personal-collection-page',
@@ -22,4 +10,10 @@ export interface PersonalCollectionData {
   styleUrl: './new-personal-collection-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewPersonalCollectionPageComponent {}
+export class NewPersonalCollectionPageComponent implements OnDestroy {
+  constructor(private readonly flowService: CreatePersonalCollectionFlowService) {}
+
+  ngOnDestroy(): void {
+    this.flowService.resetData();
+  }
+}
