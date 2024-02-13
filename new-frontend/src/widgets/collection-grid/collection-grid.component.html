@@ -1,5 +1,5 @@
 <div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <a [routerLink]="['/collection', collection.id]" tuiLink>
+  <a [routerLink]="['/collections', collection.id]" tuiLink>
     <app-collection
       [view]="view === 'list' ? 'horizontal' : 'vertical'"
       [collection]="collection"
@@ -7,7 +7,7 @@
     ></app-collection>
   </a>
 
-  <a [routerLink]="['/collection', collection.id]" tuiLink>
+  <a [routerLink]="['/collections', collection.id]" tuiLink>
     <app-collection
       [view]="view === 'list' ? 'horizontal' : 'vertical'"
       [collection]="collection"
@@ -15,7 +15,7 @@
     ></app-collection>
   </a>
 
-  <a [routerLink]="['/collection', collection.id]" tuiLink>
+  <a [routerLink]="['/collections', collection.id]" tuiLink>
     <app-collection
       [view]="view === 'list' ? 'horizontal' : 'vertical'"
       [collection]="collection"
@@ -23,7 +23,7 @@
     ></app-collection>
   </a>
 
-  <a [routerLink]="['/collection', collection.id]" tuiLink>
+  <a [routerLink]="['/collections', collection.id]" tuiLink>
     <app-collection
       [view]="view === 'list' ? 'horizontal' : 'vertical'"
       [collection]="collection"

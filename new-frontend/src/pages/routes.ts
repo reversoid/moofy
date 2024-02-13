@@ -22,7 +22,6 @@ export const appRoutes: Routes = [
     path: 'welcome',
     loadChildren: () => import('./welcome-page/routes').then((r) => r.routes),
   },
-
   {
     path: 'collections/:id',
     loadComponent: () =>
