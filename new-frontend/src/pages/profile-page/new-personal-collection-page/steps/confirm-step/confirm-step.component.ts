@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
+import { CreatePersonalCollectionFlowService } from '../../create-personal-collection-flow.service';
 
 @Component({
   selector: 'app-confirm-step',
@@ -10,4 +11,10 @@ import { TuiIslandModule } from '@taiga-ui/kit';
   styleUrl: './confirm-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConfirmStepComponent {}
+export class ConfirmStepComponent {
+  constructor(private readonly flowService: CreatePersonalCollectionFlowService) {}
+
+  handleConfirm() {
+    console.log(this.flowService.newPersonalCollectionData);
+  }
+}

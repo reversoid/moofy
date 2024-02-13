@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { CreatePersonalCollectionDialogComponent } from '../../../../../features/collection/create-personal-collection-dialog/create-personal-collection-dialog.component';
 import { Collection } from '../../../../../shared/types';
+import { CreatePersonalCollectionFlowService } from '../../create-personal-collection-flow.service';
 
 type Option<ID = unknown> = {
   id: ID;
@@ -50,6 +51,7 @@ export class SelectCombineOptionsStepComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly dialogService: TuiDialogService,
+    private readonly flowService: CreatePersonalCollectionFlowService,
   ) {}
 
   reviewsToPickOptions: Option<ReviewsToPick>[] = [
@@ -114,19 +116,28 @@ export class SelectCombineOptionsStepComponent implements OnInit {
   });
 
   submitForm() {
-    this.dialogService
-      .open<Pick<Collection, 'name' | 'imageUrl' | 'description'>>(
-        new PolymorpheusComponent(CreatePersonalCollectionDialogComponent),
-        {
-          size: 's',
-          label: 'Настройки коллекции',
-        },
-      )
+    this.completeOptionsStep();
+
+    this.openCollectionOptionsDialog()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((v) => {
-        console.log(v);
+      .subscribe((data) => {
+        this.completeCollectionDataStep(data);
         this.router.navigate(['..', 'confirm'], { relativeTo: this.route });
       });
+  }
+
+  private openCollectionOptionsDialog() {
+    return this.dialogService.open<Pick<Collection, 'name' | 'imageUrl' | 'description'>>(
+      new PolymorpheusComponent(CreatePersonalCollectionDialogComponent),
+      {
+        size: 's',
+        label: 'Настройки коллекции',
+      },
+    );
+  }
+
+  private completeCollectionDataStep(data: Pick<Collection, 'name' | 'imageUrl' | 'description'>) {
+    this.flowService.completeStep({ type: 'collectionData', payload: data });
   }
 
   get isSelectedCopyReviewsStrategy() {
@@ -139,6 +150,32 @@ export class SelectCombineOptionsStepComponent implements OnInit {
       if (cannotBeBoth) {
         this.form.controls.collectionsStrategy.patchValue('SAVE');
       }
+    });
+  }
+
+  private completeOptionsStep() {
+    const formValues = this.form.value;
+    const actionAfterMegingMap: Record<
+      CollectionStrategy,
+      'saveAll' | 'removeAll' | 'removeEmpty'
+    > = {
+      REMOVE_ALL: 'removeAll',
+      REMOVE_EMPTY: 'removeEmpty',
+      SAVE: 'saveAll',
+    };
+
+    const reviewsStrategyMap: Record<ReviewsStrategy, 'move' | 'copy'> = {
+      MOVE: 'move',
+      COPY: 'copy',
+    };
+
+    this.flowService.completeStep({
+      type: 'combineOptions',
+      payload: {
+        actionAfterMerging: actionAfterMegingMap[formValues.collectionsStrategy!],
+        reviewsStrategy: reviewsStrategyMap[formValues.reviewsStrategy!],
+        withScore: formValues.reviewsToPick === 'DESC_SCORE',
+      },
     });
   }
 }
