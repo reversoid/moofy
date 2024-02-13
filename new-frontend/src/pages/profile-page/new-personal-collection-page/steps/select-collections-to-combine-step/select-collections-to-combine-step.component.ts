@@ -46,7 +46,6 @@ export class SelectCollectionsToCombineStepComponent implements OnInit {
   }
 
   handleFormSubmit() {
-    console.log(this.form.value);
     this.router.navigate(['..', 'combine-options'], { relativeTo: this.route });
   }
 }
