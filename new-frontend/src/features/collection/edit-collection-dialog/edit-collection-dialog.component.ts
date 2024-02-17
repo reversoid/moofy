@@ -24,14 +24,17 @@ export class EditCollectionDialogComponent {
     private readonly collectionService: CollectionService,
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<CollectionWithInfo, CollectionDto>,
+    private readonly context: TuiDialogContext<
+      CollectionWithInfo,
+      { collection: CollectionDto; isPersonal: boolean }
+    >,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
   loading = false;
 
   get existingCollectionDto(): CollectionDto {
-    const existingCollection = this.context.data;
+    const { collection: existingCollection } = this.context.data;
 
     return {
       description: existingCollection.description,
@@ -39,6 +42,10 @@ export class EditCollectionDialogComponent {
       isPrivate: existingCollection.isPrivate,
       name: existingCollection.name,
     };
+  }
+
+  get isPersonal() {
+    return this.context.data.isPersonal;
   }
 
   editCollection({ description, imageUrl, isPrivate, name }: CollectionDto) {

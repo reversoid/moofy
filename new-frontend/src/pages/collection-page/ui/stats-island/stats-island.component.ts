@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -16,6 +16,8 @@ import { CollectionWithInfo } from '../../../../shared/types';
 })
 export class StatsIslandComponent {
   constructor(private readonly dialogService: TuiDialogService) {}
+
+  @Input() isPersonal = false;
 
   openCommentsDialog() {
     this.dialogService.open('Some comments here', { label: 'Комментарии' }).subscribe();
@@ -35,11 +37,15 @@ export class StatsIslandComponent {
         label: 'Обновить коллекцию',
         size: 's',
         data: {
-          description: 'some desc',
-          imageUrl: null,
-          isPrivate: false,
-          name: 'Some name',
-        } satisfies CollectionDto,
+          collection: {
+            description: 'some desc',
+            imageUrl: null,
+            isPrivate: false,
+            name: 'Some name',
+          } satisfies CollectionDto,
+
+          isPersonal: this.isPersonal,
+        },
       })
       .subscribe();
   }

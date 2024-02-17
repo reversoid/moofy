@@ -9,7 +9,7 @@
     <app-image-island></app-image-island>
   </div>
 
-  <app-stats-island></app-stats-island>
+  <app-stats-island [isPersonal]="(isPersonal$ | async) ?? false"></app-stats-island>
 </div>
 
 <button

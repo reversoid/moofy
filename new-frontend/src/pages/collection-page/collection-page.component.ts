@@ -49,9 +49,7 @@ export class CollectionPageComponent {
 
   response = this.httpClient.get<{ ok: boolean }>('profile').pipe(map((v) => v));
 
-  private readonly isPersonal$ = this.activatedRoute.data.pipe(
-    map((v) => Boolean(v['isPersonal'])),
-  );
+  readonly isPersonal$ = this.activatedRoute.data.pipe(map((v) => Boolean(v['isPersonal'])));
 
   showInfoAboutCollection() {
     this.dialogService.open('Some modal here', { label: 'О коллекции' }).subscribe();
