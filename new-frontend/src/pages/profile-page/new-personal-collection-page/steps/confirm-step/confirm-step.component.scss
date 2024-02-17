@@ -5,17 +5,23 @@ ul {
   list-style-position: inside;
 }
 
-tui-island {
-  width: fit-content;
-
+button {
+  margin-top: 1rem;
   @media #{$tui-mobile} {
     width: 100%;
   }
 }
 
-button {
-  margin-top: 1rem;
+h3 {
+  margin-top: 0;
+}
+
+.cards-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+
   @media #{$tui-mobile} {
-    width: 100%;
+    grid-template-columns: 1fr;
   }
 }
