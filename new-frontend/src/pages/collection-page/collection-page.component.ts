@@ -14,7 +14,7 @@ import { UpdatedIslandComponent } from './ui/updated-island/updated-island.compo
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { CreateReviewDialogComponent } from './ui/create-review-dialog/create-review-dialog.component';
-import { ReviewConflictsComponent } from './ui/review-conflicts/review-conflicts.component';
+import { ReviewConflictsBlockComponent } from './ui/review-conflicts-block/review-conflicts-block.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -33,7 +33,7 @@ import { ReviewConflictsComponent } from './ui/review-conflicts/review-conflicts
     StatsIslandComponent,
     UpdatedIslandComponent,
     ReviewListComponent,
-    ReviewConflictsComponent,
+    ReviewConflictsBlockComponent,
   ],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',

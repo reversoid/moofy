@@ -1,0 +1,10 @@
+<tui-notification class="conflicts-block" status="error">
+  <p>
+    При объединении коллекций произошла ошибка: существует несколько обзоров на один и тот же фильм.
+  </p>
+
+  <p>Необходимо выбрать один обзор из существующих.</p>
+
+  <p>Дублирующиеся обзоры были скрыты</p>
+  <button (click)="openConflictsDialog()" tuiButton>Исправить</button>
+</tui-notification>

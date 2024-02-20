@@ -1,0 +1,40 @@
+@import 'shared';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--tui-text-02);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+tui-radio-block {
+  width: 100%;
+
+  ::ng-deep .t-content {
+    width: 100%;
+  }
+
+  ::ng-deep label.t-wrapper {
+    padding: 0 !important;
+  }
+
+  app-review ::ng-deep tui-island {
+    background: none !important;
+  }
+}
+
+.submit-button {
+  @media #{$tui-mobile} {
+    width: 100%;
+  }
+}
