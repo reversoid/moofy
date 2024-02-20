@@ -1,7 +1,7 @@
 <form class="tui-space_top-5">
   <div class="wrapper">
     <div *ngFor="let group of reviews | conflictingReviews" class="group">
-      <h6 class="title tui-text_h5">Однажды в Голливуде...</h6>
+      <h6 class="title tui-text_h6">Однажды в Голливуде...</h6>
       <div *ngFor="let review of group.reviews">
         <tui-radio-block [hideRadio]="true">
           <app-review></app-review>
