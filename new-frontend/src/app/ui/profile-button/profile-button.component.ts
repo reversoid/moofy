@@ -1,5 +1,5 @@
 import { AsyncPipe, NgIf, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiActiveZoneModule, TuiLetModule, TuiObscuredModule } from '@taiga-ui/cdk';
 import {
@@ -31,28 +31,25 @@ import { User } from '../../../shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileButtonComponent {
-  constructor(private readonly cdr: ChangeDetectorRef) {}
-
   @Input({ required: true }) user!: User;
 
-  dropdownOpen = false;
+  dropdownOpen = signal<boolean>(false);
 
   onClick(): void {
-    this.dropdownOpen = !this.dropdownOpen;
+    this.dropdownOpen.update((open) => !open);
   }
 
   closeDropdown() {
-    this.dropdownOpen = false;
-    this.cdr.markForCheck();
+    this.dropdownOpen.set(false);
   }
 
   onObscured(obscured: boolean): void {
     if (obscured) {
-      this.dropdownOpen = false;
+      this.dropdownOpen.set(false);
     }
   }
 
   onActiveZone(active: boolean): void {
-    this.dropdownOpen = active && this.dropdownOpen;
+    this.dropdownOpen.update((open) => active && open);
   }
 }

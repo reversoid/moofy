@@ -4,7 +4,7 @@
   [appearance]="user.imageUrl ? 'mono' : 'secondary'"
   type="button"
   [tuiDropdown]="dropdownContent"
-  [tuiDropdownManual]="dropdownOpen"
+  [tuiDropdownManual]="dropdownOpen()"
   (click)="onClick()"
   (tuiActiveZoneChange)="onActiveZone($event)"
   (tuiObscured)="onObscured($event)"
