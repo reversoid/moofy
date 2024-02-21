@@ -1,0 +1,14 @@
+@import 'shared';
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.5rem;
+}
+
+.toggle-view-button {
+  @media #{$tui-mobile} {
+    display: none;
+  }
+}

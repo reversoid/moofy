@@ -4,6 +4,7 @@ import { Subject, filter, takeUntil } from 'rxjs';
 
 export type CollectionsView = 'list' | 'grid';
 
+// TODO rename it is not only for collections
 @Injectable()
 export class CollectionGridService implements OnDestroy {
   constructor(private readonly breakpointService: TuiBreakpointService) {

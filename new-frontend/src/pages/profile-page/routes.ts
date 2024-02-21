@@ -4,19 +4,43 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: ':id',
-    loadComponent: () => import('./profile-page.component').then((c) => c.ProfilePageComponent),
-  },
-  {
-    path: ':id/personal-collection',
-    loadComponent: () =>
-      import('../collection-page/collection-page.component').then((c) => c.CollectionPageComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./profile-page.component').then((c) => c.ProfilePageComponent),
+      },
 
-    data: {
-      isPersonal: true,
-    },
-  },
-  {
-    path: ':id/personal-collection/new',
-    loadChildren: () => import('./new-personal-collection-page/routes').then((c) => c.routes),
+      {
+        path: 'followers',
+        loadComponent: () =>
+          import('./followers-page/followers-page.component').then((c) => c.FollowersPageComponent),
+      },
+
+      {
+        path: 'followees',
+        loadComponent: () =>
+          import('./followees-page/followees-page.component').then((c) => c.FolloweesPageComponent),
+      },
+
+      {
+        path: 'personal-collection',
+        loadComponent: () =>
+          import('../collection-page/collection-page.component').then(
+            (c) => c.CollectionPageComponent,
+          ),
+
+        data: {
+          isPersonal: true,
+        },
+
+        children: [
+          {
+            path: 'new',
+            loadChildren: () =>
+              import('./new-personal-collection-page/routes').then((c) => c.routes),
+          },
+        ],
+      },
+    ],
   },
 ];

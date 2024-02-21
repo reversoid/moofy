@@ -1,0 +1,12 @@
+<div class="heading">
+  <h1 class="tui-text_h1">Подписчики</h1>
+  <button
+    class="toggle-view-button"
+    tuiIconButton
+    appearance="secondary"
+    [icon]="collectionGridService.collectionsViewIcon()"
+    (click)="collectionGridService.toggleCollectionsView()"
+  ></button>
+</div>
+
+<app-user-grid [view]="collectionGridService.collectionsView()"></app-user-grid>
