@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
   TuiButtonModule,
@@ -16,14 +18,12 @@ import {
   tuiInputPasswordOptionsProvider,
 } from '@taiga-ui/kit';
 import { finalize, of, takeUntil } from 'rxjs';
-import { AuthService } from '../../../features/auth/auth.service';
-import { USERNAME_PATTERN } from '../utils/username-pattern';
-import { IsUsernameTakenValidator } from './utils/is-username-taken.validator';
-import { AsyncPipe } from '@angular/common';
-import { maxLength, minLength, pattern, required } from '../../../shared/utils/validators';
-import { Store } from '@ngrx/store';
 import { AppState } from '../../../app/store';
 import { currentUserActions } from '../../../entities/current-user/actions';
+import { AuthService } from '../../../features/auth/auth.service';
+import { maxLength, minLength, pattern, required } from '../../../shared/utils/validators';
+import { USERNAME_PATTERN } from '../utils/username-pattern';
+import { IsUsernameTakenValidator } from './utils/is-username-taken.validator';
 
 @Component({
   selector: 'app-register-page',
@@ -66,12 +66,11 @@ export class RegisterPageComponent {
     private readonly authService: AuthService,
     private readonly destroy$: TuiDestroyService,
     private readonly isUsernameTakenValidator: IsUsernameTakenValidator,
-    private readonly cdr: ChangeDetectorRef,
     private readonly store: Store<AppState>,
     private readonly router: Router,
   ) {}
 
-  isLoading = false;
+  readonly isLoading = signal(false);
 
   registerForm = this.fb.group({
     username: this.fb.control('', {
@@ -97,14 +96,13 @@ export class RegisterPageComponent {
   register() {
     const { username, password } = this.registerForm.value;
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.authService
       .register(username!, password!)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => {
-          this.isLoading = false;
-          this.cdr.markForCheck();
+          this.isLoading.set(false);
         }),
       )
       .subscribe((v) => {
