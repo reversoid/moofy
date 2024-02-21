@@ -31,6 +31,10 @@ export const appRoutes: Routes = [
     path: 'explore',
     loadChildren: () => import('./explore-page/routes').then((r) => r.routes),
   },
+  {
+    path: 'support',
+    loadComponent: () => import('./support/support.component').then((r) => r.SupportComponent),
+  },
 
   { path: '**', redirectTo: '' },
 ];
