@@ -1,12 +1,12 @@
 import { NgIf, NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  signal,
 } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -70,7 +70,6 @@ export class CollectionFormComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
     private readonly collectionService: CollectionService,
     private readonly notificationService: NotificationService,
-    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   @Input() formSubmitting = false;
@@ -92,14 +91,14 @@ export class CollectionFormComponent implements OnInit {
 
   fileControl = this.fb.control<File | null>(null);
 
-  uploadState: ImageUploadState = 'notLoaded';
+  readonly uploadState = signal<ImageUploadState>('notLoaded');
 
   readonly imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
 
   readonly maxFileSize = Number.POSITIVE_INFINITY;
 
   get shouldNotSubmitCollection() {
-    return this.uploadState === 'loading' || this.collectionForm.invalid || this.formSubmitting;
+    return this.uploadState() === 'loading' || this.collectionForm.invalid || this.formSubmitting;
   }
 
   get uploadedImageUrl(): string | null {
@@ -139,7 +138,7 @@ export class CollectionFormComponent implements OnInit {
   }
 
   private setupInitialUploadState() {
-    this.uploadState = this.collectionDto?.imageUrl ? 'loaded' : 'notLoaded';
+    this.uploadState.set(this.collectionDto?.imageUrl ? 'loaded' : 'notLoaded');
   }
 
   private setupImageUpload() {
@@ -150,15 +149,13 @@ export class CollectionFormComponent implements OnInit {
         }),
         filter(Boolean),
         tap(() => {
-          this.uploadState = 'loading';
-          this.cdr.markForCheck();
+          this.uploadState.set('loading');
         }),
         mergeMap((f) =>
           this.collectionService.uploadCollectionImage(f).pipe(
             tap({
               error: () => {
-                this.uploadState = this.uploadedImageUrl ? 'loaded' : 'notLoaded';
-                this.cdr.markForCheck();
+                this.uploadState.set(this.uploadedImageUrl ? 'loaded' : 'notLoaded');
               },
             }),
             catchError((e) => {
@@ -176,9 +173,8 @@ export class CollectionFormComponent implements OnInit {
         ),
         tap({
           next: ({ link }) => {
-            this.uploadState = 'loaded';
+            this.uploadState.set('loaded');
             this.collectionForm.patchValue({ imageUrl: link });
-            this.cdr.markForCheck();
           },
         }),
       )

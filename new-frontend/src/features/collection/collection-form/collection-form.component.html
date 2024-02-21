@@ -37,7 +37,7 @@
         <ng-template #base>
           <div class="file-input__content">
             <div class="content">
-              @switch (uploadState) {
+              @switch (uploadState()) {
                 @case ('notLoaded') {
                   <tui-marker-icon
                     class="file-icon"
