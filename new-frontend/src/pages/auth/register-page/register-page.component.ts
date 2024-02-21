@@ -90,7 +90,7 @@ export class RegisterPageComponent {
   });
 
   get buttonDisabled() {
-    return this.registerForm.invalid || this.registerForm.pending || this.isLoading;
+    return this.registerForm.invalid || this.registerForm.pending || this.isLoading();
   }
 
   register() {
