@@ -14,9 +14,19 @@
 
   &.grid {
     @include grid;
+    @media #{$tui-mobile} {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
   }
 }
 
 .loader {
   margin-top: 2rem;
+}
+
+.user-grid.list {
+  button {
+    align-self: center;
+  }
 }

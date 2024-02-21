@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { UserCardComponent } from '../../entities/user-card/user-card.component';
 import { User } from '../../shared/types';
 import { NgClass } from '@angular/common';
+import { TuiButtonModule } from '@taiga-ui/core';
 
 export type UsersView = 'list' | 'grid';
 
@@ -10,7 +11,7 @@ export type UsersView = 'list' | 'grid';
 @Component({
   selector: 'app-user-grid',
   standalone: true,
-  imports: [UserCardComponent, NgClass],
+  imports: [UserCardComponent, NgClass, TuiButtonModule],
   templateUrl: './user-grid.component.html',
   styleUrl: './user-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

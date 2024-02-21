@@ -1,6 +1,14 @@
 <div class="user-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user"></app-user-card>
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user"></app-user-card>
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user"></app-user-card>
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user"></app-user-card>
+  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
+    <button tuiButton>Подписаться</button>
+  </app-user-card>
+  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
+    <button tuiButton>Подписаться</button>
+  </app-user-card>
+  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
+    <button tuiButton>Подписаться</button>
+  </app-user-card>
+  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
+    <button tuiButton>Подписаться</button>
+  </app-user-card>
 </div>
