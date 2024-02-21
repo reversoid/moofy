@@ -1,3 +1,27 @@
 :host {
   display: flex;
 }
+
+.footer {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.creator {
+  color: var(--tui-text-02);
+}
+
+a.colored {
+  color: var(--tui-link);
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
