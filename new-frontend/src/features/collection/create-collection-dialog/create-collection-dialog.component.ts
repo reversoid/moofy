@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, signal } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -25,13 +25,12 @@ export class CreateCollectionDialogComponent {
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<CollectionWithInfo>,
-    private cdr: ChangeDetectorRef,
   ) {}
 
-  loading = false;
+  loading = signal(false);
 
   createCollection({ description, imageUrl, isPrivate, name }: CollectionDto) {
-    this.loading = true;
+    this.loading.set(true);
 
     this.collectionService
       .createCollection({
@@ -42,8 +41,7 @@ export class CreateCollectionDialogComponent {
       })
       .pipe(
         finalize(() => {
-          this.loading = false;
-          this.cdr.markForCheck();
+          this.loading.set(false);
         }),
         takeUntil(this.destroy$),
       )
