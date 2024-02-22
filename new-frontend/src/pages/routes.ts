@@ -25,6 +25,11 @@ export const appRoutes: Routes = [
       import('./settings-page/settings-page.component').then((r) => r.SettingsPageComponent),
   },
   {
+    path: 'roadmap',
+    loadComponent: () =>
+      import('./roadmap-page/roadmap-page.component').then((r) => r.RoadmapPageComponent),
+  },
+  {
     path: 'welcome',
     loadChildren: () => import('./welcome-page/routes').then((r) => r.routes),
   },
