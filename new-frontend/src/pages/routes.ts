@@ -2,6 +2,11 @@ import { Routes } from '@angular/router';
 
 export const appRoutes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./landing-page/landing-page.component').then((c) => c.LandingPageComponent),
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./auth/routes').then((r) => r.routes),
   },
