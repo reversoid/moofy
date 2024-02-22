@@ -9,7 +9,7 @@
         <a routerLink="/explore" tuiButton appearance="secondary" size="m" iconAlign="left"
           >Поиск</a
         >
-        <a routerLink="/feed" tuiButton appearance="secondary" size="m" iconAlign="left">Лента</a>
+
         <a routerLink="/welcome" tuiButton appearance="secondary" size="m" iconAlign="left"
           >Мои коллекции</a
         >
@@ -26,7 +26,11 @@
         <a appearance="secondary" routerLink="/auth" tuiIconButton icon="tuiIconLogInLarge"></a>
       </ng-template>
 
-      <app-burger-menu *ngIf="user$ | async" [(sidebarOpen)]="sidebarOpen">
+      <app-burger-menu
+        *ngIf="user$ | async"
+        [sidebarOpen]="sidebarOpen"
+        (sidebarOpenChange)="sidebarOpen = $event"
+      >
         <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
       </app-burger-menu>
     </div>
