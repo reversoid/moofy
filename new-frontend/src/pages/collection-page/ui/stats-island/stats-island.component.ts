@@ -40,7 +40,7 @@ export class StatsIslandComponent {
   handleOptions() {
     this.dialogService
       .open<CollectionWithInfo>(new PolymorpheusComponent(EditCollectionDialogComponent), {
-        label: 'Обновить коллекцию',
+        label: 'Настройки коллекции',
         size: 's',
         data: {
           collection: {
