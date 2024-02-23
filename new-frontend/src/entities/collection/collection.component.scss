@@ -10,6 +10,10 @@
   position: relative;
   border-radius: calc(var(--tui-radius-xl) - 1rem);
   overflow: hidden;
+
+  img {
+    object-fit: cover;
+  }
 }
 
 .horizontal {

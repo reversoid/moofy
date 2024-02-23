@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CollectionComponent } from '../../entities/collection/collection.component';
 import { TuiLinkModule, TuiLoaderModule } from '@taiga-ui/core';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Collection } from '../../shared/types';
 import { RouterLink } from '@angular/router';
 
@@ -27,7 +27,7 @@ export const collectionMock: Collection = {
 @Component({
   selector: 'app-collection-grid',
   standalone: true,
-  imports: [NgIf, CollectionComponent, TuiLoaderModule, NgClass, RouterLink, TuiLinkModule],
+  imports: [NgIf, CollectionComponent, TuiLoaderModule, NgClass, RouterLink, TuiLinkModule, NgFor],
   templateUrl: './collection-grid.component.html',
   styleUrl: './collection-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +37,9 @@ export class CollectionGridComponent {
 
   @Input() hideDescription?: boolean = false;
 
+  @Input() collections?: Collection[] = [];
+
   loading = true;
 
-  collection = collectionMock;
+  // collection = collectionMock;
 }

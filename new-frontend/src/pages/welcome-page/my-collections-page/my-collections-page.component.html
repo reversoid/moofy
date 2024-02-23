@@ -12,4 +12,7 @@
   </tui-input>
 </div>
 
-<app-collection-grid [hideDescription]="true"></app-collection-grid>
+<app-collection-grid
+  [collections]="(collections$ | async) || []"
+  [hideDescription]="true"
+></app-collection-grid>

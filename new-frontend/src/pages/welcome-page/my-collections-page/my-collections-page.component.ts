@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiButtonModule,
@@ -12,6 +12,16 @@ import { CollectionGridComponent } from '../../../widgets/collection-grid/collec
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { CollectionWithInfo } from '../../../shared/types';
 import { CreateCollectionDialogComponent } from '../../../features/collection/create-collection-dialog/create-collection-dialog.component';
+import { CollectionService } from '../../../features/collection/utils/collection.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { map, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../app/store';
+import {
+  selectAllUserCollections,
+  userCollectionsActions,
+} from '../../../entities/user-collections';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-collection-page',
@@ -25,14 +35,33 @@ import { CreateCollectionDialogComponent } from '../../../features/collection/cr
     FormsModule,
     CollectionGridComponent,
     TuiButtonModule,
+    AsyncPipe,
   ],
   templateUrl: './my-collections-page.component.html',
   styleUrl: './my-collections-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [],
+  providers: [TuiDestroyService],
 })
-export class MyCollectionsPageComponent {
-  constructor(private readonly dialogService: TuiDialogService) {}
+export class MyCollectionsPageComponent implements OnInit {
+  constructor(
+    private readonly dialogService: TuiDialogService,
+    private readonly collectionService: CollectionService,
+    private readonly destroy$: TuiDestroyService,
+    private readonly store: Store<AppState>,
+  ) {}
+
+  ngOnInit(): void {
+    this.collectionService
+      .getCollections()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.store.dispatch(userCollectionsActions.set({ collections: data.items }));
+      });
+  }
+
+  collections$ = this.store
+    .select(selectAllUserCollections)
+    .pipe(map((v) => v.map((c) => c.collection)));
 
   search = new FormControl<string>('');
 

@@ -1,29 +1,5 @@
 <div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <a [routerLink]="['/collections', collection.id]" tuiLink>
-    <app-collection
-      [view]="view === 'list' ? 'horizontal' : 'vertical'"
-      [collection]="collection"
-      [hideDescription]="hideDescription"
-    ></app-collection>
-  </a>
-
-  <a [routerLink]="['/collections', collection.id]" tuiLink>
-    <app-collection
-      [view]="view === 'list' ? 'horizontal' : 'vertical'"
-      [collection]="collection"
-      [hideDescription]="hideDescription"
-    ></app-collection>
-  </a>
-
-  <a [routerLink]="['/collections', collection.id]" tuiLink>
-    <app-collection
-      [view]="view === 'list' ? 'horizontal' : 'vertical'"
-      [collection]="collection"
-      [hideDescription]="hideDescription"
-    ></app-collection>
-  </a>
-
-  <a [routerLink]="['/collections', collection.id]" tuiLink>
+  <a *ngFor="let collection of collections" [routerLink]="['/collections', collection.id]" tuiLink>
     <app-collection
       [view]="view === 'list' ? 'horizontal' : 'vertical'"
       [collection]="collection"

@@ -1,13 +1,13 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Collection } from '../../shared/types';
+import { CollectionWithInfo } from '../../shared/types';
 
 export const userCollectionsActions = createActionGroup({
   source: 'User collections',
   events: {
-    set: props<{ collections: Collection[] }>(),
-    remove: props<{ collectionId: Collection['id'] }>(),
-    add: props<{ collection: Collection }>(),
-    update: props<{ collection: Collection }>(),
+    set: props<{ collections: CollectionWithInfo[] }>(),
+    remove: props<{ collectionId: CollectionWithInfo['collection']['id'] }>(),
+    add: props<{ collection: CollectionWithInfo }>(),
+    update: props<{ collection: CollectionWithInfo }>(),
     clear: emptyProps(),
   },
 });

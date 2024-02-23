@@ -9,13 +9,45 @@ import {
 } from '../../../shared/utils/file';
 import { ImageTooLargeError, ImageWrongFormatError } from './errors';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
-import { CollectionWithInfo } from '../../../shared/types';
+import { Collection, CollectionWithInfo, PaginatedData, Review } from '../../../shared/types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
   constructor(private readonly http: HttpClient) {}
+
+  getCollections() {
+    return this.http.get<PaginatedData<CollectionWithInfo>>('profile/collections');
+  }
+
+  getCollection(id: Collection['id']) {
+    return this.http.get<{ collection: CollectionWithInfo; reviews: PaginatedData<Review> }>(
+      `collections/${id}`,
+    );
+  }
+
+  viewCollection(id: Collection['id']) {
+    return this.http.post<void>(`collections/${id}/views`, {});
+  }
+
+  createCollection(props: CreateCollectionProps) {
+    return this.http.post<CollectionWithInfo>('collections', {
+      name: props.name,
+      description: props.description,
+      imageUrl: props.imageUrl,
+      isPrivate: !props.isPublic,
+    });
+  }
+
+  updateCollection(props: UpdateCollectionProps) {
+    return this.http.patch<CollectionWithInfo>(`collections/${props.id}`, {
+      name: props.name,
+      description: props.description,
+      imageUrl: props.imageUrl,
+      isPrivate: !props.isPublic,
+    });
+  }
 
   uploadCollectionImage(file: File): Observable<{ link: string }> {
     try {
@@ -41,24 +73,6 @@ export class CollectionService {
         throw e;
       }),
     );
-  }
-
-  createCollection(props: CreateCollectionProps) {
-    return this.http.post<CollectionWithInfo>('collections', {
-      name: props.name,
-      description: props.description,
-      imageUrl: props.imageUrl,
-      isPrivate: !props.isPublic,
-    });
-  }
-
-  updateCollection(props: UpdateCollectionProps) {
-    return this.http.patch<CollectionWithInfo>(`collections/${props.id}`, {
-      name: props.name,
-      description: props.description,
-      imageUrl: props.imageUrl,
-      isPrivate: !props.isPublic,
-    });
   }
 
   private validateImage(file: File): File {
