@@ -2,13 +2,34 @@
 
 <p>Эта страница посвящена дорожной карте развития нашего проекта</p>
 
-<h2 class="tui-text_h3">Улучшенная лента</h2>
-<p>Новый дизайн ленты. Можно будет видеть не только обновленные коллекции, но и новые обзоры.</p>
-
-<h2 class="tui-text_h3">Рекомендации к просмотру</h2>
-<p>Алгоритм, основанный на предпочтениях, который предложит пользователю фильмы к просмотру</p>
-
-<h2 class="tui-text_h3">Рекомендации к групповому просмотру</h2>
 <p>
-  Алгоритм, основанный на предпочтениях, который предложит группе пользователей фильмы к просмотру.
+  Если у вас есть предложения по улучшению проекта, обратитесь в
+  <a class="colored" tuiLink routerLink="/support">поддержку</a>
 </p>
+
+<section class="map-block">
+  <h2 class="tui-text_h3">Обозначения</h2>
+
+  <div class="map">
+    <tui-badge status="success" value="Новая возможность"></tui-badge>
+    <tui-badge status="info" value="Улучшение"></tui-badge>
+  </div>
+</section>
+
+<section class="ideas-block">
+  <h2 class="tui-text_h3">Пункты</h2>
+
+  <div class="ideas">
+    <tui-island *ngFor="let item of roadmap">
+      <h2 class="tui-text_h4">{{ item.title }}</h2>
+      <p>{{ item.description }}</p>
+      <tui-badge
+        [tuiHint]="item.type === 'feature' ? featureHint : improveHint"
+        [status]="item.type === 'feature' ? 'success' : 'info'"
+      ></tui-badge>
+    </tui-island>
+  </div>
+
+  <ng-template #featureHint> Новая возможность </ng-template>
+  <ng-template #improveHint> Улучшение </ng-template>
+</section>

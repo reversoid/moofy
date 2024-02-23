@@ -1,0 +1,38 @@
+a.colored {
+  color: var(--tui-link);
+}
+
+.map-block {
+  margin-top: 2rem;
+  .map {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+.ideas-block {
+  margin-top: 2rem;
+
+  .ideas {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    tui-island {
+      position: relative;
+      tui-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+      h2 {
+        margin-top: 0;
+      }
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
