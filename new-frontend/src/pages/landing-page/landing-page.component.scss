@@ -16,19 +16,3 @@
     }
   }
 }
-
-.blocks {
-  margin-top: 4rem;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-
-  .block {
-    position: relative;
-    overflow: hidden;
-    width: 600px;
-    height: 400px;
-    // background-color: green;
-    border-radius: 2rem;
-  }
-}
