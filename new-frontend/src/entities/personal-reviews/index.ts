@@ -1,4 +1,4 @@
-import { createActionGroup, createReducer } from '@ngrx/store';
+import { createReducer } from '@ngrx/store';
 
 export const featureKey = 'personal-reviews';
 
