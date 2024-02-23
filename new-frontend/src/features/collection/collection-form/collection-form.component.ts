@@ -29,6 +29,7 @@ import { NotificationService } from '../../../app/utils/notification.service';
 import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/file';
 import { CollectionService } from '../utils/collection.service';
 import { ImageTooLargeError, ImageWrongFormatError } from '../utils/errors';
+import { Collection } from '../../../shared/types';
 
 export type CollectionDto = {
   description: string | null;
@@ -74,13 +75,17 @@ export class CollectionFormComponent implements OnInit {
 
   @Input() formSubmitting = false;
 
-  @Input() collectionDto?: CollectionDto;
+  @Input() collection?: Collection;
 
   @Input() removeIsPrivate = false;
+
+  @Input() showDeleteButton = false;
 
   @Input({ required: true }) submutButtonText!: string;
 
   @Output() collectionSubmit = new EventEmitter<CollectionDto>();
+
+  @Output() collectionDelete = new EventEmitter<{ collectionId: Collection['id'] }>();
 
   collectionForm = this.fb.group({
     name: this.fb.control<string>('', { validators: Validators.required }),
@@ -111,6 +116,12 @@ export class CollectionFormComponent implements OnInit {
     this.setupInitialUploadState();
   }
 
+  handleDelete() {
+    if (this.collection?.id !== undefined) {
+      this.collectionDelete.emit({ collectionId: this.collection.id });
+    }
+  }
+
   submitCollection() {
     if (this.shouldNotSubmitCollection) {
       return;
@@ -127,18 +138,18 @@ export class CollectionFormComponent implements OnInit {
   }
 
   private setupInitialForm() {
-    if (this.collectionDto) {
+    if (this.collection) {
       this.collectionForm.setValue({
-        name: this.collectionDto.name,
-        description: this.collectionDto.description,
-        imageUrl: this.collectionDto.description,
-        isPrivate: this.collectionDto.isPrivate,
+        name: this.collection.name,
+        description: this.collection.description,
+        imageUrl: this.collection.description,
+        isPrivate: !this.collection.isPublic,
       });
     }
   }
 
   private setupInitialUploadState() {
-    this.uploadState.set(this.collectionDto?.imageUrl ? 'loaded' : 'notLoaded');
+    this.uploadState.set(this.collection?.imageUrl ? 'loaded' : 'notLoaded');
   }
 
   private setupImageUpload() {

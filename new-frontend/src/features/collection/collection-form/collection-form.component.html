@@ -62,6 +62,19 @@
     </tui-input-files>
   </div>
 
+  <div *ngIf="showDeleteButton" class="tui-space_top-5">
+    <button
+      (click)="handleDelete()"
+      type="button"
+      class="delete-button"
+      size="m"
+      tuiButton
+      appearance="secondary-destructive"
+    >
+      Удалить
+    </button>
+  </div>
+
   <button
     [disabled]="shouldNotSubmitCollection"
     [showLoader]="formSubmitting"

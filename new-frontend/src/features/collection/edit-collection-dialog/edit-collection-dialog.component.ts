@@ -3,7 +3,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { finalize, takeUntil } from 'rxjs';
-import { CollectionWithInfo } from '../../../shared/types';
+import { Collection, CollectionWithInfo } from '../../../shared/types';
 import {
   CollectionDto,
   CollectionFormComponent,
@@ -26,21 +26,15 @@ export class EditCollectionDialogComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       CollectionWithInfo,
-      { collection: CollectionDto; isPersonal: boolean }
+      { collection: Collection; isPersonal: boolean }
     >,
   ) {}
 
   loading = signal(false);
 
-  get existingCollectionDto(): CollectionDto {
+  get existingCollectionDto(): Collection {
     const { collection: existingCollection } = this.context.data;
-
-    return {
-      description: existingCollection.description,
-      imageUrl: existingCollection.imageUrl,
-      isPrivate: existingCollection.isPrivate,
-      name: existingCollection.name,
-    };
+    return existingCollection;
   }
 
   get isPersonal() {
