@@ -5,6 +5,9 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { EditCollectionDialogComponent } from '../../../../features/collection/edit-collection-dialog/edit-collection-dialog.component';
 import { CollectionDto } from '../../../../features/collection/collection-form/collection-form.component';
 import { CollectionWithInfo } from '../../../../shared/types';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../app/store';
+import { userCollectionsActions } from '../../../../entities/user-collections';
 
 @Component({
   selector: 'app-stats-island',
@@ -15,7 +18,10 @@ import { CollectionWithInfo } from '../../../../shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsIslandComponent {
-  constructor(private readonly dialogService: TuiDialogService) {}
+  constructor(
+    private readonly dialogService: TuiDialogService,
+    private readonly store: Store<AppState>,
+  ) {}
 
   @Input() isPersonal = false;
 
@@ -47,6 +53,8 @@ export class StatsIslandComponent {
           isPersonal: this.isPersonal,
         },
       })
-      .subscribe();
+      .subscribe((collection) => {
+        this.store.dispatch(userCollectionsActions.update({ collection }));
+      });
   }
 }
