@@ -71,6 +71,6 @@ export class MyCollectionsPageComponent implements OnInit {
         label: 'Создать коллекцию',
         size: 's',
       })
-      .subscribe((v) => console.log(v));
+      .subscribe((collection) => this.store.dispatch(userCollectionsActions.add({ collection })));
   }
 }
