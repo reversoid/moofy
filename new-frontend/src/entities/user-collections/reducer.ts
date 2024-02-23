@@ -1,15 +1,6 @@
-import { EntityAdapter, EntityState, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { Collection } from '../../shared/types';
 import { userCollectionsActions } from './actions';
-
-export const featureKey = 'user-collections';
-
-export interface State extends EntityState<Collection> {}
-
-export const adapter: EntityAdapter<Collection> = createEntityAdapter<Collection>({
-  selectId: (c) => c.id,
-});
+import { adapter } from './adapter';
 
 const initialState = adapter.getInitialState();
 

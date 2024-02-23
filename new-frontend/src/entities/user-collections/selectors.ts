@@ -1,4 +1,4 @@
-import { adapter } from '.';
+import { adapter } from './adapter';
 
 const { selectAll } = adapter.getSelectors();
 
