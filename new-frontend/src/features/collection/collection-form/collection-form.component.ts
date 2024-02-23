@@ -73,7 +73,9 @@ export class CollectionFormComponent implements OnInit {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Input() formSubmitting = false;
+  @Input() isFormSubmitting = false;
+
+  @Input() isDeleting = false;
 
   @Input() collection?: Collection;
 
@@ -103,7 +105,16 @@ export class CollectionFormComponent implements OnInit {
   readonly maxFileSize = Number.POSITIVE_INFINITY;
 
   get shouldNotSubmitCollection() {
-    return this.uploadState() === 'loading' || this.collectionForm.invalid || this.formSubmitting;
+    return (
+      this.isDeleting ||
+      this.uploadState() === 'loading' ||
+      this.collectionForm.invalid ||
+      this.isFormSubmitting
+    );
+  }
+
+  get shouldNotDeleteCollection() {
+    return this.isDeleting;
   }
 
   get uploadedImageUrl(): string | null {

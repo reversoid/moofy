@@ -70,6 +70,8 @@
       size="m"
       tuiButton
       appearance="secondary-destructive"
+      [disabled]="shouldNotDeleteCollection"
+      [showLoader]="isDeleting"
     >
       Удалить
     </button>
@@ -77,7 +79,7 @@
 
   <button
     [disabled]="shouldNotSubmitCollection"
-    [showLoader]="formSubmitting"
+    [showLoader]="isFormSubmitting"
     type="submit"
     class="tui-space_top-5 submit-button"
     tuiButton

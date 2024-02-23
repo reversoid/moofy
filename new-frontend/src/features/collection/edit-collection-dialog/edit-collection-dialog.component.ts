@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, Inject, signal } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { finalize, takeUntil } from 'rxjs';
+import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { finalize, mergeMap, takeUntil } from 'rxjs';
 import { Collection, CollectionWithInfo } from '../../../shared/types';
 import {
   CollectionDto,
   CollectionFormComponent,
 } from '../collection-form/collection-form.component';
+import { DeleteCollectionConfirmDialogComponent } from '../delete-collection-confirm-dialog/delete-collection-confirm-dialog.component';
 import { CollectionService } from '../utils/collection.service';
 
 @Component({
@@ -25,15 +26,19 @@ export class EditCollectionDialogComponent {
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
-      CollectionWithInfo,
+      CollectionWithInfo | null,
       { collection: Collection; isPersonal: boolean }
     >,
+    private readonly dialogService: TuiDialogService,
   ) {}
 
-  loading = signal(false);
+  isLoading = signal(false);
 
-  get existingCollectionDto(): Collection {
+  isDeleting = signal(false);
+
+  get existingCollection(): Collection {
     const { collection: existingCollection } = this.context.data;
+
     return existingCollection;
   }
 
@@ -41,8 +46,32 @@ export class EditCollectionDialogComponent {
     return this.context.data.isPersonal;
   }
 
+  deleteCollection({ collectionId }: { collectionId: Collection['id'] }) {
+    this.dialogService
+      .open<Collection['id']>(new PolymorpheusComponent(DeleteCollectionConfirmDialogComponent), {
+        label: 'Удалить коллекцию?',
+        size: 's',
+        appearance: 'danger',
+        dismissible: true,
+        data: { collectionId },
+      })
+      .pipe(
+        mergeMap((id) => {
+          this.isDeleting.set(true);
+
+          return this.collectionService.deleteCollection(id).pipe(
+            finalize(() => {
+              this.isDeleting.set(false);
+            }),
+          );
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => this.context.completeWith(null));
+  }
+
   editCollection({ description, imageUrl, isPrivate, name }: CollectionDto) {
-    this.loading.set(true);
+    this.isLoading.set(true);
 
     this.collectionService
       .updateCollection({
@@ -54,7 +83,7 @@ export class EditCollectionDialogComponent {
       })
       .pipe(
         finalize(() => {
-          this.loading.set(false);
+          this.isLoading.set(false);
         }),
         takeUntil(this.destroy$),
       )

@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
+import { Collection, CollectionWithInfo, PaginatedData, Review } from '../../../shared/types';
 import {
   MAX_IMAGE_UPLOAD_SIZE_MB,
   SUPPORTED_IMAGE_EXTENSIONS,
@@ -9,7 +10,6 @@ import {
 } from '../../../shared/utils/file';
 import { ImageTooLargeError, ImageWrongFormatError } from './errors';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
-import { Collection, CollectionWithInfo, PaginatedData, Review } from '../../../shared/types';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +25,10 @@ export class CollectionService {
     return this.http.get<{ collection: CollectionWithInfo; reviews: PaginatedData<Review> }>(
       `collections/${id}`,
     );
+  }
+
+  deleteCollection(id: Collection['id']) {
+    return this.http.delete<void>(`collections/${id}`);
   }
 
   viewCollection(id: Collection['id']) {

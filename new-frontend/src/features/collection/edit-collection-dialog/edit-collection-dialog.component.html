@@ -1,9 +1,11 @@
 <app-collection-form
   (collectionSubmit)="editCollection($event)"
-  [collection]="existingCollectionDto"
+  (collectionDelete)="deleteCollection($event)"
+  [collection]="existingCollection"
   submutButtonText="Обновить"
   class="tui-space_top-5"
-  [formSubmitting]="loading()"
+  [isFormSubmitting]="isLoading()"
+  [isDeleting]="isDeleting()"
   [removeIsPrivate]="isPersonal"
   [showDeleteButton]="!isPersonal"
 ></app-collection-form>

@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { EditCollectionDialogComponent } from '../../../../features/collection/edit-collection-dialog/edit-collection-dialog.component';
-import { CollectionDto } from '../../../../features/collection/collection-form/collection-form.component';
-import { CollectionWithInfo } from '../../../../shared/types';
-import { Store } from '@ngrx/store';
 import { AppState } from '../../../../app/store';
 import { userCollectionsActions } from '../../../../entities/user-collections';
+import { EditCollectionDialogComponent } from '../../../../features/collection/edit-collection-dialog/edit-collection-dialog.component';
+import { Collection, CollectionWithInfo } from '../../../../shared/types';
 
 @Component({
   selector: 'app-stats-island',
@@ -46,9 +45,13 @@ export class StatsIslandComponent {
           collection: {
             description: 'some desc',
             imageUrl: null,
-            isPrivate: false,
+            isPublic: false,
             name: 'Some name',
-          } satisfies CollectionDto,
+            createdAt: new Date().toISOString(),
+            id: 1,
+            user: null as unknown as any,
+            updatedAt: new Date().toISOString(),
+          } satisfies Collection,
 
           isPersonal: this.isPersonal,
         },
