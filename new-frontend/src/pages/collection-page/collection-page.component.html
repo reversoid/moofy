@@ -36,17 +36,24 @@
   ></button>
 </div>
 
-<tui-input
-  [tuiTextfieldLabelOutside]="true"
-  class="search-input tui-space_bottom-5"
-  tuiTextfieldIconLeft="tuiIconSearchLarge"
-  [tuiTextfieldCleaner]="true"
-  [formControl]="search"
->
-  Поиск
-  <input tuiTextfield role="search" />
-</tui-input>
+<ng-container *ngIf="reviewsExist$ | async; else noReviews">
+  <tui-input
+    [tuiTextfieldLabelOutside]="true"
+    class="search-input tui-space_bottom-5"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    [tuiTextfieldCleaner]="true"
+    [formControl]="search"
+  >
+    Поиск
+    <input tuiTextfield role="search" />
+  </tui-input>
 
-<!-- <app-review-conflicts-block></app-review-conflicts-block> -->
+  <!-- TODO make it lazy loadable -->
+  <app-review-conflicts-block></app-review-conflicts-block>
 
-<app-review-list [reviews]="reviews$ | async"></app-review-list>
+  <app-review-list [reviews]="reviews$ | async"></app-review-list>
+</ng-container>
+
+<ng-template #noReviews>
+  <app-empty-collection-placeholder> </app-empty-collection-placeholder>
+</ng-template>

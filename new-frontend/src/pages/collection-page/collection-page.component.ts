@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,6 +17,7 @@ import { ReviewConflictsBlockComponent } from './ui/review-conflicts-block/revie
 import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
 import dayjs from 'dayjs';
+import { EmptyCollectionPlaceholderComponent } from './ui/empty-collection-placeholder/empty-collection-placeholder.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -36,6 +37,8 @@ import dayjs from 'dayjs';
     UpdatedIslandComponent,
     ReviewListComponent,
     ReviewConflictsBlockComponent,
+    EmptyCollectionPlaceholderComponent,
+    NgIf,
   ],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
@@ -89,4 +92,6 @@ export class CollectionPageComponent {
   stats$ = this.collectionData$.pipe(map((c) => ({ ...c.socialStats, ...c.additionalInfo })));
 
   reviews$ = this.collectionData$.pipe(map((c) => c.reviews));
+
+  reviewsExist$ = this.reviews$.pipe(map((r) => r.items.length > 0));
 }

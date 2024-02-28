@@ -1,9 +1,7 @@
 <tui-island class="creator">
   <h4 class="tui-island__title">
     Создатель:
-    <a tuiLink [routerLink]="['/profile', user?.id]" class=".tui-island__paragraph_link">{{
-      user?.username
-    }}</a>
+    <a tuiLink [routerLink]="['/profile', user?.id]" class="username">{{ user?.username }}</a>
   </h4>
 
   <div class="tui-island__content">
