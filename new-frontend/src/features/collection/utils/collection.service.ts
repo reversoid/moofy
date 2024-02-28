@@ -11,6 +11,8 @@ import {
 import { ImageTooLargeError, ImageWrongFormatError } from './errors';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
 
+export type FullCollection = CollectionWithInfo & { reviews: PaginatedData<Review> };
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,9 +24,7 @@ export class CollectionService {
   }
 
   getCollection(id: Collection['id']) {
-    return this.http.get<CollectionWithInfo & { reviews: PaginatedData<Review> }>(
-      `collections/${id}`,
-    );
+    return this.http.get<FullCollection>(`collections/${id}`);
   }
 
   deleteCollection(id: Collection['id']) {
