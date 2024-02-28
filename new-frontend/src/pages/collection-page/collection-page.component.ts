@@ -2,19 +2,21 @@ import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { map } from 'rxjs';
+import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
+import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
+import { CreateReviewDialogComponent } from './ui/create-review-dialog/create-review-dialog.component';
 import { CreatorIslandComponent } from './ui/creator-island/creator-island.component';
 import { DescriptionIslandComponent } from './ui/description-island/description-island.component';
 import { ImageIslandComponent } from './ui/image-island/image-island.component';
+import { ReviewConflictsBlockComponent } from './ui/review-conflicts-block/review-conflicts-block.component';
 import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
-import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { CreateReviewDialogComponent } from './ui/create-review-dialog/create-review-dialog.component';
-import { ReviewConflictsBlockComponent } from './ui/review-conflicts-block/review-conflicts-block.component';
+import dayjs from 'dayjs';
 
 @Component({
   selector: 'app-collection-page',
@@ -59,10 +61,32 @@ export class CollectionPageComponent {
 
   createReview() {
     this.dialogService
-      .open(new PolymorpheusComponent(CreateReviewDialogComponent, this.injector), {
+      .open(new PolymorpheusComponent(CreateReviewDialogComponent), {
         label: 'Добавить фильм',
         size: 's',
       })
       .subscribe();
   }
+
+  private collectionData$ = this.activatedRoute.data.pipe(
+    map<Data, CollectionWithInfo & { reviews: PaginatedData<Review> }>(
+      (data) => data['collectionPageData'],
+    ),
+  );
+
+  collectionId$ = this.collectionData$.pipe(map((c) => c.collection.id));
+
+  collectionName$ = this.collectionData$.pipe(map((c) => c.collection.name));
+
+  description$ = this.collectionData$.pipe(map((c) => c.collection.description));
+
+  creator$ = this.collectionData$.pipe(map((c) => c.collection.user));
+
+  updatedAt$ = this.collectionData$.pipe(map((c) => dayjs(c.collection.updatedAt)));
+
+  imageUrl$ = this.collectionData$.pipe(map((c) => c.collection.imageUrl));
+
+  stats$ = this.collectionData$.pipe(map((c) => ({ ...c.socialStats, ...c.additionalInfo })));
+
+  reviews$ = this.collectionData$.pipe(map((c) => c.reviews));
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 
 @Component({
@@ -9,4 +9,6 @@ import { TuiIslandModule } from '@taiga-ui/kit';
   styleUrl: './description-island.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DescriptionIslandComponent {}
+export class DescriptionIslandComponent {
+  @Input() description?: string | null;
+}

@@ -2,7 +2,7 @@
   <div class="controls">
     <div class="control-with-number">
       <button (click)="handleLike()" tuiIconButton icon="tuiIconHeartLarge"></button>
-      <p>123</p>
+      <p>{{ stats?.likesAmount }}</p>
     </div>
     <div class="control-with-number">
       <button
@@ -10,11 +10,10 @@
         tuiIconButton
         icon="tuiIconMessageCircleLarge"
       ></button>
-      <p>1234</p>
+      <p>{{ stats?.commentsAmount }}</p>
     </div>
-    <div class="control-with-number">
+    <div>
       <button (click)="handleBookmark()" tuiIconButton icon="tuiIconBookmarkLarge"></button>
-      <p>17</p>
     </div>
     <button
       (click)="handleOptions()"

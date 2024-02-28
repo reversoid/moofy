@@ -1,7 +1,13 @@
-<div class="review-list">
-  <app-review></app-review>
-  <app-review></app-review>
-  <app-review></app-review>
+<div *ngIf="reviews?.items?.length === 0; else showReviews" class="empty-placeholder">
+  Коллекция пуста
 </div>
 
-<tui-loader *ngIf="loading" class="loader"></tui-loader>
+<ng-template #showReviews>
+  <div class="review-list">
+    <app-review *ngFor="let review of reviews?.items" [review]="review"></app-review>
+  </div>
+
+  <!-- TODO replace by automatic-fetch intersection-observer item -->
+  <button *ngIf="reviews?.nextKey" (click)="handleLoadMore()"></button>
+  <tui-loader *ngIf="loading" class="loader"></tui-loader>
+</ng-template>

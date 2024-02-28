@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { CollectionResolver } from './collection-page/utils/collection.resolver';
 
 export const appRoutes: Routes = [
   {
@@ -37,6 +38,9 @@ export const appRoutes: Routes = [
     path: 'collections/:id',
     loadComponent: () =>
       import('./collection-page/collection-page.component').then((r) => r.CollectionPageComponent),
+    resolve: {
+      collectionPageData: CollectionResolver,
+    },
   },
   {
     path: 'explore',

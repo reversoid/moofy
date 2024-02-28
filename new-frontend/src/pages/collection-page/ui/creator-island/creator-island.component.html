@@ -1,20 +1,19 @@
 <tui-island class="creator">
   <h4 class="tui-island__title">
     Создатель:
-    <a tuiLink routerLink="/profile" class=".tui-island__paragraph_link">floppa</a>
+    <a tuiLink [routerLink]="['/profile', user?.id]" class=".tui-island__paragraph_link">{{
+      user?.username
+    }}</a>
   </h4>
 
   <div class="tui-island__content">
     <figure class="tui-island__figure">
       <div class="some-figure">
-        <img
-          ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-          fill
-        />
+        <img *ngIf="user?.imageUrl" [ngSrc]="user?.imageUrl!" fill />
       </div>
     </figure>
     <div>
-      <p class="tui-island__paragraph">Привет друзья! Добро пожаловать на вебсайт!!!!</p>
+      <p class="tui-island__paragraph">{{ user?.description || 'Описание отсутствует' }}</p>
     </div>
   </div>
 </tui-island>

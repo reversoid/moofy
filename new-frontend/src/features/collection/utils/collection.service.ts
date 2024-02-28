@@ -22,7 +22,7 @@ export class CollectionService {
   }
 
   getCollection(id: Collection['id']) {
-    return this.http.get<{ collection: CollectionWithInfo; reviews: PaginatedData<Review> }>(
+    return this.http.get<CollectionWithInfo & { reviews: PaginatedData<Review> }>(
       `collections/${id}`,
     );
   }

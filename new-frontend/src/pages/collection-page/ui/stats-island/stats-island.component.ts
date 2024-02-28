@@ -24,6 +24,15 @@ export class StatsIslandComponent {
 
   @Input() isPersonal = false;
 
+  @Input() collectionId?: Collection['id'] | null;
+
+  @Input() stats?: {
+    likesAmount: number;
+    commentsAmount: number;
+    isLiked: boolean;
+    isFavorite: boolean;
+  } | null;
+
   openCommentsDialog() {
     this.dialogService.open('Some comments here', { label: 'Комментарии' }).subscribe();
   }

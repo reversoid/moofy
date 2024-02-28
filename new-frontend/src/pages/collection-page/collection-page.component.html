@@ -1,15 +1,20 @@
-<h1 class="tui-text_h1">Мой топ топчииик!</h1>
+<h1 class="tui-text_h1">{{ collectionName$ | async }}</h1>
 
 <div class="collection-info-grid">
-  <app-description-island></app-description-island>
-  <app-creator-island></app-creator-island>
+  <app-description-island [description]="description$ | async"></app-description-island>
+
+  <app-creator-island [user]="creator$ | async"></app-creator-island>
 
   <div class="metadata-grid">
-    <app-updated-island></app-updated-island>
-    <app-image-island></app-image-island>
+    <app-updated-island [date]="updatedAt$ | async"></app-updated-island>
+    <app-image-island [imageUrl]="imageUrl$ | async"></app-image-island>
   </div>
 
-  <app-stats-island [isPersonal]="(isPersonal$ | async) ?? false"></app-stats-island>
+  <app-stats-island
+    [collectionId]="collectionId$ | async"
+    [isPersonal]="(isPersonal$ | async) ?? false"
+    [stats]="stats$ | async"
+  ></app-stats-island>
 </div>
 
 <button
@@ -42,6 +47,6 @@
   <input tuiTextfield role="search" />
 </tui-input>
 
-<app-review-conflicts-block></app-review-conflicts-block>
+<!-- <app-review-conflicts-block></app-review-conflicts-block> -->
 
-<app-review-list></app-review-list>
+<app-review-list [reviews]="reviews$ | async"></app-review-list>
