@@ -4,9 +4,10 @@
     [tuiTextfieldLabelOutside]="true"
     tuiTextfieldIconLeft="tuiIconSearchLarge"
     [tuiTextfieldCleaner]="true"
+    [formControl]="filmNameControl"
   >
     Название
-    <input tuiTextfield role="search" tuiTextfield />
+    <input tuiTextfield role="search" />
     <ng-container *ngIf="films?.length">
       <tui-data-list *tuiDataList>
         <button *ngFor="let film of films" (click)="select(film)" tuiOption [value]="film.name">
@@ -16,30 +17,31 @@
     </ng-container>
   </tui-input>
 
-  <ng-container *ngIf="film">
+  <form *ngIf="selectedFilm" (submit)="createReview()" [formGroup]="reviewForm">
     <div class="film tui-space_top-5">
       <div class="image-wrapper">
         <img ngSrc="https://kinopoiskapiunofficial.tech/images/posters/kp_small/7147.jpg" fill />
       </div>
-      <h6 class="title tui-text_h6">Some name</h6>
-      <tui-tag value="2023"></tui-tag>
+      <h6 class="title tui-text_h6">{{ selectedFilm.name }}</h6>
+      <tui-tag [value]="filmYear"></tui-tag>
     </div>
 
-    <tui-rating class="score tui-space_top-5" [max]="5"></tui-rating>
+    <tui-rating formControlName="score" class="score tui-space_top-5" [max]="5"></tui-rating>
 
     <tui-textarea
       [tuiTextfieldLabelOutside]="true"
-      formControlName="testValue1"
+      formControlName="description"
       class="tui-space_top-5"
       [expandable]="true"
     >
       Описание
     </tui-textarea>
-  </ng-container>
+  </form>
 
   <button
-    (click)="createReview()"
-    [disabled]="!film"
+    type="submit"
+    form="create-review-form"
+    [disabled]="!selectedFilm"
     class="submit-button tui-space_top-5"
     tuiButton
   >

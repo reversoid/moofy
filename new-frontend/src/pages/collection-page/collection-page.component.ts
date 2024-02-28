@@ -9,7 +9,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { map } from 'rxjs';
 import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
-import { CreateReviewDialogComponent } from './ui/create-review-dialog/create-review-dialog.component';
+import { CreateReviewDialogComponent } from '../../features/review/create-review-dialog/create-review-dialog.component';
 import { CreatorIslandComponent } from './ui/creator-island/creator-island.component';
 import { DescriptionIslandComponent } from './ui/description-island/description-island.component';
 import { ImageIslandComponent } from './ui/image-island/image-island.component';
