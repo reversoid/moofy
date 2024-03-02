@@ -6,7 +6,7 @@ import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { map } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs';
 import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
 import { CreateReviewDialogComponent } from '../../features/review/create-review-dialog/create-review-dialog.component';
@@ -18,6 +18,7 @@ import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
 import dayjs from 'dayjs';
 import { EmptyCollectionPlaceholderComponent } from './ui/empty-collection-placeholder/empty-collection-placeholder.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-collection-page',
@@ -50,6 +51,7 @@ export class CollectionPageComponent {
     private readonly httpClient: HttpClient,
     private readonly injector: Injector,
     private readonly activatedRoute: ActivatedRoute,
+    private readonly destroy$: TuiDestroyService,
   ) {}
 
   search = new FormControl<string>('');
@@ -63,11 +65,17 @@ export class CollectionPageComponent {
   }
 
   createReview() {
-    this.dialogService
-      .open(new PolymorpheusComponent(CreateReviewDialogComponent), {
-        label: 'Добавить фильм',
-        size: 's',
-      })
+    this.collectionId$
+      .pipe(
+        switchMap((id) =>
+          this.dialogService.open(new PolymorpheusComponent(CreateReviewDialogComponent), {
+            label: 'Добавить фильм',
+            size: 's',
+            data: { collectionId: id },
+          }),
+        ),
+        takeUntil(this.destroy$),
+      )
       .subscribe();
   }
 
