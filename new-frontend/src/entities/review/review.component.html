@@ -7,7 +7,12 @@
 
   <div class="content">
     <div class="heading">
-      <a tuiLink href="https://google.com">
+      <a
+        tuiLink
+        [href]="'https://kinopoisk.ru/film/' + review?.film?.id"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <h4 class="review-title tui-text_h6">{{ review?.film?.name }}</h4>
       </a>
       <tui-tag *ngIf="filmYear" class="year" [value]="filmYear"></tui-tag>
