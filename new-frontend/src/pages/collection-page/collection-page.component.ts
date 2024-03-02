@@ -1,6 +1,6 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -8,6 +8,7 @@ import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from 
 import { TuiInputModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { map, switchMap, take, takeUntil } from 'rxjs';
+import { CollectionService } from '../../features/collection/utils/collection.service';
 import { CreateReviewDialogComponent } from '../../features/review/create-review-dialog/create-review-dialog.component';
 import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
@@ -50,12 +51,14 @@ export class CollectionPageComponent {
   constructor(
     private readonly dialogService: TuiDialogService,
     private readonly httpClient: HttpClient,
-    private readonly injector: Injector,
     private readonly activatedRoute: ActivatedRoute,
     private readonly destroy$: TuiDestroyService,
     private readonly collectionPageStore: CollectionPageStore,
+    private readonly collectionService: CollectionService,
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
   ) {
     this.initializeStore();
+    this.viewCollection();
   }
 
   search = new FormControl<string>('');
@@ -96,6 +99,17 @@ export class CollectionPageComponent {
         reviews: v.reviews,
       }),
     );
+  }
+
+  private viewCollection() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.collectionId$
+        .pipe(
+          switchMap((id) => this.collectionService.viewCollection(id)),
+          takeUntil(this.destroy$),
+        )
+        .subscribe();
+    }
   }
 
   private collectionData$ = this.activatedRoute.data.pipe(
