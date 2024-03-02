@@ -5,7 +5,7 @@ import apiKeysConfig from 'src/config/api-keys.config';
 import { ConfigType } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { ApiKeyRotator } from '../../utils/api-key-rotator';
-import { catchError, lastValueFrom, map, of, throwError } from 'rxjs';
+import { catchError, lastValueFrom, map, throwError } from 'rxjs';
 import { SearchUnofficialKpFilmDto, UnofficialKpFilmDto } from './types';
 
 @Injectable()
@@ -53,10 +53,11 @@ export class UnnoficialKpService implements IApiFilmService {
           },
         )
         .pipe(
-          map(({ data: { films } }) => {
-            return films.map(this.convertDtoToFilm).filter(Boolean) as Film[];
+          map(({ data }) => {
+            return data.films
+              .map((v) => this.convertDtoToFilm(v))
+              .filter(Boolean) as Film[];
           }),
-          catchError(() => of([])),
         ),
     );
   }
