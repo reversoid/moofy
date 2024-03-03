@@ -10,7 +10,7 @@ export interface CollectionPageState {
 
 @Injectable()
 export class CollectionPageStore extends ComponentStore<CollectionPageState> {
-  collectionId$ = this.select((s) => s.collectionData.collection.id);
+  collection$ = this.select((s) => s.collectionData.collection);
 
   collectionName$ = this.select((s) => s.collectionData.collection.name);
 

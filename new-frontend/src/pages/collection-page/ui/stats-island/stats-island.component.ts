@@ -24,9 +24,9 @@ export class StatsIslandComponent {
 
   @Input() isPersonal = false;
 
-  @Input() collectionId?: Collection['id'] | null;
+  @Input({ required: true }) collection!: Collection | null;
 
-  @Input() stats?: {
+  @Input({ required: true }) stats!: {
     likesAmount: number;
     commentsAmount: number;
     isLiked: boolean;
@@ -45,22 +45,17 @@ export class StatsIslandComponent {
     console.log('collection bookmarked');
   }
 
-  handleOptions() {
+  openOptions() {
+    if (!this.collection) {
+      return;
+    }
+
     this.dialogService
       .open<CollectionWithInfo>(new PolymorpheusComponent(EditCollectionDialogComponent), {
         label: 'Настройки коллекции',
         size: 's',
         data: {
-          collection: {
-            description: 'some desc',
-            imageUrl: null,
-            isPublic: false,
-            name: 'Some name',
-            createdAt: new Date().toISOString(),
-            id: 1,
-            user: null as unknown as any,
-            updatedAt: new Date().toISOString(),
-          } satisfies Collection,
+          collection: this.collection satisfies Collection,
 
           isPersonal: this.isPersonal,
         },

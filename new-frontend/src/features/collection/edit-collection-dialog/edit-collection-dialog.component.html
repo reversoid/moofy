@@ -1,11 +1,23 @@
 <app-collection-form
   (collectionSubmit)="editCollection($event)"
-  (collectionDelete)="deleteCollection($event)"
   [collection]="existingCollection"
   submutButtonText="Обновить"
   class="tui-space_top-5"
   [isFormSubmitting]="isLoading()"
-  [isDeleting]="isDeleting()"
   [removeIsPrivate]="isPersonal"
-  [showDeleteButton]="!isPersonal"
-></app-collection-form>
+  [disableSubmit]="isDeleting()"
+>
+  <button
+    *ngIf="!isPersonal"
+    (click)="deleteCollection()"
+    type="button"
+    class="delete-button tui-space_top-5"
+    size="m"
+    tuiButton
+    appearance="secondary-destructive"
+    [disabled]="isDeleting()"
+    [showLoader]="isDeleting()"
+  >
+    Удалить
+  </button>
+</app-collection-form>

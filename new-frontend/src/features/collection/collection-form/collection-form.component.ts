@@ -75,19 +75,15 @@ export class CollectionFormComponent implements OnInit {
 
   @Input() isFormSubmitting = false;
 
-  @Input() isDeleting = false;
+  @Input() disableSubmit = false;
 
   @Input() collection?: Collection;
 
   @Input() removeIsPrivate = false;
 
-  @Input() showDeleteButton = false;
-
   @Input({ required: true }) submutButtonText!: string;
 
   @Output() collectionSubmit = new EventEmitter<CollectionDto>();
-
-  @Output() collectionDelete = new EventEmitter<{ collectionId: Collection['id'] }>();
 
   collectionForm = this.fb.group({
     name: this.fb.control<string>('', { validators: Validators.required }),
@@ -106,15 +102,11 @@ export class CollectionFormComponent implements OnInit {
 
   get shouldNotSubmitCollection() {
     return (
-      this.isDeleting ||
+      this.disableSubmit ||
       this.uploadState() === 'loading' ||
       this.collectionForm.invalid ||
       this.isFormSubmitting
     );
-  }
-
-  get shouldNotDeleteCollection() {
-    return this.isDeleting;
   }
 
   get uploadedImageUrl(): string | null {
@@ -125,12 +117,6 @@ export class CollectionFormComponent implements OnInit {
     this.setupImageUpload();
     this.setupInitialForm();
     this.setupInitialUploadState();
-  }
-
-  handleDelete() {
-    if (this.collection?.id !== undefined) {
-      this.collectionDelete.emit({ collectionId: this.collection.id });
-    }
   }
 
   submitCollection() {

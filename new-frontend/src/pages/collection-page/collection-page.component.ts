@@ -72,7 +72,7 @@ export class CollectionPageComponent {
   }
 
   createReview() {
-    this.collectionId$
+    this.collection$
       .pipe(
         switchMap((id) =>
           this.dialogService.open<Review>(new PolymorpheusComponent(CreateReviewDialogComponent), {
@@ -103,9 +103,9 @@ export class CollectionPageComponent {
 
   private viewCollection() {
     if (isPlatformBrowser(this.platformId)) {
-      this.collectionId$
+      this.collection$
         .pipe(
-          switchMap((id) => this.collectionService.viewCollection(id)),
+          switchMap(({ id }) => this.collectionService.viewCollection(id)),
           takeUntil(this.destroy$),
         )
         .subscribe();
@@ -118,7 +118,7 @@ export class CollectionPageComponent {
     ),
   );
 
-  collectionId$ = this.collectionPageStore.collectionId$;
+  collection$ = this.collectionPageStore.collection$;
 
   collectionName$ = this.collectionPageStore.collectionName$;
 

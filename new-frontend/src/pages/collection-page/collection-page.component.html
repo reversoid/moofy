@@ -11,7 +11,7 @@
   </div>
 
   <app-stats-island
-    [collectionId]="collectionId$ | async"
+    [collection]="collection$ | async"
     [isPersonal]="(isPersonal$ | async) ?? false"
     [stats]="stats$ | async"
   ></app-stats-island>
