@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 import {
   Collection,
   CollectionWithInfo,
+  Comment,
+  CommentWithInfo,
   FullCollection,
   PaginatedData,
 } from '../../../shared/types';
 import { UploadImageService } from '../../../shared/utils/upload-image/upload-image.service';
-import { CreateCollectionProps, UpdateCollectionProps } from './types';
+import { CreateCollectionProps, SendCommentDto, UpdateCollectionProps } from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +55,33 @@ export class CollectionService {
   unlikeCollection(id: Collection['id']) {
     return this.http.delete<{ likesAmount: number; commentsAmount: number }>(
       `collections/${id}/likes`,
+    );
+  }
+
+  getComments(id: Collection['id'], nextKey?: string) {
+    return this.http.get<PaginatedData<CommentWithInfo>>(`collections/${id}/comments`, {
+      params: nextKey ? { nextKey } : undefined,
+    });
+  }
+
+  sendComment(id: Collection['id'], dto: SendCommentDto) {
+    return this.http.post<CommentWithInfo>(`collections/${id}/comments`, dto);
+  }
+
+  removeComment(id: Comment['id']) {
+    return this.http.delete<void>(`collections/${id}/comments`);
+  }
+
+  likeComment(id: Comment['id']) {
+    return this.http.put<{ likesAmount: number; repliesAmount: number }>(
+      `collections/${id}/comments`,
+      {},
+    );
+  }
+
+  unlikeComment(id: Comment['id']) {
+    return this.http.delete<{ likesAmount: number; repliesAmount: number }>(
+      `collections/${id}/comments`,
     );
   }
 

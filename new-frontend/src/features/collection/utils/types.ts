@@ -1,4 +1,4 @@
-import { Collection } from '../../../shared/types';
+import { Collection, Comment } from '../../../shared/types';
 
 export type CreateCollectionProps = Pick<
   Collection,
@@ -20,4 +20,9 @@ export interface CreatePersonalCollectionProps {
     };
     actionAfterMerging: 'saveAll' | 'removeAll' | 'removeEmpty';
   };
+}
+
+export interface SendCommentDto {
+  text: string;
+  replyTo?: Comment['id'];
 }
