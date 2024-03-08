@@ -35,6 +35,27 @@ export class CollectionService {
     return this.http.post<void>(`collections/${id}/views`, {});
   }
 
+  likeCollection(id: Collection['id']) {
+    return this.http.put<{ likesAmount: number; commentsAmount: number }>(
+      `collections/${id}/likes`,
+      {},
+    );
+  }
+
+  bookmarkCollection(id: Collection['id']) {
+    return this.http.put<void>(`collections/favorites/${id}`, {});
+  }
+
+  unbookmarkCollection(id: Collection['id']) {
+    return this.http.delete<void>(`collections/favorites/${id}`);
+  }
+
+  unlikeCollection(id: Collection['id']) {
+    return this.http.delete<{ likesAmount: number; commentsAmount: number }>(
+      `collections/${id}/likes`,
+    );
+  }
+
   createCollection(props: CreateCollectionProps) {
     return this.http.post<CollectionWithInfo>('collections', {
       name: props.name,
