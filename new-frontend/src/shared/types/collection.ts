@@ -1,3 +1,4 @@
+import { PaginatedData, Review } from '.';
 import { User } from './user';
 
 export interface Collection {
@@ -22,3 +23,5 @@ export interface CollectionWithInfo {
     isLiked: boolean;
   };
 }
+
+export type FullCollection = CollectionWithInfo & { reviews: PaginatedData<Review> };

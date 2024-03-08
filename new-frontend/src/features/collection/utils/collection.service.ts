@@ -1,23 +1,23 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
-import { Collection, CollectionWithInfo, PaginatedData, Review } from '../../../shared/types';
+import { Observable } from 'rxjs';
 import {
-  MAX_IMAGE_UPLOAD_SIZE_MB,
-  SUPPORTED_IMAGE_EXTENSIONS,
-  getFileExtension,
-  getFileSizeInMb,
-} from '../../../shared/utils/file';
-import { ImageTooLargeError, ImageWrongFormatError } from './errors';
+  Collection,
+  CollectionWithInfo,
+  FullCollection,
+  PaginatedData,
+} from '../../../shared/types';
+import { UploadImageService } from '../../../shared/utils/upload-image/upload-image.service';
 import { CreateCollectionProps, UpdateCollectionProps } from './types';
-
-export type FullCollection = CollectionWithInfo & { reviews: PaginatedData<Review> };
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionService {
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly uploadImageService: UploadImageService,
+  ) {}
 
   getCollections() {
     return this.http.get<PaginatedData<CollectionWithInfo>>('profile/collections');
@@ -54,46 +54,6 @@ export class CollectionService {
   }
 
   uploadCollectionImage(file: File): Observable<{ link: string }> {
-    try {
-      this.validateImage(file);
-    } catch (e) {
-      return throwError(() => e);
-    }
-
-    const formData = this.createFormData(file);
-
-    return this.http.post<{ link: string }>('collections/image-upload', formData).pipe(
-      catchError((e) => {
-        if (e instanceof HttpErrorResponse) {
-          if (e.error.message === 'IMAGE_WRONG_FORMAT') {
-            throw new ImageWrongFormatError();
-          }
-
-          if (e.error.message === 'IMAGE_TOO_LARGE') {
-            throw new ImageTooLargeError();
-          }
-        }
-
-        throw e;
-      }),
-    );
-  }
-
-  private validateImage(file: File): File {
-    if (!SUPPORTED_IMAGE_EXTENSIONS.includes(getFileExtension(file))) {
-      throw new ImageWrongFormatError();
-    }
-
-    if (getFileSizeInMb(file) > MAX_IMAGE_UPLOAD_SIZE_MB) {
-      throw new ImageTooLargeError();
-    }
-
-    return file;
-  }
-
-  private createFormData(file: File): FormData {
-    const formData = new FormData();
-    formData.append('image', file);
-    return formData;
+    return this.uploadImageService.uploadImage('collections/image-upload', file);
   }
 }

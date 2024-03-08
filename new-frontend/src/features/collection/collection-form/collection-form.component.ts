@@ -26,10 +26,13 @@ import {
 } from '@taiga-ui/kit';
 import { EMPTY, catchError, filter, mergeMap, takeUntil, tap } from 'rxjs';
 import { NotificationService } from '../../../app/utils/notification.service';
-import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/file';
 import { CollectionService } from '../utils/collection.service';
-import { ImageTooLargeError, ImageWrongFormatError } from '../utils/errors';
 import { Collection } from '../../../shared/types';
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../../../shared/utils/upload-image/consts';
+import {
+  ImageTooLargeError,
+  ImageWrongFormatError,
+} from '../../../shared/utils/upload-image/errors';
 
 export type CollectionDto = {
   description: string | null;
