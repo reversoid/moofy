@@ -8,6 +8,7 @@ import {
   CommentWithInfo,
   FullCollection,
   PaginatedData,
+  Review,
 } from '../../../shared/types';
 import { UploadImageService } from '../../../shared/utils/upload-image/upload-image.service';
 import { CreateCollectionProps, SendCommentDto, UpdateCollectionProps } from './types';
@@ -27,6 +28,12 @@ export class CollectionService {
 
   getCollection(id: Collection['id']) {
     return this.http.get<FullCollection>(`collections/${id}`);
+  }
+
+  getReviews(collectionId: Collection['id'], nextKey?: string) {
+    return this.http.get<PaginatedData<Review>>(`collections/${collectionId}/reviews`, {
+      params: nextKey ? { nextKey } : undefined,
+    });
   }
 
   deleteCollection(id: Collection['id']) {
