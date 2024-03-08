@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateReviewProps } from './types';
+import { CreateReviewProps, EditReviewProps } from './types';
 import { Review } from '../../../shared/types';
 import { Observable, map } from 'rxjs';
 
@@ -25,9 +25,11 @@ export class ReviewService {
       .pipe(map((d) => d.review));
   }
 
-  getReview() {}
+  editReview(reviewId: Review['id'], { description, score }: EditReviewProps) {
+    return this.http.patch<{ review: Review }>(`reviews/${reviewId}`, { description, score });
+  }
 
-  editReview() {}
-
-  deleteReview() {}
+  deleteReview(reviewId: Review['id']) {
+    return this.http.delete<void>(`reviews/${reviewId}`);
+  }
 }

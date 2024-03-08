@@ -6,3 +6,8 @@ export type CreateReviewProps = {
   score: number | null;
   description: string | null;
 };
+
+export type EditReviewProps = {
+  score?: number | null;
+  description?: string | null;
+};
