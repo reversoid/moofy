@@ -74,11 +74,11 @@ export class CollectionPageComponent {
   createReview() {
     this.collection$
       .pipe(
-        switchMap((id) =>
+        switchMap((collection) =>
           this.dialogService.open<Review>(new PolymorpheusComponent(CreateReviewDialogComponent), {
             label: 'Добавить фильм',
             size: 's',
-            data: { collectionId: id },
+            data: { collectionId: collection.id },
           }),
         ),
         takeUntil(this.destroy$),

@@ -1,7 +1,9 @@
 <tui-island class="stats">
   <div class="controls">
     <div class="control-with-number">
-      <button (click)="handleLike()" tuiIconButton icon="tuiIconHeartLarge"></button>
+      <tui-checkbox-block class="action-checkbox" [formControl]="likeControl" [hideCheckbox]="true">
+        <tui-svg src="tuiIconHeartLarge"></tui-svg>
+      </tui-checkbox-block>
       <p>{{ stats?.likesAmount }}</p>
     </div>
     <div class="control-with-number">
@@ -13,7 +15,13 @@
       <p>{{ stats?.commentsAmount }}</p>
     </div>
     <div>
-      <button (click)="handleBookmark()" tuiIconButton icon="tuiIconBookmarkLarge"></button>
+      <tui-checkbox-block
+        class="action-checkbox"
+        [formControl]="bookmarkControl"
+        [hideCheckbox]="true"
+      >
+        <tui-svg src="tuiIconBookmarkLarge"></tui-svg>
+      </tui-checkbox-block>
     </div>
     <button
       (click)="openOptions()"

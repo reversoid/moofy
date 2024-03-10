@@ -1,17 +1,25 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
-import { TuiIslandModule } from '@taiga-ui/kit';
+import { TuiButtonModule, TuiDialogService, TuiSvgModule } from '@taiga-ui/core';
+import { TuiCheckboxBlockModule, TuiIslandModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AppState } from '../../../../app/store';
 import { userCollectionsActions } from '../../../../entities/user-collections';
 import { EditCollectionDialogComponent } from '../../../../features/collection/edit-collection-dialog/edit-collection-dialog.component';
 import { Collection, CollectionWithInfo } from '../../../../shared/types';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-stats-island',
   standalone: true,
-  imports: [TuiIslandModule, TuiButtonModule],
+  imports: [
+    TuiIslandModule,
+    TuiButtonModule,
+    TuiCheckboxBlockModule,
+    TuiSvgModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './stats-island.component.html',
   styleUrl: './stats-island.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,4 +72,8 @@ export class StatsIslandComponent {
         this.store.dispatch(userCollectionsActions.update({ collection }));
       });
   }
+
+  likeControl = new FormControl(false);
+
+  bookmarkControl = new FormControl(false);
 }

@@ -3,6 +3,11 @@ tui-island.stats {
     gap: 0.5rem;
     display: flex;
 
+    .action-checkbox ::ng-deep label {
+      width: var(--tui-height-l);
+      padding: 0;
+    }
+
     .control-with-number {
       display: flex;
       flex-direction: column;
