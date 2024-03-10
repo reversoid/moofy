@@ -47,4 +47,10 @@ export class ExploreService {
       params: nextKey ? { nextKey } : undefined,
     });
   }
+
+  getLatestUpdatedCollections(nextKey?: string) {
+    return this.http.get<PaginatedData<CollectionWithInfo>>('explore/latest-updated', {
+      params: nextKey ? { nextKey } : undefined,
+    });
+  }
 }
