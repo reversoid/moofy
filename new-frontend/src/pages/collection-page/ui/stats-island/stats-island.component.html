@@ -1,9 +1,12 @@
 <tui-island class="stats">
-  <div class="controls">
+  <div [formGroup]="actionsGroup" class="controls">
     <div class="control-with-number">
-      <tui-checkbox-block class="action-checkbox" [formControl]="likeControl" [hideCheckbox]="true">
-        <tui-svg src="tuiIconHeartLarge"></tui-svg>
-      </tui-checkbox-block>
+      <tui-loader [showLoader]="isProcessingLike()" [overlay]="true">
+        <tui-checkbox-block class="action-checkbox" formControlName="like" [hideCheckbox]="true">
+          <tui-svg src="tuiIconHeartLarge"></tui-svg>
+        </tui-checkbox-block>
+      </tui-loader>
+
       <p>{{ stats?.likesAmount }}</p>
     </div>
     <div class="control-with-number">
@@ -15,13 +18,15 @@
       <p>{{ stats?.commentsAmount }}</p>
     </div>
     <div>
-      <tui-checkbox-block
-        class="action-checkbox"
-        [formControl]="bookmarkControl"
-        [hideCheckbox]="true"
-      >
-        <tui-svg src="tuiIconBookmarkLarge"></tui-svg>
-      </tui-checkbox-block>
+      <tui-loader [showLoader]="isProcessingBookmark()" [overlay]="true">
+        <tui-checkbox-block
+          class="action-checkbox"
+          formControlName="bookmark"
+          [hideCheckbox]="true"
+        >
+          <tui-svg src="tuiIconBookmarkLarge"></tui-svg>
+        </tui-checkbox-block>
+      </tui-loader>
     </div>
     <button
       (click)="openOptions()"
