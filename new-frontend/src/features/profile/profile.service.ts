@@ -1,16 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  CollectionWithInfo,
-  FullCollection,
-  PaginatedData,
-  Profile,
-  ShortProfile,
-  User,
-} from '../../shared/types';
 import { Observable } from 'rxjs';
-import { CreatePersonalCollectionProps, EditProfileDto } from './types';
+import { FullCollection, PaginatedData, Profile, ShortProfile, User } from '../../shared/types';
 import { UploadImageService } from '../../shared/utils/upload-image/upload-image.service';
+import { EditProfileDto } from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -55,9 +48,5 @@ export class ProfileService {
 
   getPersonalCollection(id: User['id']): Observable<FullCollection> {
     return this.http.get<FullCollection>(`profile/${id}/collections/personal`);
-  }
-
-  createPersonalCollection(dto: CreatePersonalCollectionProps): Observable<CollectionWithInfo> {
-    return this.http.put<CollectionWithInfo>(`profile/collections/personal`, dto);
   }
 }

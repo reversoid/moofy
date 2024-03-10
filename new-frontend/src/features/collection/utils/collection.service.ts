@@ -11,7 +11,12 @@ import {
   Review,
 } from '../../../shared/types';
 import { UploadImageService } from '../../../shared/utils/upload-image/upload-image.service';
-import { CreateCollectionProps, SendCommentDto, UpdateCollectionProps } from './types';
+import {
+  CreateCollectionProps,
+  CreatePersonalCollectionProps,
+  SendCommentDto,
+  UpdateCollectionProps,
+} from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -51,18 +56,18 @@ export class CollectionService {
     );
   }
 
+  unlikeCollection(id: Collection['id']) {
+    return this.http.delete<{ likesAmount: number; commentsAmount: number }>(
+      `collections/${id}/likes`,
+    );
+  }
+
   bookmarkCollection(id: Collection['id']) {
     return this.http.put<void>(`collections/favorites/${id}`, {});
   }
 
   unbookmarkCollection(id: Collection['id']) {
     return this.http.delete<void>(`collections/favorites/${id}`);
-  }
-
-  unlikeCollection(id: Collection['id']) {
-    return this.http.delete<{ likesAmount: number; commentsAmount: number }>(
-      `collections/${id}/likes`,
-    );
   }
 
   getComments(id: Collection['id'], nextKey?: string) {
@@ -112,5 +117,19 @@ export class CollectionService {
 
   uploadCollectionImage(file: File): Observable<{ link: string }> {
     return this.uploadImageService.uploadImage('collections/image-upload', file);
+  }
+
+  createPersonalCollection(dto: CreatePersonalCollectionProps): Observable<CollectionWithInfo> {
+    return this.http.put<CollectionWithInfo>(`profile/collections/personal`, dto);
+  }
+
+  getPersonalCollectionConficts(): Observable<{ conflicts: Review[] }> {
+    return this.http.get<{ conflicts: Review[] }>(`profile/collections/personal/conflicts`);
+  }
+
+  resolvePersonalCollectionConficts(reviewsIdsToPick: Array<Review['id']>): Observable<void> {
+    return this.http.patch<void>(`profile/collections/personal/conflicts`, {
+      reviewsIds: reviewsIdsToPick,
+    });
   }
 }
