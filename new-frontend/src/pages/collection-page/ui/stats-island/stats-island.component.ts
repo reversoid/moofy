@@ -1,16 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { TuiButtonModule, TuiDialogService, TuiLoaderModule, TuiSvgModule } from '@taiga-ui/core';
-import { TuiCheckboxBlockModule, TuiIslandModule } from '@taiga-ui/kit';
+import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
+import { TuiIslandModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AppState } from '../../../../app/store';
 import { userCollectionsActions } from '../../../../entities/user-collections';
+import { BookmarkCollectionButtonComponent } from '../../../../features/collection/bookmark-collection-button/bookmark-collection-button.component';
 import { EditCollectionDialogComponent } from '../../../../features/collection/edit-collection-dialog/edit-collection-dialog.component';
+import { LikeCollectionButtonComponent } from '../../../../features/collection/like-collection-button/like-collection-button.component';
 import { Collection, CollectionWithInfo } from '../../../../shared/types';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { finalize, map, switchAll, takeUntil } from 'rxjs';
-import { CollectionService } from '../../../../features/collection/utils/collection.service';
 
 @Component({
   selector: 'app-stats-island',
@@ -18,23 +16,17 @@ import { CollectionService } from '../../../../features/collection/utils/collect
   imports: [
     TuiIslandModule,
     TuiButtonModule,
-    TuiCheckboxBlockModule,
-    TuiSvgModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TuiLoaderModule,
+    LikeCollectionButtonComponent,
+    BookmarkCollectionButtonComponent,
   ],
   templateUrl: './stats-island.component.html',
   styleUrl: './stats-island.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
 })
-export class StatsIslandComponent implements OnInit {
+export class StatsIslandComponent {
   constructor(
     private readonly dialogService: TuiDialogService,
     private readonly store: Store<AppState>,
-    private readonly destroy$: TuiDestroyService,
-    private readonly collectionService: CollectionService,
   ) {}
 
   @Input() isPersonal = false;
@@ -48,25 +40,8 @@ export class StatsIslandComponent implements OnInit {
     isFavorite: boolean;
   } | null;
 
-  actionsGroup = new FormGroup({
-    like: new FormControl(false),
-    bookmark: new FormControl(false),
-  });
-
-  isProcessingLike = signal(false);
-
-  isProcessingBookmark = signal(false);
-
   openCommentsDialog() {
     this.dialogService.open('Some comments here', { label: 'Комментарии' }).subscribe();
-  }
-
-  handleLike() {
-    console.log('collection liked');
-  }
-
-  handleBookmark() {
-    console.log('collection bookmarked');
   }
 
   openOptions() {
@@ -89,82 +64,9 @@ export class StatsIslandComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {
-    this.initializeControlsValues();
-    this.initializeControlsActions();
-  }
-
-  private initializeControlsValues() {
-    this.actionsGroup.setValue({
-      like: Boolean(this.stats?.isLiked),
-      bookmark: Boolean(this.stats?.isFavorite),
-    });
-  }
-
-  private initializeControlsActions() {
-    this.initializeLike();
-    this.initializeBookmark();
-  }
-
-  // TODO make separate component for like and bookmark
-
-  private initializeLike() {
-    this.actionsGroup.controls.like.valueChanges
-      .pipe(
-        map((like) => {
-          this.isProcessingLike.set(true);
-          const collectionId = this.collection!.id;
-          if (like) {
-            return this.collectionService.likeCollection(collectionId);
-          } else {
-            return this.collectionService.unlikeCollection(collectionId);
-          }
-        }),
-
-        map((v) =>
-          v.pipe(
-            finalize(() => {
-              this.isProcessingLike.set(false);
-            }),
-          ),
-        ),
-
-        switchAll(),
-
-        takeUntil(this.destroy$),
-      )
-      .subscribe(({ commentsAmount, likesAmount }) => {
-        console.log(commentsAmount, likesAmount);
-      });
-  }
-
-  private initializeBookmark() {
-    this.actionsGroup.controls.bookmark.valueChanges
-      .pipe(
-        map((bookmark) => {
-          this.isProcessingBookmark.set(true);
-          const collectionId = this.collection!.id;
-          if (bookmark) {
-            return this.collectionService.likeCollection(collectionId);
-          } else {
-            return this.collectionService.unlikeCollection(collectionId);
-          }
-        }),
-
-        map((v) =>
-          v.pipe(
-            finalize(() => {
-              this.isProcessingLike.set(false);
-            }),
-          ),
-        ),
-
-        switchAll(),
-
-        takeUntil(this.destroy$),
-      )
-      .subscribe(({ commentsAmount, likesAmount }) => {
-        console.log(commentsAmount, likesAmount);
-      });
+  setNewStats(stats: CollectionWithInfo['socialStats']) {
+    if (this.stats) {
+      this.stats = { ...this.stats, ...stats };
+    }
   }
 }

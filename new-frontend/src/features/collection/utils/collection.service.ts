@@ -50,16 +50,11 @@ export class CollectionService {
   }
 
   likeCollection(id: Collection['id']) {
-    return this.http.put<{ likesAmount: number; commentsAmount: number }>(
-      `collections/${id}/likes`,
-      {},
-    );
+    return this.http.put<CollectionWithInfo['socialStats']>(`collections/${id}/likes`, {});
   }
 
   unlikeCollection(id: Collection['id']) {
-    return this.http.delete<{ likesAmount: number; commentsAmount: number }>(
-      `collections/${id}/likes`,
-    );
+    return this.http.delete<CollectionWithInfo['socialStats']>(`collections/${id}/likes`);
   }
 
   bookmarkCollection(id: Collection['id']) {

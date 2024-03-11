@@ -1,0 +1,8 @@
+.action-checkbox ::ng-deep label {
+  width: var(--tui-height-l) !important;
+  padding: 0 !important;
+}
+
+:host {
+  display: block;
+}

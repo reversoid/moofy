@@ -1,13 +1,13 @@
 <tui-island class="stats">
-  <div [formGroup]="actionsGroup" class="controls">
+  <div class="controls">
     <div class="control-with-number">
-      <tui-loader [showLoader]="isProcessingLike()" [overlay]="true">
-        <tui-checkbox-block class="action-checkbox" formControlName="like" [hideCheckbox]="true">
-          <tui-svg src="tuiIconHeartLarge"></tui-svg>
-        </tui-checkbox-block>
-      </tui-loader>
+      <app-like-collection-button
+        (likeProcessed)="setNewStats($event)"
+        [collectionId]="collection!.id"
+        [isLiked]="stats?.isLiked ?? false"
+      ></app-like-collection-button>
 
-      <p>{{ stats?.likesAmount }}</p>
+      <p>{{ stats?.likesAmount ?? 0 }}</p>
     </div>
     <div class="control-with-number">
       <button
@@ -15,18 +15,13 @@
         tuiIconButton
         icon="tuiIconMessageCircleLarge"
       ></button>
-      <p>{{ stats?.commentsAmount }}</p>
+      <p>{{ stats?.commentsAmount ?? 0 }}</p>
     </div>
     <div>
-      <tui-loader [showLoader]="isProcessingBookmark()" [overlay]="true">
-        <tui-checkbox-block
-          class="action-checkbox"
-          formControlName="bookmark"
-          [hideCheckbox]="true"
-        >
-          <tui-svg src="tuiIconBookmarkLarge"></tui-svg>
-        </tui-checkbox-block>
-      </tui-loader>
+      <app-bookmark-collection-button
+        [collectionId]="collection!.id"
+        [isBookmarked]="stats?.isFavorite ?? false"
+      ></app-bookmark-collection-button>
     </div>
     <button
       (click)="openOptions()"
