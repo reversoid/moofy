@@ -9,6 +9,6 @@ export class CommentsTree {
   }
 
   private getInitialCommentNodes(comments: CommentWithInfo[]): CommentNode[] {
-    return [];
+    return comments.map<CommentNode>((c) => ({ comment: c, level: 0, replies: null }));
   }
 }
