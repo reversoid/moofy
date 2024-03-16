@@ -1,12 +1,14 @@
 import { AsyncPipe, NgIf, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { Profile } from '../../shared/types';
-import { map } from 'rxjs';
+import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
 import dayjs from 'dayjs';
+import { ProfileService } from '../../features/profile/profile.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-profile-page',
@@ -19,13 +21,19 @@ import dayjs from 'dayjs';
     TuiButtonModule,
     AsyncPipe,
     NgIf,
+    TuiLoaderModule,
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
 })
 export class ProfilePageComponent {
-  constructor(private readonly activatedRoute: ActivatedRoute) {}
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly profileService: ProfileService,
+    private readonly destroy$: TuiDestroyService,
+  ) {}
 
   private profile$ = this.activatedRoute.data.pipe(map<Data, Profile>((data) => data['profile']));
 
@@ -48,7 +56,35 @@ export class ProfilePageComponent {
 
   collections$ = this.profile$.pipe(map((p) => p.collections.items.map((i) => i.collection)));
 
-  follow() {}
+  id$ = this.profile$.pipe(map((p) => p.user.id));
 
-  unfollow() {}
+  loadingFollowButton = signal(false);
+
+  follow() {
+    this.id$
+      .pipe(
+        tap(() => this.loadingFollowButton.set(true)),
+        switchMap((id) =>
+          this.profileService.follow(id).pipe(finalize(() => this.loadingFollowButton.set(false))),
+        ),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(console.log);
+  }
+
+  unfollow() {
+    this.id$
+      .pipe(
+        tap(() => this.loadingFollowButton.set(true)),
+        switchMap((id) =>
+          this.profileService
+            .unfollow(id)
+            .pipe(finalize(() => this.loadingFollowButton.set(false))),
+        ),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(console.log);
+  }
 }

@@ -55,6 +55,7 @@
         <button
           *ngIf="isSubscribed$ | async; else notSubscribed"
           (click)="unfollow()"
+          [showLoader]="loadingFollowButton()"
           class="follow-button"
           tuiButton
           appearance="secondary"
@@ -63,7 +64,14 @@
         </button>
 
         <ng-template #notSubscribed>
-          <button (click)="follow()" class="follow-button" tuiButton>Подписаться</button>
+          <button
+            (click)="follow()"
+            [showLoader]="loadingFollowButton()"
+            class="follow-button"
+            tuiButton
+          >
+            Подписаться
+          </button>
         </ng-template>
       </div>
     </tui-island>

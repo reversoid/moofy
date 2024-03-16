@@ -31,11 +31,11 @@ export class ProfileService {
   }
 
   follow(id: User['id']): Observable<void> {
-    return this.http.get<void>(`profile/${id}`);
+    return this.http.put<void>(`profiles/${id}/followers`, {});
   }
 
   unfollow(id: User['id']): Observable<void> {
-    return this.http.get<void>(`profile/${id}`);
+    return this.http.delete<void>(`profiles/${id}/followers`);
   }
 
   getFollowers(id: User['id']): Observable<PaginatedData<ShortProfile>> {
