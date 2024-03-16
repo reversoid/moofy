@@ -52,26 +52,38 @@
 
     <tui-island class="actions">
       <div class="actions-buttons">
-        <button
-          *ngIf="isSubscribed$ | async; else notSubscribed"
-          (click)="unfollow()"
-          [showLoader]="loadingFollowButton()"
-          class="follow-button"
+        <a
+          *ngIf="isOwnerPage$ | async; else notOwner"
+          routerLink="/settings"
           tuiButton
           appearance="secondary"
+          class="action-button"
         >
-          Отписаться
-        </button>
+          Настройки
+        </a>
 
-        <ng-template #notSubscribed>
+        <ng-template #notOwner>
           <button
-            (click)="follow()"
+            *ngIf="isSubscribed$ | async; else notSubscribed"
+            (click)="unfollow()"
             [showLoader]="loadingFollowButton()"
-            class="follow-button"
+            class="action-button"
             tuiButton
+            appearance="secondary"
           >
-            Подписаться
+            Отписаться
           </button>
+
+          <ng-template #notSubscribed>
+            <button
+              (click)="follow()"
+              [showLoader]="loadingFollowButton()"
+              class="action-button"
+              tuiButton
+            >
+              Подписаться
+            </button>
+          </ng-template>
         </ng-template>
       </div>
     </tui-island>

@@ -5,10 +5,13 @@ import { TuiIslandModule } from '@taiga-ui/kit';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { Profile } from '../../shared/types';
-import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
+import { combineLatest, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
 import dayjs from 'dayjs';
 import { ProfileService } from '../../features/profile/profile.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../app/store';
+import { selectCurrentUser } from '../../entities/current-user/selectors';
 
 @Component({
   selector: 'app-profile-page',
@@ -33,6 +36,7 @@ export class ProfilePageComponent {
     private readonly activatedRoute: ActivatedRoute,
     private readonly profileService: ProfileService,
     private readonly destroy$: TuiDestroyService,
+    private readonly store: Store<AppState>,
   ) {}
 
   private profile$ = this.activatedRoute.data.pipe(map<Data, Profile>((data) => data['profile']));
@@ -59,6 +63,12 @@ export class ProfilePageComponent {
   id$ = this.profile$.pipe(map((p) => p.user.id));
 
   loadingFollowButton = signal(false);
+
+  private currentUser$ = this.store.select(selectCurrentUser);
+
+  isOwnerPage$ = combineLatest([this.currentUser$, this.id$]).pipe(
+    map(([currentUser, id]) => currentUser?.id === id),
+  );
 
   follow() {
     this.id$
