@@ -1,5 +1,5 @@
 import { PaginatedData } from '.';
-import { Collection } from './collection';
+import { CollectionWithInfo } from './collection';
 import { User } from './user';
 
 export interface Profile {
@@ -12,7 +12,7 @@ export interface Profile {
     followees: number;
   };
   personalReviewsAmount: number;
-  collections: PaginatedData<Collection>;
+  collections: PaginatedData<CollectionWithInfo>;
 }
 
 export type ShortProfile = Pick<Profile, 'user' | 'additionalInfo'>;

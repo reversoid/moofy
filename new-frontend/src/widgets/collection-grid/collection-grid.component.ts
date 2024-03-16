@@ -40,6 +40,4 @@ export class CollectionGridComponent {
   @Input() collections?: Collection[] = [];
 
   loading = true;
-
-  // collection = collectionMock;
 }

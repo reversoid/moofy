@@ -46,7 +46,7 @@ export class ProfilePageComponent {
 
   isSubscribed$ = this.profile$.pipe(map((p) => p.additionalInfo.isSubscribed));
 
-  collections$ = this.profile$.pipe(map((p) => p.collections.items));
+  collections$ = this.profile$.pipe(map((p) => p.collections.items.map((i) => i.collection)));
 
   follow() {}
 
