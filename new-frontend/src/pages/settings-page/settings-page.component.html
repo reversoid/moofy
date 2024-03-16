@@ -1,17 +1,54 @@
 <h1 class="tui-text_h1">Настройки</h1>
 
-<form class="settings-form">
+<form (submit)="save()" [formGroup]="settingsForm" class="settings-form">
   <div class="image"></div>
-  <tui-input>
+
+  <tui-input
+    formControlName="username"
+    [tuiHintContent]="[] | tuiFieldErrorContent"
+    tuiHintAppearance="error"
+  >
     Имя пользователя
     <input tuiTextfield />
   </tui-input>
 
-  <tui-input>
-    Email
-    <input tuiTextfield />
-  </tui-input>
+  <tui-textarea
+    formControlName="description"
+    [tuiHintContent]="[] | tuiFieldErrorContent"
+    tuiHintAppearance="error"
+  >
+    Описание
+  </tui-textarea>
 
-  <tui-textarea> Описание </tui-textarea>
-  <button class="submit-button" tuiButton>Сохранить</button>
+  <div formGroupName="password" class="password">
+    <div class="password-block-heading">
+      <h6 class="tui-text_h6">Изменение пароля</h6>
+
+      <tui-tooltip
+        *ngIf="passwordChangeErrors"
+        [content]="passwordChangeErrors"
+        appearance="error"
+      ></tui-tooltip>
+    </div>
+
+    <tui-input formControlName="old">
+      Старый пароль
+      <input tuiTextfield />
+    </tui-input>
+
+    <tui-input formControlName="new">
+      Новый пароль
+      <input tuiTextfield />
+    </tui-input>
+  </div>
+
+  <button
+    type="submit"
+    [showLoader]="submitting()"
+    [disabled]="!canSave"
+    class="submit-button"
+    tuiButton
+  >
+    Сохранить
+  </button>
 </form>

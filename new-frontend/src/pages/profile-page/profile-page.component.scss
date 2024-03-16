@@ -85,6 +85,7 @@
         width: 100%;
       }
     }
+
     @media #{$tui-mobile} {
       grid-row: 4;
       grid-column: span 2;

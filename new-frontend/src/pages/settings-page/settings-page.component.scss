@@ -26,3 +26,20 @@
     align-self: stretch;
   }
 }
+
+.password {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .password-block-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    h6 {
+      margin: 0;
+    }
+  }
+}
