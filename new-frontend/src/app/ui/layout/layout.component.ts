@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiAlertService } from '@taiga-ui/core';
+import { mergeMap, takeUntil } from 'rxjs';
+import { NotificationService } from '../../utils/notification.service';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { WrapperComponent } from '../wrapper/wrapper.component';
-import { NotificationService } from '../../utils/notification.service';
-import { TuiAlertService } from '@taiga-ui/core';
-import { mergeMap, takeUntil } from 'rxjs';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-layout',

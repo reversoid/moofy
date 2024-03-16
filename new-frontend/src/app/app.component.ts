@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, afterNextRender } from '@angular/co
 import { RouterOutlet } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
+  TUI_ALERT_POSITION,
   TUI_SANITIZER,
   TuiAlertModule,
   TuiButtonModule,
@@ -34,7 +35,12 @@ import { currentUserActions } from '../entities/current-user/actions';
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [{ provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }, TuiDestroyService],
+  providers: [
+    { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer },
+    TuiDestroyService,
+    // TODO should use css variables
+    { provide: TUI_ALERT_POSITION, useValue: 'calc(var(--header-height) + 0.5rem) 3rem 0 auto' },
+  ],
 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
