@@ -41,6 +41,10 @@
       grid-row: 1;
       grid-column: span 2;
     }
+
+    .empty {
+      color: var(--tui-text-02);
+    }
   }
 
   .followees {

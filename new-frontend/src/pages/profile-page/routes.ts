@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ProfileResolver } from './utils/profile.resolver';
 
 // TODO make guards for personal collection redirects: if not exists and if already exists
 export const routes: Routes = [
@@ -7,6 +8,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        resolve: { profile: ProfileResolver },
         loadComponent: () => import('./profile-page.component').then((c) => c.ProfilePageComponent),
       },
 

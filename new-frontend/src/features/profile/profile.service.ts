@@ -15,7 +15,7 @@ export class ProfileService {
   ) {}
 
   getProfile(id: User['id']): Observable<Profile> {
-    return this.http.get<Profile>(`profile${id}`);
+    return this.http.get<Profile>(`profiles/${id}`, { params: { limit: 20 } });
   }
 
   editProfile(dto: EditProfileDto): Observable<void> {

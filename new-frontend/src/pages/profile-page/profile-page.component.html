@@ -6,49 +6,69 @@
     />
   </div>
 
-  <h1 class="username tui-text_h2">floppa</h1>
+  <h1 class="username tui-text_h2">{{ username$ | async }}</h1>
 
   <div class="profile-info-grid">
     <tui-island class="description">
       <h4 class="tui-island__title">Описание</h4>
-      <p class="tui-island__paragraph">Добро пожаловать на наш сайт друзья!</p>
+      <p
+        *ngIf="description$ | async as description; else noDescription"
+        class="tui-island__paragraph"
+      >
+        {{ description }}
+      </p>
+      <ng-template #noDescription>
+        <p class="tui-island__paragraph empty">Описание отсутствует</p>
+      </ng-template>
     </tui-island>
 
     <a routerLink="followees" tuiIsland [hoverable]="true" class="followees">
       <div class="island-content">
         <h4 class="island-title">Подписки</h4>
-        <p class="island-value">123</p>
+        <p class="island-value">{{ followeesAmount$ | async }}</p>
       </div>
     </a>
 
     <a routerLink="followers" tuiIsland [hoverable]="true" class="followers">
       <div class="island-content">
         <h4 class="island-title">Подписчики</h4>
-        <p class="island-value">123</p>
+        <p class="island-value">{{ followersAmount$ | async }}</p>
       </div>
     </a>
 
     <a routerLink="/profile/1/personal-collection" tuiIsland [hoverable]="true" class="reviews">
       <div class="island-content">
         <h4 class="island-title">Обзоры</h4>
-        <p class="island-value">341</p>
+        <p class="island-value">{{ personalReviewsAmount$ | async }}</p>
       </div>
     </a>
 
     <tui-island class="register-date">
       <div class="island-content">
         <h4 class="island-title">Дата регистрации</h4>
-        <p class="island-value">12.01.2024</p>
+        <p class="island-value">{{ registerDate$ | async }}</p>
       </div>
     </tui-island>
 
     <tui-island class="actions">
       <div class="actions-buttons">
-        <button (click)="follow()" class="follow-button" tuiButton>Подписаться</button>
+        <button
+          *ngIf="isSubscribed$ | async; else notSubscribed"
+          (click)="unfollow()"
+          class="follow-button"
+          tuiButton
+          appearance="secondary"
+        >
+          Отписаться
+        </button>
+
+        <ng-template #notSubscribed>
+          <button (click)="follow()" class="follow-button" tuiButton>Подписаться</button>
+        </ng-template>
       </div>
     </tui-island>
   </div>
 </div>
 
 <h3 class="collections-title tui-text_h3">Коллекции</h3>
-<app-collection-grid></app-collection-grid>
+<app-collection-grid view="grid" [collections]="(collections$ | async) || []"></app-collection-grid>
