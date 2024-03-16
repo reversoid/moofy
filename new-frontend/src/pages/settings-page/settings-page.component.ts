@@ -18,6 +18,8 @@ import { maxLength, required } from '../../shared/utils/validators';
 import { confirmPasswordValidator } from './utils/confirm-password-validator';
 import { ProfileService } from '../../features/profile/profile.service';
 import { NotificationService } from '../../app/utils/notification.service';
+import { EditProfileDto } from '../../features/profile/types';
+import { currentUserActions } from '../../entities/current-user/actions';
 
 @Component({
   selector: 'app-settings-page',
@@ -102,23 +104,35 @@ export class SettingsPageComponent implements OnInit {
 
     const changePassword = Boolean(values.password?.new);
 
-    this.submitting.set(true);
+    const dto: EditProfileDto = {
+      username: values.username ?? undefined,
+      description: values.description || null,
+      imageUrl: values.imageUrl,
+      password: changePassword
+        ? {
+            old: values.password?.old!,
+            new: values.password?.new!,
+          }
+        : undefined,
+    };
 
+    this.submitting.set(true);
     this.profileService
-      .editProfile({
-        username: values.username ?? undefined,
-        description: values.description ?? null,
-        imageUrl: values.imageUrl,
-        password: changePassword
-          ? {
-              old: values.password?.old!,
-              new: values.password?.new!,
-            }
-          : undefined,
-      })
-      .pipe(finalize(() => this.submitting.set(false)))
+      .editProfile(dto)
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntil(this.destroy$),
+      )
       .subscribe(() => {
         this.notificationService.createSuccessMessage('Профиль успешно изменен');
+
+        this.store.dispatch(
+          currentUserActions.edit({
+            username: dto.username,
+            description: dto.description,
+            imageUrl: dto.imageUrl,
+          }),
+        );
       });
   }
 }

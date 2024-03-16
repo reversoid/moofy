@@ -5,6 +5,7 @@ export const currentUserActions = createActionGroup({
   source: 'Current User',
   events: {
     set: props<{ user: User }>(),
+    edit: props<Partial<Pick<User, 'username' | 'description' | 'imageUrl'>>>(),
     clear: emptyProps(),
   },
 });
