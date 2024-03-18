@@ -3,3 +3,15 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.empty-placeholder {
+  text-align: left;
+  color: var(--tui-text-02);
+  margin-bottom: 0;
+}

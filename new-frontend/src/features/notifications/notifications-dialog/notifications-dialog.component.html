@@ -1,3 +1,17 @@
-<div class="notifications tui-space_top-5">
-  <app-notification *ngFor="let t of mock"></app-notification>
-</div>
+<ng-container *ngIf="emptyNotifications(); else showNotifications"
+  ><p class="empty-placeholder">Список уведомлений пуст</p>
+</ng-container>
+
+<div *ngIf="firstLoading" class="skeleton"></div>
+
+<ng-template #showNotifications>
+  <ng-container *ngIf="notificationsItems() as notifications">
+    <div class="notifications tui-space_top-5">
+      <app-notification *ngFor="let n of notifications" [notification]="n"></app-notification>
+    </div>
+
+    <div *ngIf="loadKey() as key" class="load-more-container">
+      <button (click)="loadNotifications(key)" tuiButton size="m">Загрузить больше</button>
+    </div>
+  </ng-container>
+</ng-template>

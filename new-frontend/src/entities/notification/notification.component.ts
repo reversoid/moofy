@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiLinkModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
@@ -14,7 +14,9 @@ import { ProfileDirectNotification } from '../../shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent {
-  notification: ProfileDirectNotification = {
+  @Input({ required: true }) notification!: ProfileDirectNotification;
+
+  notificationMock: ProfileDirectNotification = {
     created_at: new Date().toISOString(),
     id: 'aboba',
     payload: {},
