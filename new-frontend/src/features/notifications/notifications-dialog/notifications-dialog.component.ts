@@ -1,7 +1,14 @@
 import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiLoaderModule,
+  TuiTextfieldControllerModule,
+} from '@taiga-ui/core';
+import { TuiSelectModule } from '@taiga-ui/kit';
 import { finalize, takeUntil } from 'rxjs';
 import { NotificationComponent } from '../../../entities/notification/notification.component';
 import { PaginatedData, ProfileDirectNotification } from '../../../shared/types';
@@ -10,7 +17,16 @@ import { NotificationsService } from '../utils/notifications.service';
 @Component({
   selector: 'app-notifications-dialog',
   standalone: true,
-  imports: [NgFor, NotificationComponent, TuiButtonModule, NgIf],
+  imports: [
+    NgFor,
+    NotificationComponent,
+    TuiButtonModule,
+    NgIf,
+    TuiSelectModule,
+    TuiDataListModule,
+    TuiTextfieldControllerModule,
+    FormsModule,
+  ],
   templateUrl: './notifications-dialog.component.html',
   styleUrl: './notifications-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +51,17 @@ export class NotificationsDialogComponent implements OnInit {
   emptyNotifications = computed(() => this.notifications()?.items.length === 0);
 
   firstLoading = computed(() => this.notifications() === null);
+
+  options = ['UNREAD', 'ALL'];
+
+  selectedOption = 'UNREAD';
+
+  get visibleSelectValue() {
+    if (this.selectedOption === 'UNREAD') {
+      return 'Только непрочитанные';
+    }
+    return 'Показывать все';
+  }
 
   ngOnInit(): void {
     this.loadNotifications();

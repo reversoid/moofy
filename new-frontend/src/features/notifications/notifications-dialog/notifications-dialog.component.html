@@ -1,13 +1,36 @@
-<ng-container *ngIf="emptyNotifications(); else showNotifications"
+<!-- <ng-container *ngIf="emptyNotifications(); else showNotifications"
   ><p class="empty-placeholder">Список уведомлений пуст</p>
-</ng-container>
+</ng-container> -->
 
-<div *ngIf="firstLoading" class="skeleton"></div>
+<div class="tui-space_top-5 controls">
+  <tui-select
+    [tuiTextfieldLabelOutside]="true"
+    [ngModel]="selectedOption"
+    (ngModelChange)="selectedOption = $event"
+    [valueContent]="visibleSelectValue"
+  >
+    <tui-data-list *tuiDataList>
+      <button tuiOption value="UNREAD">Только непрочитанные</button>
+      <button tuiOption value="ALL">Показывать все</button>
+    </tui-data-list>
+  </tui-select>
+
+  <button appearance="secondary" tuiButton size="m">Прочитать все</button>
+</div>
+
+<div class="notifications tui-space_top-4">
+  <app-notification></app-notification>
+  <app-notification></app-notification>
+  <app-notification></app-notification>
+  <app-notification></app-notification>
+</div>
 
 <ng-template #showNotifications>
   <ng-container *ngIf="notificationsItems() as notifications">
-    <div class="notifications tui-space_top-5">
-      <app-notification *ngFor="let n of notifications" [notification]="n"></app-notification>
+    <div class="notifications tui-space_top-4">
+      <app-notification></app-notification>
+
+      <!-- <app-notification *ngFor="let n of notifications" [notification]="n"></app-notification> -->
     </div>
 
     <div *ngIf="loadKey() as key" class="load-more-container">

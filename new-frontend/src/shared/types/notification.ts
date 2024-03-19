@@ -1,4 +1,5 @@
 import { Collection } from './collection';
+import { Comment } from './comment';
 import { User } from './user';
 
 type CollectionLikeNotificationPayload = {

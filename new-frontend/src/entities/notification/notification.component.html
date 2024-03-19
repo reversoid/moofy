@@ -1,32 +1,34 @@
 <tui-island class="notification">
-  <a routerLink="/profile/1">
+  <a [routerLink]="['profile', user.id]">
     <div class="img-wrapper">
-      <img
-        ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
-        fill
-      />
+      <img *ngIf="user.imageUrl as imageUrl; else noImage" [ngSrc]="imageUrl" fill />
+      <ng-template #noImage>
+        <tui-svg src="tuiIconUserLarge"></tui-svg>
+      </ng-template>
     </div>
   </a>
 
   <div class="notification__content">
     <p>
-      <a routerLink="/profile/1" tuiLink>reversoid </a>
+      <a [routerLink]="['profile', user.id]" tuiLink
+        ><b>{{ user.username }}</b>
+      </a>
 
       @switch (notification.type) {
         @case ('COLLECTION_LIKE') {
-          нравится ваша коллекция
+          нравится ваша <a [routerLink]="collectionLink" tuiLink>коллекция</a>
         }
         @case ('COMMENT_LIKE') {
-          нравится ваш комментарий
+          нравится ваш <a [routerLink]="commentLink" tuiLink>комментарий</a>
         }
         @case ('NEW_COMMENT') {
-          добавил комментарий
+          добавил(-а) <a [routerLink]="commentLink" tuiLink>комментарий</a>
         }
         @case ('NEW_FOLLOWER') {
-          подписался на вас
+          подписался(-aсь) на вас
         }
         @case ('NEW_REPLY') {
-          ответил на комментарий
+          ответил(-а) на <a [routerLink]="commentLink" tuiLink>комментарий</a>
         }
       }
     </p>

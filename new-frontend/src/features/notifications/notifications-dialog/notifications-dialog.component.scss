@@ -15,3 +15,14 @@
   color: var(--tui-text-02);
   margin-bottom: 0;
 }
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  tui-select {
+    min-width: 250px;
+    width: fit-content;
+    flex-shrink: 0;
+  }
+}
