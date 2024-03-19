@@ -58,9 +58,10 @@ export class NotificationsDialogComponent implements OnInit {
 
   get visibleSelectValue() {
     if (this.selectedOption === 'UNREAD') {
-      return 'Только непрочитанные';
+      return 'Непрочитанные';
     }
-    return 'Показывать все';
+
+    return 'Все';
   }
 
   ngOnInit(): void {
