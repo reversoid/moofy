@@ -42,14 +42,16 @@ export class NotificationsDialogComponent implements OnInit {
 
   changeSelectedOption(optionId: OptionId) {
     this.selectedOption = optionId;
+
+    this.loadNotifications(this.loadKey());
+    this.notifications.set(null);
   }
 
   ngOnInit(): void {
     this.loadNotifications();
-    this.notifications.set(null);
   }
 
-  loadNotifications(nextKey?: string) {
+  loadNotifications(nextKey?: string | null) {
     this.loading.set(true);
 
     const result =
