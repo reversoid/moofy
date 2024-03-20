@@ -3,17 +3,9 @@
 </ng-container> -->
 
 <div class="tui-space_top-5 controls">
-  <tui-select
-    [tuiTextfieldLabelOutside]="true"
-    [ngModel]="selectedOption"
-    (ngModelChange)="selectedOption = $event"
-    [valueContent]="visibleSelectValue"
-  >
-    <tui-data-list *tuiDataList>
-      <button tuiOption value="UNREAD">Непрочитанные</button>
-      <button tuiOption value="ALL">Все</button>
-    </tui-data-list>
-  </tui-select>
+  <app-notifications-shown-select
+    [(selectedOption)]="selectedOption"
+  ></app-notifications-shown-select>
 </div>
 
 <div class="notifications tui-space_top-3">

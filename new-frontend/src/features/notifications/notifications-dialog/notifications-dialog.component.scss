@@ -20,8 +20,8 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  tui-select {
-    width: 100%;
-    flex-shrink: 0;
-  }
+}
+
+app-notifications-shown-select {
+  width: 100%;
 }

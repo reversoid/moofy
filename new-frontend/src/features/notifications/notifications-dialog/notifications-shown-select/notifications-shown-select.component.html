@@ -1,0 +1,10 @@
+<tui-select
+  [tuiTextfieldLabelOutside]="true"
+  [ngModel]="selectedOption"
+  (ngModelChange)="selectedOptionChange.emit($event)"
+  [valueContent]="currentOptionName"
+>
+  <tui-data-list *tuiDataList>
+    <button *ngFor="let o of options" tuiOption [value]="o.id">{{ o.label }}</button>
+  </tui-data-list>
+</tui-select>
