@@ -26,15 +26,13 @@ export class NotificationsDialogComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
   ) {}
 
-  mock = new Array(100).fill(null);
-
   private notifications = signal<PaginatedData<ProfileDirectNotification> | null>(null);
+
+  loading = signal(false);
 
   notificationsItems = computed(() => this.notifications()?.items);
 
   loadKey = computed(() => this.notifications()?.nextKey);
-
-  loading = signal(false);
 
   emptyNotifications = computed(() => this.notifications()?.items.length === 0);
 
@@ -42,15 +40,24 @@ export class NotificationsDialogComponent implements OnInit {
 
   selectedOption: OptionId = 'UNREAD';
 
+  changeSelectedOption(optionId: OptionId) {
+    this.selectedOption = optionId;
+  }
+
   ngOnInit(): void {
     this.loadNotifications();
+    this.notifications.set(null);
   }
 
   loadNotifications(nextKey?: string) {
     this.loading.set(true);
 
-    this.notificationsServce
-      .getUnseenNotifications(nextKey)
+    const result =
+      this.selectedOption === 'ALL'
+        ? this.notificationsServce.getAllNotifications(nextKey)
+        : this.notificationsServce.getUnseenNotifications(nextKey);
+
+    result
       .pipe(
         finalize(() => this.loading.set(false)),
         takeUntil(this.destroy$),

@@ -1,12 +1,13 @@
+<div class="tui-space_top-5 controls">
+  <app-notifications-shown-select
+    [selectedOption]="selectedOption"
+    (selectedOptionChange)="changeSelectedOption($event)"
+  ></app-notifications-shown-select>
+</div>
+
 <!-- <ng-container *ngIf="emptyNotifications(); else showNotifications"
   ><p class="empty-placeholder">Список уведомлений пуст</p>
 </ng-container> -->
-
-<div class="tui-space_top-5 controls">
-  <app-notifications-shown-select
-    [(selectedOption)]="selectedOption"
-  ></app-notifications-shown-select>
-</div>
 
 <div class="notifications tui-space_top-3">
   <app-notification></app-notification>

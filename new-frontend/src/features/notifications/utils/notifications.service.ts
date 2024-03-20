@@ -8,8 +8,10 @@ import { PaginatedData, ProfileDirectNotification } from '../../../shared/types'
 export class NotificationsService {
   constructor(private readonly http: HttpClient) {}
 
-  getAllNotifications() {
-    return this.http.get<PaginatedData<ProfileDirectNotification>>('profile-notifications/all');
+  getAllNotifications(nextKey?: string) {
+    return this.http.get<PaginatedData<ProfileDirectNotification>>('profile-notifications/all', {
+      params: nextKey ? { nextKey } : undefined,
+    });
   }
 
   getUnseenNotifications(nextKey?: string) {
