@@ -2,7 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
-import { EMPTY, catchError, finalize, from, map, mergeMap, takeUntil } from 'rxjs';
+import { EMPTY, catchError, debounceTime, finalize, from, map, mergeMap, takeUntil } from 'rxjs';
 import { NotificationComponent } from '../../../entities/notification/notification.component';
 import { PaginatedData, ProfileDirectNotification } from '../../../shared/types';
 import { NotificationsService } from '../utils/notifications.service';
@@ -105,6 +105,7 @@ export class NotificationsDialogComponent implements OnInit {
   private initializeViewOfNotifications() {
     this.notificationsViewService.idsToMarkAsSeen$
       .pipe(
+        debounceTime(100),
         map((idsSet) => Array.from(idsSet)),
         mergeMap((ids) => from(ids)),
         mergeMap((id) => {
