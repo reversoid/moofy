@@ -9,11 +9,11 @@
   ><p class="empty-placeholder">Список уведомлений пуст</p>
 </ng-container> -->
 
-<div class="notifications tui-space_top-3">
-  <app-notification></app-notification>
-  <app-notification></app-notification>
-  <app-notification></app-notification>
-  <app-notification></app-notification>
+<div class="tui-space_top-3 notifications" waIntersectionObserver>
+  <app-notification
+    *ngFor="let id of mock"
+    (waIntersectionObservee)="handleObservedNotification($event, id)"
+  ></app-notification>
 </div>
 
 <ng-template #showNotifications>
