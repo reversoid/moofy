@@ -14,7 +14,7 @@ import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 import { NotificationsViewService } from '../utils/notifications-view.service';
 
 @Component({
-  selector: 'app-notifications-dialog',
+  selector: 'app-profile-notifications-dialog',
   standalone: true,
   imports: [
     NgFor,
@@ -24,12 +24,12 @@ import { NotificationsViewService } from '../utils/notifications-view.service';
     NotificationsShownSelectComponent,
     IntersectionObserverModule,
   ],
-  templateUrl: './notifications-dialog.component.html',
-  styleUrl: './notifications-dialog.component.scss',
+  templateUrl: './profile-notifications-dialog.component.html',
+  styleUrl: './profile-notifications-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService, TuiLoaderModule, NotificationsViewService],
 })
-export class NotificationsDialogComponent implements OnInit {
+export class ProfileNotificationsDialogComponent implements OnInit {
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly destroy$: TuiDestroyService,

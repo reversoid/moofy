@@ -46,6 +46,7 @@
     "dayjs": "^1.11.10",
     "dompurify": "2.2.9",
     "express": "^4.18.2",
+    "ngx-socket-io": "^4.6.1",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.14.3"
