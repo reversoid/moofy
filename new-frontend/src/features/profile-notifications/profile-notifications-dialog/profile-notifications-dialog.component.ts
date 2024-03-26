@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@a
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { EMPTY, catchError, debounceTime, finalize, from, map, mergeMap, takeUntil } from 'rxjs';
-import { NotificationComponent } from '../../../entities/notification/notification.component';
 import { PaginatedData, ProfileDirectNotification } from '../../../shared/types';
 import { NotificationsService } from '../utils/notifications.service';
 import {
@@ -12,6 +11,7 @@ import {
 } from './notifications-shown-select/notifications-shown-select.component';
 import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 import { NotificationsViewService } from '../utils/notifications-view.service';
+import { NotificationComponent } from '../../../entities/profile-notifications';
 
 @Component({
   selector: 'app-profile-notifications-dialog',

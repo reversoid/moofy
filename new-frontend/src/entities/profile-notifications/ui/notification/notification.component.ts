@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiButtonModule, TuiLinkModule, TuiSvgModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
-import { ProfileDirectNotification } from '../../shared/types';
+import { ProfileDirectNotification } from '../../../../shared/types';
 
 const notificationMock: ProfileDirectNotification = {
   created_at: new Date().toISOString(),

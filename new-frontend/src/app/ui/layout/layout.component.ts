@@ -20,35 +20,35 @@ export class LayoutComponent implements OnInit {
   constructor(
     private readonly alert: TuiAlertService,
     private readonly notificationService: NotificationService,
-    private readonly _destroy$: TuiDestroyService,
+    private readonly destroy$: TuiDestroyService,
   ) {}
 
   ngOnInit(): void {
-    this.initializeNotifications();
+    this.initializeAppNotifications();
   }
 
-  initializeNotifications() {
+  private initializeAppNotifications() {
     const DURATION = 1500;
 
     this.notificationService.errors$
       .pipe(
         mergeMap((message) => this.alert.open(message, { status: 'error', autoClose: DURATION })),
       )
-      .pipe(takeUntil(this._destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe();
 
     this.notificationService.notifications$
       .pipe(
         mergeMap((message) => this.alert.open(message, { status: 'info', autoClose: DURATION })),
       )
-      .pipe(takeUntil(this._destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe();
 
     this.notificationService.successMessages$
       .pipe(
         mergeMap((message) => this.alert.open(message, { status: 'success', autoClose: DURATION })),
       )
-      .pipe(takeUntil(this._destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
 }

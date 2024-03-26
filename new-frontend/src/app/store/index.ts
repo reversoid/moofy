@@ -1,5 +1,5 @@
 import { ActionReducerMap } from '@ngrx/store';
-import * as fromNotifications from '../../entities/notifications';
+import * as fromNotifications from '../../entities/profile-notifications/model';
 import * as fromPersonalReviews from '../../entities/personal-reviews';
 import * as fromUserCollections from '../../entities/user-collections';
 import * as fromUserFavCollections from '../../entities/user-fav-collections';

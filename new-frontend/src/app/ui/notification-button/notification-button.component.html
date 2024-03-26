@@ -5,5 +5,11 @@
   icon="tuiIconBellLarge"
   appearance="secondary"
 >
-  <tui-badge size="xs" status="primary" class="badge" value="9+"></tui-badge>
+  <tui-badge
+    *ngIf="unseenNotificationsAmount$ | async | formatNotificationsAmount as amount"
+    size="xs"
+    status="primary"
+    class="badge"
+    [value]="amount"
+  ></tui-badge>
 </button>
