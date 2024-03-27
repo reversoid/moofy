@@ -78,21 +78,21 @@ export class NotificationButtonComponent implements OnInit {
 
     this.profileSocketService
       .getNewNotifications()
-      .pipe(takeUntil(this.destroy$))
+      ?.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.store.dispatch(profileNotificationsActions.incrementUnseenAmount());
       });
 
     this.profileSocketService
       .getCounterNotificationsEvents()
-      .pipe(takeUntil(this.destroy$))
+      ?.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.store.dispatch(profileNotificationsActions.decrementUnseenAmount());
       });
 
     this.profileSocketService
       .getSeenNotificationsEvents()
-      .pipe(takeUntil(this.destroy$))
+      ?.pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.store.dispatch(profileNotificationsActions.decrementUnseenAmount());
       });
