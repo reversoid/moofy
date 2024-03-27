@@ -1,0 +1,35 @@
+<h1 class="tui-text_h1">Roadmap</h1>
+
+<p>Эта страница посвящена дорожной карте развития нашего проекта</p>
+
+<p>
+  Если у вас есть предложения по улучшению проекта, обратитесь в
+  <a class="colored" tuiLink routerLink="/support">поддержку</a>
+</p>
+
+<section class="map-block">
+  <h2 class="tui-text_h3">Обозначения</h2>
+
+  <div class="map">
+    <tui-badge status="success" value="новая возможность"></tui-badge>
+    <tui-badge status="info" value="улучшение"></tui-badge>
+  </div>
+</section>
+
+<section class="ideas-block">
+  <h2 class="tui-text_h3">Пункты</h2>
+
+  <div class="ideas">
+    <tui-island *ngFor="let item of roadmap">
+      <h2 class="tui-text_h4">{{ item.title }}</h2>
+      <p>{{ item.description }}</p>
+      <tui-badge
+        [tuiHint]="item.type === 'feature' ? featureHint : improveHint"
+        [status]="item.type === 'feature' ? 'success' : 'info'"
+      ></tui-badge>
+    </tui-island>
+  </div>
+
+  <ng-template #featureHint> новая возможность </ng-template>
+  <ng-template #improveHint> улучшение </ng-template>
+</section>

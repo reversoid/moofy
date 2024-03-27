@@ -1,0 +1,19 @@
+<h1 class="tui-text_h1">Поиск</h1>
+
+<app-links-group
+  [selectedLinkItem]="selectedLinkIndex$ | async"
+  [linkItems]="linkItems"
+  class="group"
+></app-links-group>
+
+<tui-input
+  [tuiTextfieldLabelOutside]="true"
+  class="search"
+  tuiTextfieldIconLeft="tuiIconSearchLarge"
+  [tuiTextfieldCleaner]="true"
+>
+  Поиск
+  <input tuiTextfield role="search" />
+</tui-input>
+
+<router-outlet></router-outlet>

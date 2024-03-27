@@ -1,0 +1,15 @@
+@import 'shared';
+
+.search {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+
+  @media #{$tui-mobile} {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.group {
+  width: fit-content;
+}

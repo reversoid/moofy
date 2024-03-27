@@ -1,0 +1,49 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
+.review {
+  display: flex;
+  flex-direction: row;
+  @media #{$tui-mobile} {
+    flex-direction: column;
+  }
+  gap: 1rem;
+
+  .review-title {
+    margin: 0;
+  }
+
+  .image {
+    @media #{$tui-mobile} {
+      display: flex;
+      justify-content: center;
+    }
+
+    .image-wrapper {
+      height: 10rem;
+      position: relative;
+      width: 6.75rem;
+
+      img {
+        border-radius: calc(var(--tui-radius-xl) - 1rem);
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .heading {
+      gap: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .description {
+      color: var(--tui-text-02);
+      margin: 0;
+    }
+  }
+}

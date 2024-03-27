@@ -1,0 +1,23 @@
+<tui-island class="review">
+  <div class="image">
+    <div class="image-wrapper">
+      <img *ngIf="review?.film?.posterPreviewUrl" [ngSrc]="review?.film?.posterPreviewUrl!" fill />
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="heading">
+      <a
+        tuiLink
+        [href]="'https://kinopoisk.ru/film/' + review?.film?.id"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <h4 class="review-title tui-text_h6">{{ review?.film?.name }}</h4>
+      </a>
+      <tui-tag *ngIf="filmYear" class="year" [value]="filmYear"></tui-tag>
+    </div>
+
+    <p class="description">{{ review?.description || 'Описание отсутствует' }}</p>
+  </div>
+</tui-island>

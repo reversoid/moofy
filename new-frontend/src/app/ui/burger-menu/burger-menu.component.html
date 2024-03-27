@@ -1,0 +1,11 @@
+<!-- TODO make more straight -->
+
+<button
+  (click)="toggle()"
+  [ngClass]="sidebarOpen ? 'open-menu' : 'close-menu'"
+  class="menu-burger"
+  type="button"
+>
+  <span></span>
+  <ng-content></ng-content>
+</button>

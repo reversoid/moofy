@@ -1,0 +1,27 @@
+.notifications {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.empty-placeholder {
+  text-align: left;
+  color: var(--tui-text-02);
+  margin-bottom: 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+app-notifications-shown-select {
+  width: 100%;
+}

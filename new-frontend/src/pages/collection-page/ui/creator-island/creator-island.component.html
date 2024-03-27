@@ -1,0 +1,17 @@
+<tui-island class="creator">
+  <h4 class="tui-island__title">
+    Создатель:
+    <a tuiLink [routerLink]="['/profile', user?.id]" class="username">{{ user?.username }}</a>
+  </h4>
+
+  <div class="tui-island__content">
+    <figure class="tui-island__figure">
+      <div class="some-figure">
+        <img *ngIf="user?.imageUrl" [ngSrc]="user?.imageUrl!" fill />
+      </div>
+    </figure>
+    <div>
+      <p class="tui-island__paragraph">{{ user?.description || 'Описание отсутствует' }}</p>
+    </div>
+  </div>
+</tui-island>

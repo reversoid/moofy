@@ -1,0 +1,17 @@
+.wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 600px;
+}
+
+.not-registered {
+  color: var(--tui-text-03);
+
+  a {
+    color: var(--tui-link);
+  }
+}
+
+.wrapper {
+  height: 10000px;
+}

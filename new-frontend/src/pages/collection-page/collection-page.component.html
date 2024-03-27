@@ -1,0 +1,59 @@
+<h1 class="tui-text_h1">{{ collectionName$ | async }}</h1>
+
+<div class="collection-info-grid">
+  <app-description-island [description]="description$ | async"></app-description-island>
+
+  <app-creator-island [user]="creator$ | async"></app-creator-island>
+
+  <div class="metadata-grid">
+    <app-updated-island [date]="updatedAt$ | async"></app-updated-island>
+    <app-image-island [imageUrl]="imageUrl$ | async"></app-image-island>
+  </div>
+
+  <app-stats-island
+    [collection]="collection$ | async"
+    [isPersonal]="(isPersonal$ | async) ?? false"
+    [stats]="stats$ | async"
+  ></app-stats-island>
+</div>
+
+<button
+  (click)="showInfoAboutCollection()"
+  class="about-collection tui-space_top-4"
+  tuiButton
+  appearance="secondary"
+>
+  О коллекции
+</button>
+
+<div class="reviews-title">
+  <h3 class="tui-text_h3">Фильмы</h3>
+  <button
+    (click)="createReview()"
+    tuiIconButton
+    icon="tuiIconPlusLarge"
+    appearance="secondary"
+  ></button>
+</div>
+
+<ng-container *ngIf="reviewsExist$ | async; else noReviews">
+  <tui-input
+    [tuiTextfieldLabelOutside]="true"
+    class="search-input tui-space_bottom-5"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    [tuiTextfieldCleaner]="true"
+    [formControl]="search"
+  >
+    Поиск
+    <input tuiTextfield role="search" />
+  </tui-input>
+
+  <!-- TODO make it lazy loadable -->
+  <app-review-conflicts-block></app-review-conflicts-block>
+
+  <app-review-list [reviews]="reviews$ | async"></app-review-list>
+</ng-container>
+
+<ng-template #noReviews>
+  <app-empty-collection-placeholder> </app-empty-collection-placeholder>
+</ng-template>

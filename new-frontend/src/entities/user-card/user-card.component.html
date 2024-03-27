@@ -1,0 +1,19 @@
+<app-card [ngClass]="view" [view]="view" [title]="user.username">
+  <a image tuiLink [routerLink]="['/profile', user.id]">
+    <div class="image-wrapper">
+      <img [ngSrc]="user.imageUrl ?? ''" fill />
+    </div>
+  </a>
+
+  <h4 class="username title" title>{{ user.username }}</h4>
+
+  <div content class="user-content">
+    <tui-island class="description-wrapper">
+      <p class="description">
+        {{ user.description }}
+      </p>
+    </tui-island>
+  </div>
+
+  <ng-content action></ng-content>
+</app-card>

@@ -1,0 +1,22 @@
+@import 'shared';
+
+.collections-grid {
+  display: grid;
+  @include grid-gap;
+
+  &.list {
+    grid-template-columns: 1fr !important;
+  }
+
+  &.grid {
+    @include grid;
+  }
+}
+
+.loader {
+  margin-top: 2rem;
+}
+
+:host {
+  display: block;
+}

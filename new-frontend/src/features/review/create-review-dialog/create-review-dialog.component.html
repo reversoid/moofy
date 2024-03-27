@@ -1,0 +1,75 @@
+<tui-elastic-container class="tui-space_top-5">
+  <tui-input
+    [tuiTextfieldLabelOutside]="true"
+    tuiTextfieldIconLeft="tuiIconSearchLarge"
+    [tuiTextfieldCleaner]="true"
+    [formControl]="filmNameControl"
+  >
+    Название
+    <input tuiTextfield role="search" />
+    <ng-container *ngIf="showDataList()">
+      <tui-data-list *tuiDataList [emptyContent]="noContent">
+        <ng-container *ngIf="searching(); else content">
+          <tui-loader [overlay]="true">
+            <button tuiOption [disabled]="true"></button>
+          </tui-loader>
+        </ng-container>
+
+        <!-- TODO make component for film search item  -->
+        <ng-template #content>
+          <button *ngFor="let film of films()" (click)="select(film)" tuiOption [value]="film.name">
+            <div class="film-item">
+              <div class="image">
+                <img [ngSrc]="film.posterPreviewUrl" fill priority />
+              </div>
+              <div class="data">
+                <h6 class="tui-text_h6">{{ film.name }}</h6>
+                <tui-tag [value]="film.year | tuiMapper: toString"></tui-tag>
+              </div>
+            </div>
+          </button>
+        </ng-template>
+      </tui-data-list>
+    </ng-container>
+  </tui-input>
+
+  <form
+    id="create-review-form"
+    *ngIf="selectedFilm"
+    (submit)="createReview()"
+    [formGroup]="reviewForm"
+  >
+    <!-- TODO make component for film -->
+    <div class="film tui-space_top-5">
+      <div class="image-wrapper">
+        <img [ngSrc]="selectedFilm.posterPreviewUrl" fill priority />
+      </div>
+      <h6 class="title tui-text_h6">{{ selectedFilm.name }}</h6>
+      <tui-tag [value]="selectedFilm.year | tuiMapper: toString"></tui-tag>
+    </div>
+
+    <tui-rating formControlName="score" class="score tui-space_top-5" [max]="5"></tui-rating>
+
+    <tui-textarea
+      [tuiTextfieldLabelOutside]="true"
+      formControlName="description"
+      class="tui-space_top-5"
+      [expandable]="true"
+    >
+      Описание
+    </tui-textarea>
+  </form>
+
+  <button
+    type="submit"
+    form="create-review-form"
+    [disabled]="!selectedFilm || creatingReview()"
+    class="submit-button tui-space_top-5"
+    tuiButton
+    [showLoader]="creatingReview()"
+  >
+    Добавить
+  </button>
+</tui-elastic-container>
+
+<ng-template #noContent>Ничего не найдено</ng-template>

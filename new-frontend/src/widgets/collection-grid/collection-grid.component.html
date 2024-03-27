@@ -1,0 +1,11 @@
+<div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
+  <a *ngFor="let collection of collections" [routerLink]="['/collections', collection.id]" tuiLink>
+    <app-collection
+      [view]="view === 'list' ? 'horizontal' : 'vertical'"
+      [collection]="collection"
+      [hideDescription]="hideDescription"
+    ></app-collection>
+  </a>
+</div>
+
+<tui-loader *ngIf="loading" class="loader"></tui-loader>

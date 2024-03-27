@@ -1,0 +1,37 @@
+.img-wrapper {
+  width: 3.5rem;
+  height: 3.5rem;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--tui-secondary);
+
+  tui-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--tui-text-02);
+  }
+}
+
+.notification {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.go-button {
+  margin-left: auto;
+}

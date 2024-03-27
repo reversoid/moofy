@@ -1,0 +1,69 @@
+@import 'shared';
+
+.collection-info-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+
+  @media #{$tui-tablet} {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  @media #{$tui-mobile} {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+app-stats-island {
+  grid-column: 2;
+
+  @media #{$tui-mobile} {
+    grid-column: span 2;
+  }
+}
+
+app-description-island {
+  grid-row: span 2;
+
+  @media #{$tui-mobile} {
+    grid-column: span 2;
+  }
+}
+
+app-creator-island {
+  @include hide-mobile();
+  @media #{$tui-mobile} {
+    grid-column: span 2;
+  }
+}
+
+.metadata-grid {
+  grid-row: 2;
+  grid-column: 2;
+  display: flex;
+  gap: 1rem;
+
+  @include hide-mobile();
+
+  app-updated-island {
+    flex-grow: 2;
+  }
+}
+
+button.about-collection {
+  @media #{$tui-tablet-min} {
+    display: none;
+  }
+}
+
+.reviews-title {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+app-review-conflicts-block {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

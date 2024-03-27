@@ -1,0 +1,61 @@
+@import 'shared';
+
+:host {
+  display: block;
+  overflow: hidden;
+}
+
+.image-wrapper {
+  position: relative;
+  position: relative;
+  border-radius: calc(var(--tui-radius-xl) - 1rem);
+  overflow: hidden;
+
+  img {
+    object-fit: cover;
+  }
+
+  .color-block {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.horizontal {
+  .image-wrapper {
+    width: 10rem;
+    height: 10rem;
+    flex-shrink: 0;
+  }
+
+  @media #{$tui-mobile} {
+    .image-wrapper {
+      width: 10rem;
+      height: 10rem;
+
+      &::before {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.vertical {
+  .image-wrapper {
+    width: 100%;
+
+    &::before {
+      content: '';
+      padding-top: 100%;
+      display: block;
+    }
+  }
+}
+
+p.description {
+  margin: 0;
+  color: var(--tui-text-02);
+}

@@ -1,0 +1,18 @@
+@import 'shared';
+
+.conflicts-block {
+  @media #{$tui-mobile} {
+    button {
+      width: 100%;
+    }
+  }
+  p {
+    margin: 0;
+    margin-top: -0.125rem;
+    margin-bottom: 1rem;
+  }
+}
+
+:host {
+  display: block;
+}

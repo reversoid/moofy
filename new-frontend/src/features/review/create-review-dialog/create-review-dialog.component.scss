@@ -1,0 +1,64 @@
+.film {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  .image-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    width: 108px;
+    height: 160px;
+    background-color: black;
+    position: relative;
+  }
+
+  .title {
+    margin: 0;
+  }
+}
+
+.score {
+  color: #faaf00;
+  --tui-rating-size: 2.75rem;
+  --tui-rating-gap: 1rem;
+  --tui-icon-size: 10rem;
+  display: block;
+
+  ::ng-deep {
+    label {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+button.submit-button {
+  width: 100%;
+}
+
+.film-item {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  .image {
+    width: 4rem;
+    aspect-ratio: 27/40;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    tui-tag {
+      align-self: flex-start;
+    }
+    h6 {
+      margin: 0;
+    }
+  }
+}

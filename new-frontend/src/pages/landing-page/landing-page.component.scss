@@ -1,0 +1,18 @@
+@import 'shared';
+
+.title {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.join {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+
+  button {
+    @media #{$tui-mobile} {
+      width: 100%;
+    }
+  }
+}
