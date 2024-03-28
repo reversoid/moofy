@@ -1,18 +1,18 @@
 import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
+import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import { TuiIslandModule } from '@taiga-ui/kit';
 import { EMPTY, catchError, debounceTime, finalize, from, map, mergeMap, takeUntil } from 'rxjs';
+import { NotificationComponent } from '../../../entities/profile-notifications';
 import { PaginatedData, ProfileDirectNotification } from '../../../shared/types';
+import { NotificationsViewService } from '../utils/notifications-view.service';
 import { NotificationsService } from '../utils/notifications.service';
 import {
   NotificationsShownSelectComponent,
   OptionId,
 } from './notifications-shown-select/notifications-shown-select.component';
-import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
-import { NotificationsViewService } from '../utils/notifications-view.service';
-import { NotificationComponent } from '../../../entities/profile-notifications';
-import { TuiIslandModule } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-profile-notifications-dialog',

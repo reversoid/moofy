@@ -1,4 +1,4 @@
-<div class="tui-space_top-5 controls">
+<div class="tui-space_top-5 select-wrapper">
   <app-notifications-shown-select
     [selectedOption]="selectedOption"
     (selectedOptionChange)="changeSelectedOption($event)"
@@ -6,9 +6,7 @@
 </div>
 
 <div class="notifications">
-  <div *ngIf="loading()" class="notifications">
-    <app-notification></app-notification>
-  </div>
+  <app-notification *ngIf="loading()"></app-notification>
 
   <tui-island
     *ngIf="!loading() && emptyNotifications(); else showNotifications"
