@@ -6,10 +6,10 @@
 </div>
 
 <div class="notifications">
-  <app-notification *ngIf="loading()"></app-notification>
+  <app-notification *ngIf="firstLoading()"></app-notification>
 
   <tui-island
-    *ngIf="!loading() && emptyNotifications(); else showNotifications"
+    *ngIf="!firstLoading() && emptyNotifications(); else showNotifications"
     class="empty-container"
   >
     <p class="empty-placeholder">Список уведомлений пуст</p>
