@@ -1,4 +1,4 @@
-import { NgIf, NgOptimizedImage } from '@angular/common';
+import { NgClass, NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -17,7 +17,7 @@ import {
   TuiMarkerIconModule,
   TuiTextareaModule,
 } from '@taiga-ui/kit';
-import { finalize, takeUntil } from 'rxjs';
+import { EMPTY, catchError, delay, filter, finalize, mergeMap, takeUntil, tap } from 'rxjs';
 import { AppState } from '../../app/store';
 import { selectCurrentUser } from '../../entities/current-user/selectors';
 import { maxLength, required } from '../../shared/utils/validators';
@@ -26,6 +26,8 @@ import { ProfileService } from '../../features/profile/profile.service';
 import { NotificationService } from '../../app/utils/notification.service';
 import { EditProfileDto } from '../../features/profile/types';
 import { currentUserActions } from '../../entities/current-user/actions';
+import { ImageTooLargeError, ImageWrongFormatError } from '../../shared/utils/upload-image/errors';
+import { SUPPORTED_IMAGE_EXTENSIONS } from '../../shared/utils/upload-image/consts';
 
 @Component({
   selector: 'app-settings-page',
@@ -44,6 +46,7 @@ import { currentUserActions } from '../../entities/current-user/actions';
     TuiInputFilesModule,
     TuiMarkerIconModule,
     NgOptimizedImage,
+    NgClass,
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.scss',
@@ -85,12 +88,67 @@ export class SettingsPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.setupImageUpload();
+
     this.currentUser$.pipe(takeUntil(this.destroy$)).subscribe((currentUser) => {
       this.settingsForm.patchValue({
         username: currentUser?.username ?? '',
         description: currentUser?.description ?? '',
       });
     });
+  }
+
+  imageControl = this.fb.control<File | null>(null);
+
+  // TODO get from form
+  imageUploadState = signal<'loaded' | 'notLoaded' | 'loading'>('notLoaded');
+
+  readonly imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
+
+  readonly maxFileSize = Number.POSITIVE_INFINITY;
+
+  private setupImageUpload() {
+    this.imageControl.valueChanges
+      .pipe(
+        tap((file) => {
+          if (!file) this.settingsForm.patchValue({ imageUrl: null });
+        }),
+        filter(Boolean),
+        tap(() => {
+          this.imageUploadState.set('loading');
+        }),
+        mergeMap((f) =>
+          this.profileService.uploadProfileImage(f).pipe(
+            delay(1000),
+            tap({
+              error: () => {
+                this.imageUploadState.set(
+                  this.settingsForm.controls.imageUrl.value ? 'loaded' : 'notLoaded',
+                );
+              },
+            }),
+            catchError((e) => {
+              if (e instanceof ImageWrongFormatError) {
+                this.notificationService.createError('Неверное расширение файла');
+              }
+
+              if (e instanceof ImageTooLargeError) {
+                this.notificationService.createError('Слишком большой файл');
+              }
+
+              return EMPTY;
+            }),
+          ),
+        ),
+        tap({
+          next: ({ link }) => {
+            this.imageUploadState.set('loaded');
+            this.settingsForm.patchValue({ imageUrl: link });
+          },
+        }),
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   submitting = signal(false);

@@ -1,21 +1,36 @@
 <h1 class="tui-text_h1">Настройки</h1>
 
 <form (submit)="save()" [formGroup]="settingsForm" class="settings-form">
-  <tui-input-files class="image-control" formControlName="imageUrl">
+  <tui-input-files
+    [accept]="imageAccept"
+    [multiple]="false"
+    [maxFileSize]="maxFileSize"
+    class="image-control"
+    [formControl]="imageControl"
+  >
     <ng-template let-dragged>
       <img
-        [class.dragged]="dragged"
+        [ngClass]="{ blurred: dragged || imageUploadState() === 'loading' }"
         class="loaded-image"
         ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
         fill
       />
+
       <div class="content" [class.dragged]="dragged">
-        <tui-marker-icon
-          class="uploadIcon"
-          mode="white"
+        <tui-loader
+          *ngIf="imageUploadState() === 'loading'; else notUploading"
+          class="loader"
           size="l"
-          src="tuiIconUploadCloudLarge"
-        ></tui-marker-icon>
+        ></tui-loader>
+
+        <ng-template #notUploading>
+          <tui-marker-icon
+            class="uploadIcon"
+            mode="white"
+            size="l"
+            src="tuiIconUploadCloudLarge"
+          ></tui-marker-icon>
+        </ng-template>
       </div>
     </ng-template>
   </tui-input-files>

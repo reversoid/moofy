@@ -39,15 +39,13 @@
     padding: 1px;
     border-radius: var(--tui-radius-m);
 
-    &.dragged {
+    &.blurred {
+      opacity: 0.8;
       @include imageHover();
     }
   }
 
   .content {
-    opacity: 0;
-    transition: opacity var(--tui-duration) ease-in-out;
-
     position: absolute;
     top: 0;
     right: 0;
@@ -58,15 +56,21 @@
     align-items: center;
     justify-content: center;
 
+    .loader {
+      width: 100%;
+    }
+
     tui-marker-icon {
       // backdrop-filter: blur(4px);
       background-color: transparent;
+      opacity: 0;
+      transition: opacity var(--tui-duration) ease-in-out;
     }
 
     &.dragged {
-      @include contentHover();
-
       tui-marker-icon {
+        @include contentHover();
+
         animation: 1s infinite alternate pulse;
       }
     }
@@ -75,7 +79,7 @@
   &:hover .loaded-image {
     @include imageHover();
   }
-  &:hover .content {
+  &:hover .content tui-marker-icon {
     @include contentHover();
   }
 }
