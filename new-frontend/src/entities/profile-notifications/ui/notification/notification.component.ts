@@ -5,24 +5,6 @@ import { TuiButtonModule, TuiLinkModule, TuiSvgModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { ProfileDirectNotification } from '../../../../shared/types';
 
-const notificationMock: ProfileDirectNotification = {
-  created_at: new Date().toISOString(),
-  id: 'aboba',
-  payload: {
-    subscribe: {
-      user_from: {
-        createdAt: '',
-        description: 'Some desc',
-        id: 2,
-        imageUrl: null,
-        username: 'sosimba',
-      },
-    },
-  },
-  seen_at: null,
-  type: 'NEW_FOLLOWER',
-};
-
 @Component({
   selector: 'app-notification',
   standalone: true,
@@ -40,9 +22,13 @@ const notificationMock: ProfileDirectNotification = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent {
-  @Input() notification: ProfileDirectNotification = notificationMock;
+  @Input() notification?: ProfileDirectNotification;
 
   get user() {
+    if (!this.notification) {
+      return null;
+    }
+
     const payload = this.notification.payload;
 
     return (
@@ -55,6 +41,10 @@ export class NotificationComponent {
   }
 
   get commentLink() {
+    if (!this.notification) {
+      return null;
+    }
+
     const payload = this.notification.payload;
 
     if (payload.comment) {
@@ -78,6 +68,10 @@ export class NotificationComponent {
   }
 
   get collectionLink() {
+    if (!this.notification) {
+      return null;
+    }
+
     const payload = this.notification.payload;
     if (payload.collection_like) {
       return ['collections', payload.collection_like.collection.id];

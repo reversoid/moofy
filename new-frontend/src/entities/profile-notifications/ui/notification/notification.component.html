@@ -1,7 +1,11 @@
 <tui-island class="notification">
-  <a [routerLink]="['profile', user.id]">
+  <a
+    [class.tui-skeleton]="!notification"
+    class="profile-image-link"
+    [routerLink]="['profile', user?.id]"
+  >
     <div class="img-wrapper">
-      <img *ngIf="user.imageUrl as imageUrl; else noImage" [ngSrc]="imageUrl" fill />
+      <img *ngIf="user?.imageUrl as imageUrl; else noImage" [ngSrc]="imageUrl" fill />
       <ng-template #noImage>
         <tui-svg src="tuiIconUserLarge"></tui-svg>
       </ng-template>
@@ -9,32 +13,37 @@
   </a>
 
   <div class="notification__content">
-    <p>
-      <a [routerLink]="['profile', user.id]" tuiLink
-        ><b>{{ user.username }}</b>
-      </a>
+    <p [class.tui-skeleton]="!notification">
+      <ng-container *ngIf="notification; else skeletonFiller">
+        <a [routerLink]="['profile', user!.id]" tuiLink
+          ><b>{{ user!.username }}</b>
+        </a>
 
-      @switch (notification.type) {
-        @case ('COLLECTION_LIKE') {
-          нравится ваша <a [routerLink]="collectionLink" tuiLink>коллекция</a>
+        @switch (notification.type) {
+          @case ('COLLECTION_LIKE') {
+            нравится ваша <a [routerLink]="collectionLink" tuiLink>коллекция</a>
+          }
+          @case ('COMMENT_LIKE') {
+            нравится ваш <a [routerLink]="commentLink" tuiLink>комментарий</a>
+          }
+          @case ('NEW_COMMENT') {
+            добавил(-а) <a [routerLink]="commentLink" tuiLink>комментарий</a>
+          }
+          @case ('NEW_FOLLOWER') {
+            подписался(-aсь) на вас
+          }
+          @case ('NEW_REPLY') {
+            ответил(-а) на <a [routerLink]="commentLink" tuiLink>комментарий</a>
+          }
         }
-        @case ('COMMENT_LIKE') {
-          нравится ваш <a [routerLink]="commentLink" tuiLink>комментарий</a>
-        }
-        @case ('NEW_COMMENT') {
-          добавил(-а) <a [routerLink]="commentLink" tuiLink>комментарий</a>
-        }
-        @case ('NEW_FOLLOWER') {
-          подписался(-aсь) на вас
-        }
-        @case ('NEW_REPLY') {
-          ответил(-а) на <a [routerLink]="commentLink" tuiLink>комментарий</a>
-        }
-      }
+      </ng-container>
+
+      <ng-template #skeletonFiller> just a placeholder for a desired skeleton length </ng-template>
     </p>
   </div>
 
   <button
+    [class.tui-skeleton]="!notification"
     appearance="secondary"
     class="go-button"
     tuiIconButton

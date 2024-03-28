@@ -5,27 +5,30 @@
   ></app-notifications-shown-select>
 </div>
 
-<!-- <ng-container *ngIf="emptyNotifications(); else showNotifications"
-  ><p class="empty-placeholder">Список уведомлений пуст</p>
-</ng-container> -->
+<div class="notifications">
+  <div *ngIf="loading()" class="notifications">
+    <app-notification></app-notification>
+  </div>
 
-<div class="tui-space_top-3 notifications" waIntersectionObserver>
-  <app-notification
-    *ngFor="let id of mock"
-    (waIntersectionObservee)="handleObservedNotification($event, id)"
-  ></app-notification>
+  <tui-island
+    *ngIf="!loading() && emptyNotifications(); else showNotifications"
+    class="empty-container"
+  >
+    <p class="empty-placeholder">Список уведомлений пуст</p>
+    <div class="height-filler"></div>
+  </tui-island>
+
+  <ng-template #showNotifications>
+    <ng-container *ngIf="notificationsItems() as notifications">
+      <app-notification
+        *ngFor="let n of notifications"
+        [notification]="n"
+        (waIntersectionObservee)="handleObservedNotification($event, n.id)"
+      ></app-notification>
+    </ng-container>
+  </ng-template>
 </div>
 
-<ng-template #showNotifications>
-  <ng-container *ngIf="notificationsItems() as notifications">
-    <div class="notifications tui-space_top-3">
-      <app-notification></app-notification>
-
-      <!-- <app-notification *ngFor="let n of notifications" [notification]="n"></app-notification> -->
-    </div>
-
-    <div *ngIf="loadKey() as key" class="load-more-container">
-      <button (click)="loadNotifications(key)" tuiButton size="m">Загрузить больше</button>
-    </div>
-  </ng-container>
-</ng-template>
+<div *ngIf="loadKey() as key" class="load-more-container">
+  <button (click)="loadNotifications(key)" tuiButton size="m">Загрузить больше</button>
+</div>

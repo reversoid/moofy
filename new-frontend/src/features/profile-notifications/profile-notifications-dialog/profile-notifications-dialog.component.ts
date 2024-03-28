@@ -12,6 +12,7 @@ import {
 import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 import { NotificationsViewService } from '../utils/notifications-view.service';
 import { NotificationComponent } from '../../../entities/profile-notifications';
+import { TuiIslandModule } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-profile-notifications-dialog',
@@ -23,6 +24,7 @@ import { NotificationComponent } from '../../../entities/profile-notifications';
     NgIf,
     NotificationsShownSelectComponent,
     IntersectionObserverModule,
+    TuiIslandModule,
   ],
   templateUrl: './profile-notifications-dialog.component.html',
   styleUrl: './profile-notifications-dialog.component.scss',
@@ -74,8 +76,6 @@ export class ProfileNotificationsDialogComponent implements OnInit {
       this.notificationsViewService.removeIdFromViewPool(id);
     }
   }
-
-  mock = Array.from({ length: 100 }).map((v, i) => String(i + 1));
 
   loadNotifications(nextKey?: string | null) {
     this.loading.set(true);
