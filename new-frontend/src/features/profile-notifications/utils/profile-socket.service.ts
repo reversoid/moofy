@@ -1,24 +1,22 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { ProfileDirectNotification } from '../../../shared/types';
 import { ENVIRONMENT } from '../../../environments/provider';
 import { IEnvironment } from '../../../environments/interface';
 import { AuthService } from '../../auth/auth.service';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileSocketService {
   constructor(
-    @Inject(ENVIRONMENT) readonly env: IEnvironment,
-    readonly authService: AuthService,
-    @Inject(PLATFORM_ID) readonly platformId: Object,
-  ) {
-    if (isPlatformBrowser(platformId)) {
-      this.socket = new Socket({
-        url: env.apiUrl,
-        options: { query: { token: authService.accessToken } },
-      });
-    }
+    @Inject(ENVIRONMENT) private readonly env: IEnvironment,
+    private readonly authService: AuthService,
+  ) {}
+
+  initSocket() {
+    this.socket = new Socket({
+      url: this.env.apiUrl,
+      options: { query: { token: this.authService.accessToken } },
+    });
   }
 
   socket: Socket | null = null;

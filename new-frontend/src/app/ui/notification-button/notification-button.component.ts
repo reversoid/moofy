@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  Pipe,
+  PipeTransform,
+} from '@angular/core';
 import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
 import { ProfileNotificationsDialogComponent } from '../../../features/profile-notifications/profile-notifications-dialog/profile-notifications-dialog.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -8,11 +18,13 @@ import { ProfileSocketService } from '../../../features/profile-notifications/ut
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store';
 import { selectUnseenNotificationsAmount } from '../../../entities/profile-notifications/model/selectors';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf, isPlatformBrowser } from '@angular/common';
 import { NotificationsService } from '../../../features/profile-notifications';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs';
 import { profileNotificationsActions } from '../../../entities/profile-notifications/model/actions';
+
+// TODO uncomment socket service to work correctly
 
 @Pipe({ name: 'formatNotificationsAmount', standalone: true })
 export class FormatNotificationsAmountPipe implements PipeTransform {
@@ -44,17 +56,24 @@ export class FormatNotificationsAmountPipe implements PipeTransform {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
 })
-export class NotificationButtonComponent implements OnInit {
+export class NotificationButtonComponent implements OnInit, OnDestroy {
   constructor(
     private readonly dialogService: TuiDialogService,
     private readonly store: Store<AppState>,
     private readonly profileSocketService: ProfileSocketService,
     private readonly notificationsService: NotificationsService,
     private readonly destroy$: TuiDestroyService,
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    private readonly zone: NgZone,
   ) {}
 
   ngOnInit(): void {
+    this.initProfileSocket();
     this.initProfileNotifications();
+  }
+
+  ngOnDestroy(): void {
+    this.closeProfileSocket();
   }
 
   openNotifications() {
@@ -67,6 +86,18 @@ export class NotificationButtonComponent implements OnInit {
   }
 
   unseenNotificationsAmount$ = this.store.select(selectUnseenNotificationsAmount);
+
+  private initProfileSocket() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.zone.runOutsideAngular(() => {
+        this.profileSocketService.initSocket();
+      });
+    }
+  }
+
+  private closeProfileSocket() {
+    this.profileSocketService.disconnectSocket();
+  }
 
   private initProfileNotifications() {
     this.notificationsService

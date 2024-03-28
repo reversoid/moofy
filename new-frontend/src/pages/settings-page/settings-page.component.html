@@ -1,7 +1,24 @@
 <h1 class="tui-text_h1">Настройки</h1>
 
 <form (submit)="save()" [formGroup]="settingsForm" class="settings-form">
-  <div class="image"></div>
+  <tui-input-files class="image-control" formControlName="imageUrl">
+    <ng-template let-dragged>
+      <img
+        [class.dragged]="dragged"
+        class="loaded-image"
+        ngSrc="https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp"
+        fill
+      />
+      <div class="content" [class.dragged]="dragged">
+        <tui-marker-icon
+          class="uploadIcon"
+          mode="white"
+          size="l"
+          src="tuiIconUploadCloudLarge"
+        ></tui-marker-icon>
+      </div>
+    </ng-template>
+  </tui-input-files>
 
   <tui-input
     formControlName="username"

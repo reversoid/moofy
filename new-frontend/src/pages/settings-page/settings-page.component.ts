@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -10,7 +10,13 @@ import {
   TuiTooltipModule,
   tuiHintOptionsProvider,
 } from '@taiga-ui/core';
-import { TuiFieldErrorPipeModule, TuiInputModule, TuiTextareaModule } from '@taiga-ui/kit';
+import {
+  TuiFieldErrorPipeModule,
+  TuiInputFilesModule,
+  TuiInputModule,
+  TuiMarkerIconModule,
+  TuiTextareaModule,
+} from '@taiga-ui/kit';
 import { finalize, takeUntil } from 'rxjs';
 import { AppState } from '../../app/store';
 import { selectCurrentUser } from '../../entities/current-user/selectors';
@@ -35,6 +41,9 @@ import { currentUserActions } from '../../entities/current-user/actions';
     NgIf,
     TuiTooltipModule,
     TuiLoaderModule,
+    TuiInputFilesModule,
+    TuiMarkerIconModule,
+    NgOptimizedImage,
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.scss',

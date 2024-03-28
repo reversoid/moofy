@@ -9,13 +9,75 @@
   margin-right: auto;
 }
 
-.image {
+@mixin contentHover() {
+  opacity: 1;
+}
+
+@mixin imageHover() {
+  filter: blur(2px);
+}
+
+.image-control {
   width: 10rem;
   height: 10rem;
-  border-radius: 100%;
-  background-color: rgb(57, 57, 57);
+  border-radius: var(--tui-radius-m);
+  overflow: hidden;
   align-self: center;
   margin-bottom: 0.5rem;
+  position: relative;
+
+  & > .t-wrapper {
+    background-color: none;
+  }
+
+  .loaded-image {
+    transition-duration: var(--tui-duration);
+    transition-property: filter;
+    transition-timing-function: ease-in-out;
+
+    z-index: 1;
+    padding: 1px;
+    border-radius: var(--tui-radius-m);
+
+    &.dragged {
+      @include imageHover();
+    }
+  }
+
+  .content {
+    opacity: 0;
+    transition: opacity var(--tui-duration) ease-in-out;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    tui-marker-icon {
+      // backdrop-filter: blur(4px);
+      background-color: transparent;
+    }
+
+    &.dragged {
+      @include contentHover();
+
+      tui-marker-icon {
+        animation: 1s infinite alternate pulse;
+      }
+    }
+  }
+
+  &:hover .loaded-image {
+    @include imageHover();
+  }
+  &:hover .content {
+    @include contentHover();
+  }
 }
 
 .submit-button {
@@ -41,5 +103,19 @@
     h6 {
       margin: 0;
     }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }
