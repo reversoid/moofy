@@ -5,5 +5,5 @@
     [tuiHintContent]="[] | tuiFieldErrorContent"
     >Ваш комментарий</tui-textarea
   >
-  <button [disabled]="!canSubmit" type="submit" tuiButton>Отправить</button>
+  <button [showLoader]="loading" [disabled]="!canSubmit" type="submit" tuiButton>Отправить</button>
 </form>

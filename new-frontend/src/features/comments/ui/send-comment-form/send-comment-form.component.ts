@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiButtonModule,
   TuiHintModule,
+  TuiLoaderModule,
   TuiTextfieldControllerModule,
   tuiHintOptionsProvider,
 } from '@taiga-ui/core';
 import { TuiFieldErrorPipeModule, TuiTextareaModule } from '@taiga-ui/kit';
-import { required } from '../../../../shared/utils/validators';
+import { maxLength, required } from '../../../../shared/utils/validators';
 
 @Component({
   selector: 'app-send-comment-form',
@@ -20,6 +21,7 @@ import { required } from '../../../../shared/utils/validators';
     ReactiveFormsModule,
     TuiHintModule,
     TuiFieldErrorPipeModule,
+    TuiLoaderModule,
   ],
   templateUrl: './send-comment-form.component.html',
   styleUrl: './send-comment-form.component.scss',
@@ -31,15 +33,26 @@ import { required } from '../../../../shared/utils/validators';
   ],
 })
 export class SendCommentFormComponent {
+  @Input() loading = false;
+
+  @Output() commentSubmit = new EventEmitter<string>();
+
   textControl = new FormControl<string>('', {
-    validators: [required('Комментарий не должен быть пустым')],
+    validators: [
+      required('Комментарий не должен быть пустым'),
+      maxLength(400, 'Комментарий не должен превышать 400 символов'),
+    ],
   });
 
   get canSubmit() {
-    return this.textControl.valid;
+    return this.textControl.valid && !this.loading;
   }
 
   submitComment() {
-    console.log(this.textControl.value);
+    if (!this.canSubmit || !this.textControl.value) {
+      return;
+    }
+
+    this.commentSubmit.emit(this.textControl.value);
   }
 }
