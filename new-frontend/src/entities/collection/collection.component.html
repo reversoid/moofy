@@ -10,7 +10,12 @@
   <div title class="title-wrapper">
     <h4 class="title">{{ collection.name }}</h4>
 
-    <tui-svg *ngIf="!collection.isPublic" [tuiHint]="lockTooltip" src="tuiIconLock"></tui-svg>
+    <tui-svg
+      *ngIf="!collection.isPublic"
+      class="lock-icon"
+      [tuiHint]="lockTooltip"
+      src="tuiIconLock"
+    ></tui-svg>
     <ng-template #lockTooltip>Это приватная коллекция</ng-template>
   </div>
 
