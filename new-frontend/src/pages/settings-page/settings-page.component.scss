@@ -17,14 +17,22 @@
   filter: blur(2px);
 }
 
+.image-control-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+  justify-content: center;
+}
+
 .image-control {
   width: 10rem;
   height: 10rem;
   border-radius: var(--tui-radius-m);
   overflow: hidden;
   align-self: center;
-  margin-bottom: 0.5rem;
   position: relative;
+  background-color: var(--tui-base-02);
 
   & > .t-wrapper {
     background-color: none;

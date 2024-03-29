@@ -91,16 +91,24 @@ export class SettingsPageComponent implements OnInit {
     this.setupImageUpload();
 
     this.currentUser$.pipe(takeUntil(this.destroy$)).subscribe((currentUser) => {
+      if (currentUser?.imageUrl) {
+        this.imageUploadState.set('loaded');
+      }
+
       this.settingsForm.patchValue({
         username: currentUser?.username ?? '',
         description: currentUser?.description ?? '',
+        imageUrl: currentUser?.imageUrl,
       });
     });
   }
 
+  get loadedImage() {
+    return this.settingsForm.controls.imageUrl.value;
+  }
+
   imageControl = this.fb.control<File | null>(null);
 
-  // TODO get from form
   imageUploadState = signal<'loaded' | 'notLoaded' | 'loading'>('notLoaded');
 
   readonly imageAccept = SUPPORTED_IMAGE_EXTENSIONS.map((v) => `.${v}`).join(',');
@@ -144,6 +152,7 @@ export class SettingsPageComponent implements OnInit {
           next: ({ link }) => {
             this.imageUploadState.set('loaded');
             this.settingsForm.patchValue({ imageUrl: link });
+            this.settingsForm.markAsDirty();
           },
         }),
       )
@@ -159,7 +168,7 @@ export class SettingsPageComponent implements OnInit {
   }
 
   get canSave() {
-    return this.settingsForm.valid || this.submitting();
+    return this.settingsForm.valid && !this.submitting() && this.settingsForm.dirty;
   }
 
   save() {
@@ -200,6 +209,8 @@ export class SettingsPageComponent implements OnInit {
             imageUrl: dto.imageUrl,
           }),
         );
+
+        this.settingsForm.markAsPristine();
       });
   }
 }
