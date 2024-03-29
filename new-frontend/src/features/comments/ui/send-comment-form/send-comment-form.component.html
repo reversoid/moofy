@@ -1,0 +1,9 @@
+<form (submit)="submitComment()" class="send-comment-form">
+  <tui-textarea
+    [formControl]="textControl"
+    [tuiTextfieldLabelOutside]="true"
+    [tuiHintContent]="[] | tuiFieldErrorContent"
+    >Ваш комментарий</tui-textarea
+  >
+  <button [disabled]="!canSubmit" type="submit" tuiButton>Отправить</button>
+</form>

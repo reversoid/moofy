@@ -10,6 +10,7 @@ import { EditCollectionDialogComponent } from '../../../../features/collection/e
 import { LikeCollectionButtonComponent } from '../../../../features/collection/like-collection-button/like-collection-button.component';
 import { Collection, CollectionWithInfo } from '../../../../shared/types';
 import { CollectionPageStore } from '../../utils/collection-page.store';
+import { CommentsDialogComponent } from '../../../../widgets/comments-dialog/comments-dialog.component';
 
 @Component({
   selector: 'app-stats-island',
@@ -43,7 +44,9 @@ export class StatsIslandComponent {
   } | null;
 
   openCommentsDialog() {
-    this.dialogService.open('Some comments here', { label: 'Комментарии' }).subscribe();
+    this.dialogService
+      .open(new PolymorpheusComponent(CommentsDialogComponent), { label: 'Комментарии' })
+      .subscribe();
   }
 
   openOptions() {
