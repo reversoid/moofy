@@ -11,7 +11,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 export class UploadImageService {
   constructor(private readonly http: HttpClient) {}
 
-  uploadImage(url: string, file: File): Observable<{ link: string }> {
+  uploadImage(resource: 'profile' | 'collection', file: File): Observable<{ link: string }> {
     try {
       this.validateImage(file);
     } catch (e) {
@@ -20,7 +20,7 @@ export class UploadImageService {
 
     const formData = this.createFormData(file);
 
-    return this.http.post<{ link: string }>(url, formData).pipe(
+    return this.http.post<{ link: string }>('image', formData, { params: { resource } }).pipe(
       catchError((e) => {
         if (e instanceof HttpErrorResponse) {
           if (e.error.message === 'IMAGE_WRONG_FORMAT') {

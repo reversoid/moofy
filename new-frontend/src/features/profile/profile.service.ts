@@ -27,7 +27,7 @@ export class ProfileService {
   }
 
   uploadProfileImage(file: File): Observable<{ link: string }> {
-    return this.uploadImageService.uploadImage('profile/image-upload', file);
+    return this.uploadImageService.uploadImage('profile', file);
   }
 
   follow(id: User['id']): Observable<void> {

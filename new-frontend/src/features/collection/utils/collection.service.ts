@@ -111,7 +111,7 @@ export class CollectionService {
   }
 
   uploadCollectionImage(file: File): Observable<{ link: string }> {
-    return this.uploadImageService.uploadImage('collections/image-upload', file);
+    return this.uploadImageService.uploadImage('collection', file);
   }
 
   createPersonalCollection(dto: CreatePersonalCollectionProps): Observable<CollectionWithInfo> {
