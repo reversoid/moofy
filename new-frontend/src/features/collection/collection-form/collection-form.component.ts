@@ -142,7 +142,7 @@ export class CollectionFormComponent implements OnInit {
       this.collectionForm.setValue({
         name: this.collection.name,
         description: this.collection.description,
-        imageUrl: this.collection.description,
+        imageUrl: this.collection.imageUrl,
         isPrivate: !this.collection.isPublic,
       });
     }
