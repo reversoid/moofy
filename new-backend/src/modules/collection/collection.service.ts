@@ -128,7 +128,7 @@ export class CollectionService {
       collectionId,
       {
         description: collectionData.description,
-        imageUrl: collectionData.description,
+        imageUrl: collectionData.imageUrl,
         isPrivate: collectionData.isPrivate,
         name: collectionData.name,
       },
