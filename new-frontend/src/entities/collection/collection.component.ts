@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Collection } from '../../shared/types';
 import { CardComponent } from '../../shared/ui/card/card.component';
 import { ColorHash } from '../../shared/utils/color-hash';
+import { TuiHintModule, TuiSvgModule } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-collection',
   standalone: true,
-  imports: [NgOptimizedImage, NgIf, CardComponent, NgClass],
+  imports: [NgOptimizedImage, NgIf, CardComponent, NgClass, TuiSvgModule, TuiHintModule],
   templateUrl: './collection.component.html',
   styleUrl: './collection.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
