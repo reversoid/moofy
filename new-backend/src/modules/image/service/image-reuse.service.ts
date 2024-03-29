@@ -7,18 +7,20 @@ import { Redis } from 'ioredis';
 export class ImageReuseService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
-  private REDIS_KEY = 'uploaded-images';
+  private getRedisKey(hash: string) {
+    return `image:${hash}`;
+  }
 
   async getExistingFileLink(buffer: Buffer): Promise<string | null> {
     const hash = this.getFileHash(buffer);
-    const link = await this.redis.hget(this.REDIS_KEY, hash);
+    const link = await this.redis.hget(this.getRedisKey(hash), 'link');
 
     return link;
   }
 
   async addFileToReusableStorage(buffer: Buffer, link: string) {
     const hash = this.getFileHash(buffer);
-    await this.redis.hset(this.REDIS_KEY, hash, link);
+    await this.redis.hset(this.getRedisKey(hash), 'link', link);
   }
 
   private getFileHash(buffer: Buffer) {
