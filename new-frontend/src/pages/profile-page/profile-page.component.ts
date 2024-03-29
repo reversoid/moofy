@@ -1,17 +1,18 @@
 import { AsyncPipe, NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ActivatedRoute, Data, RouterModule } from '@angular/router';
-import { TuiIslandModule } from '@taiga-ui/kit';
-import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
-import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
-import { Profile } from '../../shared/types';
-import { combineLatest, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
-import dayjs from 'dayjs';
-import { ProfileService } from '../../features/profile/profile.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Store } from '@ngrx/store';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import { TuiIslandModule } from '@taiga-ui/kit';
+import dayjs from 'dayjs';
+import { combineLatest, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
 import { AppState } from '../../app/store';
 import { selectCurrentUser } from '../../entities/current-user/selectors';
+import { ProfileService } from '../../features/profile/profile.service';
+import { Profile } from '../../shared/types';
+import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
+import { ProfilePageStore } from './utils/profile-page.store';
 
 @Component({
   selector: 'app-profile-page',
@@ -29,7 +30,7 @@ import { selectCurrentUser } from '../../entities/current-user/selectors';
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
+  providers: [TuiDestroyService, ProfilePageStore],
 })
 export class ProfilePageComponent {
   constructor(
@@ -37,9 +38,23 @@ export class ProfilePageComponent {
     private readonly profileService: ProfileService,
     private readonly destroy$: TuiDestroyService,
     private readonly store: Store<AppState>,
-  ) {}
+    private readonly profilePageStore: ProfilePageStore,
+  ) {
+    this.initProfileStore();
+  }
 
-  private profile$ = this.activatedRoute.data.pipe(map<Data, Profile>((data) => data['profile']));
+  private initProfileStore() {
+    this.activatedRoute.data
+      .pipe(
+        map<Data, Profile>((data) => data['profile']),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((profile) => {
+        this.profilePageStore.setState({ profile });
+      });
+  }
+
+  profile$ = this.profilePageStore.profile$;
 
   username$ = this.profile$.pipe(map((p) => p.user.username));
 
@@ -80,7 +95,9 @@ export class ProfilePageComponent {
         take(1),
         takeUntil(this.destroy$),
       )
-      .subscribe(console.log);
+      .subscribe(() => {
+        this.profilePageStore.handleFollowed();
+      });
   }
 
   unfollow() {
@@ -95,6 +112,8 @@ export class ProfilePageComponent {
         take(1),
         takeUntil(this.destroy$),
       )
-      .subscribe(console.log);
+      .subscribe(() => {
+        this.profilePageStore.handleUnfollowed();
+      });
   }
 }
