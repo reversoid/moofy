@@ -9,6 +9,7 @@ import { BookmarkCollectionButtonComponent } from '../../../../features/collecti
 import { EditCollectionDialogComponent } from '../../../../features/collection/edit-collection-dialog/edit-collection-dialog.component';
 import { LikeCollectionButtonComponent } from '../../../../features/collection/like-collection-button/like-collection-button.component';
 import { Collection, CollectionWithInfo } from '../../../../shared/types';
+import { CollectionPageStore } from '../../utils/collection-page.store';
 
 @Component({
   selector: 'app-stats-island',
@@ -27,6 +28,7 @@ export class StatsIslandComponent {
   constructor(
     private readonly dialogService: TuiDialogService,
     private readonly store: Store<AppState>,
+    private readonly collectionPageStore: CollectionPageStore,
   ) {}
 
   @Input() isPersonal = false;
@@ -61,6 +63,11 @@ export class StatsIslandComponent {
       })
       .subscribe((collection) => {
         this.store.dispatch(userCollectionsActions.update({ collection }));
+
+        this.collectionPageStore.setState(({ reviews }) => ({
+          collectionData: collection,
+          reviews,
+        }));
       });
   }
 
