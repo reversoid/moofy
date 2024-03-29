@@ -31,10 +31,6 @@ export const appRoutes: Routes = [
       import('./roadmap-page/roadmap-page.component').then((r) => r.RoadmapPageComponent),
   },
   {
-    path: 'welcome',
-    loadChildren: () => import('./welcome-page/routes').then((r) => r.routes),
-  },
-  {
     path: 'collections/:id',
     loadComponent: () =>
       import('./collection-page/collection-page.component').then((r) => r.CollectionPageComponent),
@@ -49,6 +45,20 @@ export const appRoutes: Routes = [
   {
     path: 'support',
     loadComponent: () => import('./support/support.component').then((r) => r.SupportComponent),
+  },
+  {
+    path: 'collections',
+    loadComponent: () =>
+      import('./my-collections-page/my-collections-page.component').then(
+        (r) => r.MyCollectionsPageComponent,
+      ),
+  },
+  {
+    path: 'favorites',
+    loadComponent: () =>
+      import('./favorites-collections-page/favorites-collections-page.component').then(
+        (r) => r.FavoritesCollectionsPageComponent,
+      ),
   },
 
   { path: '**', redirectTo: '' },

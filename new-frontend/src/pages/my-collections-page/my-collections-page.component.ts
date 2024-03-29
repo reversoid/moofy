@@ -7,20 +7,17 @@ import {
   TuiTextfieldControllerModule,
 } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
-import { CollectionComponent } from '../../../entities/collection/collection.component';
-import { CollectionGridComponent } from '../../../widgets/collection-grid/collection-grid.component';
+import { CollectionComponent } from '../../entities/collection/collection.component';
+import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { CollectionWithInfo } from '../../../shared/types';
-import { CreateCollectionDialogComponent } from '../../../features/collection/create-collection-dialog/create-collection-dialog.component';
-import { CollectionService } from '../../../features/collection/utils/collection.service';
+import { CollectionWithInfo } from '../../shared/types';
+import { CreateCollectionDialogComponent } from '../../features/collection/create-collection-dialog/create-collection-dialog.component';
+import { CollectionService } from '../../features/collection/utils/collection.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../app/store';
-import {
-  selectAllUserCollections,
-  userCollectionsActions,
-} from '../../../entities/user-collections';
+import { AppState } from '../../app/store';
+import { selectAllUserCollections, userCollectionsActions } from '../../entities/user-collections';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
