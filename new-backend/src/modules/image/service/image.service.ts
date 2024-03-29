@@ -13,6 +13,7 @@ import {
   SUPPORTED_IMAGE_FORMATS,
 } from './utils';
 import { getS3 } from 'src/shared/utils/s3/s3';
+import { ImageReuseService } from './image-reuse.service';
 
 const resourceToRouteMap: Record<ALLOWED_IMAGE_RESOURCES, string> = {
   collection: 'list-images',
@@ -21,6 +22,8 @@ const resourceToRouteMap: Record<ALLOWED_IMAGE_RESOURCES, string> = {
 
 @Injectable()
 export class ImageService {
+  constructor(private readonly imageReuseService: ImageReuseService) {}
+
   async uploadImage(
     file: MultipartFile,
     resource: keyof typeof ALLOWED_IMAGE_RESOURCES,
@@ -28,6 +31,13 @@ export class ImageService {
     this.validateImageFormat(file.filename);
 
     const buffer = await file.toBuffer();
+
+    const existingFileLink =
+      await this.imageReuseService.getExistingFileLink(buffer);
+
+    if (existingFileLink) {
+      return { link: existingFileLink };
+    }
 
     this.validateRawSize(buffer.byteLength);
 
@@ -49,7 +59,11 @@ export class ImageService {
       throw new ImageLoadException();
     }
 
-    return { link: response.Location };
+    const link = response.Location;
+
+    this.imageReuseService.addFileToReusableStorage(buffer, link);
+
+    return { link };
   }
 
   private validateImageFormat(filename: string) {
