@@ -3,12 +3,10 @@ import { GetFullCollectionResponse } from './responses/get-full-collection.respo
 import { LikeCollectionResponse } from './responses/like-collection.response';
 import { UnlikeCollectionResponse } from './responses/unlike-collection.response';
 import { UpdateCollectionResponse } from './responses/update-collection.response';
-import { UploadImageResponse } from './responses/upload-image.response';
 
 export interface ICollectionController {
   createCollection(...args: any): Promise<CreateCollectionResponse>;
   getFullCollection(...args: any): Promise<GetFullCollectionResponse>;
-  uploadFile(...args: any): Promise<UploadImageResponse>;
   updateCollection(...args: any): Promise<UpdateCollectionResponse>;
   deleteCollection(...args: any): Promise<void>;
   likeCollection(...args: any): Promise<LikeCollectionResponse>;

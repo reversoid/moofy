@@ -22,7 +22,20 @@ import {
 import { ProfileNotification } from './models/profile-notification';
 import { User } from '../user/models/user';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: [
+      'https://moofy.ru',
+      'https://www.moofy.ru',
+      'https://www.test.moofy.ru',
+      'https://test.moofy.ru',
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://localhost:4200',
+      'https://localhost:4200',
+    ],
+  },
+})
 export class ProfileNotificationsGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {

@@ -1,36 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/modules/user/models/user';
-import { Collection } from './models/collection';
-import { CollectionWithInfo } from './models/collection-with-info';
-import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
 import { PaginatedData } from 'src/shared/utils/pagination/paginated-data';
 import { CollectionAlreadyLikedException } from './exceptions/like-collection/collection-already-liked.exception';
-import { MultipartFile } from '@fastify/multipart';
-import {
-  MAX_COMPRESSED_FILE_SIZE,
-  MAX_INPUT_FILE_SIZE,
-  getS3,
-  supportedImageFormats,
-} from 'src/shared/utils/s3/s3';
+import { WrongCollectionIdException } from './exceptions/wrong-collection-id.exception';
+import { Collection } from './models/collection';
+import { CollectionWithInfo } from './models/collection-with-info';
 
-import * as sharp from 'sharp';
-import { ImageLoadException } from './exceptions/collection-image/image-load.exception';
-import { ManagedUpload } from 'aws-sdk/clients/s3';
-import { CollectionRepository } from './repository/collection.repository';
-import { CollectionReviewService } from '../collection-review/collection-review.service';
 import { CollectionLike } from '../collection-comments/models/collection-like';
+import { CollectionReviewService } from '../collection-review/collection-review.service';
+import { Review } from '../collection-review/models/review';
 import { EventsService } from '../events/events.service';
 import { AlreadyFavoriteCollectionException } from './exceptions/favorite-collection/already-favorite-collection.exception';
 import { NotFavoriteCollectionException } from './exceptions/favorite-collection/not-favorite-collection.exception';
-import { FullCollection } from './models/full-collection';
-import { Review } from '../collection-review/models/review';
-import { NoPersonalCollectionException } from './exceptions/personal-collection/no-personal-collection.exception';
-import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists.exception';
 import { CollectionNotLikedException } from './exceptions/like-collection/not-liked.exception';
-import { TooLargeImageException } from './exceptions/collection-image/too-large-image.exception';
-import { WrongImageFormatException } from './exceptions/collection-image/wrong-image-format.exception';
 import { DeletePersonalCollectionException } from './exceptions/personal-collection/delete-personal-collection.exception';
 import { MakePersonalCollectionPrivateException } from './exceptions/personal-collection/make-personal-collection-private.exception';
+import { NoPersonalCollectionException } from './exceptions/personal-collection/no-personal-collection.exception';
+import { PersonalCollectionExistsException } from './exceptions/personal-collection/personal-collection-exists.exception';
+import { FullCollection } from './models/full-collection';
+import { CollectionRepository } from './repository/collection.repository';
 
 export type UniteCollectionsOptions = {
   reviews: {
@@ -140,7 +128,7 @@ export class CollectionService {
       collectionId,
       {
         description: collectionData.description,
-        imageUrl: collectionData.description,
+        imageUrl: collectionData.imageUrl,
         isPrivate: collectionData.isPrivate,
         name: collectionData.name,
       },
@@ -450,42 +438,6 @@ export class CollectionService {
       throw new AlreadyFavoriteCollectionException();
     }
     await this.collectionRepository.addCollectionToFavorites(id, userId);
-  }
-
-  async uploadImage(file: MultipartFile): Promise<{ link: string }> {
-    if (
-      !supportedImageFormats.includes(
-        file.filename.toLocaleLowerCase().split('.').at(-1)!,
-      )
-    ) {
-      throw new WrongImageFormatException();
-    }
-
-    const buffer = await file.toBuffer();
-    if (buffer.byteLength > MAX_INPUT_FILE_SIZE) {
-      throw new TooLargeImageException();
-    }
-
-    const compressedImage = await sharp(buffer)
-      .webp({ quality: 75 })
-      .resize({ width: 600, height: 450, fit: 'cover' })
-      .toBuffer();
-
-    if (compressedImage.byteLength > MAX_COMPRESSED_FILE_SIZE) {
-      throw new TooLargeImageException();
-    }
-
-    const s3 = getS3();
-
-    const response = (await s3.Upload(
-      { buffer: compressedImage },
-      '/list-images/',
-    )) as ManagedUpload.SendData | false;
-    if (!response) {
-      throw new ImageLoadException();
-    }
-
-    return { link: response.Location };
   }
 
   async getUserCollections(

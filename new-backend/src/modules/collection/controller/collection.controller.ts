@@ -9,7 +9,6 @@ import {
   Post,
   Put,
   Query,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -30,8 +29,6 @@ import { OptionalJwtAuthGuard } from 'src/modules/auth/passport/jwt-optional-aut
 import { UpdateCollectionDto } from './dto/update-collection.dto';
 import { UserIsCollectionOwnerGuard } from './guards/user-is-collection-owner.guard';
 import { UserCanViewCollectionGuard } from './guards/user-can-view-collection.guard';
-import { FastifyRequest } from 'fastify';
-import { NoImageProvidedException } from '../exceptions/collection-image/no-image-provided.exception';
 
 @ApiTags('Collections')
 @Controller('collections')
@@ -67,16 +64,6 @@ export class CollectionController implements ICollectionController {
       'visible',
       limit,
     );
-  }
-
-  @Post('image-upload')
-  async uploadFile(@Request() request: FastifyRequest) {
-    const file = await request.file();
-    if (file?.fieldname === 'image') {
-      return this.collectionService.uploadImage(file);
-    }
-
-    throw new NoImageProvidedException();
   }
 
   @Patch(':id')
