@@ -1,12 +1,1 @@
-<div class="heading">
-  <h2 class="tui-text_h3">Коллекции</h2>
-  <button
-    class="toggle-view-button"
-    tuiIconButton
-    appearance="secondary"
-    [icon]="collectionGridService.collectionsViewIcon"
-    (click)="collectionGridService.toggleCollectionsView()"
-  ></button>
-</div>
-
-<app-collection-grid [view]="collectionGridService.collectionsView()"></app-collection-grid>
+<app-collection-grid></app-collection-grid>

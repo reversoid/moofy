@@ -1,19 +1,27 @@
 <h1 class="tui-text_h1">Поиск</h1>
 
-<app-links-group
-  [selectedLinkItem]="selectedLinkIndex$ | async"
-  [linkItems]="linkItems"
-  class="group"
-></app-links-group>
+<div class="layout">
+  <div class="sidebar">
+    <tui-island class="options">
+      <tui-input
+        [tuiTextfieldLabelOutside]="true"
+        class="search"
+        tuiTextfieldIconLeft="tuiIconSearchLarge"
+        [tuiTextfieldCleaner]="true"
+      >
+        Поиск
+        <input tuiTextfield role="search" />
+      </tui-input>
 
-<tui-input
-  [tuiTextfieldLabelOutside]="true"
-  class="search"
-  tuiTextfieldIconLeft="tuiIconSearchLarge"
-  [tuiTextfieldCleaner]="true"
->
-  Поиск
-  <input tuiTextfield role="search" />
-</tui-input>
+      <b>Что искать</b>
+      <div class="search-object">
+        <tui-radio-labeled>Пользователи</tui-radio-labeled>
+        <tui-radio-labeled>Коллекции</tui-radio-labeled>
+      </div>
+    </tui-island>
+  </div>
 
-<router-outlet></router-outlet>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

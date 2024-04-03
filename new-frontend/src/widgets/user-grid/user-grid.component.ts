@@ -17,7 +17,7 @@ export type UsersView = 'list' | 'grid';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserGridComponent {
-  @Input() view: UsersView = 'grid';
+  @Input() view: UsersView = 'list';
 
   user: User = {
     imageUrl:
