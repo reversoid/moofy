@@ -6,9 +6,7 @@
 
     <div class="controls">
       <tui-island *ngIf="user$ | async" class="header-links">
-        <a routerLink="/explore" tuiButton appearance="secondary" size="m" iconAlign="left"
-          >Поиск</a
-        >
+        <a routerLink="/feed" tuiButton appearance="secondary" size="m" iconAlign="left">Лента</a>
 
         <a routerLink="favorites" tuiButton appearance="secondary" size="m" iconAlign="left"
           >Избранное</a
@@ -19,24 +17,30 @@
         >
       </tui-island>
 
-      <app-notification-button *ngIf="user$ | async"></app-notification-button>
+      <div class="icon-buttons">
+        <a routerLink="/explore">
+          <button appearance="secondary" tuiIconButton icon="tuiIconSearchLarge"></button>
+        </a>
 
-      <app-profile-button
-        *ngIf="user$ | async as user; else authButton"
-        [user]="user"
-      ></app-profile-button>
+        <app-notification-button *ngIf="user$ | async"></app-notification-button>
 
-      <ng-template #authButton>
-        <a appearance="secondary" routerLink="/auth" tuiIconButton icon="tuiIconLogInLarge"></a>
-      </ng-template>
+        <app-profile-button
+          *ngIf="user$ | async as user; else authButton"
+          [user]="user"
+        ></app-profile-button>
 
-      <app-burger-menu
-        *ngIf="user$ | async"
-        [sidebarOpen]="sidebarOpen"
-        (sidebarOpenChange)="sidebarOpen = $event"
-      >
-        <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
-      </app-burger-menu>
+        <ng-template #authButton>
+          <a appearance="secondary" routerLink="/auth" tuiIconButton icon="tuiIconLogInLarge"></a>
+        </ng-template>
+
+        <app-burger-menu
+          *ngIf="user$ | async"
+          [sidebarOpen]="sidebarOpen"
+          (sidebarOpenChange)="sidebarOpen = $event"
+        >
+          <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
+        </app-burger-menu>
+      </div>
     </div>
   </header>
 </app-wrapper>

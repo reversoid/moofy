@@ -12,11 +12,10 @@ export const appRoutes: Routes = [
     path: 'auth',
     loadChildren: () => import('./auth/routes').then((r) => r.routes),
   },
-  // TODO uncomment when page is ready
-  // {
-  //   path: 'feed',
-  //   loadComponent: () => import('./feed-page/feed-page.component').then((r) => r.FeedPageComponent),
-  // },
+  {
+    path: 'feed',
+    loadComponent: () => import('./feed-page/feed-page.component').then((r) => r.FeedPageComponent),
+  },
   {
     path: 'profile',
     loadChildren: () => import('./profile-page/routes').then((m) => m.routes),
