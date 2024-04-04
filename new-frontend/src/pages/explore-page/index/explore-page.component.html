@@ -2,22 +2,30 @@
 
 <div class="layout">
   <div class="sidebar">
-    <tui-island class="options">
-      <tui-input
-        [tuiTextfieldLabelOutside]="true"
-        class="search"
-        tuiTextfieldIconLeft="tuiIconSearchLarge"
-        [tuiTextfieldCleaner]="true"
-      >
-        Поиск
-        <input tuiTextfield role="search" />
-      </tui-input>
+    <tui-island>
+      <form [formGroup]="exploreOptionsForm" class="options">
+        <tui-input
+          [tuiTextfieldLabelOutside]="true"
+          class="search"
+          tuiTextfieldIconLeft="tuiIconSearchLarge"
+          [tuiTextfieldCleaner]="true"
+          formControlName="search"
+        >
+          Поиск
+          <input tuiTextfield role="search" />
+        </tui-input>
 
-      <b>Что искать</b>
-      <div class="search-object">
-        <tui-radio-labeled size="l">Пользователи</tui-radio-labeled>
-        <tui-radio-labeled size="l">Коллекции</tui-radio-labeled>
-      </div>
+        <strong>Что искать</strong>
+        <div class="search-object">
+          <tui-radio-labeled
+            *ngFor="let item of searchObjects"
+            formControlName="searchObject"
+            size="l"
+            [item]="item.value"
+            >{{ item.label }}</tui-radio-labeled
+          >
+        </div>
+      </form>
     </tui-island>
   </div>
 
