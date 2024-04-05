@@ -70,7 +70,7 @@ export class ExplorePageComponent implements OnInit {
 
   private initSearchFieldChange() {
     this.exploreOptionsForm.controls.search.valueChanges
-      .pipe(debounceTime(150), takeUntil(this.destroy$))
+      .pipe(debounceTime(350), takeUntil(this.destroy$))
       .subscribe((search) => {
         this.exlorePageStore.setSearch(search || null);
       });
