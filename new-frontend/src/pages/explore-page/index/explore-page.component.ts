@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule, TuiIslandModule, TuiRadioLabeledModule } from '@taiga-ui/kit';
-import { debounceTime, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, takeUntil } from 'rxjs';
 import { ExplorePageStore } from '../model/explore-page.store';
 
 type SearchObject = 'profiles' | 'collections';
@@ -58,9 +58,12 @@ export class ExplorePageComponent implements OnInit {
   }
 
   private initSearchObjectChange() {
-    this.exploreOptionsForm.controls.searchObject.valueChanges
+    combineLatest([
+      this.exploreOptionsForm.controls.searchObject.valueChanges,
+      this.activatedRoute.url,
+    ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe((v) => {
+      .subscribe(([v]) => {
         if (!v) {
           return;
         }
