@@ -21,7 +21,13 @@ export class ExplorePageStore extends ComponentStore<State> {
     super({ collections: null, profiles: null, search: null });
   }
 
-  setSearch = this.updater((s, newSearch: string) => ({ ...s, search: newSearch }));
+  search$ = this.select((s) => s.search);
+
+  profiles$ = this.select((s) => s.profiles);
+
+  collections$ = this.select((s) => s.collections);
+
+  setSearch = this.updater((s, newSearch: string | null) => ({ ...s, search: newSearch }));
 
   setProfiles = this.updater((s, profiles: SearchResult<ShortProfile>) => ({ ...s, profiles }));
 

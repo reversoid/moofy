@@ -1,13 +1,14 @@
 import { AsyncPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule, TuiIslandModule, TuiRadioLabeledModule } from '@taiga-ui/kit';
 import { debounceTime, takeUntil } from 'rxjs';
-import { ExploreService } from '../../../features/explore/explore.service';
 import { ExplorePageStore } from '../model/explore-page.store';
+
+type SearchObject = 'profiles' | 'collections';
 
 @Component({
   selector: 'app-explore-page',
@@ -33,17 +34,17 @@ export class ExplorePageComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly destroy$: TuiDestroyService,
     private readonly router: Router,
-    private readonly exploreService: ExploreService,
     private readonly exlorePageStore: ExplorePageStore,
+    private readonly activatedRoute: ActivatedRoute,
   ) {}
 
-  searchObjects = [
-    { value: 'users', label: 'Пользователи' },
+  searchObjects: Array<{ value: SearchObject; label: string }> = [
+    { value: 'profiles', label: 'Пользователи' },
     { value: 'collections', label: 'Коллекции' },
   ];
 
   exploreOptionsForm = this.fb.group({
-    searchObject: this.fb.control(this.searchObjects[0].value),
+    searchObject: this.fb.control<SearchObject>(this.searchObjects[0].value),
     search: this.fb.control(''),
   });
 
@@ -56,11 +57,22 @@ export class ExplorePageComponent implements OnInit {
     this.initSearchFieldChange();
   }
 
-  private initSearchObjectChange() {}
+  private initSearchObjectChange() {
+    this.exploreOptionsForm.controls.searchObject.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((v) => {
+        if (!v) {
+          return;
+        }
+        this.router.navigate([v], { relativeTo: this.activatedRoute });
+      });
+  }
 
   private initSearchFieldChange() {
     this.exploreOptionsForm.controls.search.valueChanges
       .pipe(debounceTime(150), takeUntil(this.destroy$))
-      .subscribe((v) => {});
+      .subscribe((search) => {
+        this.exlorePageStore.setSearch(search || null);
+      });
   }
 }

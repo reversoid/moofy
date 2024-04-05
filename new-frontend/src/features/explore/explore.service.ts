@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CollectionWithInfo, PaginatedData, Profile } from '../../shared/types';
+import { CollectionWithInfo, PaginatedData, Profile, ShortProfile } from '../../shared/types';
 
 @Injectable({
   providedIn: 'root',
@@ -29,13 +29,15 @@ export class ExploreService {
 
     params.append('limit', 20);
 
-    return this.http.get<PaginatedData<CollectionWithInfo>>('explore/profiles', {
+    return this.http.get<PaginatedData<ShortProfile>>('explore/profiles', {
       params,
     });
   }
 
   getTopProfiles() {
-    return this.http.get<PaginatedData<Profile>>('explore/top-profiles', { params: { limit: 20 } });
+    return this.http.get<PaginatedData<ShortProfile>>('explore/top-profiles', {
+      params: { limit: 20 },
+    });
   }
 
   getUnseenAmount() {
