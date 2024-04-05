@@ -1,6 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CollectionWithInfo, PaginatedData, Profile, ShortProfile } from '../../shared/types';
+import { CollectionWithInfo, PaginatedData, ShortProfile } from '../../shared/types';
 
 @Injectable({
   providedIn: 'root',
@@ -9,28 +9,20 @@ export class ExploreService {
   constructor(private readonly http: HttpClient) {}
 
   searchCollections(search?: string) {
-    const params = new HttpParams();
-    if (search) {
-      params.append('search', search);
-    }
-
-    params.append('limit', 20);
-
     return this.http.get<PaginatedData<CollectionWithInfo>>('explore/collections', {
-      params,
+      params: {
+        limit: 20,
+        search: search ?? '',
+      },
     });
   }
 
   searchProfiles(search?: string) {
-    const params = new HttpParams();
-    if (search) {
-      params.append('search', search);
-    }
-
-    params.append('limit', 20);
-
     return this.http.get<PaginatedData<ShortProfile>>('explore/profiles', {
-      params,
+      params: {
+        search: search ?? '',
+        limit: 20,
+      },
     });
   }
 

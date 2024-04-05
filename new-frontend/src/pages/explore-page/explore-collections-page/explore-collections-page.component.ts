@@ -3,12 +3,13 @@ import { CollectionGridComponent } from '../../../widgets/collection-grid/collec
 import { ExplorePageStore } from '../model/explore-page.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ExploreService } from '../../../features/explore/explore.service';
-import { combineLatestWith, switchMap, takeUntil } from 'rxjs';
+import { combineLatest, combineLatestWith, map, switchMap, takeUntil } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-explore-collections-page',
   standalone: true,
-  imports: [CollectionGridComponent],
+  imports: [CollectionGridComponent, AsyncPipe],
   templateUrl: './explore-collections-page.component.html',
   styleUrl: './explore-collections-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +21,18 @@ export class ExploreCollectionsPageComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
     private readonly exploreService: ExploreService,
   ) {}
+
+  collections$ = combineLatest([
+    this.explorePageStore.collections$,
+    this.explorePageStore.search$,
+  ]).pipe(
+    map(([collections, search]) => {
+      if (collections?.search === search) {
+        return collections.items.map((c) => c.collection);
+      }
+      return null;
+    }),
+  );
 
   ngOnInit(): void {
     this.initHandleSearchChange();
