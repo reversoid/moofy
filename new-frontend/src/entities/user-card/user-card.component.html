@@ -1,7 +1,12 @@
-<app-card [ngClass]="view" [view]="view" [title]="user.username">
+<app-card [ngClass]="view" [view]="view">
   <a image tuiLink [routerLink]="['/profile', user.id]">
     <div class="image-wrapper">
-      <img [ngSrc]="user.imageUrl ?? ''" fill />
+      <img *ngIf="user.imageUrl; else noImage" [ngSrc]="user.imageUrl" fill />
+      <ng-template #noImage>
+        <div class="image-placeholder">
+          <tui-svg src="tuiIconUserLarge"></tui-svg>
+        </div>
+      </ng-template>
     </div>
   </a>
 

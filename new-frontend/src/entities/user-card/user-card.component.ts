@@ -1,7 +1,7 @@
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { NgClass, NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TuiButtonModule, TuiLinkModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiLinkModule, TuiSvgModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { User } from '../../shared/types';
 import { CardComponent } from '../../shared/ui/card/card.component';
@@ -17,6 +17,8 @@ import { CardComponent } from '../../shared/ui/card/card.component';
     TuiButtonModule,
     CardComponent,
     NgClass,
+    NgIf,
+    TuiSvgModule,
   ],
   templateUrl: './user-card.component.html',
   styleUrl: './user-card.component.scss',
