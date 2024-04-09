@@ -1,5 +1,5 @@
 <div class="user-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <app-user-card *ngFor="let profile of profiles" [user]="profile.user" view="horizontal">
+  <app-user-card *ngFor="let profile of profilesToShow()" [user]="profile.user" view="horizontal">
     <button
       *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
       (click)="unfollow(profile.user.id)"
