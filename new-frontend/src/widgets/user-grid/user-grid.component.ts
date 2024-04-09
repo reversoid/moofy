@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { UserCardComponent } from '../../entities/user-card/user-card.component';
-import { User } from '../../shared/types';
-import { NgClass } from '@angular/common';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { ShortProfile, User } from '../../shared/types';
+import { NgClass, NgFor, NgIf } from '@angular/common';
+import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
+import { ProfileService } from '../../features/profile/profile.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { finalize, takeUntil } from 'rxjs';
 
 export type UsersView = 'list' | 'grid';
 
@@ -11,29 +14,50 @@ export type UsersView = 'list' | 'grid';
 @Component({
   selector: 'app-user-grid',
   standalone: true,
-  imports: [UserCardComponent, NgClass, TuiButtonModule],
+  imports: [UserCardComponent, NgClass, TuiButtonModule, NgFor, NgIf, TuiLoaderModule],
   templateUrl: './user-grid.component.html',
   styleUrl: './user-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
 })
 export class UserGridComponent {
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly destroy$: TuiDestroyService,
+  ) {}
+
   @Input() view: UsersView = 'list';
 
-  user: User = {
-    imageUrl:
-      'https://moofy.storage.yandexcloud.net/list-images/75f8e535-2e34-4f8b-8148-fccba89471d1.webp',
-    createdAt: new Date().toISOString(),
-    description: 'Hello there',
-    id: 1,
-    username: 'reversoid',
-  };
+  @Input() profiles: ShortProfile[] = [];
 
-  user2: User = {
-    imageUrl:
-      'https://moofy.storage.yandexcloud.net/list-images/75f8e535-2e34-4f8b-8148-fccba89471d1.webp',
-    createdAt: new Date().toISOString(),
-    description: 'Hello there!! sjajsd sjssj sdjs djsd sjds djs dsjds djsdjs d djsjdsj',
-    id: 1,
-    username: 'reversoid',
-  };
+  @Input() loadKey: string | null = null;
+
+  followLoading = signal(false);
+
+  follow(userId: User['id']) {
+    this.followLoading.set(true);
+    this.profileService
+      .follow(userId)
+      .pipe(
+        finalize(() => {
+          this.followLoading.set(false);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
+  }
+
+  unfollow(userId: User['id']) {
+    this.followLoading.set(true);
+
+    this.profileService
+      .unfollow(userId)
+      .pipe(
+        finalize(() => {
+          this.followLoading.set(false);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
+  }
 }

@@ -1,14 +1,19 @@
 <div class="user-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
-    <button tuiButton>Подписаться</button>
-  </app-user-card>
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
-    <button tuiButton>Подписаться</button>
-  </app-user-card>
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
-    <button tuiButton>Подписаться</button>
-  </app-user-card>
-  <app-user-card [view]="view === 'grid' ? 'vertical' : 'horizontal'" [user]="user">
-    <button tuiButton>Подписаться</button>
+  <app-user-card *ngFor="let profile of profiles" [user]="profile.user" view="horizontal">
+    <button
+      *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
+      (click)="unfollow(profile.user.id)"
+      [showLoader]="followLoading()"
+      tuiButton
+      appearance="secondary"
+    >
+      Отписаться
+    </button>
+
+    <ng-template #notSubscribed>
+      <button (click)="follow(profile.user.id)" [showLoader]="followLoading()" tuiButton>
+        Подписаться
+      </button>
+    </ng-template>
   </app-user-card>
 </div>
