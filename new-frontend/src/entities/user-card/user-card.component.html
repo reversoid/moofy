@@ -10,7 +10,9 @@
     </div>
   </a>
 
-  <h4 class="username title" title>{{ user.username }}</h4>
+  <h4 class="username title" title>
+    <a tuiLink [routerLink]="['profile', user.id]">{{ user.username }}</a>
+  </h4>
 
   <div content class="user-content">
     <tui-island class="description-wrapper">
