@@ -1,19 +1,26 @@
 <div class="user-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
-  <app-user-card *ngFor="let profile of profilesToShow()" [user]="undefined" view="horizontal">
-    <button
-      *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
-      (click)="unfollow(profile.user.id)"
-      [showLoader]="followLoading()"
-      tuiButton
-      appearance="secondary"
-    >
-      Отписаться
-    </button>
+  <app-user-card
+    *ngIf="loading && profilesToShow().length === 0; else showProfiles"
+    view="horizontal"
+  ></app-user-card>
 
-    <ng-template #notSubscribed>
-      <button (click)="follow(profile.user.id)" [showLoader]="followLoading()" tuiButton>
-        Подписаться
+  <ng-template #showProfiles>
+    <app-user-card *ngFor="let profile of profilesToShow()" [user]="profile.user" view="horizontal">
+      <button
+        *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
+        (click)="unfollow(profile.user.id)"
+        [showLoader]="followLoading()"
+        tuiButton
+        appearance="secondary"
+      >
+        Отписаться
       </button>
-    </ng-template>
-  </app-user-card>
+
+      <ng-template #notSubscribed>
+        <button (click)="follow(profile.user.id)" [showLoader]="followLoading()" tuiButton>
+          Подписаться
+        </button>
+      </ng-template>
+    </app-user-card>
+  </ng-template>
 </div>

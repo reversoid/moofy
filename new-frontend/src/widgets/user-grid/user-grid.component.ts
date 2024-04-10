@@ -32,6 +32,8 @@ export class UserGridComponent {
 
   @Input() loadKey: string | null = null;
 
+  @Input() loading: boolean = false;
+
   profiles = input<ShortProfile[]>([]);
 
   followLoading = signal(false);
