@@ -58,7 +58,7 @@ export class UserGridComponent {
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
-        this.followedProfiles.update((v) => v.set(userId, true));
+        this.followedProfiles.update((v) => new Map(v.set(userId, true)));
       });
   }
 
@@ -73,6 +73,6 @@ export class UserGridComponent {
         }),
         takeUntil(this.destroy$),
       )
-      .subscribe(() => this.followedProfiles.update((v) => v.set(userId, false)));
+      .subscribe(() => this.followedProfiles.update((v) => new Map(v.set(userId, false))));
   }
 }
