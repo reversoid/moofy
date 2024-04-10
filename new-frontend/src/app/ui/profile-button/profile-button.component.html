@@ -43,18 +43,17 @@
       >
         <span>Настройки</span>
       </a>
-      <a
+      <button
         class="exit-item"
-        routerLink="/welcome"
         [attr.aria-checked]="rla.isActive"
         #rla="routerLinkActive"
         routerLinkActive
         role="menuitemradio"
         tuiOption
-        (click)="closeDropdown()"
+        (click)="handleLogoutClick()"
       >
         <span>Выйти</span>
-      </a>
+      </button>
     </tui-data-list>
   </ng-template>
 </button>

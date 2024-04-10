@@ -33,6 +33,14 @@ export class AuthService {
       );
   }
 
+  logout(): Observable<void> {
+    return this.http.post<void>('auth/protected/logout', {}).pipe(
+      tap(() => {
+        this.accessToken = null;
+      }),
+    );
+  }
+
   register(username: string, password: string): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>('auth/register', {
