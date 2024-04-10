@@ -25,7 +25,7 @@ import { CardComponent } from '../../shared/ui/card/card.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserCardComponent {
-  @Input({ required: true }) user!: User;
+  @Input() user?: User;
 
   @Input() view?: 'vertical' | 'horizontal' = 'vertical';
 }

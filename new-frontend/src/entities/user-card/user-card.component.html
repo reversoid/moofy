@@ -1,5 +1,5 @@
 <app-card [ngClass]="view" [view]="view">
-  <a image tuiLink [routerLink]="['/profile', user.id]">
+  <a *ngIf="user; else skeletonImage" image tuiLink [routerLink]="['/profile', user.id]">
     <div class="image-wrapper">
       <img *ngIf="user.imageUrl; else noImage" [ngSrc]="user.imageUrl" fill />
       <ng-template #noImage>
@@ -9,18 +9,29 @@
       </ng-template>
     </div>
   </a>
+  <ng-template #skeletonImage>
+    <div [class.tui-skeleton]="true" class="image-wrapper"></div>
+  </ng-template>
 
-  <h4 class="username title" title>
-    <a tuiLink [routerLink]="['profile', user.id]">{{ user.username }}</a>
+  <h4 *ngIf="user; else skeletonName" class="username title" title>
+    <a tuiLink [routerLink]="['/profile', user.id]">{{ user.username }}</a>
   </h4>
 
-  <div content class="user-content">
+  <ng-template #skeletonName>
+    <span class="skeleton-username" [class.tui-skeleton]="true">username12345</span>
+  </ng-template>
+
+  <div *ngIf="user; else skeletonDescription" content class="user-content">
     <tui-island class="description-wrapper">
       <p class="description">
         {{ user.description }}
       </p>
     </tui-island>
   </div>
+
+  <ng-template #skeletonDescription>
+    <span class="skeleton-description" [class.tui-skeleton]="true">some description</span>
+  </ng-template>
 
   <ng-content action></ng-content>
 </app-card>

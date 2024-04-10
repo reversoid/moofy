@@ -79,3 +79,8 @@
     }
   }
 }
+
+.skeleton-username,
+.skeleton-description {
+  --tui-skeleton-radius: 0.25rem;
+}
