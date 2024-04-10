@@ -7,6 +7,7 @@
   <ng-template #showProfiles>
     <app-user-card *ngFor="let profile of profilesToShow()" [user]="profile.user" view="horizontal">
       <button
+        class="follow-button"
         *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
         (click)="unfollow(profile.user.id)"
         [showLoader]="followLoading()"
@@ -17,7 +18,12 @@
       </button>
 
       <ng-template #notSubscribed>
-        <button (click)="follow(profile.user.id)" [showLoader]="followLoading()" tuiButton>
+        <button
+          class="follow-button"
+          (click)="follow(profile.user.id)"
+          [showLoader]="followLoading()"
+          tuiButton
+        >
           Подписаться
         </button>
       </ng-template>
