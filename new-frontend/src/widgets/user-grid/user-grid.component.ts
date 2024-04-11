@@ -6,6 +6,7 @@ import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { ProfileService } from '../../features/profile/profile.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { finalize, takeUntil } from 'rxjs';
+import { TuiIslandModule } from '@taiga-ui/kit';
 
 export type UsersView = 'list' | 'grid';
 
@@ -14,7 +15,15 @@ export type UsersView = 'list' | 'grid';
 @Component({
   selector: 'app-user-grid',
   standalone: true,
-  imports: [UserCardComponent, NgClass, TuiButtonModule, NgFor, NgIf, TuiLoaderModule],
+  imports: [
+    UserCardComponent,
+    NgClass,
+    TuiButtonModule,
+    NgFor,
+    NgIf,
+    TuiLoaderModule,
+    TuiIslandModule,
+  ],
   templateUrl: './user-grid.component.html',
   styleUrl: './user-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

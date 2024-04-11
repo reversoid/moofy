@@ -1,32 +1,45 @@
 <div class="user-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
   <app-user-card
-    *ngIf="loading && profilesToShow().length === 0; else showProfiles"
+    *ngIf="loading && profilesToShow().length === 0; else notLoading"
     view="horizontal"
   ></app-user-card>
 
-  <ng-template #showProfiles>
-    <app-user-card *ngFor="let profile of profilesToShow()" [user]="profile.user" view="horizontal">
-      <button
-        class="follow-button"
-        *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
-        (click)="unfollow(profile.user.id)"
-        [showLoader]="followLoading()"
-        tuiButton
-        appearance="secondary"
-      >
-        Отписаться
-      </button>
+  <ng-template #notLoading>
+    <tui-island
+      *ngIf="profilesToShow().length === 0; else showProfiles"
+      class="not-found-placeholder"
+    >
+      <p>Пользователи не найдены</p></tui-island
+    >
 
-      <ng-template #notSubscribed>
+    <ng-template #showProfiles>
+      <app-user-card
+        *ngFor="let profile of profilesToShow()"
+        [user]="profile.user"
+        view="horizontal"
+      >
         <button
           class="follow-button"
-          (click)="follow(profile.user.id)"
+          *ngIf="profile.additionalInfo.isSubscribed; else notSubscribed"
+          (click)="unfollow(profile.user.id)"
           [showLoader]="followLoading()"
           tuiButton
+          appearance="secondary"
         >
-          Подписаться
+          Отписаться
         </button>
-      </ng-template>
-    </app-user-card>
+
+        <ng-template #notSubscribed>
+          <button
+            class="follow-button"
+            (click)="follow(profile.user.id)"
+            [showLoader]="followLoading()"
+            tuiButton
+          >
+            Подписаться
+          </button>
+        </ng-template>
+      </app-user-card>
+    </ng-template>
   </ng-template>
 </div>
