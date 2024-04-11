@@ -20,4 +20,9 @@
   </ng-template>
 </div>
 
-<tui-loader class="loader"></tui-loader>
+<div waIntersectionObserver class="loader">
+  <tui-loader
+    *ngIf="canLoadMore"
+    (waIntersectionObservee)="handleLoadIntersection($event)"
+  ></tui-loader>
+</div>

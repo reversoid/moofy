@@ -1,11 +1,19 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  input,
+} from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { UserCardComponent } from '../../entities/user-card/user-card.component';
 import { ShortProfile } from '../../shared/types';
 import { FollowButtonComponent } from '../../features/profile/ui/follow-button/follow-button.component';
+import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 
 export type UsersView = 'list' | 'grid';
 
@@ -23,6 +31,7 @@ export type UsersView = 'list' | 'grid';
     TuiLoaderModule,
     TuiIslandModule,
     FollowButtonComponent,
+    IntersectionObserverModule,
   ],
   templateUrl: './user-grid.component.html',
   styleUrl: './user-grid.component.scss',
@@ -30,11 +39,18 @@ export type UsersView = 'list' | 'grid';
   providers: [TuiDestroyService],
 })
 export class UserGridComponent {
-  @Input() view: UsersView = 'list';
-
-  @Input() loadKey: string | null = null;
+  @Input() canLoadMore: boolean = false;
 
   @Input() loading: boolean = false;
 
+  @Output() loadMore = new EventEmitter<void>();
+
   profiles = input<ShortProfile[]>([]);
+
+  handleLoadIntersection(observerEntries: IntersectionObserverEntry[]) {
+    const isVisible = observerEntries.at(-1)!.isIntersecting;
+    if (isVisible) {
+      this.loadMore.emit();
+    }
+  }
 }
