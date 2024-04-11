@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule, TuiIslandModule, TuiRadioLabeledModule } from '@taiga-ui/kit';
-import { combineLatest, debounceTime, take, takeUntil } from 'rxjs';
+import { Observable, Subject, combineLatest, debounceTime, take, takeUntil } from 'rxjs';
 import { ExplorePageStore } from '../model/explore-page.store';
 
 type SearchObject = 'profiles' | 'collections';
@@ -108,6 +108,7 @@ export class ExplorePageComponent implements OnInit {
 
       if (searchValue) {
         this.exlorePageStore.setSearch(searchValue);
+        this.exploreOptionsForm.controls.search.setValue(searchValue, { emitEvent: false });
       }
     });
   }
