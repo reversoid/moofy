@@ -1,4 +1,4 @@
-<div class="user-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
+<div class="user-grid">
   <app-user-card
     *ngIf="loading && profiles().length === 0; else notLoading"
     view="horizontal"
@@ -19,3 +19,5 @@
     </ng-template>
   </ng-template>
 </div>
+
+<tui-loader class="loader"></tui-loader>

@@ -5,30 +5,17 @@
 }
 
 .user-grid {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   @include grid-gap;
-
-  &.list {
-    grid-template-columns: 1fr;
-  }
-
-  &.grid {
-    @include grid;
-    @media #{$tui-mobile} {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-  }
 }
 
 .loader {
   margin-top: 2rem;
 }
 
-.user-grid.list {
-  app-follow-button {
-    align-self: center;
-  }
+app-follow-button {
+  align-self: center;
 }
 
 .not-found-placeholder {
