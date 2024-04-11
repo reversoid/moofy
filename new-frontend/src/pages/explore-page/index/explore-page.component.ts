@@ -50,13 +50,22 @@ export class ExplorePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.initExistingQueryParams();
   }
 
   private initForm() {
-    this.handleInitialQueryParams();
-
+    this.initSearchObject();
     this.initSearchObjectChange();
+
     this.initSearchFieldChange();
+  }
+
+  private initSearchObject() {
+    this.activatedRoute.children[0].url
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((segment) => {
+        this.exploreOptionsForm.controls.searchObject.setValue(segment[0].path as SearchObject);
+      });
   }
 
   private initSearchObjectChange() {
@@ -93,7 +102,7 @@ export class ExplorePageComponent implements OnInit {
     });
   }
 
-  private handleInitialQueryParams() {
+  private initExistingQueryParams() {
     this.activatedRoute.queryParamMap.pipe(take(1), takeUntil(this.destroy$)).subscribe((s) => {
       const searchValue = s.get('search');
 
