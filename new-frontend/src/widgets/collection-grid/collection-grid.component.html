@@ -8,4 +8,10 @@
   </a>
 </div>
 
-<tui-loader *ngIf="loading" class="loader"></tui-loader>
+<div *ngIf="loadMoreKey" waIntersectionObserver waIntersectionRootMargin="500px">
+  <tui-loader
+    *ngIf="loading"
+    class="loader"
+    (waIntersectionObservee)="handleLoadIntersection($event)"
+  ></tui-loader>
+</div>

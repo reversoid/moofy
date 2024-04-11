@@ -52,8 +52,6 @@ export class UserGridComponent {
   handleLoadIntersection(observerEntries: IntersectionObserverEntry[]) {
     const isVisible = observerEntries.at(-1)!.isIntersecting;
 
-    console.log(observerEntries.map((e) => e.isIntersecting));
-
     const newKey = this.lastEmitedLoadKey !== this.loadMoreKey;
 
     if (isVisible && newKey) {

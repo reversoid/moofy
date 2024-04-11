@@ -1,1 +1,4 @@
-<app-collection-grid [collections]="(collections$ | async) ?? []"></app-collection-grid>
+<app-collection-grid
+  [collections]="(collections$ | async) ?? []"
+  [loadMoreKey]="null"
+></app-collection-grid>
