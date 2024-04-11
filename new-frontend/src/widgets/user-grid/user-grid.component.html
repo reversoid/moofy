@@ -16,13 +16,13 @@
           [isSubscribed]="profile.additionalInfo.isSubscribed"
         ></app-follow-button>
       </app-user-card>
+
+      <div *ngIf="loadMoreKey" waIntersectionObserver waIntersectionRootMargin="500px">
+        <app-user-card
+          (waIntersectionObservee)="handleLoadIntersection($event)"
+          view="horizontal"
+        ></app-user-card>
+      </div>
     </ng-template>
   </ng-template>
-</div>
-
-<div waIntersectionObserver class="loader">
-  <tui-loader
-    *ngIf="canLoadMore"
-    (waIntersectionObservee)="handleLoadIntersection($event)"
-  ></tui-loader>
 </div>

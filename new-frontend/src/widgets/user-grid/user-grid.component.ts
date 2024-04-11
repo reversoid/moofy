@@ -39,7 +39,7 @@ export type UsersView = 'list' | 'grid';
   providers: [TuiDestroyService],
 })
 export class UserGridComponent {
-  @Input() canLoadMore: boolean = false;
+  @Input() loadMoreKey: string | null = null;
 
   @Input() loading: boolean = false;
 
@@ -47,9 +47,17 @@ export class UserGridComponent {
 
   profiles = input<ShortProfile[]>([]);
 
+  private lastEmitedLoadKey: string | null = null;
+
   handleLoadIntersection(observerEntries: IntersectionObserverEntry[]) {
     const isVisible = observerEntries.at(-1)!.isIntersecting;
-    if (isVisible) {
+
+    console.log(observerEntries.map((e) => e.isIntersecting));
+
+    const newKey = this.lastEmitedLoadKey !== this.loadMoreKey;
+
+    if (isVisible && newKey) {
+      this.lastEmitedLoadKey = this.loadMoreKey;
       this.loadMore.emit();
     }
   }
