@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { combineLatest, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
 import { AppState } from '../../app/store';
 import { selectCurrentUser } from '../../entities/current-user/selectors';
-import { ProfileService } from '../../features/profile/profile.service';
+import { ProfileService } from '../../features/profile/utils/profile.service';
 import { Profile } from '../../shared/types';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 import { ProfilePageStore } from './utils/profile-page.store';

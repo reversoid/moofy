@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { Profile } from '../../../shared/types';
 import { inject } from '@angular/core';
-import { ProfileService } from '../../../features/profile/profile.service';
+import { ProfileService } from '../../../features/profile/utils/profile.service';
 
 // TODO in guard check if is number
 export const ProfileResolver: ResolveFn<Profile | null> = (route: ActivatedRouteSnapshot) => {

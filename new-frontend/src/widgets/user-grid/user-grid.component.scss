@@ -26,13 +26,9 @@
 }
 
 .user-grid.list {
-  button {
+  app-follow-button {
     align-self: center;
   }
-}
-
-.follow-button {
-  min-width: 11.125rem;
 }
 
 .not-found-placeholder {

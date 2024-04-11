@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FullCollection, PaginatedData, Profile, ShortProfile, User } from '../../shared/types';
-import { UploadImageService } from '../../shared/utils/upload-image/upload-image.service';
+import { FullCollection, PaginatedData, Profile, ShortProfile, User } from '../../../shared/types';
+import { UploadImageService } from '../../../shared/utils/upload-image/upload-image.service';
 import { EditProfileDto } from './types';
 
 @Injectable({
