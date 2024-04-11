@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule, TuiIslandModule, TuiRadioLabeledModule } from '@taiga-ui/kit';
-import { combineLatest, debounceTime, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, take, takeUntil } from 'rxjs';
 import { ExplorePageStore } from '../model/explore-page.store';
 
 type SearchObject = 'profiles' | 'collections';
@@ -53,6 +53,8 @@ export class ExplorePageComponent implements OnInit {
   }
 
   private initForm() {
+    this.handleInitialQueryParams();
+
     this.initSearchObjectChange();
     this.initSearchFieldChange();
   }
@@ -67,7 +69,11 @@ export class ExplorePageComponent implements OnInit {
         if (!v) {
           return;
         }
-        this.router.navigate([v], { relativeTo: this.activatedRoute });
+
+        this.router.navigate([v], {
+          relativeTo: this.activatedRoute,
+          queryParamsHandling: 'preserve',
+        });
       });
   }
 
@@ -75,7 +81,25 @@ export class ExplorePageComponent implements OnInit {
     this.exploreOptionsForm.controls.search.valueChanges
       .pipe(debounceTime(350), takeUntil(this.destroy$))
       .subscribe((search) => {
+        this.addSearchToParams(search);
         this.exlorePageStore.setSearch(search || null);
       });
+  }
+
+  private addSearchToParams(search: string | null) {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: search ? { search: search } : null,
+    });
+  }
+
+  private handleInitialQueryParams() {
+    this.activatedRoute.queryParamMap.pipe(take(1), takeUntil(this.destroy$)).subscribe((s) => {
+      const searchValue = s.get('search');
+
+      if (searchValue) {
+        this.exlorePageStore.setSearch(searchValue);
+      }
+    });
   }
 }
