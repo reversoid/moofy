@@ -147,12 +147,14 @@ export class AuthController {
     );
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: ![AppEnvironments.dev].includes(this.config.environment),
+      secure: ![AppEnvironments.dev, AppEnvironments.test].includes(
+        this.config.environment,
+      ),
       httpOnly: ![AppEnvironments.dev, AppEnvironments.test].includes(
         this.config.environment,
       ),
       sameSite:
-        this.config.environment === AppEnvironments.test ? 'none' : 'strict',
+        this.config.environment === AppEnvironments.test ? 'lax' : 'strict',
       expires: dateInFuture,
     };
   }
