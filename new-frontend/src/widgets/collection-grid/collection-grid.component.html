@@ -1,4 +1,11 @@
 <div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
+  <!-- SKELETON -->
+  <app-collection
+    *ngIf="!collections?.length && loading"
+    view="horizontal"
+    [hideDescription]="hideDescription"
+  ></app-collection>
+
   <a *ngFor="let collection of collections" [routerLink]="['/collections', collection.id]" tuiLink>
     <app-collection
       [view]="view === 'list' ? 'horizontal' : 'vertical'"
@@ -8,10 +15,10 @@
   </a>
 </div>
 
+<tui-island *ngIf="collections?.length === 0 && !loading" class="empty-placeholder"
+  >Нет коллекций</tui-island
+>
+
 <div *ngIf="loadMoreKey" waIntersectionObserver waIntersectionRootMargin="500px">
-  <tui-loader
-    *ngIf="loading"
-    class="loader"
-    (waIntersectionObservee)="handleLoadIntersection($event)"
-  ></tui-loader>
+  <tui-loader class="loader" (waIntersectionObservee)="handleLoadIntersection($event)"></tui-loader>
 </div>

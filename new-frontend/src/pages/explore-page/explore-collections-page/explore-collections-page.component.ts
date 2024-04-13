@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { CollectionGridComponent } from '../../../widgets/collection-grid/collection-grid.component';
 import { ExplorePageStore } from '../model/explore-page.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ExploreService } from '../../../features/explore/explore.service';
-import { combineLatest, combineLatestWith, map, switchMap, takeUntil } from 'rxjs';
+import { combineLatest, combineLatestWith, finalize, map, switchMap, takeUntil, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -21,6 +21,8 @@ export class ExploreCollectionsPageComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
     private readonly exploreService: ExploreService,
   ) {}
+
+  loading = signal(false);
 
   collections$ = combineLatest([
     this.explorePageStore.collections$,
@@ -41,8 +43,11 @@ export class ExploreCollectionsPageComponent implements OnInit {
   private initHandleSearchChange() {
     this.explorePageStore.search$
       .pipe(
+        tap(() => this.loading.set(true)),
         switchMap((search) => {
-          return this.exploreService.searchCollections(search ?? '');
+          return this.exploreService
+            .searchCollections(search ?? '')
+            .pipe(finalize(() => this.loading.set(false)));
         }),
         combineLatestWith(this.explorePageStore.search$),
         takeUntil(this.destroy$),

@@ -18,12 +18,12 @@ export class CollectionComponent {
 
   @Input() view?: 'vertical' | 'horizontal' = 'vertical';
 
-  @Input({ required: true }) collection!: Collection;
+  @Input() collection?: Collection;
 
   @Input() hideDescription?: boolean = false;
 
   private get hashColor() {
-    return this.colorHash.hex(String(this.collection.id));
+    return this.collection && this.colorHash.hex(String(this.collection.id));
   }
 
   get hashBackgroundStyle() {

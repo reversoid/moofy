@@ -1,4 +1,6 @@
 <app-collection-grid
   [collections]="(collections$ | async) ?? []"
+  [hideDescription]="false"
   [loadMoreKey]="null"
+  [loading]="loading()"
 ></app-collection-grid>

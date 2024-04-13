@@ -1,5 +1,5 @@
 <app-card [ngClass]="view" [view]="view">
-  <div image class="image-wrapper">
+  <div *ngIf="collection; else imageSkeleton" image class="image-wrapper">
     <img *ngIf="collection.imageUrl; else colorBlock" fill [ngSrc]="collection.imageUrl" />
 
     <ng-template #colorBlock>
@@ -7,7 +7,9 @@
     </ng-template>
   </div>
 
-  <div title class="title-wrapper">
+  <ng-template #imageSkeleton> <div image class="tui-skeleton image-wrapper"></div></ng-template>
+
+  <div *ngIf="collection; else titleSkeleton" title class="title-wrapper">
     <h4 class="title">{{ collection.name }}</h4>
 
     <tui-svg
@@ -19,5 +21,20 @@
     <ng-template #lockTooltip>Это приватная коллекция</ng-template>
   </div>
 
-  <p *ngIf="!hideDescription" class="description" content>{{ collection.description }}</p>
+  <ng-template #titleSkeleton>
+    <div title class="title-wrapper">
+      <h4 class="title tui-skeleton">collection name placeholder</h4>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="collection; else descriptionSkeleton" content>
+    <p *ngIf="!hideDescription" class="description">{{ collection.description }}</p>
+  </ng-container>
+
+  <ng-template #descriptionSkeleton>
+    <p content class="tui-skeleton description">
+      Some placeholder content for <br />
+      description
+    </p>
+  </ng-template>
 </app-card>

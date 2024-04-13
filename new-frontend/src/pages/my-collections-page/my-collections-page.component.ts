@@ -7,7 +7,6 @@ import {
   TuiTextfieldControllerModule,
 } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
-import { CollectionComponent } from '../../entities/collection/collection.component';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { CollectionWithInfo } from '../../shared/types';
@@ -24,7 +23,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-collection-page',
   standalone: true,
   imports: [
-    CollectionComponent,
     TuiInputModule,
     TuiLabelModule,
     TuiTextfieldControllerModule,

@@ -3,6 +3,7 @@
 :host {
   display: block;
   overflow: hidden;
+  --tui-skeleton-radius: 0.25rem;
 }
 
 .image-wrapper {
@@ -59,6 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 0.5rem;
   tui-svg {
     flex-shrink: 0;
@@ -70,12 +72,20 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+
+    &.tui-skeleton {
+      width: min(18rem, 100%);
+    }
   }
 }
 
 p.description {
   margin: 0;
   color: var(--tui-text-02);
+
+  &.tui-skeleton {
+    width: min(25rem, 100%);
+  }
 }
 
 .lock-icon {

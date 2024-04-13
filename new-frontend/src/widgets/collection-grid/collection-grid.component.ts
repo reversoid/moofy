@@ -5,6 +5,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Collection } from '../../shared/types';
 import { RouterLink } from '@angular/router';
 import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
+import { TuiIslandModule } from '@taiga-ui/kit';
 
 export const collectionMock: Collection = {
   id: 1,
@@ -37,6 +38,7 @@ export const collectionMock: Collection = {
     TuiLinkModule,
     NgFor,
     IntersectionObserverModule,
+    TuiIslandModule,
   ],
   templateUrl: './collection-grid.component.html',
   styleUrl: './collection-grid.component.scss',
@@ -51,9 +53,9 @@ export class CollectionGridComponent {
 
   @Input() loadMoreKey: string | null = null;
 
-  @Output() loadMore = new EventEmitter<void>();
+  @Input() loading: boolean = false;
 
-  loading = true;
+  @Output() loadMore = new EventEmitter<void>();
 
   private lastEmitedLoadKey: string | null = null;
 
