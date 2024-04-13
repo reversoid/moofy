@@ -1,6 +1,6 @@
 import { IEnvironment } from './interface';
 
 export const environment: IEnvironment = {
-  apiUrl: 'https://api.test.moofy.ru',
+  apiUrl: 'https://test.moofy.ru/api',
   production: false,
 };
