@@ -1,7 +1,7 @@
 <div class="wrapper">
   <h1 class="tui-text_h1">Регистрация</h1>
 
-  <form [formGroup]="registerForm" class="form">
+  <form (submit)="register()" [formGroup]="registerForm" class="form">
     <div class="tui-form__row">
       <tui-input
         formControlName="username"
@@ -25,13 +25,7 @@
     </div>
 
     <div class="tui-form__buttons">
-      <button
-        (click)="register()"
-        [disabled]="buttonDisabled"
-        tuiButton
-        [showLoader]="isLoading()"
-        type="button"
-      >
+      <button [disabled]="buttonDisabled" tuiButton [showLoader]="isLoading()" type="submit">
         Зарегистрироваться
       </button>
     </div>

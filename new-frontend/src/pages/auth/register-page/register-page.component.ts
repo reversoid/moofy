@@ -24,6 +24,7 @@ import { AuthService } from '../../../features/auth/auth.service';
 import { maxLength, minLength, pattern, required } from '../../../shared/utils/validators';
 import { USERNAME_PATTERN } from '../utils/username-pattern';
 import { IsUsernameTakenValidator } from './utils/is-username-taken.validator';
+import { NO_WHITESPACE_PATTERN } from '../utils/no-whitespace-pattern';
 
 @Component({
   selector: 'app-register-page',
@@ -85,6 +86,7 @@ export class RegisterPageComponent {
         required('Поле должно быть заполнено'),
         minLength(8, 'Минимальная длина пароля – 8 символов'),
         maxLength(1024, 'Очень длинный пароль'),
+        pattern(NO_WHITESPACE_PATTERN, 'Пробелы недопустимы'),
       ],
     }),
   });
