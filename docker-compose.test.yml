@@ -37,33 +37,33 @@ services:
       - nginx-proxy
 
   ######################## Frontend #########################
-  # frontend-test:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile.test
-  #   container_name: frontend-test
-  #   restart: unless-stopped
-  #   environment:
-  #     - VIRTUAL_HOST=test.moofy.ru
-  #     - LETSENCRYPT_HOST=test.moofy.ru
-  #   networks:
-  #     - moofy-test-network
-
-  ######################### Backend #########################
-  nginx-test-backend:
+  frontend-test:
     build:
-      context: ./nginx-backend/test
-      dockerfile: Dockerfile
-    container_name: nginx-test-backend
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    container_name: frontend-test
     restart: unless-stopped
     environment:
       - VIRTUAL_HOST=test.moofy.ru
-      - VIRTUAL_PORT=5555
       - LETSENCRYPT_HOST=test.moofy.ru
-    depends_on:
-      - backend-test
     networks:
       - moofy-test-network
+
+  ######################### Backend #########################
+  # nginx-test-backend:
+  #   build:
+  #     context: ./nginx-backend/test
+  #     dockerfile: Dockerfile
+  #   container_name: nginx-test-backend
+  #   restart: unless-stopped
+  #   environment:
+  #     - VIRTUAL_HOST=test.moofy.ru
+  #     - VIRTUAL_PORT=5555
+  #     - LETSENCRYPT_HOST=test.moofy.ru
+  #   depends_on:
+  #     - backend-test
+  #   networks:
+  #     - moofy-test-network
 
   backend-test:
     image: moofy-new-backend-test
