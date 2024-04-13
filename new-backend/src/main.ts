@@ -58,6 +58,8 @@ async function bootstrap() {
     credentials: true,
   });
 
+  app.setGlobalPrefix('/api');
+
   await app.register(fastifyCookie, {
     secret: configService.get<string>('secrets.cookie'),
   });
