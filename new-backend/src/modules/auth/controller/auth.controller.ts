@@ -154,7 +154,7 @@ export class AuthController {
         this.config.environment,
       ),
       sameSite:
-        this.config.environment === AppEnvironments.test ? 'lax' : 'strict',
+        this.config.environment === AppEnvironments.test ? 'none' : 'strict',
       expires: dateInFuture,
     };
   }
