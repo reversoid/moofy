@@ -145,16 +145,15 @@ export class AuthController {
     const dateInFuture = new Date(
       new Date().setDate(new Date().getDate() + DAYS_TO_EXPIRE),
     );
+
+    const isDev = this.config.environment === AppEnvironments.dev;
+    const isTest = this.config.environment === AppEnvironments.test;
+
     return {
       ...DEFAULT_REFRESH_COOKIE_OPTIONS,
-      secure: ![AppEnvironments.dev, AppEnvironments.test].includes(
-        this.config.environment,
-      ),
-      httpOnly: ![AppEnvironments.dev, AppEnvironments.test].includes(
-        this.config.environment,
-      ),
-      sameSite:
-        this.config.environment === AppEnvironments.test ? 'none' : 'strict',
+      secure: !isDev,
+      httpOnly: !isDev,
+      sameSite: isTest ? 'none' : 'strict',
       expires: dateInFuture,
     };
   }
