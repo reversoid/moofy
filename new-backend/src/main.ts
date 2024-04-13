@@ -68,9 +68,9 @@ async function bootstrap() {
     configService.getOrThrow<AppEnvironments>('global.environment') ===
     AppEnvironments.dev
   ) {
-    await app.listen(3333);
+    await app.listen(3334);
   } else {
-    await app.listen(3333, '0.0.0.0');
+    await app.listen(3334, '0.0.0.0');
   }
 }
 bootstrap();
