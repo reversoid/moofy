@@ -57,9 +57,9 @@ services:
     container_name: nginx-test-backend
     restart: unless-stopped
     environment:
-      - VIRTUAL_HOST=api.test.moofy.ru
+      - VIRTUAL_HOST=test.moofy.ru
       - VIRTUAL_PORT=5555
-      - LETSENCRYPT_HOST=api.test.moofy.ru
+      - LETSENCRYPT_HOST=test.moofy.ru
     depends_on:
       - backend-test
     networks:

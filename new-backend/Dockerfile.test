@@ -17,7 +17,7 @@ RUN npx prisma generate
 # Creates a "dist" folder with the production build
 RUN yarn build
 
-EXPOSE 3333
+EXPOSE 3334
 
 # Start the server using the production build
 CMD ["yarn", "start:prod"]
