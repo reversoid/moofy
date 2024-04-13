@@ -39,7 +39,7 @@ import {
 
 const DEFAULT_REFRESH_COOKIE_OPTIONS: CookieSerializeOptions = {
   signed: true,
-  path: '/auth/protected',
+  path: '/api/auth/protected',
 };
 
 @ApiTags('Authorization')
