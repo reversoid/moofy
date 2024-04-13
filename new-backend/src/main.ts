@@ -28,7 +28,7 @@ async function bootstrap() {
     .setVersion('2.0')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, swaggerDocument);
+  SwaggerModule.setup('docs', app, swaggerDocument);
 
   // setup s3
   setupS3({
