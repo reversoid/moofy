@@ -8,8 +8,8 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
 import { appRoutes } from '../pages/routes';
 import { apiInterceptor } from './interceptors/api.interceptor';
-import { ENVIRONMENT } from '../environments/provider';
-import { environment } from '../environments/environment';
+import { ENVIRONMENT } from './environments/provider';
+import { environment } from './environments/environment';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
 

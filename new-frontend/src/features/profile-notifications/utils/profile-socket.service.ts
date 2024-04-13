@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { ProfileDirectNotification } from '../../../shared/types';
-import { ENVIRONMENT } from '../../../environments/provider';
-import { IEnvironment } from '../../../environments/interface';
+import { ENVIRONMENT } from '../../../app/environments/provider';
+import { IEnvironment } from '../../../app/environments/interface';
 import { AuthService } from '../../auth/auth.service';
 
 @Injectable({ providedIn: 'root' })
