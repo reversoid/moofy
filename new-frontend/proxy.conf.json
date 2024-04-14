@@ -1,0 +1,11 @@
+{
+    "/api": {
+      "target": "https://test.moofy.ru/api",
+      "secure": false,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+}
+  
