@@ -3,10 +3,24 @@
 <tui-notification status="info">
   <p>
     Данный раздел находится в разработке. <br />
-    Больше возможностей появится позднее.
+    Больше уникальных возможностей появятся позже.
   </p>
 </tui-notification>
 
-<h2 class="tui-text_h4">Обновления от ваших подписок</h2>
+<h2 class="tui-text_h4">Непросмотренные обновления</h2>
 
-<app-collection-grid></app-collection-grid>
+<app-collection-grid
+  [collections]="unseenCollections()?.items ?? []"
+  [loading]="isUnseenLoading()"
+  [loadMoreKey]="unseenCollections()?.nextKey ?? null"
+  (loadMore)="loadUnseen(unseenCollections()?.nextKey!)"
+></app-collection-grid>
+
+<h2 class="tui-text_h4">Все последние обновления</h2>
+
+<app-collection-grid
+  [collections]="latestUpdatedCollections()?.items ?? []"
+  [loading]="isLatestUpdatesLoading()"
+  [loadMoreKey]="latestUpdatedCollections()?.nextKey ?? null"
+  (loadMore)="loadUnseen(latestUpdatedCollections()?.nextKey!)"
+></app-collection-grid>
