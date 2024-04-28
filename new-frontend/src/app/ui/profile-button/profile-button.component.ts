@@ -11,6 +11,7 @@ import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
+  TuiHostedDropdownModule,
   TuiSvgModule,
 } from '@taiga-ui/core';
 import { User } from '../../../shared/types';
@@ -35,6 +36,7 @@ import { currentUserActions } from '../../../entities/current-user/actions';
     TuiLetModule,
     TuiSvgModule,
     NgIf,
+    TuiHostedDropdownModule,
   ],
   templateUrl: './profile-button.component.html',
   styleUrl: './profile-button.component.scss',

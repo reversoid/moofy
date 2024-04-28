@@ -1,59 +1,62 @@
-<button
-  class="profile-button"
-  tuiIconButton
-  [appearance]="user.imageUrl ? 'mono' : 'secondary'"
-  type="button"
+<tui-hosted-dropdown
   [tuiDropdown]="dropdownContent"
   [tuiDropdownManual]="dropdownOpen()"
   (click)="onClick()"
   (tuiActiveZoneChange)="onActiveZone($event)"
   (tuiObscured)="onObscured($event)"
 >
-  <ng-container *ngIf="user.imageUrl; else noImage">
-    <img class="profile-image" [ngSrc]="user.imageUrl" width="48" height="48" />
-  </ng-container>
+  <button
+    class="profile-button"
+    tuiIconButton
+    [appearance]="user.imageUrl ? 'mono' : 'secondary'"
+    type="button"
+  >
+    <ng-container *ngIf="user.imageUrl; else noImage">
+      <img class="profile-image" [ngSrc]="user.imageUrl" width="48" height="48" />
+    </ng-container>
 
-  <ng-template #noImage>
-    <tui-svg src="tuiIconUserLarge"></tui-svg>
-  </ng-template>
+    <ng-template #noImage>
+      <tui-svg src="tuiIconUserLarge"></tui-svg>
+    </ng-template>
+  </button>
+</tui-hosted-dropdown>
 
-  <ng-template #dropdownContent>
-    <tui-data-list class="dropdown-menu" role="menu">
-      <a
-        class="profile-link"
-        [routerLink]="['/profile', user.id]"
-        [attr.aria-checked]="rla.isActive"
-        #rla="routerLinkActive"
-        routerLinkActive
-        role="menuitemradio"
-        tuiOption
-        (click)="closeDropdown()"
-      >
-        <span class="profile-title">Выполнен вход за</span>
-        <span class="profile-username">{{ user.username }}</span>
-      </a>
-      <a
-        routerLink="/settings"
-        [attr.aria-checked]="rla.isActive"
-        #rla="routerLinkActive"
-        routerLinkActive
-        role="menuitemradio"
-        tuiOption
-        (click)="closeDropdown()"
-      >
-        <span>Настройки</span>
-      </a>
-      <button
-        class="exit-item"
-        [attr.aria-checked]="rla.isActive"
-        #rla="routerLinkActive"
-        routerLinkActive
-        role="menuitemradio"
-        tuiOption
-        (click)="handleLogoutClick()"
-      >
-        <span>Выйти</span>
-      </button>
-    </tui-data-list>
-  </ng-template>
-</button>
+<ng-template #dropdownContent>
+  <tui-data-list class="dropdown-menu" role="menu">
+    <a
+      class="profile-link"
+      [routerLink]="['/profile', user.id]"
+      [attr.aria-checked]="rla.isActive"
+      #rla="routerLinkActive"
+      routerLinkActive
+      role="menuitemradio"
+      tuiOption
+      (click)="closeDropdown()"
+    >
+      <span class="profile-title">Выполнен вход за</span>
+      <span class="profile-username">{{ user.username }}</span>
+    </a>
+    <a
+      routerLink="/settings"
+      [attr.aria-checked]="rla.isActive"
+      #rla="routerLinkActive"
+      routerLinkActive
+      role="menuitemradio"
+      tuiOption
+      (click)="closeDropdown()"
+    >
+      <span>Настройки</span>
+    </a>
+    <button
+      class="exit-item"
+      [attr.aria-checked]="rla.isActive"
+      #rla="routerLinkActive"
+      routerLinkActive
+      role="menuitemradio"
+      tuiOption
+      (click)="handleLogoutClick()"
+    >
+      <span>Выйти</span>
+    </button>
+  </tui-data-list>
+</ng-template>
