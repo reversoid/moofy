@@ -4,27 +4,8 @@ import { TuiLinkModule, TuiLoaderModule } from '@taiga-ui/core';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Collection } from '../../shared/types';
 import { RouterLink } from '@angular/router';
-import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 import { TuiIslandModule } from '@taiga-ui/kit';
-
-export const collectionMock: Collection = {
-  id: 1,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  description: 'description',
-  isPublic: true,
-  name: 'Some collection and yeah it is very long word',
-  user: {
-    id: 1,
-    createdAt: new Date().toISOString(),
-    description: 'some desc',
-    imageUrl:
-      'https://moofy.storage.yandexcloud.net/profile-images/be3b783c-3ab6-48f2-864d-3b81bd9612fd.webp',
-    username: 'reversoid',
-  },
-  imageUrl:
-    'https://moofy.storage.yandexcloud.net/list-images/75f8e535-2e34-4f8b-8148-fccba89471d1.webp',
-};
+import { IntersectionLoaderComponent } from '../../shared/ui/intersection-loader/intersection-loader.component';
 
 @Component({
   selector: 'app-collection-grid',
@@ -37,8 +18,8 @@ export const collectionMock: Collection = {
     RouterLink,
     TuiLinkModule,
     NgFor,
-    IntersectionObserverModule,
     TuiIslandModule,
+    IntersectionLoaderComponent,
   ],
   templateUrl: './collection-grid.component.html',
   styleUrl: './collection-grid.component.scss',
@@ -56,17 +37,4 @@ export class CollectionGridComponent {
   @Input() loading: boolean = false;
 
   @Output() loadMore = new EventEmitter<void>();
-
-  private lastEmitedLoadKey: string | null = null;
-
-  handleLoadIntersection(observerEntries: IntersectionObserverEntry[]) {
-    const isVisible = observerEntries.at(-1)!.isIntersecting;
-
-    const newKey = this.lastEmitedLoadKey !== this.loadMoreKey;
-
-    if (isVisible && newKey) {
-      this.lastEmitedLoadKey = this.loadMoreKey;
-      this.loadMore.emit();
-    }
-  }
 }

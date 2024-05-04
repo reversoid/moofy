@@ -22,6 +22,11 @@
   <app-collection *ngIf="loadingCollections()" view="horizontal"></app-collection>
 </form>
 
+<app-intersection-loader
+  [loadMoreKey]="loadKey()"
+  (loadMore)="loadCollections(loadKey())"
+></app-intersection-loader>
+
 <div *ngIf="isSelectedAnyCollection" class="next-container">
   <button class="continue-button" type="submit" form="collections-to-combine-form" tuiButton>
     Продолжить

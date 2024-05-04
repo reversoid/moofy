@@ -19,6 +19,7 @@
   >Нет коллекций</tui-island
 >
 
-<div *ngIf="loadMoreKey" waIntersectionObserver waIntersectionRootMargin="500px">
-  <tui-loader class="loader" (waIntersectionObservee)="handleLoadIntersection($event)"></tui-loader>
-</div>
+<app-intersection-loader
+  [loadMoreKey]="loadMoreKey"
+  (loadMore)="loadMore.emit()"
+></app-intersection-loader>
