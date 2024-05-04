@@ -47,6 +47,6 @@ export class ProfileService {
   }
 
   getPersonalCollection(id: User['id']): Observable<FullCollection> {
-    return this.http.get<FullCollection>(`profile/${id}/collections/personal`);
+    return this.http.get<FullCollection>(`profiles/${id}/collections/personal`);
   }
 }
