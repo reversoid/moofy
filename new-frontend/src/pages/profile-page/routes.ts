@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ProfileResolver } from './utils/profile.resolver';
+import { PersonalCollectionResolver } from './utils/personal-collection-resolver';
 
 // TODO make guards for personal collection redirects: if not exists and if already exists
 export const routes: Routes = [
@@ -30,6 +31,10 @@ export const routes: Routes = [
           import('../collection-page/collection-page.component').then(
             (c) => c.CollectionPageComponent,
           ),
+
+        resolve: {
+          collectionPageData: PersonalCollectionResolver,
+        },
 
         data: {
           isPersonal: true,
