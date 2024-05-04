@@ -11,14 +11,17 @@ export type UpdateCollectionProps = Pick<
 >;
 
 export interface CreatePersonalCollectionProps {
-  collectionData: Pick<Collection, 'name' | 'description' | 'imageUrl'>;
+  name: Collection['name'];
+  description: Collection['description'];
+  imageUrl: Collection['imageUrl'];
+
   mergeOptions?: {
     collectionIds: number[];
     reviews: {
-      withScore: boolean;
+      withScore?: boolean;
       strategy: 'copy' | 'move';
     };
-    actionAfterMerging: 'saveAll' | 'removeAll' | 'removeEmpty';
+    actionAfterMergingCollections: 'saveAll' | 'removeAll' | 'removeEmpty';
   };
 }
 

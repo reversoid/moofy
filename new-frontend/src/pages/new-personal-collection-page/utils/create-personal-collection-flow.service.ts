@@ -22,21 +22,31 @@ type StepWithPayload = {
   | { type: 'combineOptions'; payload: CombineOptions }
 );
 
-type PersonalCollectionData = {
-  collectionData?: CollectionData;
+type FinishedPersonalCollectionData = {
+  collectionData: CollectionData;
   collectionIdsToMerge?: CollectionIds;
   combineOptions?: CombineOptions;
 };
+
+type PersonalCollectionData = Partial<FinishedPersonalCollectionData>;
 
 @Injectable({ providedIn: 'root' })
 export class CreatePersonalCollectionFlowService {
   private _newPersonalCollectionData: PersonalCollectionData = {};
 
-  get newPersonalCollectionData(): Required<PersonalCollectionData> | null {
-    const filledValues = Object.values(this._newPersonalCollectionData);
+  get newPersonalCollectionData(): FinishedPersonalCollectionData | null {
+    const isEmptyCollectionCreating =
+      this._newPersonalCollectionData.collectionData &&
+      !this._newPersonalCollectionData.collectionIdsToMerge &&
+      !this._newPersonalCollectionData.combineOptions;
 
-    if (filledValues.length > 0 && filledValues.every(Boolean)) {
-      return this._newPersonalCollectionData as Required<PersonalCollectionData>;
+    const isCombinedCollectionsCreating =
+      this._newPersonalCollectionData.collectionData &&
+      this._newPersonalCollectionData.collectionIdsToMerge &&
+      this._newPersonalCollectionData.combineOptions;
+
+    if (isEmptyCollectionCreating || isCombinedCollectionsCreating) {
+      return this._newPersonalCollectionData as FinishedPersonalCollectionData;
     }
 
     return null;
