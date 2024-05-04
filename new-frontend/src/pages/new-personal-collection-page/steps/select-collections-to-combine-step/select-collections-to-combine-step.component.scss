@@ -10,7 +10,7 @@ h1 {
   gap: 1rem;
 }
 
-.collections {
+.collections tui-checkbox-block {
   app-collection {
     width: 100% !important;
     ::ng-deep tui-island {
@@ -46,4 +46,9 @@ app-collection {
     }
     bottom: 0;
   }
+}
+
+.empty-placeholder {
+  height: 12rem;
+  color: var(--tui-text-02);
 }

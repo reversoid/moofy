@@ -7,13 +7,19 @@
   class="collections"
 >
   <tui-checkbox-block
-    *ngFor="let c of collections"
+    *ngFor="let c of collections()"
     [formControlName]="c.id"
     size="l"
     [hideCheckbox]="true"
   >
     <app-collection [view]="'horizontal'" [collection]="c"></app-collection>
   </tui-checkbox-block>
+
+  <tui-island *ngIf="collections()?.length === 0" class="empty-placeholder"
+    >Нет доступных коллекций</tui-island
+  >
+
+  <app-collection *ngIf="loadingCollections()" view="horizontal"></app-collection>
 </form>
 
 <div *ngIf="isSelectedAnyCollection" class="next-container">

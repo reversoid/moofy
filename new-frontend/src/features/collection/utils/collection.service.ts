@@ -27,8 +27,10 @@ export class CollectionService {
     private readonly uploadImageService: UploadImageService,
   ) {}
 
-  getCollections() {
-    return this.http.get<PaginatedData<CollectionWithInfo>>('profile/collections');
+  getCollections(nextKey?: string | null) {
+    return this.http.get<PaginatedData<CollectionWithInfo>>('profile/collections', {
+      params: nextKey ? { nextKey } : undefined,
+    });
   }
 
   getCollection(id: Collection['id']) {
