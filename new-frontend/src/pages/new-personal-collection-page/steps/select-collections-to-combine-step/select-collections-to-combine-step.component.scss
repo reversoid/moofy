@@ -40,6 +40,10 @@ app-collection {
   display: flex;
   justify-content: center;
 
+  .continue-button {
+    box-shadow: var(--tui-shadow);
+  }
+
   @media #{$tui-mobile} {
     a {
       width: 100%;
