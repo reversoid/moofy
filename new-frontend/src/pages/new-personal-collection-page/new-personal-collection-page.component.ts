@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CreatePersonalCollectionFlowService } from './create-personal-collection-flow.service';
+import { CreatePersonalCollectionFlowService } from './utils/create-personal-collection-flow.service';
 
 @Component({
   selector: 'app-new-personal-collection-page',

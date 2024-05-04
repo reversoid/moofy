@@ -61,6 +61,10 @@ export const appRoutes: Routes = [
         (r) => r.FavoritesCollectionsPageComponent,
       ),
   },
+  {
+    path: 'personal-collection',
+    loadChildren: () => import('./new-personal-collection-page/routes').then((r) => r.routes),
+  },
 
   { path: '**', redirectTo: '' },
 ];

@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
+import { NewPersonalCollectionPageComponent } from './new-personal-collection-page.component';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'new',
+    component: NewPersonalCollectionPageComponent,
+
     children: [
       {
         path: '',
@@ -36,5 +39,9 @@ export const routes: Routes = [
           import('./steps/confirm-step/confirm-step.component').then((c) => c.ConfirmStepComponent),
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'new',
   },
 ];

@@ -4,10 +4,10 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { Collection } from '../../../../../shared/types';
-import { CreatePersonalCollectionDialogComponent } from '../../../../../features/collection/create-personal-collection-dialog/create-personal-collection-dialog.component';
+import { Collection } from '../../../../shared/types';
+import { CreatePersonalCollectionDialogComponent } from '../../../../features/collection/create-personal-collection-dialog/create-personal-collection-dialog.component';
 import { takeUntil } from 'rxjs';
-import { CreatePersonalCollectionFlowService } from '../../create-personal-collection-flow.service';
+import { CreatePersonalCollectionFlowService } from '../../utils/create-personal-collection-flow.service';
 
 @Component({
   selector: 'app-select-method-step',

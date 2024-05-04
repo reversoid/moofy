@@ -34,14 +34,6 @@ export const routes: Routes = [
         data: {
           isPersonal: true,
         },
-
-        children: [
-          {
-            path: 'new',
-            loadChildren: () =>
-              import('./new-personal-collection-page/routes').then((c) => c.routes),
-          },
-        ],
       },
     ],
   },

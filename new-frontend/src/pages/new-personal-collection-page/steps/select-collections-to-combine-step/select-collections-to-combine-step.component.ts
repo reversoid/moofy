@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiButtonModule } from '@taiga-ui/core';
 import { TuiCheckboxBlockModule } from '@taiga-ui/kit';
-import { CollectionComponent } from '../../../../../entities/collection/collection.component';
-import { Collection } from '../../../../../shared/types';
-import { collectionMock } from '../../../../../widgets/collection-grid/collection-grid.component';
+import { CollectionComponent } from '../../../../entities/collection/collection.component';
+import { Collection } from '../../../../shared/types';
+import { collectionMock } from '../../../../widgets/collection-grid/collection-grid.component';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

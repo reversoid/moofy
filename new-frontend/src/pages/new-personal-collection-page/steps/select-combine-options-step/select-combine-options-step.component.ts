@@ -8,9 +8,9 @@ import { TuiDestroyService, TuiMapperPipeModule } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { CreatePersonalCollectionDialogComponent } from '../../../../../features/collection/create-personal-collection-dialog/create-personal-collection-dialog.component';
-import { Collection } from '../../../../../shared/types';
-import { CreatePersonalCollectionFlowService } from '../../create-personal-collection-flow.service';
+import { CreatePersonalCollectionDialogComponent } from '../../../../features/collection/create-personal-collection-dialog/create-personal-collection-dialog.component';
+import { Collection } from '../../../../shared/types';
+import { CreatePersonalCollectionFlowService } from '../../utils/create-personal-collection-flow.service';
 
 type Option<ID = unknown> = {
   id: ID;
