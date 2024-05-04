@@ -1,12 +1,8 @@
 import { AsyncPipe, NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import {
-  TuiActiveZoneModule,
-  TuiDestroyService,
-  TuiLetModule,
-  TuiObscuredModule,
-} from '@taiga-ui/cdk';
+import { Store } from '@ngrx/store';
+import { TuiDestroyService, TuiLetModule } from '@taiga-ui/cdk';
 import {
   TuiButtonModule,
   TuiDataListModule,
@@ -14,12 +10,11 @@ import {
   TuiHostedDropdownModule,
   TuiSvgModule,
 } from '@taiga-ui/core';
-import { User } from '../../../shared/types';
-import { AuthService } from '../../../features/auth/auth.service';
 import { takeUntil } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../store';
 import { currentUserActions } from '../../../entities/current-user/actions';
+import { AuthService } from '../../../features/auth/auth.service';
+import { User } from '../../../shared/types';
+import { AppState } from '../../store';
 
 @Component({
   selector: 'app-profile-button',
@@ -28,8 +23,6 @@ import { currentUserActions } from '../../../entities/current-user/actions';
     AsyncPipe,
     TuiButtonModule,
     TuiDropdownModule,
-    TuiActiveZoneModule,
-    TuiObscuredModule,
     TuiDataListModule,
     RouterModule,
     NgOptimizedImage,
@@ -54,22 +47,8 @@ export class ProfileButtonComponent {
 
   dropdownOpen = signal<boolean>(false);
 
-  onClick(): void {
-    this.dropdownOpen.update((open) => !open);
-  }
-
   closeDropdown() {
     this.dropdownOpen.set(false);
-  }
-
-  onObscured(obscured: boolean): void {
-    if (obscured) {
-      this.dropdownOpen.set(false);
-    }
-  }
-
-  onActiveZone(active: boolean): void {
-    this.dropdownOpen.update((open) => active && open);
   }
 
   handleLogoutClick() {

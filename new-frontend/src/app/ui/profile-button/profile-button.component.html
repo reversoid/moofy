@@ -1,9 +1,7 @@
 <tui-hosted-dropdown
-  [tuiDropdown]="dropdownContent"
-  [tuiDropdownManual]="dropdownOpen()"
-  (click)="onClick()"
-  (tuiActiveZoneChange)="onActiveZone($event)"
-  (tuiObscured)="onObscured($event)"
+  [content]="dropdownContent"
+  [open]="dropdownOpen()"
+  (openChange)="dropdownOpen.set($event)"
 >
   <button
     class="profile-button"
