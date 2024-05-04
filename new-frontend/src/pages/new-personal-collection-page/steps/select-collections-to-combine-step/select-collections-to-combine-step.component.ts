@@ -7,6 +7,7 @@ import { CollectionComponent } from '../../../../entities/collection/collection.
 import { Collection } from '../../../../shared/types';
 import { collectionMock } from '../../../../widgets/collection-grid/collection-grid.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CreatePersonalCollectionFlowService } from '../../utils/create-personal-collection-flow.service';
 
 @Component({
   selector: 'app-select-collections-to-combine-step',
@@ -29,6 +30,7 @@ export class SelectCollectionsToCombineStepComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly flowService: CreatePersonalCollectionFlowService,
   ) {}
 
   form = this.fb.group<Record<string, boolean>>({});
@@ -46,6 +48,24 @@ export class SelectCollectionsToCombineStepComponent implements OnInit {
   }
 
   handleFormSubmit() {
+    const selectedIds = this.getSelectedCollectionIds();
+    if (!selectedIds) {
+      return;
+    }
+
+    this.flowService.completeStep({
+      type: 'collectionIdsToMerge',
+      payload: selectedIds,
+    });
+
     this.router.navigate(['..', 'combine-options'], { relativeTo: this.route });
+  }
+
+  private getSelectedCollectionIds(): Array<Collection['id']> {
+    const collections = this.form.value;
+
+    return Object.entries(collections)
+      .filter(([, selected]) => selected)
+      .map(([id]) => Number(id));
   }
 }
