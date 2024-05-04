@@ -25,3 +25,11 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+
+.negative {
+  color: var(--tui-negative);
+}
+
+.positive {
+  color: var(--tui-positive);
+}

@@ -18,10 +18,10 @@
 
       <p>
         Обзоры с <span *ngIf="withScore; else withScoreAndDesc">оценкой</span> будут
-        <span *ngIf="isCopy; else moved">скопированы</span>.
+        <span *ngIf="isCopy; else moved" class="positive">скопированы</span>.
       </p>
 
-      <ng-template #moved>перенесены</ng-template>
+      <ng-template #moved><span class="negative">перенесены</span></ng-template>
 
       <ng-template #withScoreAndDesc>
         <span>оценкой и описанием</span>
@@ -32,15 +32,18 @@
       <h3 class="tui-text_h4">Действие с коллекциями</h3>
       @switch (actionAfterMerging) {
         @case ('removeAll') {
-          <p>После объединения коллекции будут удалены.</p>
+          <p>После объединения <span class="negative">коллекции будут удалены</span>.</p>
         }
 
         @case ('saveAll') {
-          <p>После объединения коллекции будут сохранены.</p>
+          <p>После объединения <span class="positive"> коллекции будут сохранены</span>.</p>
         }
 
         @case ('removeEmpty') {
-          <p>После объединения коллекции будут удалены пустые коллекции.</p>
+          <p>
+            После объединения коллекции будут
+            <span class="negative">удалены пустые коллекции</span>.
+          </p>
         }
       }
     </tui-island>
