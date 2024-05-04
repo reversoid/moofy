@@ -37,10 +37,10 @@ export class ConfirmStepComponent {
       this.flowService.newPersonalCollectionData?.combineOptions,
   );
 
-  reviewsToTransfer: 'WITH_SCORE' | 'WITH_DESC_SCORE' = this.flowService.newPersonalCollectionData
-    ?.combineOptions?.withScore
-    ? 'WITH_SCORE'
-    : 'WITH_DESC_SCORE';
+  reviewsToTransfer = this.flowService.newPersonalCollectionData?.combineOptions?.withScore;
+
+  actionAfterMerging =
+    this.flowService.newPersonalCollectionData?.combineOptions?.actionAfterMerging;
 
   handleConfirm() {
     const newPersonalCollectionData = this.flowService.newPersonalCollectionData;
