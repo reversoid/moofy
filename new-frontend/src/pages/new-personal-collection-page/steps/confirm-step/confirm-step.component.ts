@@ -9,11 +9,12 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../app/store';
 import { selectCurrentUser } from '../../../../entities/current-user/selectors';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-step',
   standalone: true,
-  imports: [TuiButtonModule, TuiIslandModule, TuiLoaderModule],
+  imports: [TuiButtonModule, TuiIslandModule, TuiLoaderModule, NgIf],
   templateUrl: './confirm-step.component.html',
   styleUrl: './confirm-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +38,9 @@ export class ConfirmStepComponent {
       this.flowService.newPersonalCollectionData?.combineOptions,
   );
 
-  reviewsToTransfer = this.flowService.newPersonalCollectionData?.combineOptions?.withScore;
+  isCopy = this.flowService.newPersonalCollectionData?.combineOptions?.reviewsStrategy === 'copy';
+
+  withScore = this.flowService.newPersonalCollectionData?.combineOptions?.withScore || undefined;
 
   actionAfterMerging =
     this.flowService.newPersonalCollectionData?.combineOptions?.actionAfterMerging;

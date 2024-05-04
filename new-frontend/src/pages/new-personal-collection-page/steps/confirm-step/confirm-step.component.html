@@ -3,18 +3,36 @@
 <div class="cards-grid">
   <tui-island>
     <h3 class="tui-text_h4">Способ создания коллекции</h3>
-    <p>Коллекция будет создана с помощью объединения уже существующих коллекций.</p>
+    <p *ngIf="isCombineMethod; else fromScratch">
+      Коллекция будет создана с помощью объединения уже существующих коллекций.
+    </p>
+
+    <ng-template #fromScratch>
+      <p>Будет создана пустая коллекция</p>
+    </ng-template>
   </tui-island>
 
-  <tui-island>
-    <h3 class="tui-text_h4">Обзоры</h3>
-    <p>Обзоры с оценкой и описанием будут перенесены.</p>
-  </tui-island>
+  <ng-container *ngIf="isCombineMethod">
+    <tui-island>
+      <h3 class="tui-text_h4">Обзоры</h3>
 
-  <tui-island>
-    <h3 class="tui-text_h4">Действие с коллекциями</h3>
-    <p>После объединения коллекции будут удалены.</p>
-  </tui-island>
+      <p>
+        Обзоры с <span *ngIf="withScore; else withScoreAndDesc">оценкой</span> будут
+        <span *ngIf="isCopy; else moved">скопированы</span>.
+      </p>
+
+      <ng-template #moved>перенесены</ng-template>
+
+      <ng-template #withScoreAndDesc>
+        <span>оценкой и описанием</span>
+      </ng-template>
+    </tui-island>
+
+    <tui-island>
+      <h3 class="tui-text_h4">Действие с коллекциями</h3>
+      <p>После объединения коллекции будут удалены.</p>
+    </tui-island>
+  </ng-container>
 </div>
 
 <button (click)="handleConfirm()" [showLoader]="loading()" tuiButton>Создать</button>

@@ -18,7 +18,7 @@ export interface CreatePersonalCollectionProps {
   mergeOptions?: {
     collectionIds: number[];
     reviews: {
-      withScore?: boolean;
+      withScore: true | undefined;
       strategy: 'copy' | 'move';
     };
     actionAfterMergingCollections: 'saveAll' | 'removeAll' | 'removeEmpty';
