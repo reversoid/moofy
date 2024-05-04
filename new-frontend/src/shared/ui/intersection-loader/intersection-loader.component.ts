@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
 import { TuiLoaderModule } from '@taiga-ui/core';
@@ -5,7 +6,7 @@ import { TuiLoaderModule } from '@taiga-ui/core';
 @Component({
   selector: 'app-intersection-loader',
   standalone: true,
-  imports: [IntersectionObserverModule, TuiLoaderModule],
+  imports: [IntersectionObserverModule, TuiLoaderModule, NgIf],
   templateUrl: './intersection-loader.component.html',
   styleUrl: './intersection-loader.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

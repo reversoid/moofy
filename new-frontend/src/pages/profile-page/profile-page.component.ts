@@ -85,6 +85,10 @@ export class ProfilePageComponent {
     map(([currentUser, id]) => currentUser?.id === id),
   );
 
+  personalCollectionLink$ = this.profile$.pipe(
+    map((p) => ['/profile', p.user.id, 'personal-collection']),
+  );
+
   follow() {
     this.id$
       .pipe(

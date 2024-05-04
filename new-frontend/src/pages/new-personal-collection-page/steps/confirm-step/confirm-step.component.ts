@@ -69,7 +69,7 @@ export class ConfirmStepComponent {
           combineOptions && collectionIdsToMerge
             ? {
                 actionAfterMergingCollections: combineOptions.actionAfterMerging,
-                collectionIds: collectionIdsToMerge,
+                collectionsIds: collectionIdsToMerge,
                 reviews: {
                   strategy: combineOptions.reviewsStrategy,
                   withScore: combineOptions.withScore || undefined,

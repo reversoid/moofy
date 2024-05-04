@@ -16,7 +16,7 @@ export interface CreatePersonalCollectionProps {
   imageUrl: Collection['imageUrl'];
 
   mergeOptions?: {
-    collectionIds: number[];
+    collectionsIds: number[];
     reviews: {
       withScore: true | undefined;
       strategy: 'copy' | 'move';
