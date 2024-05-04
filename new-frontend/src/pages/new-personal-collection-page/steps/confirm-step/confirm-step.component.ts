@@ -32,6 +32,16 @@ export class ConfirmStepComponent {
 
   currentUser$ = this.store.select(selectCurrentUser);
 
+  isCombineMethod = Boolean(
+    this.flowService.newPersonalCollectionData?.collectionIdsToMerge &&
+      this.flowService.newPersonalCollectionData?.combineOptions,
+  );
+
+  reviewsToTransfer: 'WITH_SCORE' | 'WITH_DESC_SCORE' = this.flowService.newPersonalCollectionData
+    ?.combineOptions?.withScore
+    ? 'WITH_SCORE'
+    : 'WITH_DESC_SCORE';
+
   handleConfirm() {
     const newPersonalCollectionData = this.flowService.newPersonalCollectionData;
 
