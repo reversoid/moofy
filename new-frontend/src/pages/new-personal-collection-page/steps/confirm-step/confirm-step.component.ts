@@ -67,7 +67,7 @@ export class ConfirmStepComponent {
                 collectionIds: collectionIdsToMerge,
                 reviews: {
                   strategy: combineOptions.reviewsStrategy,
-                  withScore: combineOptions.withScore,
+                  withScore: combineOptions.withScore || undefined,
                 },
               }
             : undefined,
