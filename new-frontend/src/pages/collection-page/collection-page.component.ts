@@ -7,7 +7,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { map, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatestWith, map, switchMap, take, takeUntil } from 'rxjs';
 import { CollectionService } from '../../features/collection/utils/collection.service';
 import { CreateReviewDialogComponent } from '../../features/review/create-review-dialog/create-review-dialog.component';
 import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
@@ -20,6 +20,9 @@ import { ReviewConflictsBlockComponent } from './ui/review-conflicts-block/revie
 import { StatsIslandComponent } from './ui/stats-island/stats-island.component';
 import { UpdatedIslandComponent } from './ui/updated-island/updated-island.component';
 import { CollectionPageStore } from './utils/collection-page.store';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../app/store';
+import { selectCurrentUser } from '../../entities/current-user/selectors';
 
 @Component({
   selector: 'app-collection-page',
@@ -55,6 +58,7 @@ export class CollectionPageComponent {
     private readonly destroy$: TuiDestroyService,
     private readonly collectionPageStore: CollectionPageStore,
     private readonly collectionService: CollectionService,
+    private readonly store: Store<AppState>,
     @Inject(PLATFORM_ID) private readonly platformId: Object,
   ) {
     this.initializeStore();
@@ -135,4 +139,12 @@ export class CollectionPageComponent {
   reviews$ = this.collectionPageStore.reviews$;
 
   reviewsExist$ = this.reviews$.pipe(map((r) => r.items.length > 0));
+
+  private isOwner$ = this.creator$
+    .pipe(combineLatestWith(this.store.select(selectCurrentUser)))
+    .pipe(map(([creator, currentUser]) => creator.id === currentUser?.id));
+
+  showConflictsBlock$ = this.isOwner$
+    .pipe(combineLatestWith(this.isPersonal$))
+    .pipe(map(([isOwner, isPersonal]) => isOwner && isPersonal));
 }

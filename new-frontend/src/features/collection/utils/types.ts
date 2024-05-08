@@ -10,21 +10,6 @@ export type UpdateCollectionProps = Pick<
   'name' | 'description' | 'imageUrl' | 'isPublic' | 'id'
 >;
 
-export interface CreatePersonalCollectionProps {
-  name: Collection['name'];
-  description: Collection['description'];
-  imageUrl: Collection['imageUrl'];
-
-  mergeOptions?: {
-    collectionsIds: number[];
-    reviews: {
-      withScore: true | undefined;
-      strategy: 'copy' | 'move';
-    };
-    actionAfterMergingCollections: 'saveAll' | 'removeAll' | 'removeEmpty';
-  };
-}
-
 export interface SendCommentDto {
   text: string;
   replyTo?: Comment['id'];

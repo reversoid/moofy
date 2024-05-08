@@ -28,13 +28,9 @@
 
 <div class="reviews-title">
   <h3 class="tui-text_h3">Фильмы</h3>
-  <button
-    (click)="createReview()"
-    tuiIconButton
-    icon="tuiIconPlusLarge"
-    appearance="secondary"
-  ></button>
+  <button (click)="createReview()" tuiIconButton icon="tuiIconPlusLarge"></button>
 </div>
+<app-review-conflicts-block *ngIf="showConflictsBlock$ | async"></app-review-conflicts-block>
 
 <ng-container *ngIf="reviewsExist$ | async; else noReviews">
   <tui-input
@@ -47,9 +43,6 @@
     Поиск
     <input tuiTextfield role="search" />
   </tui-input>
-
-  <!-- TODO make it lazy loadable -->
-  <app-review-conflicts-block></app-review-conflicts-block>
 
   <app-review-list [reviews]="reviews$ | async"></app-review-list>
 </ng-container>

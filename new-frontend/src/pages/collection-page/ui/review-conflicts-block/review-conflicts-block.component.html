@@ -1,11 +1,13 @@
-<tui-notification class="conflicts-block" status="error">
-  <p>
-    <b>При объединении коллекций произошла ошибка:</b> существует несколько обзоров на один и тот же
-    фильм.
-  </p>
+<ng-container *ngIf="conflicts$ | async as conflicts">
+  <tui-notification *ngIf="conflicts.length > 0" class="conflicts-block" status="error">
+    <p>
+      <b>При объединении коллекций произошла ошибка:</b> существует несколько обзоров на один и тот
+      же фильм.
+    </p>
 
-  <p>Необходимо выбрать один обзор из существующих.</p>
+    <p>Необходимо выбрать один обзор из существующих.</p>
 
-  <p>Дублирующиеся обзоры были скрыты</p>
-  <button (click)="openConflictsDialog()" tuiButton>Исправить</button>
-</tui-notification>
+    <p>Дублирующиеся обзоры были скрыты</p>
+    <button (click)="openConflictsDialog(conflicts)" tuiButton>Исправить</button>
+  </tui-notification>
+</ng-container>

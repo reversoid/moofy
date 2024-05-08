@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import { CreatePersonalCollectionFlowService } from '../../utils/create-personal-collection-flow.service';
-import { CollectionService } from '../../../../features/collection/utils/collection.service';
 import { Router } from '@angular/router';
 import { combineLatestWith, finalize, takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -10,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../app/store';
 import { selectCurrentUser } from '../../../../entities/current-user/selectors';
 import { NgIf } from '@angular/common';
+import { PersonalCollectionService } from '../../../../features/personal-collection/personal-collection.service';
 
 @Component({
   selector: 'app-confirm-step',
@@ -23,7 +23,7 @@ import { NgIf } from '@angular/common';
 export class ConfirmStepComponent {
   constructor(
     private readonly flowService: CreatePersonalCollectionFlowService,
-    private readonly collectionService: CollectionService,
+    private readonly personalCollectionService: PersonalCollectionService,
     private readonly router: Router,
     private readonly destroy$: TuiDestroyService,
     private readonly store: Store<AppState>,
@@ -59,7 +59,7 @@ export class ConfirmStepComponent {
 
     this.loading.set(true);
 
-    this.collectionService
+    this.personalCollectionService
       .createPersonalCollection({
         name: collectionData.name,
         description: collectionData.description,

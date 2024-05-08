@@ -1,14 +1,22 @@
-<form class="tui-space_top-5">
+<form (submit)="resolveConflicts()" [formGroup]="resolvedConflictsForm" class="tui-space_top-5">
   <div class="wrapper">
-    <div *ngFor="let group of reviews | conflictingReviews" class="group">
-      <h6 class="title tui-text_h6">Однажды в Голливуде...</h6>
+    <div *ngFor="let group of groups" class="group">
+      <h6 class="title tui-text_h6">{{ group.film.name }}</h6>
       <div *ngFor="let review of group.reviews">
-        <tui-radio-block item="someValue" [formControl]="control" [hideRadio]="true">
-          <app-review></app-review>
+        <tui-radio-block [item]="review.id" [formControlName]="group.film.id" [hideRadio]="true">
+          <app-review [review]="review"></app-review>
         </tui-radio-block>
       </div>
     </div>
   </div>
 
-  <button type="submit" class="submit-button tui-space_top-5" tuiButton>Сохранить</button>
+  <button
+    [showLoader]="loading()"
+    [disabled]="isConfirmDisabled"
+    type="submit"
+    class="submit-button tui-space_top-5"
+    tuiButton
+  >
+    Сохранить
+  </button>
 </form>
