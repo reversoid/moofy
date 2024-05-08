@@ -147,4 +147,8 @@ export class CollectionPageComponent {
   showConflictsBlock$ = this.isOwner$
     .pipe(combineLatestWith(this.isPersonal$))
     .pipe(map(([isOwner, isPersonal]) => isOwner && isPersonal));
+
+  refreshReviews() {
+    // TODO refresh reviews
+  }
 }

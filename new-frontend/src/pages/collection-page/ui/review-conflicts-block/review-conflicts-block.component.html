@@ -1,6 +1,6 @@
 <ng-container *ngIf="conflicts$ | async as conflicts">
   <tui-notification
-    *ngIf="!conflictsResolved() && conflicts.length > 0"
+    *ngIf="!areConflictsResolved() && conflicts.length > 0"
     class="conflicts-block"
     status="error"
   >
