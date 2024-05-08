@@ -1,5 +1,9 @@
 <ng-container *ngIf="conflicts$ | async as conflicts">
-  <tui-notification *ngIf="conflicts.length > 0" class="conflicts-block" status="error">
+  <tui-notification
+    *ngIf="!conflictsResolved() && conflicts.length > 0"
+    class="conflicts-block"
+    status="error"
+  >
     <p>
       <b>При объединении коллекций произошла ошибка:</b> существует несколько обзоров на один и тот
       же фильм.

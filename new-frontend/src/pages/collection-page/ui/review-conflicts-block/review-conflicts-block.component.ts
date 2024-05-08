@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TuiButtonModule, TuiDialogService, TuiNotificationModule } from '@taiga-ui/core';
 import { Review } from '../../../../shared/types';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -25,6 +25,8 @@ export class ReviewConflictsBlockComponent {
     .getPersonalCollectionConficts()
     .pipe(map((r) => r.conflicts));
 
+  conflictsResolved = signal(false);
+
   openConflictsDialog(conflicts: Review[]) {
     this.dialogService
       .open(new PolymorpheusComponent(ReviewConflictsDialogComponent), {
@@ -32,6 +34,8 @@ export class ReviewConflictsBlockComponent {
         size: 'l',
         data: conflicts,
       })
-      .subscribe();
+      .subscribe(() => {
+        this.conflictsResolved.set(true);
+      });
   }
 }
