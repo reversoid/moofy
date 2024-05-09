@@ -1,5 +1,11 @@
 @import 'shared';
 
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .collection-info-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;

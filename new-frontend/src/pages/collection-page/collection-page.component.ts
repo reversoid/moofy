@@ -4,7 +4,13 @@ import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID, signal } from 
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDialogService,
+  TuiHintModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule,
+} from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { combineLatestWith, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
@@ -44,6 +50,8 @@ import { selectCurrentUser } from '../../entities/current-user/selectors';
     ReviewConflictsBlockComponent,
     EmptyCollectionPlaceholderComponent,
     NgIf,
+    TuiSvgModule,
+    TuiHintModule,
   ],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
@@ -137,6 +145,8 @@ export class CollectionPageComponent {
   stats$ = this.collectionPageStore.stats$;
 
   reviews$ = this.collectionPageStore.reviews$;
+
+  isPrivate$ = this.collection$.pipe(map((c) => !c.isPublic));
 
   reviewsExist$ = this.reviews$.pipe(
     map((r) => r.items.length > 0),

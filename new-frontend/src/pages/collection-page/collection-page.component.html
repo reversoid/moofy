@@ -1,4 +1,9 @@
-<h1 class="tui-text_h1">{{ collectionName$ | async }}</h1>
+<div class="title-wrapper">
+  <h1 class="tui-text_h1">{{ collectionName$ | async }}</h1>
+  <tui-svg [tuiHint]="lockContent" tuiHintDirection="right-bottom" src="tuiIconLockLarge"></tui-svg>
+
+  <ng-template #lockContent>Это приватная коллекция</ng-template>
+</div>
 
 <div class="collection-info-grid">
   <app-description-island [description]="description$ | async"></app-description-island>
