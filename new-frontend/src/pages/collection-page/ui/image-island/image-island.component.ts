@@ -1,11 +1,11 @@
 import { NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TuiIslandModule } from '@taiga-ui/kit';
+import { TuiIslandModule, TuiMarkerIconModule } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-image-island',
   standalone: true,
-  imports: [TuiIslandModule, NgOptimizedImage, NgIf],
+  imports: [TuiIslandModule, NgOptimizedImage, NgIf, TuiMarkerIconModule],
   templateUrl: './image-island.component.html',
   styleUrl: './image-island.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

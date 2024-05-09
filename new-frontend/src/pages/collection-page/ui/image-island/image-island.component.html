@@ -1,5 +1,9 @@
 <tui-island class="collection-image">
   <div class="image-wrapper">
-    <img *ngIf="imageUrl" [ngSrc]="imageUrl" fill />
+    <img *ngIf="imageUrl; else noImage" [ngSrc]="imageUrl" fill />
+
+    <ng-template #noImage>
+      <tui-marker-icon class="empty-icon" src="tuiIconImageLarge"></tui-marker-icon>
+    </ng-template>
   </div>
 </tui-island>
