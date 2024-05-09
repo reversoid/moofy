@@ -15,6 +15,8 @@ import { IntersectionLoaderComponent } from '../../shared/ui/intersection-loader
 export class ReviewListComponent {
   @Input() loadingMore = false;
 
+  @Input() loading = false;
+
   @Input() paginatedReviews?: PaginatedData<Review> | null;
 
   @Output() loadMore = new EventEmitter<{ loadKey: string }>();
@@ -23,5 +25,9 @@ export class ReviewListComponent {
     if (this.paginatedReviews?.nextKey) {
       this.loadMore.emit({ loadKey: this.paginatedReviews.nextKey });
     }
+  }
+
+  get showSkeleton() {
+    return this.loading && !this.paginatedReviews?.items;
   }
 }

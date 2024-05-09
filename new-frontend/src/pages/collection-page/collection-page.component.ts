@@ -138,7 +138,16 @@ export class CollectionPageComponent {
 
   reviews$ = this.collectionPageStore.reviews$;
 
-  reviewsExist$ = this.reviews$.pipe(map((r) => r.items.length > 0));
+  reviewsExist$ = this.reviews$.pipe(
+    map((r) => r.items.length > 0),
+    tap((reviewsExist) => {
+      if (reviewsExist) {
+        this.search.enable();
+      } else {
+        this.search.disable();
+      }
+    }),
+  );
 
   refreshingReviews = signal(false);
 
@@ -146,18 +155,17 @@ export class CollectionPageComponent {
 
   private loadReviews(nextKey?: string | null) {
     return this.collection$.pipe(
-      tap(() => this.refreshingReviews.set(true)),
-      switchMap(({ id }) =>
-        this.collectionService
-          .getReviews(id, nextKey)
-          .pipe(finalize(() => this.refreshingReviews.set(false))),
-      ),
+      switchMap(({ id }) => this.collectionService.getReviews(id, nextKey)),
     );
   }
 
   loadMoreReviews(nextKey: string) {
+    this.loadingMoreReviews.set(true);
     this.loadReviews(nextKey)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        finalize(() => this.loadingMoreReviews.set(false)),
+        takeUntil(this.destroy$),
+      )
       .subscribe((paginatedReviews) => {
         this.collectionPageStore.appendReviews(paginatedReviews);
       });
@@ -172,8 +180,11 @@ export class CollectionPageComponent {
     .pipe(map(([isOwner, isPersonal]) => isOwner && isPersonal));
 
   refreshReviews() {
-    this.loadReviews().subscribe((reviews) => {
-      this.collectionPageStore.patchState({ reviews });
-    });
+    this.refreshingReviews.set(true);
+    this.loadReviews()
+      .pipe(finalize(() => this.refreshingReviews.set(false)))
+      .subscribe((reviews) => {
+        this.collectionPageStore.patchState({ reviews });
+      });
   }
 }

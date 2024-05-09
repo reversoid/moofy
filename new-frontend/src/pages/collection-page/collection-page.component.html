@@ -31,24 +31,26 @@
   <button (click)="createReview()" tuiIconButton icon="tuiIconPlusLarge"></button>
 </div>
 
+<tui-input
+  [tuiTextfieldLabelOutside]="true"
+  class="search-input tui-space_bottom-5"
+  tuiTextfieldIconLeft="tuiIconSearchLarge"
+  [tuiTextfieldCleaner]="true"
+  [formControl]="search"
+>
+  Поиск
+  <input tuiTextfield role="search" />
+</tui-input>
+
 <app-review-conflicts-block
   *ngIf="showConflictsBlock$ | async"
   (conflictsResolved)="refreshReviews()"
 ></app-review-conflicts-block>
 
 <ng-container *ngIf="reviewsExist$ | async; else noReviews">
-  <tui-input
-    [tuiTextfieldLabelOutside]="true"
-    class="search-input tui-space_bottom-5"
-    tuiTextfieldIconLeft="tuiIconSearchLarge"
-    [tuiTextfieldCleaner]="true"
-    [formControl]="search"
-  >
-    Поиск
-    <input tuiTextfield role="search" />
-  </tui-input>
-
   <app-review-list
+    [loading]="refreshingReviews()"
+    [loadingMore]="loadingMoreReviews()"
     [paginatedReviews]="reviews$ | async"
     (loadMore)="loadMoreReviews($event.loadKey)"
   ></app-review-list>

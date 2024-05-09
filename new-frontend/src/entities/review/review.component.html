@@ -1,6 +1,6 @@
 <tui-island class="review">
   <div class="image">
-    <div class="image-wrapper">
+    <div [class.tui-skeleton]="!review" class="image-wrapper">
       <img *ngIf="review?.film?.posterPreviewUrl" [ngSrc]="review?.film?.posterPreviewUrl!" fill />
     </div>
   </div>
@@ -8,16 +8,26 @@
   <div class="content">
     <div class="heading">
       <a
+        [class.tui-skeleton]="!review"
         tuiLink
         [href]="'https://kinopoisk.ru/film/' + review?.film?.id"
         target="_blank"
         rel="noopener noreferrer"
       >
         <h4 class="review-title tui-text_h6">{{ review?.film?.name }}</h4>
+        <span *ngIf="!review">some skeleton name</span>
       </a>
+
       <tui-tag *ngIf="filmYear" class="year" [value]="filmYear"></tui-tag>
+      <tui-tag *ngIf="!review" class="year tui-skeleton" value="1999"></tui-tag>
     </div>
 
-    <p class="description">{{ review?.description || 'Описание отсутствует' }}</p>
+    <p [class.tui-skeleton]="!review" class="description">
+      {{ review?.description || 'Описание отсутствует' }}
+      <span *ngIf="!review"
+        >Some long placeholder for future description. <br />
+        And yeah. It can be some lines height.
+      </span>
+    </p>
   </div>
 </tui-island>

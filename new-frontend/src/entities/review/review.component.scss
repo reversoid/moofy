@@ -1,6 +1,8 @@
 @import '@taiga-ui/core/styles/taiga-ui-local.scss';
 
 .review {
+  --tui-skeleton-radius: 0.25rem;
+
   display: flex;
   flex-direction: row;
   @media #{$tui-mobile} {
@@ -22,10 +24,9 @@
       height: 10rem;
       position: relative;
       width: 6.75rem;
+      overflow: hidden;
 
-      img {
-        border-radius: calc(var(--tui-radius-xl) - 1rem);
-      }
+      border-radius: calc(var(--tui-radius-xl) - 1rem);
     }
   }
 
