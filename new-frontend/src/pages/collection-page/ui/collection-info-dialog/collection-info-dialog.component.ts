@@ -56,4 +56,8 @@ export class CollectionInfoDialogComponent {
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
+
+  close() {
+    this.context.completeWith();
+  }
 }

@@ -40,6 +40,10 @@ tui-island {
     overflow: hidden;
   }
 
+  .empty-user-image {
+    color: var(--tui-text-01);
+  }
+
   .creator-body {
     display: flex;
     flex-direction: column;

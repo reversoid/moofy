@@ -2,14 +2,14 @@
   <div class="block">
     <h4 class="title tui-text_body-l-2">Создатель</h4>
 
-    <a [routerLink]="creatorUrl">
+    <a (click)="close()" [routerLink]="creatorUrl">
       <tui-island class="creator">
         <div *ngIf="creatorImageUrl; else noCreatorImage" class="creator-image-wrapper">
           <img [ngSrc]="creatorImageUrl" fill />
         </div>
 
         <ng-template #noCreatorImage>
-          <tui-marker-icon src="tuiIconUserLarge"></tui-marker-icon>
+          <tui-marker-icon class="empty-user-image" src="tuiIconUserLarge"></tui-marker-icon>
         </ng-template>
 
         <div class="creator-body">
