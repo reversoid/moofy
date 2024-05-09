@@ -1,6 +1,11 @@
 <div class="title-wrapper">
   <h1 class="tui-text_h1">{{ collectionName$ | async }}</h1>
-  <tui-svg [tuiHint]="lockContent" tuiHintDirection="right-bottom" src="tuiIconLockLarge"></tui-svg>
+  <tui-svg
+    *ngIf="isPrivate$ | async"
+    [tuiHint]="lockContent"
+    tuiHintDirection="right-bottom"
+    src="tuiIconLockLarge"
+  ></tui-svg>
 
   <ng-template #lockContent>Это приватная коллекция</ng-template>
 </div>
