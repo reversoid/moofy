@@ -36,10 +36,17 @@
       </div>
     </a>
 
-    <a [routerLink]="personalCollectionLink$ | async" tuiIsland [hoverable]="true" class="reviews">
+    <a
+      *tuiLet="personalCollectionLink$ | async as link"
+      [routerLink]="link"
+      [hoverable]="!!link"
+      tuiIsland
+      class="reviews"
+      [class.disabled]="!link"
+    >
       <div class="island-content">
         <h4 class="island-title">Обзоры</h4>
-        <p class="island-value">{{ personalReviewsAmount$ | async }}</p>
+        <p class="island-value">{{ (personalReviewsAmount$ | async) ?? 0 }}</p>
       </div>
     </a>
 

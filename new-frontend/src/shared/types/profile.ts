@@ -11,7 +11,7 @@ export interface Profile {
     followers: number;
     followees: number;
   };
-  personalReviewsAmount: number;
+  personalReviewsAmount: number | null;
   collections: PaginatedData<CollectionWithInfo>;
 }
 

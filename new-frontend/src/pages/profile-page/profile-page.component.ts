@@ -2,7 +2,7 @@ import { AsyncPipe, NgIf, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, TuiLetModule } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TuiIslandModule } from '@taiga-ui/kit';
 import dayjs from 'dayjs';
@@ -26,6 +26,7 @@ import { ProfilePageStore } from './utils/profile-page.store';
     AsyncPipe,
     NgIf,
     TuiLoaderModule,
+    TuiLetModule,
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss',
@@ -85,8 +86,18 @@ export class ProfilePageComponent {
     map(([currentUser, id]) => currentUser?.id === id),
   );
 
-  personalCollectionLink$ = this.profile$.pipe(
-    map((p) => ['/profile', p.user.id, 'personal-collection']),
+  personalCollectionLink$ = combineLatest([
+    this.id$,
+    this.personalReviewsAmount$,
+    this.isOwnerPage$,
+  ]).pipe(
+    map(([id, amount, isOwner]) => {
+      if (amount === null) {
+        return isOwner ? '/personal-collection/new' : null;
+      }
+
+      return ['/profile', id, 'personal-collection'];
+    }),
   );
 
   follow() {
