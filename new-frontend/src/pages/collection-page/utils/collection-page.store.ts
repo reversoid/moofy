@@ -29,9 +29,18 @@ export class CollectionPageStore extends ComponentStore<CollectionPageState> {
 
   reviews$ = this.select((c) => c.reviews);
 
-  addReview = this.updater((state, review: Review) => ({
+  addNewReview = this.updater((state, review: Review) => ({
     ...state,
     reviews: { ...state.reviews, items: [review, ...state.reviews.items] },
+  }));
+
+  appendReviews = this.updater((state, paginatedReviews: PaginatedData<Review>) => ({
+    ...state,
+    reviews: {
+      ...state.reviews,
+      items: [...state.reviews.items, ...paginatedReviews.items],
+      nextKey: paginatedReviews.nextKey,
+    },
   }));
 
   removeReview = this.updater((state, reviewId: Review['id']) => ({

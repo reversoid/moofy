@@ -1,13 +1,13 @@
 import { AsyncPipe, NgIf, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiButtonModule, TuiDialogService, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { combineLatestWith, map, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatestWith, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
 import { CollectionService } from '../../features/collection/utils/collection.service';
 import { CreateReviewDialogComponent } from '../../features/review/create-review-dialog/create-review-dialog.component';
 import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
@@ -88,7 +88,7 @@ export class CollectionPageComponent {
         takeUntil(this.destroy$),
       )
       .subscribe((review) => {
-        this.collectionPageStore.addReview(review);
+        this.collectionPageStore.addNewReview(review);
       });
   }
 
@@ -140,6 +140,29 @@ export class CollectionPageComponent {
 
   reviewsExist$ = this.reviews$.pipe(map((r) => r.items.length > 0));
 
+  refreshingReviews = signal(false);
+
+  loadingMoreReviews = signal(false);
+
+  private loadReviews(nextKey?: string | null) {
+    return this.collection$.pipe(
+      tap(() => this.refreshingReviews.set(true)),
+      switchMap(({ id }) =>
+        this.collectionService
+          .getReviews(id, nextKey)
+          .pipe(finalize(() => this.refreshingReviews.set(false))),
+      ),
+    );
+  }
+
+  loadMoreReviews(nextKey: string) {
+    this.loadReviews(nextKey)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((paginatedReviews) => {
+        this.collectionPageStore.appendReviews(paginatedReviews);
+      });
+  }
+
   private isOwner$ = this.creator$
     .pipe(combineLatestWith(this.store.select(selectCurrentUser)))
     .pipe(map(([creator, currentUser]) => creator.id === currentUser?.id));
@@ -149,6 +172,8 @@ export class CollectionPageComponent {
     .pipe(map(([isOwner, isPersonal]) => isOwner && isPersonal));
 
   refreshReviews() {
-    // TODO refresh reviews
+    this.loadReviews().subscribe((reviews) => {
+      this.collectionPageStore.patchState({ reviews });
+    });
   }
 }

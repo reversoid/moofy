@@ -1,9 +1,10 @@
-<ng-container *ngIf="reviews">
+<ng-container *ngIf="paginatedReviews">
   <div class="review-list">
-    <app-review *ngFor="let review of reviews?.items" [review]="review"></app-review>
+    <app-review *ngFor="let review of paginatedReviews?.items" [review]="review"></app-review>
   </div>
 
-  <!-- TODO replace by automatic-fetch intersection-observer item -->
-  <button *ngIf="reviews?.nextKey" (click)="handleLoadMore()"></button>
-  <tui-loader *ngIf="loading" class="loader"></tui-loader>
+  <app-intersection-loader
+    [loadMoreKey]="paginatedReviews.nextKey"
+    (loadMore)="handleLoadMore()"
+  ></app-intersection-loader>
 </ng-container>

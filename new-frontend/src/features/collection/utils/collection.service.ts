@@ -32,7 +32,7 @@ export class CollectionService {
     return this.http.get<FullCollection>(`collections/${id}`);
   }
 
-  getReviews(collectionId: Collection['id'], nextKey?: string) {
+  getReviews(collectionId: Collection['id'], nextKey?: string | null) {
     return this.http.get<PaginatedData<Review>>(`collections/${collectionId}/reviews`, {
       params: nextKey ? { nextKey } : undefined,
     });

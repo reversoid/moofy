@@ -48,7 +48,10 @@
     <input tuiTextfield role="search" />
   </tui-input>
 
-  <app-review-list [reviews]="reviews$ | async"></app-review-list>
+  <app-review-list
+    [paginatedReviews]="reviews$ | async"
+    (loadMore)="loadMoreReviews($event.loadKey)"
+  ></app-review-list>
 </ng-container>
 
 <ng-template #noReviews>
