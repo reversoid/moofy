@@ -13,7 +13,6 @@ type TreeProps = {
 
 type CommentsTreeProps = CommentsProps | TreeProps;
 
-/** Tree structure of comments */
 export class CommentsTree {
   constructor(props: CommentsTreeProps) {
     if (props.comments) {

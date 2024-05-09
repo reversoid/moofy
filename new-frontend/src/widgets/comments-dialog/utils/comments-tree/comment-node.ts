@@ -6,7 +6,6 @@ interface CommentNodeProps {
   loadNextKey: string | null;
 }
 
-/** Single node of comments tree */
 export class CommentNode {
   replies: CommentNode[] | null = null;
 
