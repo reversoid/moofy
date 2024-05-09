@@ -13,7 +13,7 @@ import { TuiIslandModule } from '@taiga-ui/kit';
 import { UserCardComponent } from '../../entities/user-card/user-card.component';
 import { ShortProfile } from '../../shared/types';
 import { FollowButtonComponent } from '../../features/profile/ui/follow-button/follow-button.component';
-import { IntersectionObserverModule } from '@ng-web-apis/intersection-observer';
+import { IntersectionLoaderComponent } from '../../shared/ui/intersection-loader/intersection-loader.component';
 
 export type UsersView = 'list' | 'grid';
 
@@ -31,7 +31,7 @@ export type UsersView = 'list' | 'grid';
     TuiLoaderModule,
     TuiIslandModule,
     FollowButtonComponent,
-    IntersectionObserverModule,
+    IntersectionLoaderComponent,
   ],
   templateUrl: './user-grid.component.html',
   styleUrl: './user-grid.component.scss',
@@ -43,20 +43,7 @@ export class UserGridComponent {
 
   @Input() loading: boolean = false;
 
-  @Output() loadMore = new EventEmitter<void>();
+  @Output() loadMore = new EventEmitter<string>();
 
   profiles = input<ShortProfile[]>([]);
-
-  private lastEmitedLoadKey: string | null = null;
-
-  handleLoadIntersection(observerEntries: IntersectionObserverEntry[]) {
-    const isVisible = observerEntries.at(-1)!.isIntersecting;
-
-    const newKey = this.lastEmitedLoadKey !== this.loadMoreKey;
-
-    if (isVisible && newKey) {
-      this.lastEmitedLoadKey = this.loadMoreKey;
-      this.loadMore.emit();
-    }
-  }
 }

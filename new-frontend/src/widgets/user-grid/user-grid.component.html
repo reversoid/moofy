@@ -18,12 +18,11 @@
         ></app-follow-button>
       </app-user-card>
 
-      <div *ngIf="loadMoreKey" waIntersectionObserver waIntersectionRootMargin="500px">
-        <app-user-card
-          (waIntersectionObservee)="handleLoadIntersection($event)"
-          view="horizontal"
-        ></app-user-card>
-      </div>
+      <app-intersection-loader
+        *ngIf="loadMoreKey"
+        [loadMoreKey]="loadMoreKey"
+        (loadMore)="loadMore.emit(this.loadMoreKey!)"
+      ></app-intersection-loader>
     </ng-template>
   </ng-template>
 </div>

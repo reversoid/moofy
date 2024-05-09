@@ -1,0 +1,8 @@
+<h1 class="tui-text_h1">{{ title$ | async }}</h1>
+
+<app-user-grid
+  [loading]="loading()"
+  [loadMoreKey]="loadKey$ | async"
+  (loadMore)="loadMoreProfiles($event)"
+  [profiles]="(profiles$ | async) ?? []"
+></app-user-grid>

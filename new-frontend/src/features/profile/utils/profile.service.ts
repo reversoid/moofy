@@ -38,12 +38,16 @@ export class ProfileService {
     return this.http.delete<void>(`profiles/${id}/followers`);
   }
 
-  getFollowers(id: User['id']): Observable<PaginatedData<ShortProfile>> {
-    return this.http.get<PaginatedData<ShortProfile>>(`profile/${id}/followers`);
+  getFollowers(id: User['id'], nextKey?: string | null): Observable<PaginatedData<ShortProfile>> {
+    return this.http.get<PaginatedData<ShortProfile>>(`profiles/${id}/followers`, {
+      params: nextKey ? { nextKey } : undefined,
+    });
   }
 
-  getFollowees(id: User['id']): Observable<PaginatedData<ShortProfile>> {
-    return this.http.get<PaginatedData<ShortProfile>>(`profile/${id}/followees`);
+  getFollowees(id: User['id'], nextKey?: string | null): Observable<PaginatedData<ShortProfile>> {
+    return this.http.get<PaginatedData<ShortProfile>>(`profiles/${id}/followees`, {
+      params: nextKey ? { nextKey } : undefined,
+    });
   }
 
   getPersonalCollection(id: User['id']): Observable<FullCollection> {
