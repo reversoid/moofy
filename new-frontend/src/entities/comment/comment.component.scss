@@ -37,3 +37,15 @@
     line-height: 1.25;
   }
 }
+
+.comments-list {
+  margin-top: 0.75rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.with-offset {
+  margin-left: 0.5rem;
+}

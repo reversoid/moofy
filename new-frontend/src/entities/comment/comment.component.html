@@ -2,7 +2,7 @@
   <div class="header">
     <div class="image-wrapper"></div>
     <div class="sender-info">
-      <a tuiLink>
+      <a [routerLink]="'/'" tuiLink>
         <h6 class="tui-text_h6 username">reversoid</h6>
       </a>
       <p class="date">10.10.2020</p>
@@ -11,3 +11,13 @@
 
   <div class="content">Some text here</div>
 </tui-island>
+
+<div *ngIf="!nested" class="comments-list">
+  <div [ngClass]="{ 'with-offset': !nested }">
+    <app-comment [nested]="true"></app-comment>
+  </div>
+
+  <div [ngClass]="{ 'with-offset': !nested }">
+    <app-comment [nested]="true"></app-comment>
+  </div>
+</div>
