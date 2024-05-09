@@ -1,9 +1,17 @@
 <tui-island class="collection-image">
-  <div class="image-wrapper">
-    <img *ngIf="imageUrl; else noImage" [ngSrc]="imageUrl" fill />
+  <button
+    *ngIf="imageUrl; else noImage"
+    (click)="openImage()"
+    class="open-image-button"
+    tuiButton
+    appearance="flat"
+  >
+    <div class="image-wrapper">
+      <img class="image" [ngSrc]="imageUrl" fill />
+    </div>
+  </button>
 
-    <ng-template #noImage>
-      <tui-marker-icon class="empty-icon" src="tuiIconImageLarge"></tui-marker-icon>
-    </ng-template>
-  </div>
+  <ng-template #noImage>
+    <tui-marker-icon class="empty-icon" src="tuiIconImageLarge"></tui-marker-icon>
+  </ng-template>
 </tui-island>
