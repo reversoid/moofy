@@ -1,4 +1,8 @@
 tui-island.collection-image {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .image-wrapper {
     width: 4rem;
     height: 4rem;
