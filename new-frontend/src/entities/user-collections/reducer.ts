@@ -25,4 +25,8 @@ export const userCollectionsReducer = createReducer(
   on(userCollectionsActions.update, (state, { collection }) => {
     return adapter.setOne(collection, state);
   }),
+
+  on(userCollectionsActions.append, (state, { collections }) => {
+    return adapter.addMany(collections, state);
+  }),
 );

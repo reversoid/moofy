@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { CollectionResolver } from './collection-page/utils/collection.resolver';
 import { myCollectionGuard } from '../app/guards/my-collections.guard';
+import { MyCollectionsResolver } from './my-collections-page/utils/my-collections.resolver';
 
 export const appRoutes: Routes = [
   {
@@ -53,6 +54,9 @@ export const appRoutes: Routes = [
         (r) => r.MyCollectionsPageComponent,
       ),
     canActivate: [myCollectionGuard],
+    resolve: {
+      collections: MyCollectionsResolver,
+    },
   },
   {
     path: 'favorites',

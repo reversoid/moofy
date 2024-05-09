@@ -36,5 +36,5 @@ export class CollectionGridComponent {
 
   @Input() loading: boolean = false;
 
-  @Output() loadMore = new EventEmitter<void>();
+  @Output() loadMore = new EventEmitter<string>();
 }

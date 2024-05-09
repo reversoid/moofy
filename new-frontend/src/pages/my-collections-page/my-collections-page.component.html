@@ -17,4 +17,7 @@
 <app-collection-grid
   [collections]="(collections$ | async) || []"
   [hideDescription]="true"
+  (loadMore)="loadMoreCollections($event)"
+  [loadMoreKey]="loadMoreKey()"
+  [loading]="loading()"
 ></app-collection-grid>

@@ -21,5 +21,5 @@
 
 <app-intersection-loader
   [loadMoreKey]="loadMoreKey"
-  (loadMore)="loadMore.emit()"
+  (loadMore)="loadMore.emit(loadMoreKey!)"
 ></app-intersection-loader>

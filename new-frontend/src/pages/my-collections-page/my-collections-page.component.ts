@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiButtonModule,
@@ -9,15 +9,16 @@ import {
 import { TuiInputModule } from '@taiga-ui/kit';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { CollectionWithInfo } from '../../shared/types';
+import { CollectionWithInfo, PaginatedData } from '../../shared/types';
 import { CreateCollectionDialogComponent } from '../../features/collection/create-collection-dialog/create-collection-dialog.component';
 import { CollectionService } from '../../features/collection/utils/collection.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { map, takeUntil } from 'rxjs';
+import { finalize, map, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../app/store';
 import { selectAllUserCollections, userCollectionsActions } from '../../entities/user-collections';
 import { AsyncPipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-collection-page',
@@ -43,14 +44,18 @@ export class MyCollectionsPageComponent implements OnInit {
     private readonly collectionService: CollectionService,
     private readonly destroy$: TuiDestroyService,
     private readonly store: Store<AppState>,
+    private readonly activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.collectionService
-      .getCollections()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.store.dispatch(userCollectionsActions.set({ collections: data.items }));
+    this.activatedRoute.data
+      .pipe(
+        map((data) => data['collections'] as PaginatedData<CollectionWithInfo>),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((collections) => {
+        this.store.dispatch(userCollectionsActions.set({ collections: collections.items }));
+        this.loadMoreKey.set(collections.nextKey);
       });
   }
 
@@ -67,5 +72,23 @@ export class MyCollectionsPageComponent implements OnInit {
         size: 's',
       })
       .subscribe((collection) => this.store.dispatch(userCollectionsActions.add({ collection })));
+  }
+
+  loading = signal(false);
+
+  loadMoreKey = signal<string | null>(null);
+
+  loadMoreCollections(key: string) {
+    this.loading.set(true);
+    this.collectionService
+      .getCollections(key)
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((collections) => {
+        this.store.dispatch(userCollectionsActions.append({ collections: collections.items }));
+        this.loadMoreKey.set(collections.nextKey);
+      });
   }
 }
