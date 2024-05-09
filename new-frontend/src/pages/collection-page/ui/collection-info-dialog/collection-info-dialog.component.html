@@ -1,0 +1,41 @@
+<div class="blocks-wrapper tui-space_top-5">
+  <div class="block">
+    <h4 class="title tui-text_body-l-2">Создатель</h4>
+
+    <a [routerLink]="creatorUrl">
+      <tui-island class="creator">
+        <div *ngIf="creatorImageUrl; else noCreatorImage" class="creator-image-wrapper">
+          <img [ngSrc]="creatorImageUrl" fill />
+        </div>
+
+        <ng-template #noCreatorImage>
+          <tui-marker-icon src="tuiIconUserLarge"></tui-marker-icon>
+        </ng-template>
+
+        <div class="creator-body">
+          <h5 class="creator-name tui-text_h6">{{ creatorUsername }}</h5>
+
+          <p class="creator-description">{{ creatorDescription || 'Описание отсутствует' }}</p>
+        </div>
+      </tui-island>
+    </a>
+  </div>
+
+  <div class="block">
+    <h4 class="title tui-text_body-l-2">Обновлено</h4>
+
+    <tui-island class="date-island">
+      <p class="tui-text_h6 date-updated">{{ updatedAt }}</p>
+    </tui-island>
+  </div>
+
+  <div *ngIf="imageUrl" class="block">
+    <h4 class="title tui-text_body-l-2">Обложка</h4>
+
+    <button (click)="openImage()" class="open-image-button" tuiButton appearance="flat">
+      <div class="image-wrapper">
+        <img [ngSrc]="imageUrl" fill />
+      </div>
+    </button>
+  </div>
+</div>

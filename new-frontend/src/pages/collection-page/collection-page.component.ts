@@ -29,6 +29,7 @@ import { CollectionPageStore } from './utils/collection-page.store';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../app/store';
 import { selectCurrentUser } from '../../entities/current-user/selectors';
+import { CollectionInfoDialogComponent } from './ui/collection-info-dialog/collection-info-dialog.component';
 
 @Component({
   selector: 'app-collection-page',
@@ -80,7 +81,18 @@ export class CollectionPageComponent {
   readonly isPersonal$ = this.activatedRoute.data.pipe(map((v) => Boolean(v['isPersonal'])));
 
   showInfoAboutCollection() {
-    this.dialogService.open('Some modal here', { label: 'О коллекции' }).subscribe();
+    this.collection$
+      .pipe(
+        switchMap((collection) =>
+          this.dialogService.open(new PolymorpheusComponent(CollectionInfoDialogComponent), {
+            label: 'О коллекции',
+            data: {
+              collection,
+            },
+          }),
+        ),
+      )
+      .subscribe();
   }
 
   createReview() {
