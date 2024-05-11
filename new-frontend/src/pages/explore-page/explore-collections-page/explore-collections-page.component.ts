@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { finalize, map, switchMap, takeUntil, tap } from 'rxjs';
+import { finalize, map, skip, switchMap, takeUntil, tap } from 'rxjs';
 import { ExploreService } from '../../../features/explore/explore.service';
 import { Collection, CollectionWithInfo } from '../../../shared/types';
 import { CollectionGridComponent } from '../../../widgets/collection-grid/collection-grid.component';
@@ -48,6 +48,7 @@ export class ExploreCollectionsPageComponent implements OnInit {
   private initHandleSearchChange() {
     this.explorePageStore.search$
       .pipe(
+        skip(1),
         tap(() => this.loading.set(true)),
         switchMap((search) => {
           return this.exploreService

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { finalize, map, switchMap, takeUntil } from 'rxjs';
+import { finalize, map, skip, switchMap, takeUntil } from 'rxjs';
 import { ExploreService } from '../../../features/explore/explore.service';
 import { ShortProfile } from '../../../shared/types';
 import { UserGridComponent } from '../../../widgets/user-grid/user-grid.component';
@@ -47,6 +47,7 @@ export class ExploreUsersPageComponent implements OnInit {
   private initHandleSearchChange() {
     this.explorePageStore.search$
       .pipe(
+        skip(1),
         switchMap((search) => {
           this.loading.set(true);
 
