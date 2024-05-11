@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule, TuiIslandModule, TuiRadioLabeledModule } from '@taiga-ui/kit';
-import { Observable, Subject, combineLatest, debounceTime, take, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, take, takeUntil } from 'rxjs';
 import { ExplorePageStore } from '../model/explore-page.store';
 
 type SearchObject = 'profiles' | 'collections';

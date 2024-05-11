@@ -1,5 +1,5 @@
 <app-collection-grid
-  [collections]="(collections$ | async) ?? []"
+  [collections]="collections()"
   [hideDescription]="false"
   [loadMoreKey]="null"
   [loading]="loading()"

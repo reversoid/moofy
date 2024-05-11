@@ -1,5 +1,1 @@
-<app-user-grid
-  [profiles]="(profiles$ | async) ?? []"
-  [loading]="loading()"
-  [loadMoreKey]="null"
-></app-user-grid>
+<app-user-grid [profiles]="profiles()" [loading]="loading()" [loadMoreKey]="null"></app-user-grid>
