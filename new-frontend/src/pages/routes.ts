@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { CollectionResolver } from './collection-page/utils/collection.resolver';
 import { myCollectionGuard } from '../app/guards/my-collections.guard';
 import { MyCollectionsResolver } from './my-collections-page/utils/my-collections.resolver';
+import { FavoriteCollectionsResolver } from './favorites-collections-page/utils/favorite-collections.resolver';
 
 export const appRoutes: Routes = [
   {
@@ -64,6 +65,9 @@ export const appRoutes: Routes = [
       import('./favorites-collections-page/favorites-collections-page.component').then(
         (r) => r.FavoritesCollectionsPageComponent,
       ),
+    resolve: {
+      collections: FavoriteCollectionsResolver,
+    },
   },
   {
     path: 'personal-collection',

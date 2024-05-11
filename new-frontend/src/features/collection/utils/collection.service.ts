@@ -28,6 +28,12 @@ export class CollectionService {
     });
   }
 
+  getFavoriteCollections(nextKey?: string | null) {
+    return this.http.get<PaginatedData<CollectionWithInfo>>('profile/collections/favorites', {
+      params: nextKey ? { nextKey } : undefined,
+    });
+  }
+
   getCollection(id: Collection['id']) {
     return this.http.get<FullCollection>(`collections/${id}`);
   }

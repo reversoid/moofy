@@ -10,4 +10,9 @@
   <input tuiTextfield role="search" />
 </tui-input>
 
-<app-collection-grid></app-collection-grid>
+<app-collection-grid
+  [collections]="collections()"
+  [loading]="loading()"
+  [loadMoreKey]="loadKey()"
+  (loadMore)="loadMore($event)"
+></app-collection-grid>
