@@ -15,15 +15,31 @@
           <input tuiTextfield role="search" />
         </tui-input>
 
-        <strong>Что искать</strong>
-        <div class="search-object">
-          <tui-radio-labeled
-            *ngFor="let item of searchObjects"
-            formControlName="searchObject"
-            size="l"
-            [item]="item.value"
-            >{{ item.label }}</tui-radio-labeled
-          >
+        <div class="radio-block">
+          <strong>Что искать</strong>
+          <div class="search-object">
+            <tui-radio-labeled
+              *ngFor="let item of searchObjects"
+              formControlName="searchObject"
+              size="l"
+              [item]="item.value"
+              >{{ item.label }}</tui-radio-labeled
+            >
+          </div>
+        </div>
+
+        <div class="radio-block mobile">
+          <div tuiGroup class="group" [collapsed]="true">
+            <tui-radio-block
+              *ngFor="let item of searchObjects"
+              [hideRadio]="true"
+              formControlName="searchObject"
+              [item]="item.value"
+              size="m"
+            >
+              {{ item.label }}
+            </tui-radio-block>
+          </div>
         </div>
       </form>
     </tui-island>

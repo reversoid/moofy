@@ -3,8 +3,13 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { TuiInputModule, TuiIslandModule, TuiRadioLabeledModule } from '@taiga-ui/kit';
+import { TuiGroupModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiInputModule,
+  TuiIslandModule,
+  TuiRadioBlockModule,
+  TuiRadioLabeledModule,
+} from '@taiga-ui/kit';
 import { combineLatest, debounceTime, take, takeUntil } from 'rxjs';
 import { ExplorePageStore } from '../model/explore-page.store';
 
@@ -23,6 +28,8 @@ type SearchObject = 'profiles' | 'collections';
     FormsModule,
     ReactiveFormsModule,
     NgFor,
+    TuiGroupModule,
+    TuiRadioBlockModule,
   ],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.scss',
