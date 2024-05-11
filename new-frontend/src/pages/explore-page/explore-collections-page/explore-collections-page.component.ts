@@ -48,7 +48,7 @@ export class ExploreCollectionsPageComponent implements OnInit {
   private initHandleSearchChange() {
     this.explorePageStore.search$
       .pipe(
-        skip(1),
+        skip(1), // skip initial value
         tap(() => this.loading.set(true)),
         switchMap((search) => {
           return this.exploreService
