@@ -3,6 +3,7 @@ import { CollectionResolver } from './collection-page/utils/collection.resolver'
 import { myCollectionGuard } from '../app/guards/my-collections.guard';
 import { MyCollectionsResolver } from './my-collections-page/utils/my-collections.resolver';
 import { FavoriteCollectionsResolver } from './favorites-collections-page/utils/favorite-collections.resolver';
+import { FeedResolver } from './feed-page/utils/feed.resolver';
 
 export const appRoutes: Routes = [
   {
@@ -17,6 +18,9 @@ export const appRoutes: Routes = [
   {
     path: 'feed',
     loadComponent: () => import('./feed-page/feed-page.component').then((r) => r.FeedPageComponent),
+    resolve: {
+      feed: FeedResolver,
+    },
   },
   {
     path: 'profile',

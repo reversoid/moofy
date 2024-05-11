@@ -4,8 +4,9 @@ import { TuiIslandModule } from '@taiga-ui/kit';
 import { CollectionGridComponent } from '../../widgets/collection-grid/collection-grid.component';
 import { FeedService } from '../../features/feed/utils/feed.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { finalize, takeUntil } from 'rxjs';
-import { Collection, PaginatedData } from '../../shared/types';
+import { finalize, map, takeUntil } from 'rxjs';
+import { Collection, CollectionWithInfo, PaginatedData } from '../../shared/types';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-feed-page',
@@ -20,11 +21,32 @@ export class FeedPageComponent implements OnInit {
   constructor(
     private readonly feedService: FeedService,
     private readonly destroy$: TuiDestroyService,
+    private readonly activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.loadLatestUpdates();
-    this.loadUnseen();
+    this.activatedRoute.data
+      .pipe(
+        map(
+          (data) =>
+            data['feed'] as {
+              latestUpdated: PaginatedData<CollectionWithInfo>;
+              unseen: PaginatedData<CollectionWithInfo>;
+            },
+        ),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(({ latestUpdated, unseen }) => {
+        this.latestUpdatedCollections.update((v) => ({
+          items: [...(v?.items ?? []), ...latestUpdated.items.map((c) => c.collection)],
+          nextKey: latestUpdated.nextKey,
+        }));
+
+        this.latestUpdatedCollections.update((v) => ({
+          items: [...(v?.items ?? []), ...unseen.items.map((c) => c.collection)],
+          nextKey: unseen.nextKey,
+        }));
+      });
   }
 
   isLatestUpdatesLoading = signal(false);
