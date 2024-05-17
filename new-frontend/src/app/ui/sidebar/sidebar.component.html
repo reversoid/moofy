@@ -1,1 +1,73 @@
-<div class="sidebar">hello there</div>
+<div class="sidebar">
+  <button
+    [routerLink]="profileLink"
+    appearance="secondary"
+    class="sidebar-option"
+    tuiButton
+    class="sidebar-option"
+  >
+    <tui-marker-icon size="s" src="tuiIconUserLarge"></tui-marker-icon>
+    <h6 class="tui-text_h6">Профиль</h6>
+  </button>
+
+  <button (click)="openNotifications()" appearance="secondary" class="sidebar-option" tuiButton>
+    <tui-marker-icon size="s" src="tuiIconBellLarge"></tui-marker-icon>
+    <h6 class="tui-text_h6">Уведомления</h6>
+  </button>
+
+  <button
+    routerLink="/collections"
+    appearance="secondary"
+    class="sidebar-option"
+    tuiButton
+    class="sidebar-option"
+  >
+    <tui-marker-icon size="s" src="tuiIconGridLarge"></tui-marker-icon>
+    <h6 class="tui-text_h6">Мои коллекции</h6>
+  </button>
+
+  <button
+    routerLink="/favorites"
+    appearance="secondary"
+    class="sidebar-option"
+    tuiButton
+    class="sidebar-option"
+  >
+    <tui-marker-icon size="s" src="tuiIconBookmarkLarge"></tui-marker-icon>
+    <h6 class="tui-text_h6">Избранное</h6>
+  </button>
+
+  <button
+    routerLink="/feed"
+    appearance="secondary"
+    class="sidebar-option"
+    tuiButton
+    class="sidebar-option"
+  >
+    <tui-marker-icon size="s" src="tuiIconCompassLarge"></tui-marker-icon>
+    <h6 class="tui-text_h6">Лента</h6>
+  </button>
+
+  <button
+    routerLink="/explore"
+    appearance="secondary"
+    class="sidebar-option"
+    tuiButton
+    class="sidebar-option"
+  >
+    <tui-marker-icon size="s" src="tuiIconSearchLarge"></tui-marker-icon>
+
+    <h6 class="tui-text_h6">Поиск</h6>
+  </button>
+
+  <button
+    (click)="logout()"
+    appearance="secondary"
+    class="sidebar-option"
+    tuiButton
+    class="sidebar-option danger"
+  >
+    <tui-marker-icon size="s" src="tuiIconLogOutLarge"></tui-marker-icon>
+    <h6 class="tui-text_h6">Выйти</h6>
+  </button>
+</div>
