@@ -1,6 +1,6 @@
 <div class="sidebar">
   <button
-    [routerLink]="profileLink"
+    [routerLink]="['/profile', currentUserId$ | async]"
     (click)="closeDropdown()"
     appearance="secondary"
     class="sidebar-option"

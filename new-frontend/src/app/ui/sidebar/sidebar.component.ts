@@ -10,6 +10,9 @@ import { AppState } from '../../store';
 import { currentUserActions } from '../../../entities/current-user/actions';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProfileNotificationsDialogComponent } from '../../../features/profile-notifications';
+import { selectCurrentUser } from '../../../entities/current-user/selectors';
+import { map } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
@@ -21,6 +24,7 @@ import { ProfileNotificationsDialogComponent } from '../../../features/profile-n
     TuiMarkerIconModule,
     RouterModule,
     TuiLinkModule,
+    AsyncPipe,
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
@@ -39,6 +43,8 @@ export class SidebarComponent {
   get profileLink() {
     return ['/profile'];
   }
+
+  currentUserId$ = this.store.select(selectCurrentUser).pipe(map((u) => u?.id));
 
   openNotifications() {
     this.closeDropdown();
