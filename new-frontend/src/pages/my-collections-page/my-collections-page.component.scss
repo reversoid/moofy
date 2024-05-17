@@ -1,9 +1,9 @@
+@import 'shared';
+
 .controls {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-
-  .search-input {
-    flex-grow: 2;
-  }
 }
