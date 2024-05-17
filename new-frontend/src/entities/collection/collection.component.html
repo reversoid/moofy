@@ -1,4 +1,4 @@
-<app-card [ngClass]="view" [view]="view">
+<app-card class="horizontal" view="horizontal">
   <div *ngIf="collection; else imageSkeleton" image class="image-wrapper">
     <img *ngIf="collection.imageUrl; else colorBlock" fill [ngSrc]="collection.imageUrl" />
 

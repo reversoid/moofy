@@ -44,18 +44,6 @@
   }
 }
 
-.vertical {
-  .image-wrapper {
-    width: 100%;
-
-    &::before {
-      content: '';
-      padding-top: 100%;
-      display: block;
-    }
-  }
-}
-
 .title-wrapper {
   display: flex;
   align-items: center;

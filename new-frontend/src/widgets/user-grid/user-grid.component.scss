@@ -16,6 +16,9 @@
 
 app-follow-button {
   align-self: center;
+  @media #{$tui-mobile} {
+    width: 100%;
+  }
 }
 
 .not-found-placeholder {

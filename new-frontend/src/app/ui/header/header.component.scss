@@ -65,6 +65,11 @@ app-logo {
       display: flex;
       gap: 0.5rem;
       align-items: center;
+
+      .explore-button,
+      .notification-button {
+        @include hide-mobile;
+      }
     }
   }
 }

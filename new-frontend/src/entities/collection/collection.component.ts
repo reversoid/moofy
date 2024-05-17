@@ -16,8 +16,6 @@ import { TuiHintModule, TuiSvgModule } from '@taiga-ui/core';
 export class CollectionComponent {
   constructor(private readonly colorHash: ColorHash) {}
 
-  @Input() view?: 'vertical' | 'horizontal' = 'vertical';
-
   @Input() collection?: Collection;
 
   @Input() hideDescription?: boolean = false;

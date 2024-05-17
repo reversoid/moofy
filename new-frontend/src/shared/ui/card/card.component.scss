@@ -57,13 +57,13 @@
   &.horizontal {
     @include horizontal-view();
 
-    // @media #{$tui-mobile} {
-    //   @include vertical-view();
+    @media #{$tui-mobile} {
+      @include vertical-view();
 
-    //   .image-container {
-    //     @include centerImage;
-    //   }
-    // }
+      .image-container {
+        @include centerImage;
+      }
+    }
   }
 }
 
@@ -76,4 +76,8 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+}
+
+.action {
+  width: 100%;
 }

@@ -22,7 +22,7 @@
   </ng-template>
 
   <div *ngIf="user; else skeletonDescription" content class="user-content">
-    <tui-island class="description-wrapper">
+    <tui-island *ngIf="user.description" class="description-wrapper">
       <p class="description">
         {{ user.description }}
       </p>

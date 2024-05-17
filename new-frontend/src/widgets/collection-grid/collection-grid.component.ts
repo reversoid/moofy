@@ -26,8 +26,6 @@ import { IntersectionLoaderComponent } from '../../shared/ui/intersection-loader
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionGridComponent {
-  @Input() view: 'grid' | 'list' = 'list';
-
   @Input() hideDescription?: boolean = false;
 
   @Input() collections?: Collection[] = [];

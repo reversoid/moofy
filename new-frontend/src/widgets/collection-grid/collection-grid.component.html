@@ -1,4 +1,4 @@
-<div class="collections-grid" [ngClass]="{ list: view === 'list', grid: view === 'grid' }">
+<div class="collections-grid list">
   <!-- SKELETON -->
   <app-collection
     *ngIf="!collections?.length && loading"
@@ -7,11 +7,7 @@
   ></app-collection>
 
   <a *ngFor="let collection of collections" [routerLink]="['/collections', collection.id]" tuiLink>
-    <app-collection
-      [view]="view === 'list' ? 'horizontal' : 'vertical'"
-      [collection]="collection"
-      [hideDescription]="hideDescription"
-    ></app-collection>
+    <app-collection [collection]="collection" [hideDescription]="hideDescription"></app-collection>
   </a>
 </div>
 

@@ -18,11 +18,14 @@
       </tui-island>
 
       <div class="icon-buttons">
-        <a routerLink="/explore">
+        <a class="explore-button" routerLink="/explore">
           <button appearance="secondary" tuiIconButton icon="tuiIconSearchLarge"></button>
         </a>
 
-        <app-notification-button *ngIf="user$ | async"></app-notification-button>
+        <app-notification-button
+          *ngIf="user$ | async"
+          class="notification-button"
+        ></app-notification-button>
 
         <app-profile-button
           *ngIf="user$ | async as user; else authButton"

@@ -12,7 +12,7 @@
     size="l"
     [hideCheckbox]="true"
   >
-    <app-collection [view]="'horizontal'" [collection]="c"></app-collection>
+    <app-collection [collection]="c"></app-collection>
   </tui-checkbox-block>
 
   <tui-island *ngIf="collections()?.length === 0" class="empty-placeholder"
