@@ -1,6 +1,7 @@
 <div class="sidebar">
   <button
     [routerLink]="profileLink"
+    (click)="closeDropdown()"
     appearance="secondary"
     class="sidebar-option"
     tuiButton
@@ -17,6 +18,7 @@
 
   <button
     routerLink="/collections"
+    (click)="closeDropdown()"
     appearance="secondary"
     class="sidebar-option"
     tuiButton
@@ -28,6 +30,7 @@
 
   <button
     routerLink="/favorites"
+    (click)="closeDropdown()"
     appearance="secondary"
     class="sidebar-option"
     tuiButton
@@ -39,6 +42,7 @@
 
   <button
     routerLink="/feed"
+    (click)="closeDropdown()"
     appearance="secondary"
     class="sidebar-option"
     tuiButton
@@ -50,6 +54,7 @@
 
   <button
     routerLink="/explore"
+    (click)="closeDropdown()"
     appearance="secondary"
     class="sidebar-option"
     tuiButton

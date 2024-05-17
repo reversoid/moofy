@@ -41,7 +41,10 @@
           [sidebarOpen]="sidebarOpen"
           (sidebarOpenChange)="sidebarOpen = $event"
         >
-          <app-sidebar *tuiSidebar="sidebarOpen; direction: 'right'"></app-sidebar>
+          <app-sidebar
+            *tuiSidebar="sidebarOpen; direction: 'right'"
+            (sidebarClose)="sidebarOpen = false"
+          ></app-sidebar>
         </app-burger-menu>
       </div>
     </div>
