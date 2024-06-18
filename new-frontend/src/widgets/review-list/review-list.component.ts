@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  computed,
+  input,
+} from '@angular/core';
 import { ReviewComponent } from '../../entities/review/review.component';
 import { NgFor, NgIf } from '@angular/common';
 import { PaginatedData, Review, User } from '../../shared/types';
@@ -11,6 +19,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { takeUntil } from 'rxjs';
 import { EditReviewDialogComponent } from '../../features/review/review-dialog/edit-review-dialog/edit-review-dialog.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-review-list',
@@ -34,13 +43,13 @@ export class ReviewListComponent {
 
   @Input() paginatedReviews?: PaginatedData<Review> | null;
 
-  @Input() user?: User;
-
   @Output() loadMore = new EventEmitter<{ loadKey: string }>();
 
-  private currentUser$ = this.store.select(selectCurrentUser);
+  user = input<User>();
 
-  isCreator = true;
+  private currentUser = toSignal(this.store.select(selectCurrentUser));
+
+  isCreator = computed(() => (this.user() ? this.currentUser()?.id === this.user()?.id : false));
 
   handleLoadMore() {
     if (this.paginatedReviews?.nextKey) {

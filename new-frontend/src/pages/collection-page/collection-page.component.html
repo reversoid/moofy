@@ -63,6 +63,7 @@
     [loadingMore]="loadingMoreReviews()"
     [paginatedReviews]="reviews$ | async"
     (loadMore)="loadMoreReviews($event.loadKey)"
+    [user]="(creator$ | async) ?? undefined"
   ></app-review-list>
 </ng-container>
 

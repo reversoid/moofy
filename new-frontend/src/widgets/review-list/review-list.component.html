@@ -2,6 +2,7 @@
   <div class="review-list">
     <app-review *ngFor="let review of paginatedReviews?.items" [review]="review">
       <button
+        *ngIf="isCreator()"
         action
         (click)="openEditReviewDialog(review)"
         tuiIconButton
