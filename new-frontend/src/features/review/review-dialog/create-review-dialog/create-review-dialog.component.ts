@@ -17,13 +17,14 @@ import {
   TuiTextareaModule,
 } from '@taiga-ui/kit';
 import { debounceTime, filter, finalize, map, switchMap, takeUntil, tap } from 'rxjs';
-import { Collection, Film, Review } from '../../../shared/types';
-import { FilmService } from '../../film/film.service';
+import { Collection, Film, Review } from '../../../../shared/types';
+import { FilmService } from '../../../film/film.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { ReviewService } from '../utils/review.service';
+import { ReviewService } from '../../utils/review.service';
+import { ReviewFormComponent } from '../ui/review-form/review-form.component';
 
 @Component({
-  selector: 'app-create-review-dialog',
+  selector: 'app-edit-review-dialog',
   standalone: true,
   imports: [
     TuiInputModule,
@@ -43,6 +44,7 @@ import { ReviewService } from '../utils/review.service';
     TuiLoaderModule,
     TuiTagModule,
     TuiMapperPipeModule,
+    ReviewFormComponent,
   ],
   templateUrl: './create-review-dialog.component.html',
   styleUrl: './create-review-dialog.component.scss',
@@ -109,12 +111,10 @@ export class CreateReviewDialogComponent implements OnInit {
 
   readonly toString = (value: number) => String(value);
 
-  createReview() {
+  createReview(data: { score: number | null; description: string | null }) {
     const filmId = this.selectedFilm?.id;
     const collectionId = this.context.data.collectionId;
-    const { description, score } = this.reviewForm.value;
-
-    console.log(filmId, collectionId, description, score);
+    const { description, score } = data;
 
     if (!filmId || !collectionId) {
       return;
@@ -126,8 +126,8 @@ export class CreateReviewDialogComponent implements OnInit {
       .createReview({
         filmId,
         collectionId,
-        description: description || null,
-        score: score || null,
+        description,
+        score,
       })
       .pipe(
         finalize(() => this.creatingReview.set(false)),

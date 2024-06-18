@@ -33,32 +33,13 @@
     </ng-container>
   </tui-input>
 
-  <form
-    id="create-review-form"
-    *ngIf="selectedFilm"
-    (submit)="createReview()"
-    [formGroup]="reviewForm"
-  >
-    <!-- TODO make component for film -->
-    <div class="film tui-space_top-5">
-      <div class="image-wrapper">
-        <img [ngSrc]="selectedFilm.posterPreviewUrl" fill priority />
-      </div>
-      <h6 class="title tui-text_h6">{{ selectedFilm.name }}</h6>
-      <tui-tag [value]="selectedFilm.year | tuiMapper: toString"></tui-tag>
-    </div>
-
-    <tui-rating formControlName="score" class="score tui-space_top-5" [max]="5"></tui-rating>
-
-    <tui-textarea
-      [tuiTextfieldLabelOutside]="true"
-      formControlName="description"
-      class="tui-space_top-5"
-      [expandable]="true"
-    >
-      Описание
-    </tui-textarea>
-  </form>
+  <div *ngIf="selectedFilm" class="tui-space_top-5">
+    <app-review-form
+      formId="create-review-form"
+      [film]="selectedFilm"
+      (reviewSubmit)="createReview($event)"
+    ></app-review-form>
+  </div>
 
   <button
     type="submit"

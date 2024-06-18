@@ -2,6 +2,7 @@
 
 .review {
   --tui-skeleton-radius: 0.25rem;
+  position: relative;
 
   display: flex;
   flex-direction: row;
@@ -46,5 +47,11 @@
       color: var(--tui-text-02);
       margin: 0;
     }
+  }
+
+  .action {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
 }

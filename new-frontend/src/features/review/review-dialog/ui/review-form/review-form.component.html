@@ -1,0 +1,21 @@
+<form id="{{ formId }}" (submit)="submitForm()" [formGroup]="reviewForm">
+  <!-- TODO make component for film -->
+  <div class="film">
+    <div class="image-wrapper">
+      <img [ngSrc]="film.posterPreviewUrl" fill priority />
+    </div>
+    <h6 class="title tui-text_h6">{{ film.name }}</h6>
+    <tui-tag [value]="film.year | tuiMapper: toString"></tui-tag>
+  </div>
+
+  <tui-rating formControlName="score" class="score tui-space_top-5" [max]="5"></tui-rating>
+
+  <tui-textarea
+    [tuiTextfieldLabelOutside]="true"
+    formControlName="description"
+    class="tui-space_top-5"
+    [expandable]="true"
+  >
+    Описание
+  </tui-textarea>
+</form>

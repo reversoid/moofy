@@ -15,7 +15,7 @@ import { TuiInputModule } from '@taiga-ui/kit';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { combineLatestWith, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs';
 import { CollectionService } from '../../features/collection/utils/collection.service';
-import { CreateReviewDialogComponent } from '../../features/review/create-review-dialog/create-review-dialog.component';
+import { CreateReviewDialogComponent } from '../../features/review/review-dialog/create-review-dialog/create-review-dialog.component';
 import { CollectionWithInfo, PaginatedData, Review } from '../../shared/types';
 import { ReviewListComponent } from '../../widgets/review-list/review-list.component';
 import { CreatorIslandComponent } from './ui/creator-island/creator-island.component';
@@ -100,7 +100,7 @@ export class CollectionPageComponent {
       .pipe(
         switchMap((collection) =>
           this.dialogService.open<Review>(new PolymorpheusComponent(CreateReviewDialogComponent), {
-            label: 'Добавить фильм',
+            label: 'Добавить обзор',
             size: 's',
             data: { collectionId: collection.id },
           }),

@@ -1,6 +1,15 @@
 <ng-container *ngIf="paginatedReviews">
   <div class="review-list">
-    <app-review *ngFor="let review of paginatedReviews?.items" [review]="review"></app-review>
+    <app-review *ngFor="let review of paginatedReviews?.items" [review]="review">
+      <button
+        action
+        (click)="openEditReviewDialog(review)"
+        tuiIconButton
+        appearance="secondary"
+        size="s"
+        icon="tuiIconSettings"
+      ></button>
+    </app-review>
 
     <app-review *ngIf="showSkeleton"></app-review>
   </div>

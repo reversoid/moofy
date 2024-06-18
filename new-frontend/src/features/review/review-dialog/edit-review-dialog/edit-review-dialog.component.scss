@@ -1,0 +1,18 @@
+.score {
+  color: #faaf00;
+  --tui-rating-size: 2.75rem;
+  --tui-rating-gap: 1rem;
+  --tui-icon-size: 10rem;
+  display: block;
+
+  ::ng-deep {
+    label {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+button.submit-button {
+  width: 100%;
+}

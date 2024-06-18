@@ -1,0 +1,23 @@
+<tui-elastic-container class="tui-space_top-5">
+  <div class="tui-space_top-5">
+    <app-review-form
+      formId="create-review-form"
+      [film]="selectedFilm"
+      (reviewSubmit)="editReview($event)"
+      [review]="review"
+    ></app-review-form>
+  </div>
+
+  <button
+    type="submit"
+    form="create-review-form"
+    [disabled]="!selectedFilm || editingReview()"
+    class="submit-button tui-space_top-5"
+    tuiButton
+    [showLoader]="editingReview()"
+  >
+    Изменить
+  </button>
+</tui-elastic-container>
+
+<ng-template #noContent>Ничего не найдено</ng-template>
