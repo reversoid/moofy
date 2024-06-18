@@ -34,9 +34,7 @@ export class ReviewConflictsDialogComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly personalCollectionService: PersonalCollectionService,
     private readonly destroy$: TuiDestroyService,
-  ) {
-    this.control.valueChanges.subscribe(console.log);
-  }
+  ) {}
 
   resolvedConflictsForm = this.fb.group({});
 

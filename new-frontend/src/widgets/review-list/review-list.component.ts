@@ -45,6 +45,8 @@ export class ReviewListComponent {
 
   @Output() loadMore = new EventEmitter<{ loadKey: string }>();
 
+  @Output() reviewChanged = new EventEmitter<{ review: Review }>();
+
   user = input<User>();
 
   private currentUser = toSignal(this.store.select(selectCurrentUser));
@@ -63,12 +65,16 @@ export class ReviewListComponent {
 
   openEditReviewDialog(review: Review) {
     this.dialogService
-      .open(new PolymorpheusComponent(EditReviewDialogComponent), {
+      .open<Review | undefined>(new PolymorpheusComponent(EditReviewDialogComponent), {
         size: 's',
         data: { review },
         label: 'Изменить обзор',
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe();
+      .subscribe((review) => {
+        if (review) {
+          this.reviewChanged.emit({ review: review as unknown as Review });
+        }
+      });
   }
 }

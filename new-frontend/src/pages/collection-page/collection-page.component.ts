@@ -209,4 +209,8 @@ export class CollectionPageComponent {
         this.collectionPageStore.patchState({ reviews });
       });
   }
+
+  updateReview(review: Review) {
+    this.collectionPageStore.updateReview(review);
+  }
 }

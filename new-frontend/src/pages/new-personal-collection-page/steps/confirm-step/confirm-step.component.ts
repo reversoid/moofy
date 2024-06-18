@@ -46,8 +46,6 @@ export class ConfirmStepComponent {
     this.flowService.newPersonalCollectionData?.combineOptions?.actionAfterMerging;
 
   handleConfirm() {
-    console.log(this.flowService.newPersonalCollectionData);
-
     const newPersonalCollectionData = this.flowService.newPersonalCollectionData;
 
     if (!newPersonalCollectionData) {
