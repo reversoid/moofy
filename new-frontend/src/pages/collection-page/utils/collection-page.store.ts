@@ -49,11 +49,7 @@ export class CollectionPageStore extends ComponentStore<CollectionPageState> {
   }));
 
   updateReview = this.updater((state, review: Review) => {
-    console.log(review);
-
     const existingReviewIndex = state.reviews.items.findIndex((r) => r.id === review.id);
-
-    console.log(existingReviewIndex);
 
     if (existingReviewIndex === -1) {
       return state;
