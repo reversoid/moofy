@@ -72,6 +72,9 @@
       // backdrop-filter: blur(4px);
       background-color: transparent;
       opacity: 0;
+      &.empty {
+        opacity: 0.5;
+      }
       transition: opacity var(--tui-duration) ease-in-out;
     }
 

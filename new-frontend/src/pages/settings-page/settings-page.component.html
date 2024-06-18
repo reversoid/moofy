@@ -28,6 +28,7 @@
           <ng-template #notUploading>
             <tui-marker-icon
               class="uploadIcon"
+              [ngClass]="{ empty: imageUploadState() === 'notLoaded' }"
               mode="white"
               size="l"
               src="tuiIconUploadCloudLarge"
