@@ -1,0 +1,89 @@
+<h1 class="tui-text_h1">Настройки</h1>
+
+<form (submit)="save()" [formGroup]="settingsForm" class="settings-form">
+  <div class="image-control-wrapper">
+    <tui-input-files
+      [accept]="imageAccept"
+      [multiple]="false"
+      [maxFileSize]="maxFileSize"
+      class="image-control"
+      [formControl]="imageControl"
+    >
+      <ng-template let-dragged>
+        <img
+          *ngIf="loadedImage as imageUrl"
+          [ngClass]="{ blurred: dragged || imageUploadState() === 'loading' }"
+          class="loaded-image"
+          [ngSrc]="imageUrl"
+          fill
+        />
+
+        <div class="content" [class.dragged]="dragged">
+          <tui-loader
+            *ngIf="imageUploadState() === 'loading'; else notUploading"
+            class="loader"
+            size="l"
+          ></tui-loader>
+
+          <ng-template #notUploading>
+            <tui-marker-icon
+              class="uploadIcon"
+              mode="white"
+              size="l"
+              src="tuiIconUploadCloudLarge"
+            ></tui-marker-icon>
+          </ng-template>
+        </div>
+      </ng-template>
+    </tui-input-files>
+  </div>
+
+  <tui-input
+    formControlName="username"
+    [tuiHintContent]="[] | tuiFieldErrorContent"
+    tuiHintAppearance="error"
+  >
+    Имя пользователя
+    <input tuiTextfield />
+  </tui-input>
+
+  <tui-textarea
+    formControlName="description"
+    [tuiHintContent]="[] | tuiFieldErrorContent"
+    tuiHintAppearance="error"
+  >
+    Описание
+  </tui-textarea>
+
+  <div formGroupName="password" class="password">
+    <div class="password-block-heading">
+      <h6 class="tui-text_h6">Изменение пароля</h6>
+
+      <tui-tooltip
+        *ngIf="passwordChangeErrors"
+        [content]="passwordChangeErrors"
+        appearance="error"
+      ></tui-tooltip>
+    </div>
+
+    <tui-input formControlName="old">
+      Старый пароль
+      <input tuiTextfield />
+    </tui-input>
+
+    <tui-input formControlName="new">
+      Новый пароль
+      <input tuiTextfield />
+    </tui-input>
+  </div>
+
+  <button
+    type="submit"
+    [showLoader]="submitting()"
+    [disabled]="!canSave"
+    class="submit-button"
+    tuiButton
+  >
+    Сохранить
+  </button>
+</form>

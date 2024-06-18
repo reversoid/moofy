@@ -1,0 +1,38 @@
+<div class="wrapper">
+  <h1 class="tui-text_h1">Регистрация</h1>
+
+  <form (submit)="register()" [formGroup]="registerForm" class="form">
+    <div class="tui-form__row">
+      <tui-input
+        formControlName="username"
+        [tuiHintContent]="[] | tuiFieldErrorContent"
+        tuiHintAppearance="error"
+      >
+        Имя пользователя
+        <input tuiTextfield />
+      </tui-input>
+    </div>
+
+    <div class="tui-form__row">
+      <tui-input-password
+        formControlName="password"
+        [tuiHintContent]="[] | tuiFieldErrorContent"
+        tuiHintAppearance="error"
+      >
+        Пароль
+        <input tuiTextfield />
+      </tui-input-password>
+    </div>
+
+    <div class="tui-form__buttons">
+      <button [disabled]="buttonDisabled" tuiButton [showLoader]="isLoading()" type="submit">
+        Зарегистрироваться
+      </button>
+    </div>
+
+    <p class="already-registered">
+      Уже есть аккаунт?
+      <a routerLink="/auth/login" tuiLink>Войти</a>
+    </p>
+  </form>
+</div>

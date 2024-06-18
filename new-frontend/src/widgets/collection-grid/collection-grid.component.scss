@@ -1,0 +1,27 @@
+@import 'shared';
+
+.collections-grid {
+  display: grid;
+  @include grid-gap;
+
+  &.list {
+    grid-template-columns: 1fr !important;
+  }
+
+  &.grid {
+    @include grid;
+  }
+}
+
+.loader {
+  margin-top: 1rem;
+}
+
+:host {
+  display: block;
+}
+
+.empty-placeholder {
+  height: 12rem;
+  color: var(--tui-text-02);
+}

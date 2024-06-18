@@ -1,0 +1,53 @@
+<h1 class="tui-text_h1">Подтверждение</h1>
+
+<div class="cards-grid">
+  <tui-island>
+    <h3 class="tui-text_h4">Способ создания коллекции</h3>
+    <p *ngIf="isCombineMethod; else fromScratch">
+      Коллекция будет создана с помощью объединения уже существующих коллекций.
+    </p>
+
+    <ng-template #fromScratch>
+      <p>Будет создана пустая коллекция</p>
+    </ng-template>
+  </tui-island>
+
+  <ng-container *ngIf="isCombineMethod">
+    <tui-island>
+      <h3 class="tui-text_h4">Обзоры</h3>
+
+      <p>
+        Обзоры с <span *ngIf="withScore; else withScoreAndDesc">оценкой</span> будут
+        <span *ngIf="isCopy; else moved" class="positive">скопированы</span>.
+      </p>
+
+      <ng-template #moved><span class="negative">перенесены</span></ng-template>
+
+      <ng-template #withScoreAndDesc>
+        <span>оценкой и описанием</span>
+      </ng-template>
+    </tui-island>
+
+    <tui-island>
+      <h3 class="tui-text_h4">Действие с коллекциями</h3>
+      @switch (actionAfterMerging) {
+        @case ('removeAll') {
+          <p>После объединения <span class="negative">коллекции будут удалены</span>.</p>
+        }
+
+        @case ('saveAll') {
+          <p>После объединения <span class="positive"> коллекции будут сохранены</span>.</p>
+        }
+
+        @case ('removeEmpty') {
+          <p>
+            После объединения коллекции будут
+            <span class="negative">удалены пустые коллекции</span>.
+          </p>
+        }
+      }
+    </tui-island>
+  </ng-container>
+</div>
+
+<button (click)="handleConfirm()" [showLoader]="loading()" tuiButton>Создать</button>

@@ -1,0 +1,38 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.sidebar-option {
+  height: auto;
+  tui-marker-icon {
+    color: var(--tui-text-01);
+  }
+
+  ::ng-deep .t-wrapper {
+    padding: 1rem !important;
+  }
+
+  ::ng-deep .t-content {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+
+  h6 {
+    margin: 0;
+  }
+
+  &.danger {
+    h6 {
+      color: var(--tui-negative);
+    }
+
+    tui-marker-icon {
+      color: var(--tui-negative);
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<div class="user-grid">
+  <!-- SKELETON -->
+  <app-user-card
+    *ngIf="loading && profiles().length === 0; else notLoading"
+    view="horizontal"
+  ></app-user-card>
+
+  <ng-template #notLoading>
+    <tui-island *ngIf="profiles().length === 0; else showProfiles" class="not-found-placeholder">
+      <p>Пользователи не найдены</p></tui-island
+    >
+
+    <ng-template #showProfiles>
+      <app-user-card *ngFor="let profile of profiles()" [user]="profile.user" view="horizontal">
+        <app-follow-button
+          [userId]="profile.user.id"
+          [isSubscribed]="profile.additionalInfo.isSubscribed"
+        ></app-follow-button>
+      </app-user-card>
+
+      <app-intersection-loader
+        *ngIf="loadMoreKey"
+        [loadMoreKey]="loadMoreKey"
+        (loadMore)="loadMore.emit(this.loadMoreKey!)"
+      ></app-intersection-loader>
+    </ng-template>
+  </ng-template>
+</div>

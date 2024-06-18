@@ -1,0 +1,36 @@
+@import 'shared';
+.profile-button {
+  @include hide-mobile;
+
+  .profile-image {
+    border-radius: 50%;
+  }
+}
+
+.profile-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  span {
+    display: block;
+    text-align: start;
+    width: 100%;
+  }
+
+  .profile-title {
+    font: var(--tui-font-text-m-2);
+    font-weight: 600;
+    color: var(--tui-text-02);
+  }
+  .profile-username {
+    font: var(--tui-font-text-l);
+    font-weight: 700;
+  }
+}
+
+.exit-item {
+  color: var(--tui-negative);
+}
+.dropdown-menu a {
+  font-weight: 500;
+}

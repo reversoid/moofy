@@ -1,0 +1,22 @@
+<ng-container *ngIf="paginatedReviews">
+  <div class="review-list">
+    <app-review *ngFor="let review of paginatedReviews?.items" [review]="review">
+      <button
+        *ngIf="isCreator()"
+        action
+        (click)="openEditReviewDialog(review)"
+        tuiIconButton
+        size="s"
+        appearance="icon"
+        icon="tuiIconSettingsLarge"
+      ></button>
+    </app-review>
+
+    <app-review *ngIf="showSkeleton"></app-review>
+  </div>
+
+  <app-intersection-loader
+    [loadMoreKey]="paginatedReviews.nextKey"
+    (loadMore)="handleLoadMore()"
+  ></app-intersection-loader>
+</ng-container>

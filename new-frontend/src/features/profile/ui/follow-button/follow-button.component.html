@@ -1,0 +1,16 @@
+<button
+  class="follow-button"
+  *ngIf="isFollowing(); else notSubscribed"
+  (click)="unfollow(userId())"
+  [showLoader]="followLoading()"
+  tuiButton
+  appearance="secondary"
+>
+  Отписаться
+</button>
+
+<ng-template #notSubscribed>
+  <button class="follow-button" (click)="follow(userId())" [showLoader]="followLoading()" tuiButton>
+    Подписаться
+  </button>
+</ng-template>

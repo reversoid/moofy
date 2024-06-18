@@ -1,0 +1,41 @@
+@import 'shared';
+
+.select-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.notifications {
+  @include tui-space(top, 3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.empty-container {
+  padding: 0.5rem;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+
+  .empty-placeholder {
+    text-align: left;
+    color: var(--tui-text-02);
+    margin: 0;
+  }
+
+  div.height-filler {
+    height: var(--tui-height-l);
+  }
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  @include tui-space(top, 2);
+}
+
+app-notifications-shown-select {
+  width: 100%;
+}

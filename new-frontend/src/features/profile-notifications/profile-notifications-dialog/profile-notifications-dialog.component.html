@@ -1,0 +1,32 @@
+<div class="tui-space_top-5 select-wrapper">
+  <app-notifications-shown-select
+    [selectedOption]="selectedOption"
+    (selectedOptionChange)="changeSelectedOption($event)"
+  ></app-notifications-shown-select>
+</div>
+
+<div class="notifications">
+  <app-notification *ngIf="firstLoading()"></app-notification>
+
+  <tui-island
+    *ngIf="!firstLoading() && emptyNotifications(); else showNotifications"
+    class="empty-container"
+  >
+    <p class="empty-placeholder">Список уведомлений пуст</p>
+    <div class="height-filler"></div>
+  </tui-island>
+
+  <ng-template #showNotifications>
+    <ng-container *ngIf="notificationsItems() as notifications">
+      <app-notification
+        *ngFor="let n of notifications"
+        [notification]="n"
+        (waIntersectionObservee)="handleObservedNotification($event, n.id)"
+      ></app-notification>
+    </ng-container>
+  </ng-template>
+</div>
+
+<div *ngIf="loadKey() as key" class="load-more-container">
+  <button (click)="loadNotifications(key)" tuiButton size="m">Загрузить больше</button>
+</div>

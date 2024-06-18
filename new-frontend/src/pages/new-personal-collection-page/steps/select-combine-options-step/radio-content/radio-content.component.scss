@@ -1,0 +1,11 @@
+.description {
+  color: var(--tui-text-02);
+
+  &.negative {
+    color: var(--tui-negative);
+  }
+
+  &.positive {
+    color: var(--tui-positive);
+  }
+}

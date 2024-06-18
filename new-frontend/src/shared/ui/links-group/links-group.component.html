@@ -1,0 +1,12 @@
+<tui-island class="group">
+  <a
+    *ngFor="let item of linkItems; let i = index"
+    [appearance]="i === selectedLinkItem ? 'primary' : 'secondary'"
+    size="m"
+    tuiButton
+    type="button"
+    [routerLink]="item.link"
+  >
+    {{ item.label }}
+  </a>
+</tui-island>

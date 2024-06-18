@@ -1,0 +1,80 @@
+@import 'shared';
+
+:host {
+  display: block;
+  overflow: hidden;
+  --tui-skeleton-radius: 0.25rem;
+}
+
+.image-wrapper {
+  position: relative;
+  position: relative;
+  border-radius: calc(var(--tui-radius-xl) - 1rem);
+  overflow: hidden;
+
+  img {
+    object-fit: cover;
+  }
+
+  .color-block {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.horizontal {
+  .image-wrapper {
+    width: 10rem;
+    height: 10rem;
+    flex-shrink: 0;
+  }
+
+  @media #{$tui-mobile} {
+    .image-wrapper {
+      width: 10rem;
+      height: 10rem;
+
+      &::before {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5rem;
+  tui-svg {
+    flex-shrink: 0;
+  }
+
+  .title {
+    margin: 0;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &.tui-skeleton {
+      width: min(18rem, 100%);
+    }
+  }
+}
+
+p.description {
+  margin: 0;
+  color: var(--tui-text-02);
+
+  &.tui-skeleton {
+    width: min(25rem, 100%);
+  }
+}
+
+.lock-icon {
+  color: var(--tui-text-02);
+}

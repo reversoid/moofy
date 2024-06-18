@@ -1,0 +1,89 @@
+name: moofy-test-with-prisma-migration
+run-name: Migrate prisma test application
+on: [workflow_dispatch]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Setup .env file
+        run: |
+          rm .env
+          touch .env
+
+          echo NODE_ENV=test >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
+
+          echo REDIS_PASSWORD=${{ secrets.REDIS_TEST_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_TEST_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_TEST_PORT }} >> .env
+
+          echo POSTGRES_USER=${{ secrets.POSTGRES_TEST_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_TEST_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_TEST_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_TEST_PORT }} >> .env
+          echo POSTGRES_DB_NAME=${{ secrets.POSTGRES_TEST_DB_NAME }} >> .env
+
+          echo KP_API_KEY=${{ secrets.KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEY=${{ secrets.UNOFFICIAL_KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEYS=${{ secrets.UNOFFICIAL_KP_API_KEYS }} >> .env
+          echo PG_ADMIN_TEST_EMAIL=${{ secrets.PG_ADMIN_TEST_EMAIL }} >> .env
+          echo PG_ADMIN_TEST_PASSWORD=${{ secrets.PG_ADMIN_TEST_PASSWORD }} >> .env
+
+          echo S3_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env
+          echo S3_KEY_SECRET=${{ secrets.S3_KEY_SECRET }} >> .env
+          echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+
+          echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
+
+          echo RMQ_USER=${{ secrets.RMQ_USER_TEST }} >> .env
+          echo RMQ_PASS=${{ secrets.RMQ_PASS_TEST }} >> .env
+          echo RMQ_PORT=${{ secrets.RMQ_PORT }} >> .env
+          echo RMQ_EXCHANGE=${{ secrets.RMQ_EXCHANGE }} >> .env
+          echo RMQ_QUEUE_NAME=${{ secrets.RMQ_QUEUE_NAME }} >> .env
+          echo RMQ_HOST=${{ secrets.RMQ_HOST }} >> .env
+
+          echo POSTGRES_KNOWN_HOST=${{ secrets.POSTGRES_TEST_HOST }} >> .env
+          echo REDIS_KNOWN_HOST=redis-test-db >> .env
+          echo RMQ_KNOWN_HOST=rmq-test >> .env
+
+          mkdir ./new-backend/config
+          cp .env ./new-backend/config
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
+
+      - name: Set up Docker context
+        run: |
+          docker context create moofy-server --docker "host=ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
+          docker context use moofy-server
+
+      - name: Create .env file in new-backend
+        run: |
+          cd new-backend
+          touch .env
+          echo DATABASE_URL="postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{ secrets.POSTGRES_TEST_HOST }}:${{ secrets.POSTGRES_TEST_PORT }}/${{ secrets.POSTGRES_TEST_DB_NAME }}?schema=public" >> .env
+
+      - name: Install dependencies
+        run: |
+          cd new-backend
+          npm install
+
+      - name: Compose test docker
+        run: docker --context moofy-server compose --env-file .env -f docker-compose.test.yml up --build -d
+
+      - name: Prisma Migrate
+        run: |
+          cd new-backend   
+          npx prisma migrate resolve --applied "0_init"
+          npx prisma migrate deploy

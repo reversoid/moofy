@@ -1,0 +1,15 @@
+<button
+  (click)="openNotifications()"
+  class="notifications-button"
+  tuiIconButton
+  icon="tuiIconBellLarge"
+  appearance="secondary"
+>
+  <tui-badge
+    *ngIf="unseenNotificationsAmount$ | async | formatNotificationsAmount as amount"
+    size="xs"
+    status="primary"
+    class="badge"
+    [value]="amount"
+  ></tui-badge>
+</button>

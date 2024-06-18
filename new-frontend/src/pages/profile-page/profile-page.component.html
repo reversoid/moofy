@@ -1,0 +1,105 @@
+<div class="profile-header">
+  <div class="image-wrapper">
+    <img
+      ngSrc="https://moofy.storage.yandexcloud.net/list-images/75f8e535-2e34-4f8b-8148-fccba89471d1.webp"
+      fill
+    />
+  </div>
+
+  <h1 class="username tui-text_h2">{{ username$ | async }}</h1>
+
+  <div class="profile-info-grid">
+    <tui-island class="description">
+      <h4 class="tui-island__title">Описание</h4>
+      <p
+        *ngIf="description$ | async as description; else noDescription"
+        class="tui-island__paragraph"
+      >
+        {{ description }}
+      </p>
+      <ng-template #noDescription>
+        <p class="tui-island__paragraph empty">Описание отсутствует</p>
+      </ng-template>
+    </tui-island>
+
+    <a routerLink="followees" tuiIsland [hoverable]="true" class="followees">
+      <div class="island-content">
+        <h4 class="island-title">Подписки</h4>
+        <p class="island-value">{{ followeesAmount$ | async }}</p>
+      </div>
+    </a>
+
+    <a routerLink="followers" tuiIsland [hoverable]="true" class="followers">
+      <div class="island-content">
+        <h4 class="island-title">Подписчики</h4>
+        <p class="island-value">{{ followersAmount$ | async }}</p>
+      </div>
+    </a>
+
+    <a
+      *tuiLet="personalCollectionLink$ | async as link"
+      [routerLink]="link"
+      [hoverable]="!!link"
+      tuiIsland
+      class="reviews"
+      [class.disabled]="!link"
+    >
+      <div class="island-content">
+        <h4 class="island-title">Обзоры</h4>
+        <p class="island-value">{{ (personalReviewsAmount$ | async) ?? 0 }}</p>
+      </div>
+    </a>
+
+    <tui-island class="register-date">
+      <div class="island-content">
+        <h4 class="island-title">Дата регистрации</h4>
+        <p class="island-value">{{ registerDate$ | async }}</p>
+      </div>
+    </tui-island>
+
+    <tui-island class="actions">
+      <div class="actions-buttons">
+        <a
+          *ngIf="isOwnerPage$ | async; else notOwner"
+          routerLink="/settings"
+          tuiButton
+          appearance="secondary"
+          class="action-button"
+        >
+          Настройки
+        </a>
+
+        <ng-template #notOwner>
+          <button
+            *ngIf="isSubscribed$ | async; else notSubscribed"
+            (click)="unfollow()"
+            [showLoader]="loadingFollowButton()"
+            class="action-button"
+            tuiButton
+            appearance="secondary"
+          >
+            Отписаться
+          </button>
+
+          <ng-template #notSubscribed>
+            <button
+              (click)="follow()"
+              [showLoader]="loadingFollowButton()"
+              class="action-button"
+              tuiButton
+            >
+              Подписаться
+            </button>
+          </ng-template>
+        </ng-template>
+      </div>
+    </tui-island>
+  </div>
+</div>
+
+<h3 class="collections-title tui-text_h3">Коллекции</h3>
+<app-collection-grid
+  [collections]="(collections$ | async) || []"
+  [hideDescription]="true"
+  view="grid"
+></app-collection-grid>

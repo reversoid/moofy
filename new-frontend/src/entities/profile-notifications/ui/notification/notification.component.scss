@@ -1,0 +1,44 @@
+a.profile-image-link {
+  --tui-skeleton-radius: 50%;
+
+  .img-wrapper {
+    width: 3.5rem;
+    height: 3.5rem;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: var(--tui-secondary);
+
+    tui-svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--tui-text-02);
+    }
+  }
+}
+
+.notification {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  align-items: center;
+
+  &__content {
+    display: flex;
+    align-items: center;
+
+    p {
+      --tui-skeleton-radius: var(--tui-radius-s);
+      margin: 0;
+    }
+  }
+
+  .go-button {
+    --tui-skeleton-radius: var(--tui-radius-m);
+
+    margin-left: auto;
+  }
+}

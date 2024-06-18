@@ -1,0 +1,35 @@
+@import 'shared';
+
+ul {
+  list-style: disc;
+  list-style-position: inside;
+}
+
+button {
+  margin-top: 1rem;
+  @media #{$tui-mobile} {
+    width: 100%;
+  }
+}
+
+h3 {
+  margin-top: 0;
+}
+
+.cards-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  @media #{$tui-mobile} {
+    grid-template-columns: 1fr;
+  }
+}
+
+.negative {
+  color: var(--tui-negative);
+}
+
+.positive {
+  color: var(--tui-positive);
+}

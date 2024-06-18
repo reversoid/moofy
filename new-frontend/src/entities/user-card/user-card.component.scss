@@ -1,0 +1,86 @@
+@import 'shared';
+
+.image-wrapper {
+  width: 6rem;
+  height: 6rem;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+
+  .image-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--tui-base-03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    tui-svg {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@mixin description-wrapper-default {
+  flex-grow: 2;
+
+  width: 100%;
+  background-color: var(--tui-elevation-01) !important;
+
+  .description {
+    margin: 0;
+    color: var(--tui-text-02);
+  }
+}
+
+.description-wrapper {
+  @include description-wrapper-default();
+}
+
+.user-content {
+  display: flex;
+  flex-grow: 2;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@mixin centered-username {
+  text-align: center;
+}
+
+.vertical {
+  .username {
+    @include centered-username();
+  }
+
+  .description-wrapper {
+    margin-top: 0.5rem;
+  }
+}
+
+.horizontal {
+  .description-wrapper {
+    padding: 0;
+    background: none !important;
+
+    @media #{$tui-mobile} {
+      padding: 1rem;
+      margin-top: 0.5rem;
+      @include description-wrapper-default();
+    }
+  }
+
+  @media #{$tui-mobile} {
+    .username {
+      @include centered-username();
+    }
+  }
+}
+
+.skeleton-username,
+.skeleton-description {
+  --tui-skeleton-radius: 0.25rem;
+}

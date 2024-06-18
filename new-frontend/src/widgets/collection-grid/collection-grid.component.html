@@ -1,0 +1,21 @@
+<div class="collections-grid list">
+  <!-- SKELETON -->
+  <app-collection
+    *ngIf="!collections?.length && loading"
+    view="horizontal"
+    [hideDescription]="hideDescription"
+  ></app-collection>
+
+  <a *ngFor="let collection of collections" [routerLink]="['/collections', collection.id]" tuiLink>
+    <app-collection [collection]="collection" [hideDescription]="hideDescription"></app-collection>
+  </a>
+</div>
+
+<tui-island *ngIf="collections?.length === 0 && !loading" class="empty-placeholder"
+  >Нет коллекций</tui-island
+>
+
+<app-intersection-loader
+  [loadMoreKey]="loadMoreKey"
+  (loadMore)="loadMore.emit(loadMoreKey!)"
+></app-intersection-loader>

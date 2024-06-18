@@ -1,0 +1,23 @@
+tui-island.collection-image {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .image-wrapper {
+    width: 4rem;
+    height: 4rem;
+    position: relative;
+
+    img {
+      border-radius: calc(var(--tui-radius-xl) - 1rem);
+    }
+  }
+
+  .empty-icon {
+    color: var(--tui-text-01);
+  }
+}
+
+.open-image-button ::ng-deep .t-wrapper {
+  padding: 0 !important;
+}

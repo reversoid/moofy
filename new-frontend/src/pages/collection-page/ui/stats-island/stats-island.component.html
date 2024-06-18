@@ -1,0 +1,33 @@
+<tui-island class="stats">
+  <div class="controls">
+    <div class="control-with-number">
+      <app-like-collection-button
+        (likeProcessed)="setNewStats($event)"
+        [collectionId]="collection!.id"
+        [isLiked]="stats?.isLiked ?? false"
+      ></app-like-collection-button>
+
+      <p>{{ stats?.likesAmount ?? 0 }}</p>
+    </div>
+    <div class="control-with-number">
+      <button
+        (click)="openCommentsDialog()"
+        tuiIconButton
+        icon="tuiIconMessageCircleLarge"
+      ></button>
+      <p>{{ stats?.commentsAmount ?? 0 }}</p>
+    </div>
+    <div>
+      <app-bookmark-collection-button
+        [collectionId]="collection!.id"
+        [isBookmarked]="stats?.isFavorite ?? false"
+      ></app-bookmark-collection-button>
+    </div>
+    <button
+      (click)="openOptions()"
+      tuiIconButton
+      icon="tuiIconSettingsLarge"
+      appearance="secondary"
+    ></button>
+  </div>
+</tui-island>

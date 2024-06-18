@@ -1,0 +1,18 @@
+<h1 class="tui-text_h1">Избранное</h1>
+
+<tui-input
+  [tuiTextfieldLabelOutside]="true"
+  class="search-input tui-space_bottom-5"
+  tuiTextfieldIconLeft="tuiIconSearchLarge"
+  [tuiTextfieldCleaner]="true"
+>
+  Поиск
+  <input tuiTextfield role="search" />
+</tui-input>
+
+<app-collection-grid
+  [collections]="collections()"
+  [loading]="loading()"
+  [loadMoreKey]="loadKey()"
+  (loadMore)="loadMore($event)"
+></app-collection-grid>
