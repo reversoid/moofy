@@ -7,6 +7,19 @@
   }
 }
 
+@mixin hide-tablet {
+  @media #{$tui-tablet} {
+    display: none;
+  }
+}
+
+@mixin show-tablet($display) {
+  display: none;
+  @media #{$tui-tablet} {
+    display: $display;
+  }
+}
+
 @mixin show-mobile($display) {
   display: none;
   @media #{$tui-mobile} {

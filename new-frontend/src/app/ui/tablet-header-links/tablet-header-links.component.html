@@ -1,0 +1,20 @@
+<tui-hosted-dropdown [content]="content">
+  <button appearance="secondary" tuiIconButton type="button" [iconRight]="arrow"></button>
+</tui-hosted-dropdown>
+
+<ng-template #content>
+  <tui-data-list role="menu">
+    <a
+      *ngFor="let item of items"
+      #rla="routerLinkActive"
+      role="menuitemradio"
+      routerLinkActive
+      tuiOption
+      [attr.aria-checked]="rla.isActive"
+      [routerLink]="item.routerLink"
+    >
+      {{ item.label }}
+      <tui-svg *ngIf="rla.isActive" src="tuiIconCheck"></tui-svg>
+    </a>
+  </tui-data-list>
+</ng-template>

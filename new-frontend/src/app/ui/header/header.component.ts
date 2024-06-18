@@ -13,6 +13,7 @@ import { NotificationButtonComponent } from '../notification-button/notification
 import { ProfileButtonComponent } from '../profile-button/profile-button.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { WrapperComponent } from '../wrapper/wrapper.component';
+import { TabletHeaderLinksComponent } from '../tablet-header-links/tablet-header-links.component';
 
 @Component({
   selector: 'app-header',
@@ -34,6 +35,7 @@ import { WrapperComponent } from '../wrapper/wrapper.component';
     AsyncPipe,
     TuiIslandModule,
     WrapperComponent,
+    TabletHeaderLinksComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',

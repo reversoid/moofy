@@ -1,0 +1,6 @@
+@import 'shared';
+
+:host {
+  @include show-tablet(block);
+  @include hide-mobile();
+}
