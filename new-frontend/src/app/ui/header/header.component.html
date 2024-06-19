@@ -17,7 +17,7 @@
         >
       </tui-island>
 
-      <app-tablet-header-links></app-tablet-header-links>
+      <app-tablet-header-links *ngIf="user$ | async"></app-tablet-header-links>
 
       <div class="icon-buttons">
         <a class="explore-button" routerLink="/explore">
