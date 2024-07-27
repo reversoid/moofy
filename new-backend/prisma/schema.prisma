@@ -266,6 +266,7 @@ model Users {
 
   userCreatedNotifications Notification[] @relation("from_user_relation")
   userNotifications        Notification[] @relation("to_user_relation")
+  sessions                 Session[]
 
   @@index([deletedAt], name: "IDX_22b81d3ed19a0bffcb660800f4")
   @@index([updatedAt], name: "IDX_9cdce43fa0043c794281aa0905")
@@ -281,6 +282,14 @@ model UserMetadata {
 
   @@index([usernameSearchDocument], name: "username_search_document_idx", type: Gin)
   @@map("user_metadata")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement()) @map("id")
+  userId    Int      @map("user_id")
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+
+  user Users @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model AppUpdates {
