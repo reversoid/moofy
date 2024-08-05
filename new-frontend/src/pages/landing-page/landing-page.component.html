@@ -18,7 +18,7 @@
     [(index)]="carouselIndex"
     class="features-carousel"
     [draggable]="true"
-    [itemsCount]="1"
+    [itemsCount]="itemsVisible"
   >
     <tui-island *tuiItem class="feature-block">
       <div class="image-container">
@@ -76,6 +76,6 @@
 <tui-pagination
   class="carousel-pagination"
   [(index)]="carouselIndex"
-  [length]="4"
+  [length]="paginationAmount"
   size="s"
 ></tui-pagination>

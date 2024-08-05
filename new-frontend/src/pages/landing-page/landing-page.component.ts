@@ -20,4 +20,10 @@ import { TuiCarouselModule, TuiIslandModule, TuiPaginationModule } from '@taiga-
 })
 export class LandingPageComponent {
   carouselIndex = 0;
+  itemsAmount = 4;
+  itemsVisible = 3;
+
+  get paginationAmount() {
+    return Math.ceil(this.itemsAmount / this.itemsVisible);
+  }
 }
