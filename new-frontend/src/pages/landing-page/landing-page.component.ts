@@ -1,13 +1,23 @@
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TuiButtonModule } from '@taiga-ui/core';
+import { TuiCarouselModule, TuiIslandModule, TuiPaginationModule } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [TuiButtonModule, NgOptimizedImage],
+  imports: [
+    TuiButtonModule,
+    NgOptimizedImage,
+    TuiIslandModule,
+    NgOptimizedImage,
+    TuiCarouselModule,
+    TuiPaginationModule,
+  ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LandingPageComponent {}
+export class LandingPageComponent {
+  carouselIndex = 0;
+}
