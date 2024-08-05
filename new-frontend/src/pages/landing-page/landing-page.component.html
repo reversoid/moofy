@@ -12,6 +12,7 @@
     tuiIconButton
     type="button"
     (click)="carousel.prev()"
+    class="nav-button"
   ></button>
 
   <tui-carousel
@@ -19,7 +20,7 @@
     [(index)]="carouselIndex"
     class="features-carousel"
     [draggable]="true"
-    [itemsCount]="itemsVisible"
+    [itemsCount]="itemsVisible()"
   >
     <tui-island *tuiItem class="feature-block">
       <div class="image-container">
@@ -73,8 +74,10 @@
     tuiIconButton
     type="button"
     (click)="carousel.next()"
+    class="nav-button"
   ></button>
 </div>
+
 <tui-pagination
   class="carousel-pagination"
   [(index)]="carouselIndex"

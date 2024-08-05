@@ -1,7 +1,9 @@
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TuiButtonModule } from '@taiga-ui/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiBreakpointService, TuiButtonModule } from '@taiga-ui/core';
 import { TuiCarouselModule, TuiIslandModule, TuiPaginationModule } from '@taiga-ui/kit';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-landing-page',
@@ -17,14 +19,38 @@ import { TuiCarouselModule, TuiIslandModule, TuiPaginationModule } from '@taiga-
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
 })
-export class LandingPageComponent {
+export class LandingPageComponent implements OnInit {
+  constructor(
+    private readonly breakpoint$: TuiBreakpointService,
+    private readonly destroy$: TuiDestroyService,
+  ) {}
+
+  ngOnInit(): void {
+    this.breakpoint$.pipe(takeUntil(this.destroy$)).subscribe((bp) => {
+      switch (bp) {
+        case 'desktopLarge':
+          this.itemsVisible.set(3);
+          break;
+
+        case 'desktopSmall':
+          this.itemsVisible.set(2);
+          break;
+
+        case 'mobile':
+          this.itemsVisible.set(1);
+          break;
+      }
+    });
+  }
+
   carouselIndex = 0;
   itemsAmount = 4;
-  itemsVisible = 3;
+  itemsVisible = signal(3);
 
   get paginationAmount() {
-    return Math.ceil(this.itemsAmount / this.itemsVisible);
+    return Math.ceil(this.itemsAmount / this.itemsVisible());
   }
 
   get prevDisabled() {
@@ -36,6 +62,6 @@ export class LandingPageComponent {
   }
 
   onIndex(index: number) {
-    this.carouselIndex = index * this.itemsVisible;
+    this.carouselIndex = index * this.itemsVisible();
   }
 }
