@@ -26,4 +26,16 @@ export class LandingPageComponent {
   get paginationAmount() {
     return Math.ceil(this.itemsAmount / this.itemsVisible);
   }
+
+  get prevDisabled() {
+    return this.carouselIndex <= 0;
+  }
+
+  get nextDisabled() {
+    return this.carouselIndex >= this.paginationAmount;
+  }
+
+  onIndex(index: number) {
+    this.carouselIndex = index * this.itemsVisible;
+  }
 }

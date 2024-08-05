@@ -6,6 +6,7 @@
 
 <div tuiCarouselButtons class="carousel-wrapper">
   <button
+    [disabled]="prevDisabled"
     icon="tuiIconChevronLeftLarge"
     title="Previous"
     tuiIconButton
@@ -66,6 +67,7 @@
   </tui-carousel>
 
   <button
+    [disabled]="nextDisabled"
     icon="tuiIconChevronRightLarge"
     title="Next"
     tuiIconButton
@@ -78,4 +80,5 @@
   [(index)]="carouselIndex"
   [length]="paginationAmount"
   size="s"
+  (indexChange)="onIndex($event)"
 ></tui-pagination>
