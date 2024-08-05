@@ -4,57 +4,75 @@
   <button tuiButton>Присоединиться</button>
 </div>
 
-<tui-carousel
-  [(index)]="carouselIndex"
-  class="features-carousel"
-  [draggable]="true"
-  [itemsCount]="1"
->
-  <tui-island *tuiItem class="feature-block">
-    <div class="image-container">
-      <h2 class="block-title tui-text_h4">
-        Пользуйся <br />
-        для себя
-      </h2>
-      <p class="description">Веди учет просмотренных фильмов</p>
-      <img draggable="false" ngSrc="/assets/landing/grad-1.svg" fill />
-    </div>
-  </tui-island>
+<div tuiCarouselButtons class="carousel-wrapper">
+  <button
+    icon="tuiIconChevronLeftLarge"
+    title="Previous"
+    tuiIconButton
+    type="button"
+    (click)="carousel.prev()"
+  ></button>
 
-  <tui-island *tuiItem class="feature-block">
-    <div class="image-container">
-      <h2 class="block-title tui-text_h4">
-        Выражай <br />
-        свое мнение
-      </h2>
-      <p class="description">Создавай короткие рецензии к фильмам</p>
-      <img draggable="false" ngSrc="/assets/landing/grad-3.svg" fill />
-    </div>
-  </tui-island>
+  <tui-carousel
+    #carousel
+    [(index)]="carouselIndex"
+    class="features-carousel"
+    [draggable]="true"
+    [itemsCount]="1"
+  >
+    <tui-island *tuiItem class="feature-block">
+      <div class="image-container">
+        <h2 class="block-title tui-text_h4">
+          Пользуйся <br />
+          для себя
+        </h2>
+        <p class="description">Веди учет просмотренных фильмов</p>
+        <img draggable="false" ngSrc="/assets/landing/grad-1.svg" fill />
+      </div>
+    </tui-island>
 
-  <tui-island *tuiItem class="feature-block">
-    <div class="image-container">
-      <h2 class="block-title tui-text_h4">
-        Делись <br />
-        коллекциями
-      </h2>
-      <p class="description">Делай коллекции публичными</p>
-      <img ngSrc="/assets/landing/grad-4.svg" fill />
-    </div>
-  </tui-island>
+    <tui-island *tuiItem class="feature-block">
+      <div class="image-container">
+        <h2 class="block-title tui-text_h4">
+          Выражай <br />
+          свое мнение
+        </h2>
+        <p class="description">Создавай короткие рецензии к фильмам</p>
+        <img draggable="false" ngSrc="/assets/landing/grad-3.svg" fill />
+      </div>
+    </tui-island>
 
-  <tui-island *tuiItem class="feature-block">
-    <div class="image-container">
-      <h2 class="block-title tui-text_h4">
-        Открывай <br />
-        новое
-      </h2>
-      <p class="description">Изучай подборки фильмов других пользователей</p>
-      <img draggable="false" ngSrc="/assets/landing/grad-2.svg" fill />
-    </div>
-  </tui-island>
-</tui-carousel>
+    <tui-island *tuiItem class="feature-block">
+      <div class="image-container">
+        <h2 class="block-title tui-text_h4">
+          Делись <br />
+          коллекциями
+        </h2>
+        <p class="description">Делай коллекции публичными</p>
+        <img ngSrc="/assets/landing/grad-4.svg" fill />
+      </div>
+    </tui-island>
 
+    <tui-island *tuiItem class="feature-block">
+      <div class="image-container">
+        <h2 class="block-title tui-text_h4">
+          Открывай <br />
+          новое
+        </h2>
+        <p class="description">Изучай подборки фильмов других пользователей</p>
+        <img draggable="false" ngSrc="/assets/landing/grad-2.svg" fill />
+      </div>
+    </tui-island>
+  </tui-carousel>
+
+  <button
+    icon="tuiIconChevronRightLarge"
+    title="Next"
+    tuiIconButton
+    type="button"
+    (click)="carousel.next()"
+  ></button>
+</div>
 <tui-pagination
   class="carousel-pagination"
   [(index)]="carouselIndex"
