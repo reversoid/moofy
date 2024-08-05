@@ -1,5 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { RouterLink, RouterModule } from '@angular/router';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiBreakpointService, TuiButtonModule } from '@taiga-ui/core';
 import { TuiCarouselModule, TuiIslandModule, TuiPaginationModule } from '@taiga-ui/kit';
@@ -15,6 +16,7 @@ import { takeUntil } from 'rxjs';
     NgOptimizedImage,
     TuiCarouselModule,
     TuiPaginationModule,
+    RouterModule,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
