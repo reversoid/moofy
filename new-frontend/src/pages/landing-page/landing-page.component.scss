@@ -16,6 +16,11 @@
   margin-top: 1.5rem;
 }
 
+.subtitle {
+  text-align: center;
+  margin: 0;
+}
+
 .join {
   margin-top: 3rem;
   display: flex;
@@ -50,7 +55,7 @@
   }
 
   .image-container {
-    h2 {
+    h3 {
       margin-top: 0;
     }
     position: relative;
@@ -60,7 +65,7 @@
     overflow: hidden;
     padding: 1rem;
 
-    h2,
+    h3,
     p {
       z-index: 1;
       position: relative;
