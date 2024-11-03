@@ -1,6 +1,12 @@
 import { Id } from "../utils/id";
 
 export class User {
+  static create(
+    props: ConstructorParameters<typeof User>[0]
+  ): Omit<User, "id"> {
+    return new User(props);
+  }
+
   id: Id | null;
   username: string;
   description: string | null;

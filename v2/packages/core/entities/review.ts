@@ -2,6 +2,12 @@ import { Id } from "../utils/id";
 import { Film } from "./film";
 
 export class Review {
+  static create(
+    props: ConstructorParameters<typeof Review>[0]
+  ): Omit<Review, "id"> {
+    return new Review(props);
+  }
+
   id: Id | null;
   score: number | null;
   description: string | null;
