@@ -1,12 +1,9 @@
+import { initCreateEntity } from "../utils/create-entity";
 import { Id } from "../utils/id";
 import { Film } from "./film";
 
 export class Review {
-  static create(
-    props: ConstructorParameters<typeof Review>[0]
-  ): Omit<Review, "id"> {
-    return new Review(props);
-  }
+  static create = initCreateEntity(Review);
 
   id: Id | null;
   score: number | null;

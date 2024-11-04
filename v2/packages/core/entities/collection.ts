@@ -1,12 +1,9 @@
+import { initCreateEntity } from "../utils/create-entity";
 import { Id } from "../utils/id";
 import { User } from "./user";
 
 export class Collection {
-  static create(
-    props: ConstructorParameters<typeof Collection>[0]
-  ): Omit<Collection, "id"> {
-    return new Collection(props);
-  }
+  static create = initCreateEntity(Collection);
 
   id: Id | null;
   name: string;
