@@ -101,6 +101,10 @@ importers:
   packages/config: {}
 
   packages/core:
+    dependencies:
+      resulto:
+        specifier: ^1.4.2
+        version: 1.4.2
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -4265,6 +4269,10 @@ packages:
       onetime: 5.1.2
       signal-exit: 3.0.7
     dev: true
+
+  /resulto@1.4.2:
+    resolution: {integrity: sha512-y4PERI7x0749RbTQGF0cyMdOcbuzoMohPLMn1Hk3nxu+6sN7V6kb1YvFZjlyzWsncPXPP/guyNZp8+npji4DDg==}
+    dev: false
 
   /reusify@1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
