@@ -20,8 +20,8 @@ export class Collection {
     description?: string | null;
     isPublic: boolean;
     imageUrl?: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     creator: User;
   }) {
     this.id = props.id ?? null;

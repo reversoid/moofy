@@ -1,6 +1,6 @@
 import { User } from "../entities/user";
 import { IBaseRepository } from "./base.repository";
 
-export interface UserRepository extends IBaseRepository<User> {
+export interface IUserRepository extends IBaseRepository<User> {
   searchUsers(search: string): Promise<User[]>;
 }

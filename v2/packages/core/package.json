@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "@types/bcrypt": "^5.0.2"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "resulto": "^1.4.2"
   }
 }

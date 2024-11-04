@@ -14,17 +14,19 @@ export class Review {
 
   constructor(props: {
     id?: Id;
-    score: number;
-    description: string;
-    createdAt: Date;
-    updatedAt: Date;
+    score?: number | null;
+    description?: string | null;
+    createdAt?: Date;
+    updatedAt?: Date;
     film: Film;
   }) {
+    const now = new Date();
+
     this.id = props.id ?? null;
-    this.score = props.score;
-    this.description = props.description;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
+    this.score = props.score ?? null;
+    this.description = props.description ?? null;
+    this.createdAt = props.createdAt ?? now;
+    this.updatedAt = props.updatedAt ?? now;
     this.film = props.film;
   }
 }

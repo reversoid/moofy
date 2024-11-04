@@ -15,18 +15,20 @@ export class User {
   constructor(props: {
     id?: Id;
     username: string;
-    description: string | null;
-    imageUrl: string | null;
+    description?: string | null;
+    imageUrl?: string | null;
     passwordHash: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
   }) {
+    const now = new Date();
+
     this.id = props.id ?? null;
     this.username = props.username;
-    this.description = props.description;
-    this.imageUrl = props.imageUrl;
+    this.description = props.description ?? null;
+    this.imageUrl = props.imageUrl ?? null;
     this.passwordHash = props.passwordHash;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
+    this.createdAt = props.createdAt ?? now;
+    this.updatedAt = props.updatedAt ?? now;
   }
 }
