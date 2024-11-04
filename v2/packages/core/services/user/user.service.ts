@@ -16,12 +16,13 @@ export class UserService implements IUserService {
     const passwordHash = await hashPassword(password);
     const newUser = User.create({ username, passwordHash });
 
-    try {
-      const savedUser = await this.userRepository.create(newUser);
-      return ok(savedUser);
-    } catch {
+    const existingUser = await this.userRepository.getByUsername(username);
+    if (existingUser) {
       return err(new UsernameExistsError());
     }
+
+    const savedUser = await this.userRepository.create(newUser);
+    return ok(savedUser);
   }
 
   async getUser(id: Id): Promise<User | null> {
