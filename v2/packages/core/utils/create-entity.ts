@@ -1,6 +1,4 @@
-import { Collection } from "../entities/collection";
-
-export type EntityWithConstructor<T> = new (...args: any) => T;
+type EntityWithConstructor<T> = new (...args: any) => T;
 
 /**
  * Builds a function that creates entity without ID
