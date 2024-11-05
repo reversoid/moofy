@@ -1,23 +1,15 @@
 export class Id {
-  private _value: number;
+  private _value: number | null = null;
 
-  constructor(value: number) {
-    this._value = Id.validateId(value);
+  constructor(value?: number) {
+    this._value = value ?? null;
   }
 
-  public get value() {
-    return this._value;
-  }
-
-  public static validateId(value: number): number {
-    if (typeof value !== "number") {
-      throw new Error("Id Must Be A Number");
+  public get value(): number {
+    if (this._value === null) {
+      throw new Error("ID Is Not Assigned. Something bad happenned.");
     }
 
-    return value;
-  }
-
-  toNumber() {
-    return this.value;
+    return this._value;
   }
 }

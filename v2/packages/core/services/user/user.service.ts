@@ -14,7 +14,7 @@ export class UserService implements IUserService {
     password: string
   ): Promise<Result<User, UsernameExistsError>> {
     const passwordHash = await hashPassword(password);
-    const newUser = User.create({ username, passwordHash });
+    const newUser = new User({ username, passwordHash });
 
     const existingUser = await this.userRepository.getByUsername(username);
     if (existingUser) {

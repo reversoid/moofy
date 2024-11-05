@@ -11,12 +11,14 @@ export type CreateCollectionDto = {
   name: string;
   description?: string;
   imageUrl?: string;
+  isPublic?: boolean;
 };
 
 export type EditCollectionDto = {
   name?: string;
   description?: string | null;
   imageUrl?: string | null;
+  isPublic?: boolean;
 };
 
 export interface ICollectionService {
@@ -27,8 +29,15 @@ export interface ICollectionService {
   removeCollection(id: Id): Promise<Result<null, CollectionNotFoundError>>;
 
   editCollection(
+    id: Collection["id"],
     dto: EditCollectionDto
   ): Promise<Result<Collection, CollectionNotFoundError>>;
 
-  getUserCollections(userId: User["id"]): Promise<PaginatedData<Collection>>;
+  getUserCollections(
+    userId: User["id"],
+    limit: number,
+    cursor?: string
+  ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>>;
+
+  getCollection(id: Collection["id"]): Promise<Collection | null>;
 }

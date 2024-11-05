@@ -1,8 +1,8 @@
 import { Id } from "../utils/id";
 
-export interface IBaseRepository<T> {
+export interface IBaseRepository<T extends { id: unknown }> {
   create(item: T | Omit<T, "id">): Promise<T>;
-  get(id: Id): Promise<T | null>;
+  get(id: T["id"]): Promise<T | null>;
   update(id: Id, value: Partial<T>): Promise<T>;
   remove(id: Id): Promise<void>;
 }

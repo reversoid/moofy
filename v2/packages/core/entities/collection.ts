@@ -3,9 +3,7 @@ import { Id } from "../utils/id";
 import { User } from "./user";
 
 export class Collection {
-  static create = initCreateEntity(Collection);
-
-  id: Id | null;
+  id: Id;
   name: string;
   description: string | null;
   isPublic: boolean;
@@ -24,7 +22,7 @@ export class Collection {
     updatedAt?: Date;
     creator: User;
   }) {
-    this.id = props.id ?? null;
+    this.id = props.id ?? new Id();
     this.name = props.name;
     this.description = props.description ?? null;
     this.isPublic = props.isPublic;

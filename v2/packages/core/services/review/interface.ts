@@ -21,7 +21,6 @@ export type CreateReviewDto = {
 };
 
 export type EditReviewDto = {
-  reviewId: Review["id"];
   description?: string | null;
   score?: number | null;
 };
@@ -37,19 +36,21 @@ export interface IReviewService {
   >;
 
   editReview(
-    dto: CreateReviewDto
-  ): Promise<
-    Result<
-      Review,
-      FilmNotFoundError | ReviewOnFilmExistsError | ReviewNotFoundError
-    >
-  >;
+    reviewId: Review["id"],
+    dto: EditReviewDto
+  ): Promise<Result<Review, ReviewNotFoundError>>;
 
   removeReview(id: Id): Promise<Result<null, ReviewNotFoundError>>;
 
-  getUserCollectionReviews(
-    userId: User["id"],
+  getCollectionReviews(
     collectionId: Collection["id"],
+    limit: number,
     cursor?: string
-  ): Promise<Result<PaginatedData<Review>, UserNotFoundError>>;
+  ): Promise<Result<PaginatedData<Review>, CollectionNotFoundError>>;
+
+  searchReviews(
+    search: string,
+    collectionId: Collection["id"],
+    limit: number
+  ): Promise<Result<Review[], CollectionNotFoundError>>;
 }

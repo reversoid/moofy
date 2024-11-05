@@ -2,9 +2,7 @@ import { initCreateEntity } from "../utils/create-entity";
 import { Id } from "../utils/id";
 
 export class User {
-  static create = initCreateEntity(User);
-
-  id: Id | null;
+  id: Id;
   username: string;
   description: string | null;
   imageUrl: string | null;
@@ -23,7 +21,7 @@ export class User {
   }) {
     const now = new Date();
 
-    this.id = props.id ?? null;
+    this.id = props.id ?? new Id();
     this.username = props.username;
     this.description = props.description ?? null;
     this.imageUrl = props.imageUrl ?? null;
