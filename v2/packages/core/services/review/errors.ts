@@ -12,12 +12,6 @@ export class FilmNotFoundError extends CoreError {
   }
 }
 
-export class CollectionNotFoundError extends CoreError {
-  constructor() {
-    super("Collection Is Not Found");
-  }
-}
-
 export class ReviewNotFoundError extends CoreError {
   constructor() {
     super("Review Is Not Found");

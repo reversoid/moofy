@@ -1,5 +1,6 @@
 {
-  "name": "config",
+  "type": "module",
+  "name": "@repo/config",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,8 +13,10 @@
   "dependencies": {
     "@pnpm/find-workspace-dir": "^7.0.2",
     "dotenv": "^16.4.5",
-    "znv": "^0.4.0",
-    "zod": "^3.23.8"
+    "znv": "^0.4.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
   },
   "exports": {
     ".": "./config.ts"

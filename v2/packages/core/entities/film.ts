@@ -11,7 +11,7 @@ export class Film {
   name: string;
   year: number;
   type: FilmType;
-  filmLength: number;
+  filmLength: string;
   posterPreviewUrl: string;
   posterUrl: string;
   genres: string[];
@@ -21,7 +21,7 @@ export class Film {
     name: string;
     year: number;
     type: FilmType;
-    filmLength: number;
+    filmLength: string;
     posterPreviewUrl: string;
     posterUrl: string;
     genres: string[];

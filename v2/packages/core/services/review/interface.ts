@@ -3,15 +3,13 @@ import { Collection } from "../../entities/collection";
 import { Film } from "../../entities/film";
 import { Review } from "../../entities/review";
 import {
-  CollectionNotFoundError,
   FilmNotFoundError,
   ReviewNotFoundError,
   ReviewOnFilmExistsError,
 } from "./errors";
 import { Id } from "../../utils/id";
-import { User } from "../../entities/user";
 import { PaginatedData } from "../../utils/pagination";
-import { UserNotFoundError } from "../user/errors";
+import { CollectionNotFoundError } from "../collection";
 
 export type CreateReviewDto = {
   filmId: Film["id"];

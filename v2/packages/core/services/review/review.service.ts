@@ -1,14 +1,11 @@
 import { err, ok, Result } from "resulto";
 import { Collection } from "../../entities/collection";
 import { Review } from "../../entities/review";
-import { User } from "../../entities/user";
 import { Id } from "../../utils/id";
 import { PaginatedData } from "../../utils/pagination";
-import { UserNotFoundError } from "../user/errors";
 import {
   FilmNotFoundError,
   ReviewOnFilmExistsError,
-  CollectionNotFoundError,
   ReviewNotFoundError,
 } from "./errors";
 import { CreateReviewDto, EditReviewDto, IReviewService } from "./interface";
@@ -16,6 +13,7 @@ import { IReviewRepository } from "../../repositories/review.repository";
 import { IFilmService } from "../film/interface";
 import { IFilmProvider } from "../../film-providers";
 import { ICollectionService } from "../collection/interface";
+import { CollectionNotFoundError } from "../collection";
 
 export class ReviewService implements IReviewService {
   constructor(

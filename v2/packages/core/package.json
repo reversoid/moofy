@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "@repo/core",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,13 @@
     "@types/bcrypt": "^5.0.2"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "resulto": "^1.4.2"
+    "bcrypt": "^5.1.1"
+  },
+  "exports": {
+    "./film-providers": "./film-providers/index.ts",
+    "./entities": "./entities/index.ts",
+    "./repositories": "./repositories/index.ts",
+    "./services": "./services/index.ts",
+    "./utils": "./utils/index.ts"
   }
 }

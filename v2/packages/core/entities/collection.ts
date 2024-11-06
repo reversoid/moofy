@@ -1,4 +1,3 @@
-import { initCreateEntity } from "../utils/create-entity";
 import { Id } from "../utils/id";
 import { User } from "./user";
 

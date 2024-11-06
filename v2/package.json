@@ -15,5 +15,9 @@
   "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "resulto": "^1.4.2",
+    "zod": "^3.23.8"
   }
 }

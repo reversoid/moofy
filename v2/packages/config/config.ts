@@ -14,4 +14,5 @@ dotenv.config({ path: path.join(workspaceDir, ".env") });
 
 export default parseEnv(process.env, {
   UNOFFICIAL_KP_API_KEYS: z.array(z.string()),
+  UNOFFICIAL_KP_URL: z.string(),
 });

@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      resulto:
+        specifier: ^1.4.2
+        version: 1.4.2
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       prettier:
         specifier: ^3.2.5
@@ -109,18 +116,16 @@ importers:
       znv:
         specifier: ^0.4.0
         version: 0.4.0(zod@3.23.8)
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
   packages/core:
     dependencies:
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
-      resulto:
-        specifier: ^1.4.2
-        version: 1.4.2
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -153,7 +158,21 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
 
-  packages/film-providers: {}
+  packages/film-providers:
+    dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../config
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../core
+      ky:
+        specifier: ^1.7.2
+        version: 1.7.2
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
   packages/repositories: {}
 
@@ -3661,6 +3680,11 @@ packages:
     dependencies:
       json-buffer: 3.0.1
     dev: true
+
+  /ky@1.7.2:
+    resolution: {integrity: sha512-OzIvbHKKDpi60TnF9t7UUVAF1B4mcqc02z5PIvrm08Wyb+yOcz63GRvEuVxNT18a9E1SrNouhB4W2NNLeD7Ykg==}
+    engines: {node: '>=18'}
+    dev: false
 
   /language-subtag-registry@0.3.23:
     resolution: {integrity: sha512-0K65Lea881pHotoGEa5gDlMxt3pctLi2RplBb7Ezh4rRdLEOtgi7n4EwK9lamnUCkKBqaeKRVebTq6BAxSkpXQ==}

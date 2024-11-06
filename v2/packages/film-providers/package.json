@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "film-providers",
   "version": "1.0.0",
   "description": "",
@@ -8,5 +9,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "@repo/config": "workspace:*",
+    "@repo/core": "workspace:*",
+    "ky": "^1.7.2"
+  }
 }
