@@ -8,5 +8,17 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/pg": "^8.11.10",
+    "kysely": "^0.27.4",
+    "pg": "^8.13.1",
+    "@repo/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "exports": {
+    "./db": "./db/index.ts"
+  }
 }
