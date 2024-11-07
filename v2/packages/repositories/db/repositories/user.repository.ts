@@ -1,11 +1,22 @@
 import { User } from "@repo/core/entities";
 import { IUserRepository } from "@repo/core/repositories";
 import { CreatableEntity, Id } from "@repo/core/utils";
-import { db } from "..";
-import { sql } from "kysely";
+import { db, UsersTable } from "..";
+import { Selectable, sql } from "kysely";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 
-// TODO reuse creation of user object
+export const makeUser = (rawData: Selectable<UsersTable>): User => {
+  return new User({
+    passwordHash: rawData.passwordHash,
+    username: rawData.username,
+    createdAt: rawData.createdAt,
+    description: rawData.description,
+    id: new Id(rawData.id),
+    imageUrl: rawData.imageUrl,
+    updatedAt: rawData.updatedAt,
+  });
+};
+
 export class UserRepository implements IUserRepository {
   async create(value: CreatableEntity<User>): Promise<User> {
     const result = await db
@@ -20,15 +31,7 @@ export class UserRepository implements IUserRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return new User({
-      passwordHash: result.passwordHash,
-      username: result.username,
-      createdAt: result.createdAt,
-      description: result.description,
-      id: new Id(result.id),
-      imageUrl: result.imageUrl,
-      updatedAt: result.updatedAt,
-    });
+    return makeUser(result);
   }
 
   async get(id: Id): Promise<User | null> {
@@ -42,15 +45,7 @@ export class UserRepository implements IUserRepository {
       return null;
     }
 
-    return new User({
-      passwordHash: result.passwordHash,
-      username: result.username,
-      createdAt: result.createdAt,
-      description: result.description,
-      id: new Id(result.id),
-      imageUrl: result.imageUrl,
-      updatedAt: result.updatedAt,
-    });
+    return makeUser(result);
   }
 
   async getByUsername(username: string): Promise<User | null> {
@@ -64,15 +59,7 @@ export class UserRepository implements IUserRepository {
       return null;
     }
 
-    return new User({
-      passwordHash: result.passwordHash,
-      username: result.username,
-      createdAt: result.createdAt,
-      description: result.description,
-      id: new Id(result.id),
-      imageUrl: result.imageUrl,
-      updatedAt: result.updatedAt,
-    });
+    return makeUser(result);
   }
 
   async remove(id: Id): Promise<void> {
@@ -106,18 +93,7 @@ export class UserRepository implements IUserRepository {
       .orderBy("rank", "desc")
       .execute();
 
-    return results.map(
-      (result) =>
-        new User({
-          passwordHash: result.passwordHash,
-          username: result.username,
-          createdAt: result.createdAt,
-          description: result.description,
-          id: new Id(result.id),
-          imageUrl: result.imageUrl,
-          updatedAt: result.updatedAt,
-        })
-    );
+    return results.map(makeUser);
   }
 
   async update(id: Id, value: User): Promise<User> {
@@ -135,14 +111,6 @@ export class UserRepository implements IUserRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return new User({
-      passwordHash: result.passwordHash,
-      username: result.username,
-      createdAt: result.createdAt,
-      description: result.description,
-      id: new Id(result.id),
-      imageUrl: result.imageUrl,
-      updatedAt: result.updatedAt,
-    });
+    return makeUser(result);
   }
 }
