@@ -179,6 +179,9 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../config
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../core
       '@types/pg':
         specifier: ^8.11.10
         version: 8.11.10

@@ -1,3 +1,5 @@
+export type CreatableEntity<T> = Omit<T, "id">;
+
 type PropsType<C> = C extends new (props: infer P) => any ? P : never;
 
 /** Builds a function that can create entity ommiting Id in output */
