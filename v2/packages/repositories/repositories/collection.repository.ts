@@ -1,30 +1,12 @@
 import { Collection, User } from "@repo/core/entities";
 import { ICollectionRepository } from "@repo/core/repositories";
 import {
-  PaginatedData,
   CreatableEntity,
-  Id,
   decodeCursor,
+  Id,
+  PaginatedData,
 } from "@repo/core/utils";
-import { CollectionsTable, db, UsersTable } from "../db";
-import { Selectable } from "kysely";
-import { makeUser } from "./user.repository";
-
-export const makeCollection = (
-  collectionData: Selectable<CollectionsTable>,
-  userData: Selectable<UsersTable>
-): Collection => {
-  return new Collection({
-    id: new Id(collectionData.id),
-    name: collectionData.name,
-    description: collectionData.description,
-    creator: makeUser(userData),
-    isPublic: collectionData.isPublic,
-    imageUrl: collectionData.imageUrl,
-    createdAt: collectionData.createdAt,
-    updatedAt: collectionData.updatedAt,
-  });
-};
+import { db } from "../db";
 
 export class CollectionRepository implements ICollectionRepository {
   searchCollections(search: string): Promise<Collection> {
