@@ -1,7 +1,7 @@
 import { User } from "@repo/core/entities";
 import { IUserRepository } from "@repo/core/repositories";
 import { CreatableEntity, Id } from "@repo/core/utils";
-import { db, UsersTable } from "..";
+import { db, UsersTable } from "../db";
 import { Selectable, sql } from "kysely";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 
