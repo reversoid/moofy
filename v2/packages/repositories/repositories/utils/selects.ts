@@ -111,7 +111,6 @@ export namespace ReviewSelects {
     "filmId",
     "id",
     "score",
-    "search_document",
     "updatedAt",
     "userId",
   ] as const;

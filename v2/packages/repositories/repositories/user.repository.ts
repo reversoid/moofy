@@ -17,6 +17,7 @@ export class UserRepository implements IUserRepository {
         description: value.description,
         imageUrl: value.imageUrl,
         updatedAt: value.updatedAt,
+        createdAt: new Date(),
       })
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -99,11 +100,9 @@ export class UserRepository implements IUserRepository {
       .updateTable("users")
       .where("id", "=", id.value)
       .set({
-        createdAt: value.createdAt,
         description: value.description,
         imageUrl: value.imageUrl,
         passwordHash: value.passwordHash,
-        updatedAt: value.updatedAt,
         username: value.username,
       })
       .returningAll()

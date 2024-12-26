@@ -8,5 +8,5 @@ export interface UsersTable {
   passwordHash: string;
   createdAt: Generated<Date>;
   updatedAt: Date;
-  username_search_document: unknown;
+  usernameSearchDocument: unknown;
 }

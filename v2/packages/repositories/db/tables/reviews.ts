@@ -9,5 +9,5 @@ export interface ReviewsTable {
   collectionId: number;
   createdAt: Generated<Date>;
   updatedAt: Date;
-  search_document: unknown;
+  searchDocument: unknown;
 }
