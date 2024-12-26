@@ -1,4 +1,4 @@
-import { Selectable, SelectExpression } from "kysely";
+import { Selectable } from "kysely";
 import { Database } from "../../db";
 
 type ColumnAliasResult<

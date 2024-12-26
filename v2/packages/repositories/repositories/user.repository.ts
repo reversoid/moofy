@@ -1,21 +1,11 @@
 import { User } from "@repo/core/entities";
 import { IUserRepository } from "@repo/core/repositories";
 import { CreatableEntity, Id } from "@repo/core/utils";
-import { db, UsersTable } from "../db";
-import { Selectable, sql } from "kysely";
+import { sql } from "kysely";
+import { db } from "../db";
 import { getTsQueryFromString } from "./utils/fulltext-search";
-
-export const makeUser = (rawData: Selectable<UsersTable>): User => {
-  return new User({
-    passwordHash: rawData.passwordHash,
-    username: rawData.username,
-    createdAt: rawData.createdAt,
-    description: rawData.description,
-    id: new Id(rawData.id),
-    imageUrl: rawData.imageUrl,
-    updatedAt: rawData.updatedAt,
-  });
-};
+import { UserSelects } from "./utils/selects";
+import { makeUser } from "./utils/make-entity";
 
 export class UserRepository implements IUserRepository {
   async create(value: CreatableEntity<User>): Promise<User> {
@@ -31,14 +21,22 @@ export class UserRepository implements IUserRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return makeUser(result);
+    return new User({
+      passwordHash: result.passwordHash,
+      username: result.username,
+      createdAt: result.createdAt,
+      description: result.description,
+      id: new Id(result.id),
+      imageUrl: result.imageUrl,
+      updatedAt: result.updatedAt,
+    });
   }
 
   async get(id: Id): Promise<User | null> {
     const result = await db
       .selectFrom("users")
       .where("id", "=", id.value)
-      .selectAll()
+      .select(UserSelects.userSelects)
       .executeTakeFirst();
 
     if (!result) {
@@ -52,7 +50,7 @@ export class UserRepository implements IUserRepository {
     const result = await db
       .selectFrom("users")
       .where("username", "=", username)
-      .selectAll()
+      .select(UserSelects.userSelects)
       .executeTakeFirst();
 
     if (!result) {
@@ -71,7 +69,7 @@ export class UserRepository implements IUserRepository {
 
     const results = await db
       .selectFrom("users")
-      .selectAll()
+      .select(UserSelects.userSelects)
       .select(
         sql<number>`
         ts_rank(
@@ -111,6 +109,14 @@ export class UserRepository implements IUserRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return makeUser(result);
+    return new User({
+      passwordHash: result.passwordHash,
+      username: result.username,
+      createdAt: result.createdAt,
+      description: result.description,
+      id: new Id(result.id),
+      imageUrl: result.imageUrl,
+      updatedAt: result.updatedAt,
+    });
   }
 }
