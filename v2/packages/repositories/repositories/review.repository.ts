@@ -40,7 +40,7 @@ export class ReviewRepository extends IReviewRepository {
       .orderBy("rank", "desc")
       .execute();
 
-    return results.map((rawData) => makeReview(rawData, rawData));
+    return results.map(makeReview);
   }
 
   async getCollectionReviews(
@@ -67,11 +67,7 @@ export class ReviewRepository extends IReviewRepository {
 
     return {
       cursor: newCursor,
-      items: data
-        .slice(0, limit)
-        .map((collectionAndUserData) =>
-          makeReview(collectionAndUserData, collectionAndUserData)
-        ),
+      items: data.slice(0, limit).map(makeReview),
     };
   }
 
@@ -88,7 +84,7 @@ export class ReviewRepository extends IReviewRepository {
       return null;
     }
 
-    return makeReview(rawData, rawData);
+    return makeReview(rawData);
   }
 
   async create(item: Review | CreatableEntity<Review>): Promise<Review> {
@@ -118,7 +114,7 @@ export class ReviewRepository extends IReviewRepository {
       return null;
     }
 
-    return makeReview(rawData, rawData);
+    return makeReview(rawData);
   }
 
   private getSelectQuery() {

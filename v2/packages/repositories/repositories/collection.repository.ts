@@ -43,7 +43,7 @@ export class CollectionRepository extends ICollectionRepository {
       .orderBy("rank", "desc")
       .execute();
 
-    return results.map((rawData) => makeCollection(rawData, rawData));
+    return results.map(makeCollection);
   }
 
   async getUserCollections(
@@ -74,11 +74,7 @@ export class CollectionRepository extends ICollectionRepository {
 
     return {
       cursor: newCursor,
-      items: data
-        .slice(0, limit)
-        .map((collectionAndUserData) =>
-          makeCollection(collectionAndUserData, collectionAndUserData)
-        ),
+      items: data.slice(0, limit).map(makeCollection),
     };
   }
 
@@ -111,8 +107,7 @@ export class CollectionRepository extends ICollectionRepository {
       return null;
     }
 
-    // TODO make possible to pass only one object
-    return makeCollection(rawData, rawData);
+    return makeCollection(rawData);
   }
 
   async update(id: Id, value: Partial<Collection>): Promise<Collection> {

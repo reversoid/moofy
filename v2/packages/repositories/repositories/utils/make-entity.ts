@@ -20,45 +20,45 @@ export const makeUser = (rawData: UserSelects.UserSelectResult): User => {
 };
 
 export const makeCollection = (
-  collectionData: CollectionSelects.CollectionSelectResult,
-  userData: UserSelects.UserSelectResult
+  rawData: CollectionSelects.CollectionSelectResult &
+    UserSelects.UserSelectResult
 ): Collection => {
   return new Collection({
-    id: new Id(collectionData.c_id),
-    name: collectionData.c_name,
-    description: collectionData.c_description,
-    creator: makeUser(userData),
-    isPublic: collectionData.c_isPublic,
-    imageUrl: collectionData.c_imageUrl,
-    createdAt: collectionData.c_createdAt,
-    updatedAt: collectionData.c_updatedAt,
+    id: new Id(rawData.c_id),
+    name: rawData.c_name,
+    description: rawData.c_description,
+    creator: makeUser(rawData),
+    isPublic: rawData.c_isPublic,
+    imageUrl: rawData.c_imageUrl,
+    createdAt: rawData.c_createdAt,
+    updatedAt: rawData.c_updatedAt,
   });
 };
 
-export const makeFilm = (filmData: FilmSelects.FilmSelectResult): Film => {
+export const makeFilm = (rawData: FilmSelects.FilmSelectResult): Film => {
   return new Film({
-    id: filmData.f_id,
-    name: filmData.f_name,
-    filmLength: filmData.f_filmLength,
-    genres: filmData.f_genres,
-    posterPreviewUrl: filmData.f_posterPreviewUrl,
-    posterUrl: filmData.f_posterUrl,
-    year: filmData.f_year,
-    type: FilmType[filmData.f_type],
+    id: rawData.f_id,
+    name: rawData.f_name,
+    filmLength: rawData.f_filmLength,
+    genres: rawData.f_genres,
+    posterPreviewUrl: rawData.f_posterPreviewUrl,
+    posterUrl: rawData.f_posterUrl,
+    year: rawData.f_year,
+    type: FilmType[rawData.f_type],
   });
 };
 
 export const makeReview = (
-  reviewData: ReviewSelects.ReviewSelectResult,
-  filmData: FilmSelects.FilmSelectResult
+  rawData: ReviewSelects.ReviewSelectResult & FilmSelects.FilmSelectResult
 ): Review => {
   return new Review({
-    collectionId: new Id(reviewData.r_collectionId),
-    film: makeFilm(filmData),
-    createdAt: reviewData.r_createdAt,
-    description: reviewData.r_description,
-    id: new Id(reviewData.r_id),
-    score: reviewData.r_score,
-    updatedAt: reviewData.r_updatedAt,
+    collectionId: new Id(rawData.r_collectionId),
+    film: makeFilm(rawData),
+    createdAt: rawData.r_createdAt,
+    description: rawData.r_description,
+    id: new Id(rawData.r_id),
+    score: rawData.r_score,
+    updatedAt: rawData.r_updatedAt,
+    userId: new Id(rawData.r_userId),
   });
 };
