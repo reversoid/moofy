@@ -8,6 +8,7 @@ export interface IReviewRepository extends IBaseRepository<Review> {
   searchReviews(search: string, limit: number): Promise<Review[]>;
 
   getCollectionReviews(
+    collectionId: Collection["id"],
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<Review>>;

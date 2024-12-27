@@ -16,7 +16,10 @@ import { sql } from "kysely";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 
 export class CollectionRepository implements ICollectionRepository {
-  async searchCollections(search: string): Promise<Collection[]> {
+  async searchCollections(
+    search: string,
+    limit: number
+  ): Promise<Collection[]> {
     const words = getTsQueryFromString(search);
 
     const results = await db
@@ -42,6 +45,7 @@ export class CollectionRepository implements ICollectionRepository {
         (collections.searchDocument) @@ to_tsquery('simple', ${words})
       `
       )
+      .limit(limit)
       .orderBy("rank", "desc")
       .execute();
 

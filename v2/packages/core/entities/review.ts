@@ -10,6 +10,7 @@ export class Review {
   updatedAt: Date;
   film: Film;
   collectionId: Id;
+  userId: Id;
 
   constructor(props: {
     id?: Id;
@@ -19,6 +20,7 @@ export class Review {
     updatedAt?: Date;
     film: Film;
     collectionId: Id;
+    userId: Id;
   }) {
     const now = new Date();
 
@@ -29,5 +31,6 @@ export class Review {
     this.updatedAt = props.updatedAt ?? now;
     this.film = props.film;
     this.collectionId = props.collectionId;
+    this.userId = props.userId;
   }
 }

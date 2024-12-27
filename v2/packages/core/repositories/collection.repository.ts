@@ -4,7 +4,7 @@ import { PaginatedData } from "../utils/pagination";
 import { IBaseRepository } from "./base.repository";
 
 export interface ICollectionRepository extends IBaseRepository<Collection> {
-  searchCollections(search: string): Promise<Collection[]>;
+  searchCollections(search: string, limit: number): Promise<Collection[]>;
 
   getUserCollections(
     userId: User["id"],
