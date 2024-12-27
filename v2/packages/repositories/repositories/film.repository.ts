@@ -2,7 +2,7 @@ import { Film } from "@repo/core/entities";
 import { IFilmRepository } from "@repo/core/repositories";
 import { CreatableEntity, Id } from "@repo/core/utils";
 
-export class FilmRepository implements IFilmRepository {
+export class FilmRepository extends IFilmRepository {
   create(item: Film | CreatableEntity<Film>): Promise<Film> {
     throw new Error("Method not implemented.");
   }

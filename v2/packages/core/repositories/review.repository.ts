@@ -4,16 +4,16 @@ import { Review } from "../entities/review";
 import { PaginatedData } from "../utils/pagination";
 import { IBaseRepository } from "./base.repository";
 
-export interface IReviewRepository extends IBaseRepository<Review> {
-  searchReviews(search: string, limit: number): Promise<Review[]>;
+export abstract class IReviewRepository extends IBaseRepository<Review> {
+  abstract searchReviews(search: string, limit: number): Promise<Review[]>;
 
-  getCollectionReviews(
+  abstract getCollectionReviews(
     collectionId: Collection["id"],
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<Review>>;
 
-  getReviewOnFilm(
+  abstract getReviewOnFilm(
     collectionId: Collection["id"],
     filmId: Film["id"]
   ): Promise<Review | null>;

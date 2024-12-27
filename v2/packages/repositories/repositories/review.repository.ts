@@ -4,8 +4,6 @@ import {
   PaginatedData,
   CreatableEntity,
   Id,
-  WeirdUpdateError,
-  WeirdCreateError,
   decodeCursor,
   encodeCursor,
 } from "@repo/core/utils";
@@ -15,7 +13,7 @@ import { makeReview } from "./utils/make-entity";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
 
-export class ReviewRepository implements IReviewRepository {
+export class ReviewRepository extends IReviewRepository {
   async searchReviews(search: string, limit: number): Promise<Review[]> {
     const words = getTsQueryFromString(search);
 
@@ -108,12 +106,7 @@ export class ReviewRepository implements IReviewRepository {
       .returning("id")
       .executeTakeFirstOrThrow();
 
-    const newValue = await this.get(new Id(id));
-    if (!newValue) {
-      throw new WeirdCreateError();
-    }
-
-    return newValue;
+    return this.getOrThrow(new Id(id));
   }
 
   async get(id: Id): Promise<Review | null> {
@@ -148,12 +141,7 @@ export class ReviewRepository implements IReviewRepository {
       .returning("id")
       .executeTakeFirstOrThrow();
 
-    const updatedValue = await this.get(id);
-    if (!updatedValue) {
-      throw new WeirdUpdateError();
-    }
-
-    return updatedValue;
+    return this.getOrThrow(id);
   }
 
   async remove(id: Id): Promise<void> {

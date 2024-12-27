@@ -7,7 +7,7 @@ import { getTsQueryFromString } from "./utils/fulltext-search";
 import { UserSelects } from "./utils/selects";
 import { makeUser } from "./utils/make-entity";
 
-export class UserRepository implements IUserRepository {
+export class UserRepository extends IUserRepository {
   async create(value: CreatableEntity<User>): Promise<User> {
     const result = await db
       .insertInto("users")

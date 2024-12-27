@@ -3,10 +3,13 @@ import { User } from "../entities/user";
 import { PaginatedData } from "../utils/pagination";
 import { IBaseRepository } from "./base.repository";
 
-export interface ICollectionRepository extends IBaseRepository<Collection> {
-  searchCollections(search: string, limit: number): Promise<Collection[]>;
+export abstract class ICollectionRepository extends IBaseRepository<Collection> {
+  abstract searchCollections(
+    search: string,
+    limit: number
+  ): Promise<Collection[]>;
 
-  getUserCollections(
+  abstract getUserCollections(
     userId: User["id"],
     limit: number,
     cursor?: string

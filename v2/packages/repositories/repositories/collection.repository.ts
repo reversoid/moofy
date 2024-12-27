@@ -6,8 +6,6 @@ import {
   encodeCursor,
   Id,
   PaginatedData,
-  WeirdCreateError,
-  WeirdUpdateError,
 } from "@repo/core/utils";
 import { db } from "../db";
 import { CollectionSelects, UserSelects } from "./utils/selects";
@@ -15,7 +13,7 @@ import { makeCollection } from "./utils/make-entity";
 import { sql } from "kysely";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 
-export class CollectionRepository implements ICollectionRepository {
+export class CollectionRepository extends ICollectionRepository {
   async searchCollections(
     search: string,
     limit: number
@@ -101,13 +99,7 @@ export class CollectionRepository implements ICollectionRepository {
       .returning("id")
       .executeTakeFirstOrThrow();
 
-    const newItem = await this.get(new Id(id));
-
-    if (!newItem) {
-      throw new WeirdCreateError();
-    }
-
-    return newItem;
+    return this.getOrThrow(new Id(id));
   }
 
   async get(id: Id): Promise<Collection | null> {
@@ -136,13 +128,7 @@ export class CollectionRepository implements ICollectionRepository {
       .returning("id")
       .executeTakeFirstOrThrow();
 
-    const updatedValue = await this.get(id);
-    if (!updatedValue) {
-      // TODO actually may happen when no trx passed. Fix it
-      throw new WeirdUpdateError();
-    }
-
-    return updatedValue;
+    return this.getOrThrow(id);
   }
 
   async remove(id: Id): Promise<void> {
