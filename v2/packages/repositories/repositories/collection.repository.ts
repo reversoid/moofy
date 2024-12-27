@@ -22,11 +22,7 @@ export class CollectionRepository implements ICollectionRepository {
   ): Promise<Collection[]> {
     const words = getTsQueryFromString(search);
 
-    const results = await db
-      .selectFrom("collections")
-      .select(CollectionSelects.collectionSelects)
-      .innerJoin("users", "users.id", "collections.userId")
-      .select(UserSelects.userSelects)
+    const results = await this.getSelectQuery()
       .select(
         sql<number>`
       ts_rank(
@@ -59,11 +55,7 @@ export class CollectionRepository implements ICollectionRepository {
   ): Promise<PaginatedData<Collection>> {
     const decodedCursor = cursor ? decodeCursor(cursor) : null;
 
-    let query = db
-      .selectFrom("collections")
-      .innerJoin("users", "users.id", "collections.userId")
-      .select(CollectionSelects.collectionSelects)
-      .select(UserSelects.userSelects)
+    let query = this.getSelectQuery()
       .where("userId", "=", userId.value)
       .limit(limit + 1);
 
@@ -119,11 +111,7 @@ export class CollectionRepository implements ICollectionRepository {
   }
 
   async get(id: Id): Promise<Collection | null> {
-    const rawData = await db
-      .selectFrom("collections")
-      .innerJoin("users", "users.id", "collections.userId")
-      .select(CollectionSelects.collectionSelects)
-      .select(UserSelects.userSelects)
+    const rawData = await this.getSelectQuery()
       .where("id", "=", id.value)
       .executeTakeFirst();
 
@@ -159,5 +147,13 @@ export class CollectionRepository implements ICollectionRepository {
 
   async remove(id: Id): Promise<void> {
     await db.deleteFrom("collections").where("id", "=", id.value).execute();
+  }
+
+  private getSelectQuery() {
+    return db
+      .selectFrom("collections")
+      .innerJoin("users", "users.id", "collections.userId")
+      .select(CollectionSelects.collectionSelects)
+      .select(UserSelects.userSelects);
   }
 }
