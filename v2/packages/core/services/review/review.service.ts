@@ -80,6 +80,7 @@ export class ReviewService implements IReviewService {
       description: dto.description,
       film,
       collectionId: collection.id,
+      userId: collection.creator.id,
     });
 
     const createdReview = await this.reviewRepository.create(newReview);
@@ -126,6 +127,7 @@ export class ReviewService implements IReviewService {
     }
 
     const reviews = await this.reviewRepository.getCollectionReviews(
+      collectionId,
       limit,
       cursor
     );
