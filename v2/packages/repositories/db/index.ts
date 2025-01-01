@@ -7,6 +7,7 @@ import {
   ReviewsTable,
   UsersTable,
 } from "./tables";
+import { SessionsTable } from "./tables/sessions";
 
 export * from "./tables";
 
@@ -15,6 +16,7 @@ export interface Database {
   collections: CollectionsTable;
   reviews: ReviewsTable;
   films: FilmsTable;
+  sessions: SessionsTable;
 }
 
 const dialect = new PostgresDialect({
