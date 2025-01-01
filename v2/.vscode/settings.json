@@ -3,5 +3,10 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#07350F",
+    "titleBar.activeBackground": "#0A4B16",
+    "titleBar.activeForeground": "#F1FDF3"
+  }
 }
