@@ -5,12 +5,10 @@ import { Id } from "../../utils/id";
 import { ISessionRepository } from "../../repositories/session.repository";
 import { ISessionService } from "./interface";
 import { SessionExpiredError, SessionNotFoundError } from "./errors";
-import cuid2 from "@paralleldrive/cuid2";
+import crypto from "crypto";
 
 const SESSION_EXPIRATION = { amount: 60, unit: "days" } as const;
 const SESSION_EXTENSION_THRESHOLD = { amount: 30, unit: "days" } as const;
-
-const generateId = cuid2.init({ length: 16 });
 
 export class SessionService implements ISessionService {
   constructor(private readonly sessionRepository: ISessionRepository) {}
@@ -70,15 +68,21 @@ export class SessionService implements ISessionService {
   }
 
   private generateSessionToken(): string {
-    return generateId();
+    const alphabet =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const bytes = crypto.randomBytes(64);
+
+    return [...bytes].map((byte) => alphabet[byte % alphabet.length]).join("");
   }
 
   private async hashToken(token: string): Promise<string> {
     const encoder = new TextEncoder();
-    const data = encoder.encode(token);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(hashBuffer))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
+
+    const hashBuffer = await crypto.subtle.digest(
+      "SHA-256",
+      encoder.encode(token)
+    );
+
+    return Buffer.from(hashBuffer).toString("hex");
   }
 }

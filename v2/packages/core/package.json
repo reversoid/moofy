@@ -14,7 +14,6 @@
     "@types/bcrypt": "^5.0.2"
   },
   "dependencies": {
-    "@paralleldrive/cuid2": "^2.2.2",
     "bcrypt": "^5.1.1",
     "dayjs": "^1.11.13",
     "sqids": "^0.3.0"
