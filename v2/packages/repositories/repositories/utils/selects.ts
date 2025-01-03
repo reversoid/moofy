@@ -129,3 +129,21 @@ export namespace ReviewSelects {
     typeof reviewFields
   >;
 }
+
+export namespace SessionSelects {
+  const sessionFields = ["id", "expiresAt", "userId"] as const;
+
+  const sessionPrefix = "s";
+
+  export const sessionSelects = getSelects(
+    "sessions",
+    sessionPrefix,
+    sessionFields
+  );
+
+  export type SessionSelectResult = ColumnAliasResult<
+    "sessions",
+    typeof sessionPrefix,
+    typeof sessionFields
+  >;
+}

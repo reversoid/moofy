@@ -1,0 +1,5 @@
+export * from "./user.repository";
+export * from "./session.repository";
+export * from "./collection.repository";
+export * from "./review.repository";
+export * from "./film.repository";

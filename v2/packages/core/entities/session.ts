@@ -1,14 +1,13 @@
-import { Id } from "../utils/id";
 import { User } from "./user";
 
 export class Session {
   id: string;
-  userId: User["id"];
+  user: User;
   expiresAt: Date;
 
-  constructor(props: { id: string; userId: User["id"]; expiresAt: Date }) {
+  constructor(props: { id: string; user: User; expiresAt: Date }) {
     this.id = props.id;
-    this.userId = props.userId;
+    this.user = props.user;
     this.expiresAt = props.expiresAt;
   }
 }

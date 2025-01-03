@@ -4,7 +4,7 @@ import { Id } from "../../utils/id";
 import { UsernameExistsError } from "./errors";
 import { IUserService } from "./interface";
 import { IUserRepository } from "../../repositories/user.repository";
-import { hashPassword } from "../../utils/password";
+import { comparePasswords, hashPassword } from "../../utils/password";
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -28,5 +28,27 @@ export class UserService implements IUserService {
   async getUser(id: Id): Promise<User | null> {
     const user = await this.userRepository.get(id);
     return user;
+  }
+
+  /**
+   * Validate user and password and return the user if the password is correct
+   * @param username
+   * @param password
+   * @returns
+   */
+  async validateUserAndPassword(
+    username: string,
+    password: string
+  ): Promise<User | null> {
+    const user = await this.userRepository.getByUsername(username);
+    if (!user) {
+      return null;
+    }
+
+    if (await comparePasswords(password, user.passwordHash)) {
+      return user;
+    }
+
+    return null;
   }
 }

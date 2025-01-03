@@ -20,6 +20,7 @@
     "@repo/typescript-config": "workspace:*"
   },
   "exports": {
-    "./db": "./db/index.ts"
+    "./db": "./db/index.ts",
+    ".": "./repositories/index.ts"
   }
 }

@@ -1,11 +1,11 @@
 import { Result, err, ok } from "resulto";
 import dayjs from "dayjs";
 import { Session } from "../../entities/session";
-import { Id } from "../../utils/id";
 import { ISessionRepository } from "../../repositories/session.repository";
 import { ISessionService } from "./interface";
 import { SessionExpiredError, SessionNotFoundError } from "./errors";
 import crypto from "crypto";
+import { User } from "../../entities";
 
 const SESSION_EXPIRATION = { amount: 60, unit: "days" } as const;
 const SESSION_EXTENSION_THRESHOLD = { amount: 30, unit: "days" } as const;
@@ -13,19 +13,26 @@ const SESSION_EXTENSION_THRESHOLD = { amount: 30, unit: "days" } as const;
 export class SessionService implements ISessionService {
   constructor(private readonly sessionRepository: ISessionRepository) {}
 
-  async createSession(userId: Id): Promise<Session> {
-    const token = this.generateSessionToken();
+  generateSessionToken(): string {
+    const alphabet =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const bytes = crypto.randomBytes(64);
+
+    return [...bytes].map((byte) => alphabet[byte % alphabet.length]).join("");
+  }
+
+  async createSession(token: string, user: User): Promise<Session> {
     const sessionId = await this.hashToken(token);
 
-    const session = new Session({
-      id: sessionId,
-      userId,
-      expiresAt: dayjs()
-        .add(SESSION_EXPIRATION.amount, SESSION_EXPIRATION.unit)
-        .toDate(),
-    });
-
-    return await this.sessionRepository.create(session);
+    return await this.sessionRepository.create(
+      new Session({
+        id: sessionId,
+        expiresAt: dayjs()
+          .add(SESSION_EXPIRATION.amount, SESSION_EXPIRATION.unit)
+          .toDate(),
+        user,
+      })
+    );
   }
 
   async validateSessionToken(
@@ -65,14 +72,6 @@ export class SessionService implements ISessionService {
 
   async invalidateSession(sessionId: string): Promise<void> {
     await this.sessionRepository.remove(sessionId);
-  }
-
-  private generateSessionToken(): string {
-    const alphabet =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const bytes = crypto.randomBytes(64);
-
-    return [...bytes].map((byte) => alphabet[byte % alphabet.length]).join("");
   }
 
   private async hashToken(token: string): Promise<string> {

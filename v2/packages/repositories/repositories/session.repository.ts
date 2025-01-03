@@ -1,31 +1,30 @@
 import { Session } from "@repo/core/entities";
 import { ISessionRepository } from "@repo/core/repositories";
-import { Id } from "@repo/core/utils";
 import { db } from "../db";
+import { SessionSelects, UserSelects } from "./utils/selects";
+import { makeSession } from "./utils/make-entity";
 
 export class SessionRepository extends ISessionRepository {
   async create(data: Session): Promise<Session> {
-    const newSession = await db
+    const { id } = await db
       .insertInto("sessions")
       .values({
         expiresAt: data.expiresAt,
-        userId: data.userId.value,
+        userId: data.user.id.value,
         id: data.id,
       })
-      .returningAll()
+      .returning("id")
       .executeTakeFirstOrThrow();
 
-    return new Session({
-      expiresAt: newSession.expiresAt,
-      id: newSession.id,
-      userId: new Id(newSession.userId),
-    });
+    return this.getOrThrow(id);
   }
 
   async get(id: string): Promise<Session | null> {
     const session = await db
       .selectFrom("sessions")
-      .selectAll()
+      .select(SessionSelects.sessionSelects)
+      .innerJoin("users", "users.id", "sessions.userId")
+      .select(UserSelects.userSelects)
       .where("id", "=", id)
       .executeTakeFirst();
 
@@ -33,26 +32,18 @@ export class SessionRepository extends ISessionRepository {
       return null;
     }
 
-    return new Session({
-      expiresAt: session.expiresAt,
-      id: session.id,
-      userId: new Id(session.userId),
-    });
+    return makeSession(session);
   }
 
   async update(id: string, data: Partial<Session>): Promise<Session> {
-    const updatedSession = await db
+    await db
       .updateTable("sessions")
-      .set({ expiresAt: data.expiresAt, userId: data.userId?.value })
+      .set({ expiresAt: data.expiresAt, userId: data.user?.id.value })
       .where("id", "=", id)
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return new Session({
-      expiresAt: updatedSession.expiresAt,
-      id: updatedSession.id,
-      userId: new Id(updatedSession.userId),
-    });
+    return this.getOrThrow(id);
   }
 
   async remove(id: string): Promise<void> {

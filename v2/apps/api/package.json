@@ -5,7 +5,9 @@
   },
   "dependencies": {
     "hono": "^4.6.15",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@repo/core": "workspace:*",
+    "@repo/repositories": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

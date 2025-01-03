@@ -27,6 +27,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@repo/repositories':
+        specifier: workspace:*
+        version: link:../../packages/repositories
       hono:
         specifier: ^4.6.15
         version: 4.6.15

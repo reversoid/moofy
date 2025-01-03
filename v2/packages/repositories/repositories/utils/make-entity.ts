@@ -1,9 +1,17 @@
-import { Collection, Film, FilmType, Review, User } from "@repo/core/entities";
+import {
+  Collection,
+  Film,
+  FilmType,
+  Review,
+  Session,
+  User,
+} from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 import {
   CollectionSelects,
   FilmSelects,
   ReviewSelects,
+  SessionSelects,
   UserSelects,
 } from "./selects";
 
@@ -60,5 +68,15 @@ export const makeReview = (
     score: rawData.r_score,
     updatedAt: rawData.r_updatedAt,
     userId: new Id(rawData.r_userId),
+  });
+};
+
+export const makeSession = (
+  rawData: SessionSelects.SessionSelectResult & UserSelects.UserSelectResult
+): Session => {
+  return new Session({
+    id: rawData.s_id,
+    expiresAt: rawData.s_expiresAt,
+    user: makeUser(rawData),
   });
 };
