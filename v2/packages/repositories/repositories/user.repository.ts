@@ -65,7 +65,7 @@ export class UserRepository extends IUserRepository {
     await db.deleteFrom("users").where("id", "=", id.value).execute();
   }
 
-  async searchUsers(username: string): Promise<User[]> {
+  async searchUsers(username: string, limit: number): Promise<User[]> {
     const words = getTsQueryFromString(username);
 
     const results = await db
@@ -90,6 +90,7 @@ export class UserRepository extends IUserRepository {
         `
       )
       .orderBy("rank", "desc")
+      .limit(limit)
       .execute();
 
     return results.map(makeUser);

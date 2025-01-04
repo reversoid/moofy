@@ -8,11 +8,12 @@ import { favoritesRoute } from "./routes/favorites";
 import { SessionService, UserService } from "@repo/core/services";
 import { UserRepository, SessionRepository } from "@repo/repositories";
 import { withDtoResponse } from "./utils/with-dto-response";
+import { ISessionService, IUserService } from "@repo/core/services";
 
 declare module "hono" {
   interface ContextVariableMap {
-    userService: UserService;
-    sessionService: SessionService;
+    userService: IUserService;
+    sessionService: ISessionService;
   }
 }
 

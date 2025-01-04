@@ -4,6 +4,8 @@ import { UsernameExistsError } from "./errors";
 import { Id } from "../../utils/id";
 
 export interface IUserService {
+  searchUsers(search: string, limit: number): Promise<User[]>;
+
   createUser(
     username: string,
     password: string

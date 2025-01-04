@@ -5,9 +5,15 @@ import { UsernameExistsError } from "./errors";
 import { IUserService } from "./interface";
 import { IUserRepository } from "../../repositories/user.repository";
 import { comparePasswords, hashPassword } from "../../utils/password";
+import { PaginatedData } from "../../utils";
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
+
+  async searchUsers(search: string, limit: number): Promise<User[]> {
+    const users = await this.userRepository.searchUsers(search, limit);
+    return users;
+  }
 
   async createUser(
     username: string,
@@ -34,7 +40,7 @@ export class UserService implements IUserService {
    * Validate user and password and return the user if the password is correct
    * @param username
    * @param password
-   * @returns
+   * @returns User or null if the user does not exist or the password is incorrect
    */
   async validateUserAndPassword(
     username: string,
