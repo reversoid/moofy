@@ -12,4 +12,17 @@ export interface IUserService {
   ): Promise<Result<User, UsernameExistsError>>;
 
   getUser(id: Id): Promise<User | null>;
+
+  getUserByUsername(username: string): Promise<User | null>;
+
+  /**
+   * Validate user and password and return the user if the password is correct
+   * @param username
+   * @param password
+   * @returns User or null if the user does not exist or the password is incorrect
+   */
+  validateUserAndPassword(
+    username: string,
+    password: string
+  ): Promise<User | null>;
 }

@@ -27,9 +27,15 @@ importers:
 
   apps/api:
     dependencies:
+      '@repo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@repo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@repo/film-providers':
+        specifier: workspace:*
+        version: link:../../packages/film-providers
       '@repo/repositories':
         specifier: workspace:*
         version: link:../../packages/repositories

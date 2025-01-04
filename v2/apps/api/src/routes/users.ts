@@ -1,16 +1,27 @@
 import { Hono } from "hono";
 import { validator } from "../utils/validator";
 import z from "zod";
+import { authMiddleware } from "../utils/auth-middleware";
 
 export const userRoute = new Hono()
-  .put("/users/:id/followers", (c) => {
-    return c.json({ message: "Hello World" });
-  })
-  .get("/users/:id/followers", (c) => {
-    return c.json({ message: "Hello World" });
-  })
-  .delete("/users/:id/followers", (c) => {
-    return c.json({ message: "Hello World" });
+  .use(authMiddleware)
+  // .put("/users/:id/followers", (c) => {
+  //   return c.json({ message: "Hello World" });
+  // })
+  // .get("/users/:id/followers", (c) => {
+  //   return c.json({ message: "Hello World" });
+  // })
+  // .get("/users/:id/followees", (c) => {
+  //   return c.json({ message: "Hello World" });
+  // })
+  // .delete("/users/:id/followers", (c) => {
+  //   return c.json({ message: "Hello World" });
+  // })
+  .get("/users/existence/:username", async (c) => {
+    const { username } = c.req.param();
+    const userService = c.get("userService");
+    const user = await userService.getUserByUsername(username);
+    return c.json({ exists: user !== null });
   })
   .get(
     "/users",

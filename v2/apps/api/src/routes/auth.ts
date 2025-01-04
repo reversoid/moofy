@@ -1,7 +1,13 @@
 import { Hono } from "hono";
 import { validator } from "../utils/validator";
 import z from "zod";
-import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+  setSignedCookie,
+} from "hono/cookie";
+import config from "@repo/config";
 
 export const authRoute = new Hono()
   .post(
@@ -29,7 +35,7 @@ export const authRoute = new Hono()
       const token = sessionService.generateSessionToken();
       const session = await sessionService.createSession(token, user);
 
-      setCookie(c, "session", session.id, {
+      setSignedCookie(c, "session", config.COOKIE_SECRET, session.id, {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",
@@ -65,7 +71,7 @@ export const authRoute = new Hono()
         createResult.value
       );
 
-      setCookie(c, "session", session.id, {
+      setSignedCookie(c, "session", config.COOKIE_SECRET, session.id, {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",

@@ -1,5 +1,5 @@
 {
-  "name": "film-providers",
+  "name": "@repo/film-providers",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,5 +16,8 @@
     "@repo/config": "workspace:*",
     "@repo/core": "workspace:*",
     "ky": "^1.7.2"
+  },
+  "exports": {
+    ".": "./providers/index.ts"
   }
 }

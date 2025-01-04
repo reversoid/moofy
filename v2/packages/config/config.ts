@@ -22,4 +22,6 @@ export default parseEnv(process.env, {
   PG_PORT: z.number().int(),
   PG_DB: z.string(),
   PG_MAX_CONNECTIONS: z.number().int(),
+
+  COOKIE_SECRET: z.string(),
 });
