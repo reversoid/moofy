@@ -5,6 +5,7 @@ import { authMiddleware } from "../utils/auth-middleware";
 
 export const userRoute = new Hono()
   .use(authMiddleware)
+  // TODO: Implement
   // .put("/users/:id/followers", (c) => {
   //   return c.json({ message: "Hello World" });
   // })

@@ -5,7 +5,11 @@ import { reviewRoute } from "./routes/review";
 import { collectionRoute } from "./routes/collection";
 import { userRoute } from "./routes/users";
 import { favoritesRoute } from "./routes/favorites";
-import { SessionService, UserService } from "@repo/core/services";
+import {
+  IReviewService,
+  SessionService,
+  UserService,
+} from "@repo/core/services";
 import { UserRepository, SessionRepository } from "@repo/repositories";
 import { withDtoResponse } from "./utils/with-dto-response";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -16,6 +20,7 @@ declare module "hono" {
     userService: IUserService;
     sessionService: ISessionService;
     user?: User;
+    reviewService: IReviewService;
   }
 }
 

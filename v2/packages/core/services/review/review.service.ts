@@ -134,4 +134,9 @@ export class ReviewService implements IReviewService {
 
     return ok(reviews);
   }
+
+  async getReview(id: Id): Promise<Review | null> {
+    const review = await this.reviewRepository.get(id);
+    return review;
+  }
 }

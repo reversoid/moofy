@@ -24,6 +24,8 @@ export type EditReviewDto = {
 };
 
 export interface IReviewService {
+  getReview(id: Id): Promise<Review | null>;
+
   createReview(
     dto: CreateReviewDto
   ): Promise<
