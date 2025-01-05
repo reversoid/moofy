@@ -15,6 +15,9 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
+      dbmate:
+        specifier: ^2.24.2
+        version: 2.24.2
       prettier:
         specifier: ^3.2.5
         version: 3.3.3
@@ -469,6 +472,62 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
+
+  /@dbmate/darwin-arm64@2.24.2:
+    resolution: {integrity: sha512-wzE2tZXToUTe/DBpYBXNw/aF/AQ40OJ/oVf07AP4UdyxvLX0S2rjQb4mnDbQN13U9ll8JBJ1BKJ2Kl0DlUHVLQ==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/darwin-x64@2.24.2:
+    resolution: {integrity: sha512-XcIYKjFDr6l8yx0Qfu6D+L8oEuxPyfXNeh9k+b4/5WTY8tVsmINrlkPPXhR/HTngsI8JhdCb0lf06d6eEC++Ng==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-arm64@2.24.2:
+    resolution: {integrity: sha512-smiy4rI7j1EnQt8WFPCbht4klV525/YNxvJBqQVCJa2mB2qeoOKDgYZGk/3NW+c5aMwoLLwFFhXe9KrWxn9k8A==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-arm@2.24.2:
+    resolution: {integrity: sha512-9u8R427hg2mD8xskx2lfZoiKIapiaRYJLjhFhbC/PTZ2cLaHe93HOISMI/uifJxPtU50QOtMAiTqusYKqtyJtg==}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-ia32@2.24.2:
+    resolution: {integrity: sha512-krUuMp1FTuKKfHvY4ABVSmtCYwI1RaCJDVzdQPs59UC94+H6MMC6TqDoHZ9Q2hp1berqRLpKILu/5VrG06bS/A==}
+    cpu: [ia32]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-x64@2.24.2:
+    resolution: {integrity: sha512-lzSIaOKPwsMn+mzV2O4Z7Rh9cX2/Biue52Dklv4dA3lrYzxRmWltu3iyClk942KX1JipWyQS33RtDuealF5n2g==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/win32-x64@2.24.2:
+    resolution: {integrity: sha512-tbUEnPGMYsaI4kDSeAprEWbRiHIY+GgXXsmWrDH0DXPaeHHVK9TYeLmcZXSGdAih6/HYMKXsOyXzP/DQFnbXFw==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.57.1):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -1956,6 +2015,19 @@ packages:
   /dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
     dev: false
+
+  /dbmate@2.24.2:
+    resolution: {integrity: sha512-b+gr5sCZovkj7QhR7WxEE1NmI0EQb0E5dDuffWb8qPwSteKPzTZDRzayh55IsTxHn3ktRNE+FeGXX+Wd9WNpLg==}
+    hasBin: true
+    optionalDependencies:
+      '@dbmate/darwin-arm64': 2.24.2
+      '@dbmate/darwin-x64': 2.24.2
+      '@dbmate/linux-arm': 2.24.2
+      '@dbmate/linux-arm64': 2.24.2
+      '@dbmate/linux-ia32': 2.24.2
+      '@dbmate/linux-x64': 2.24.2
+      '@dbmate/win32-x64': 2.24.2
+    dev: true
 
   /debug@3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
