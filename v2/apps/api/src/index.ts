@@ -11,11 +11,14 @@ import {
   UserService,
   CollectionService,
   ICollectionService,
+  IFavoriteCollectionService,
+  FavoriteCollectionService,
 } from "@repo/core/services";
 import {
   UserRepository,
   SessionRepository,
   CollectionRepository,
+  FavoriteCollectionRepository,
 } from "@repo/repositories";
 import { withDtoResponse } from "./utils/with-dto-response";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -27,6 +30,7 @@ declare module "hono" {
     sessionService: ISessionService;
     reviewService: IReviewService;
     collectionService: ICollectionService;
+    favoriteCollectionService: IFavoriteCollectionService;
 
     user?: User;
   }
@@ -39,6 +43,14 @@ const app = new Hono()
     c.set(
       "collectionService",
       new CollectionService(new CollectionRepository(), new UserRepository())
+    );
+    c.set(
+      "favoriteCollectionService",
+      new FavoriteCollectionService(
+        new FavoriteCollectionRepository(),
+        new CollectionRepository(),
+        new UserRepository()
+      )
     );
 
     await next();
