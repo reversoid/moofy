@@ -18,6 +18,7 @@ export const reviewRoute = new Hono()
       "query",
       z.object({
         limit: z.number().int().min(1).max(100).default(20),
+        search: z.string().optional(),
         cursor: z.string().optional(),
       })
     ),
@@ -27,24 +28,41 @@ export const reviewRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const { limit, cursor } = c.req.valid("query");
+      const { limit, cursor, search } = c.req.valid("query");
       const reviewService = c.get("reviewService");
 
-      const result = await reviewService.getCollectionReviews(
-        new Id(collectionId),
-        limit,
-        cursor
-      );
+      if (search) {
+        const result = await reviewService.searchReviews(
+          search,
+          new Id(collectionId),
+          limit
+        );
 
-      if (result.isErr()) {
-        const error = result.unwrapErr();
-        if (error instanceof CollectionNotFoundError) {
-          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        if (result.isErr()) {
+          const error = result.unwrapErr();
+          if (error instanceof CollectionNotFoundError) {
+            return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+          }
         }
-      }
 
-      const reviews = result.unwrap();
-      return c.json({ reviews });
+        return c.json({ reviews: result.unwrap() });
+      } else {
+        const result = await reviewService.getCollectionReviews(
+          new Id(collectionId),
+          limit,
+          cursor
+        );
+
+        if (result.isErr()) {
+          const error = result.unwrapErr();
+          if (error instanceof CollectionNotFoundError) {
+            return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+          }
+        }
+
+        const reviews = result.unwrap();
+        return c.json({ reviews });
+      }
     }
   )
   .post(
