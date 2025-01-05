@@ -4,3 +4,4 @@ export * from "./collection.repository";
 export * from "./review.repository";
 export * from "./film.repository";
 export * from "./favorite-collection.repository";
+export * from "./subscription.repository";

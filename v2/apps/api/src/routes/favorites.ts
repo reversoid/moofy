@@ -8,7 +8,6 @@ import {
   CollectionIsPrivateError,
   CollectionNotFavoritedError,
   CollectionNotFoundError,
-  UserNotFoundError,
 } from "@repo/core/services";
 
 export const favoritesRoute = new Hono()
