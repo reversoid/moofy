@@ -3,6 +3,7 @@ import { Kysely, PostgresDialect } from "kysely";
 import config from "@repo/config";
 import {
   CollectionsTable,
+  FavoriteCollectionsTable,
   FilmsTable,
   ReviewsTable,
   UsersTable,
@@ -17,6 +18,7 @@ export interface Database {
   reviews: ReviewsTable;
   films: FilmsTable;
   sessions: SessionsTable;
+  favoriteCollections: FavoriteCollectionsTable;
 }
 
 const dialect = new PostgresDialect({

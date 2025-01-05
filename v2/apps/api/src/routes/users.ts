@@ -5,19 +5,18 @@ import { authMiddleware } from "../utils/auth-middleware";
 
 export const userRoute = new Hono()
   .use(authMiddleware)
-  // TODO: Implement
-  // .put("/users/:id/followers", (c) => {
-  //   return c.json({ message: "Hello World" });
-  // })
-  // .get("/users/:id/followers", (c) => {
-  //   return c.json({ message: "Hello World" });
-  // })
-  // .get("/users/:id/followees", (c) => {
-  //   return c.json({ message: "Hello World" });
-  // })
-  // .delete("/users/:id/followers", (c) => {
-  //   return c.json({ message: "Hello World" });
-  // })
+  .put("/users/:id/followers", (c) => {
+    return c.json({ message: "Hello World" });
+  })
+  .get("/users/:id/followers", (c) => {
+    return c.json({ message: "Hello World" });
+  })
+  .get("/users/:id/followees", (c) => {
+    return c.json({ message: "Hello World" });
+  })
+  .delete("/users/:id/followers", (c) => {
+    return c.json({ message: "Hello World" });
+  })
   .get("/users/existence/:username", async (c) => {
     const { username } = c.req.param();
     const userService = c.get("userService");
