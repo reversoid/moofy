@@ -11,3 +11,9 @@ export class CollectionNotFavoritedError extends CoreError {
     super("Collection Not Favorited");
   }
 }
+
+export class CollectionIsPrivateError extends CoreError {
+  constructor() {
+    super("Collection Is Private");
+  }
+}

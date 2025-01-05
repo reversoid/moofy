@@ -61,6 +61,13 @@ export class FavoriteCollectionRepository
       .select(CollectionSelects.collectionSelects)
       .select(UserSelects.userSelects)
       .where("favoriteCollections.userId", "=", userId.value)
+      .where((eb) =>
+        eb.or([
+          eb("collections.isPublic", "=", true),
+          eb("collections.userId", "=", userId.value),
+        ])
+      )
+      .orderBy("favoriteCollections.createdAt", "desc")
       .limit(limit + 1);
 
     if (decodedCursor) {

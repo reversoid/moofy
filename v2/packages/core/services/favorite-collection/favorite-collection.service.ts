@@ -9,6 +9,7 @@ import { CollectionNotFoundError } from "../collection/errors";
 import { UserNotFoundError } from "../user/errors";
 import {
   CollectionAlreadyFavoritedError,
+  CollectionIsPrivateError,
   CollectionNotFavoritedError,
 } from "./errors";
 import { IFavoriteCollectionService } from "./interface";
@@ -26,12 +27,18 @@ export class FavoriteCollectionService implements IFavoriteCollectionService {
   ): Promise<
     Result<
       Collection,
-      CollectionNotFoundError | CollectionAlreadyFavoritedError
+      | CollectionNotFoundError
+      | CollectionAlreadyFavoritedError
+      | CollectionIsPrivateError
     >
   > {
     const collection = await this.collectionRepository.get(collectionId);
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (!collection.isPublic && collection.creator.id !== userId) {
+      return err(new CollectionIsPrivateError());
     }
 
     const exists = await this.favoriteCollectionRepository.exists(
@@ -50,11 +57,20 @@ export class FavoriteCollectionService implements IFavoriteCollectionService {
     userId: User["id"],
     collectionId: Collection["id"]
   ): Promise<
-    Result<Collection, CollectionNotFoundError | CollectionNotFavoritedError>
+    Result<
+      Collection,
+      | CollectionNotFoundError
+      | CollectionNotFavoritedError
+      | CollectionIsPrivateError
+    >
   > {
     const collection = await this.collectionRepository.get(collectionId);
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (!collection.isPublic && collection.creator.id !== userId) {
+      return err(new CollectionIsPrivateError());
     }
 
     const exists = await this.favoriteCollectionRepository.exists(

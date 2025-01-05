@@ -5,8 +5,10 @@ import { z } from "zod";
 import { Id } from "@repo/core/utils";
 import {
   CollectionAlreadyFavoritedError,
+  CollectionIsPrivateError,
   CollectionNotFavoritedError,
   CollectionNotFoundError,
+  UserNotFoundError,
 } from "@repo/core/services";
 
 export const favoritesRoute = new Hono()
@@ -87,7 +89,11 @@ export const favoritesRoute = new Hono()
 
       if (!result.isOk()) {
         const error = result.unwrapErr();
-        if (error instanceof CollectionNotFoundError) {
+
+        if (
+          error instanceof CollectionNotFoundError ||
+          error instanceof CollectionIsPrivateError
+        ) {
           return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
         }
 
@@ -121,7 +127,10 @@ export const favoritesRoute = new Hono()
 
       if (!result.isOk()) {
         const error = result.unwrapErr();
-        if (error instanceof CollectionNotFoundError) {
+        if (
+          error instanceof CollectionNotFoundError ||
+          error instanceof CollectionIsPrivateError
+        ) {
           return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
         }
 

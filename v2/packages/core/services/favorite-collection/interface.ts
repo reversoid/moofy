@@ -6,6 +6,7 @@ import { CollectionNotFoundError } from "../collection/errors";
 import { UserNotFoundError } from "../user/errors";
 import {
   CollectionAlreadyFavoritedError,
+  CollectionIsPrivateError,
   CollectionNotFavoritedError,
 } from "./errors";
 
@@ -16,7 +17,9 @@ export interface IFavoriteCollectionService {
   ): Promise<
     Result<
       Collection,
-      CollectionNotFoundError | CollectionAlreadyFavoritedError
+      | CollectionNotFoundError
+      | CollectionAlreadyFavoritedError
+      | CollectionIsPrivateError
     >
   >;
 
@@ -24,7 +27,12 @@ export interface IFavoriteCollectionService {
     userId: User["id"],
     collectionId: Collection["id"]
   ): Promise<
-    Result<Collection, CollectionNotFoundError | CollectionNotFavoritedError>
+    Result<
+      Collection,
+      | CollectionNotFoundError
+      | CollectionNotFavoritedError
+      | CollectionIsPrivateError
+    >
   >;
 
   getUserFavoriteCollections(
