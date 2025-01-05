@@ -40,4 +40,6 @@ export interface ICollectionService {
   ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>>;
 
   getCollection(id: Collection["id"]): Promise<Collection | null>;
+
+  searchCollections(search: string, limit: number): Promise<Collection[]>;
 }

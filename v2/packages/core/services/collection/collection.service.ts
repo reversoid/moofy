@@ -95,4 +95,11 @@ export class CollectionService implements ICollectionService {
     const collection = await this.collectionRepository.get(id);
     return collection;
   }
+
+  async searchCollections(
+    search: string,
+    limit: number
+  ): Promise<Collection[]> {
+    return this.collectionRepository.searchCollections(search, limit);
+  }
 }

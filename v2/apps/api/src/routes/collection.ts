@@ -6,6 +6,32 @@ import { Id } from "@repo/core/utils";
 
 export const collectionRoute = new Hono()
   .use(authMiddleware)
+  .get(
+    "/collections",
+    validator(
+      "query",
+      z.object({
+        search: z.string().default(""),
+        limit: z.number().int().min(1).max(100).default(20),
+      })
+    ),
+    async (c) => {
+      const { search, limit } = c.req.valid("query");
+      const user = c.get("user");
+      const collectionService = c.get("collectionService");
+
+      if (!user) {
+        throw new Error("UNAUTHORIZED");
+      }
+
+      const collections = await collectionService.searchCollections(
+        search,
+        limit
+      );
+
+      return c.json({ collections });
+    }
+  )
   .post(
     "/collections",
     validator(
