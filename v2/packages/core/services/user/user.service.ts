@@ -55,4 +55,9 @@ export class UserService implements IUserService {
     const user = await this.userRepository.getByUsername(username);
     return user;
   }
+
+  async updateUser(id: Id, data: Partial<User>): Promise<User> {
+    const updatedUser = await this.userRepository.update(id, data);
+    return updatedUser;
+  }
 }

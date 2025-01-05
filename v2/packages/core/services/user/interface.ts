@@ -25,4 +25,6 @@ export interface IUserService {
     username: string,
     password: string
   ): Promise<User | null>;
+
+  updateUser(id: Id, data: Partial<User>): Promise<User>;
 }

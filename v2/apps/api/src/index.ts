@@ -9,8 +9,14 @@ import {
   IReviewService,
   SessionService,
   UserService,
+  CollectionService,
+  ICollectionService,
 } from "@repo/core/services";
-import { UserRepository, SessionRepository } from "@repo/repositories";
+import {
+  UserRepository,
+  SessionRepository,
+  CollectionRepository,
+} from "@repo/repositories";
 import { withDtoResponse } from "./utils/with-dto-response";
 import { ISessionService, IUserService } from "@repo/core/services";
 import { User } from "@repo/core/entities";
@@ -19,8 +25,10 @@ declare module "hono" {
   interface ContextVariableMap {
     userService: IUserService;
     sessionService: ISessionService;
-    user?: User;
     reviewService: IReviewService;
+    collectionService: ICollectionService;
+
+    user?: User;
   }
 }
 
@@ -28,6 +36,10 @@ const app = new Hono()
   .use(async (c, next) => {
     c.set("userService", new UserService(new UserRepository()));
     c.set("sessionService", new SessionService(new SessionRepository()));
+    c.set(
+      "collectionService",
+      new CollectionService(new CollectionRepository(), new UserRepository())
+    );
 
     await next();
   })
