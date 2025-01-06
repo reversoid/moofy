@@ -13,15 +13,15 @@ if (!workspaceDir) {
 dotenv.config({ path: path.join(workspaceDir, ".env") });
 
 export default parseEnv(process.env, {
-  UNOFFICIAL_KP_API_KEYS: z.array(z.string()),
+  UNOFFICIAL_KP_API_KEYS: z.string().transform((v) => v.split(",")),
   UNOFFICIAL_KP_URL: z.string(),
 
   PG_USER: z.string(),
   PG_PASSWORD: z.string(),
   PG_HOST: z.string(),
-  PG_PORT: z.number().int(),
+  PG_PORT: z.coerce.number().int(),
   PG_DB: z.string(),
-  PG_MAX_CONNECTIONS: z.number().int(),
+  PG_MAX_CONNECTIONS: z.coerce.number().int(),
 
   COOKIE_SECRET: z.string(),
 });
