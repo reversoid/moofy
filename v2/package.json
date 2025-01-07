@@ -8,7 +8,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration:new": "dbmate new",
     "migration:up": "dbmate up",
-    "migration:down": "dbmate down"
+    "migration:down": "dbmate down",
+    "dev:docker": "docker compose -f docker-compose.dev.yml up -d"
   },
   "devDependencies": {
     "dbmate": "^2.24.2",

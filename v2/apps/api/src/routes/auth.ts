@@ -1,12 +1,7 @@
 import { Hono } from "hono";
 import { validator } from "../utils/validator";
 import z from "zod";
-import {
-  deleteCookie,
-  getCookie,
-  setCookie,
-  setSignedCookie,
-} from "hono/cookie";
+import { deleteCookie, getCookie, setSignedCookie } from "hono/cookie";
 import config from "@repo/config";
 
 export const authRoute = new Hono()

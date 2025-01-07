@@ -20,7 +20,6 @@ export default parseEnv(process.env, {
   PG_PASSWORD: z.string(),
   PG_HOST: z.string(),
   PG_PORT: z.coerce.number().int(),
-  PG_DB: z.string(),
   PG_MAX_CONNECTIONS: z.coerce.number().int(),
 
   COOKIE_SECRET: z.string(),
