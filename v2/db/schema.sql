@@ -102,9 +102,9 @@ CREATE TABLE public.comment (
     text character varying(400) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
-    "userId" integer NOT NULL,
-    "replyToId" integer,
-    "listId" integer
+    user_id integer NOT NULL,
+    reply_to_id integer,
+    list_id integer
 );
 
 
@@ -136,8 +136,8 @@ CREATE TABLE public.comment_like (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
-    "userId" integer NOT NULL,
-    "commentId" integer NOT NULL
+    user_id integer NOT NULL,
+    comment_id integer NOT NULL
 );
 
 
@@ -169,8 +169,8 @@ CREATE TABLE public.favorite_list (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
-    "userId" integer NOT NULL,
-    "listId" integer
+    user_id integer NOT NULL,
+    list_id integer
 );
 
 
@@ -203,9 +203,9 @@ CREATE TABLE public.film (
     name character varying(128) NOT NULL,
     year smallint NOT NULL,
     type public.film_type_enum NOT NULL,
-    "filmLength" character(6),
-    "posterPreviewUrl" character varying(120),
-    "posterUrl" character varying(120),
+    film_length character(6),
+    poster_preview_url character varying(120),
+    poster_url character varying(120),
     genres character varying(32)[],
     search_document tsvector NOT NULL
 );
@@ -226,7 +226,7 @@ CREATE TABLE public.list (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
-    "userId" integer NOT NULL,
+    user_id integer NOT NULL,
     search_document tsvector NOT NULL
 );
 
@@ -259,8 +259,8 @@ CREATE TABLE public.list_like (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
-    "userId" integer NOT NULL,
-    "listId" integer NOT NULL
+    user_id integer NOT NULL,
+    list_id integer NOT NULL
 );
 
 
@@ -292,8 +292,8 @@ CREATE TABLE public.list_view (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
-    "userId" integer NOT NULL,
-    "listId" integer NOT NULL
+    user_id integer NOT NULL,
+    list_id integer NOT NULL
 );
 
 
@@ -361,9 +361,9 @@ CREATE TABLE public.review (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    "filmId" character varying(32) NOT NULL,
-    "userId" integer NOT NULL,
-    "listId" integer NOT NULL,
+    film_id character varying(32) NOT NULL,
+    user_id integer NOT NULL,
+    list_id integer NOT NULL,
     search_document tsvector NOT NULL
 );
 
@@ -469,8 +469,8 @@ ALTER SEQUENCE public.task_id_seq OWNED BY public.task.id;
 CREATE TABLE public.to_watch (
     id integer NOT NULL,
     watched boolean DEFAULT false NOT NULL,
-    "userId" integer NOT NULL,
-    "filmId" character varying(32) NOT NULL
+    user_id integer NOT NULL,
+    film_id character varying(32) NOT NULL
 );
 
 
@@ -916,14 +916,14 @@ CREATE INDEX "IDX_9cdce43fa0043c794281aa0905" ON public.users USING btree (updat
 -- Name: IDX_9e1aabc3453a7c955553f498c6; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX "IDX_9e1aabc3453a7c955553f498c6" ON public.to_watch USING btree ("userId");
+CREATE INDEX "IDX_9e1aabc3453a7c955553f498c6" ON public.to_watch USING btree (user_id);
 
 
 --
 -- Name: IDX_b678c932a26ad586d6afd5ee42; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX "IDX_b678c932a26ad586d6afd5ee42" ON public.to_watch USING btree ("filmId");
+CREATE INDEX "IDX_b678c932a26ad586d6afd5ee42" ON public.to_watch USING btree (film_id);
 
 
 --
@@ -965,7 +965,7 @@ CREATE INDEX "IDX_e045ebbb33ef7af0d13176f55b" ON public.review USING btree (upda
 -- Name: IDX_ff4c1609981279c3df153fda3c; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX "IDX_ff4c1609981279c3df153fda3c" ON public.film USING btree ("filmLength");
+CREATE INDEX "IDX_ff4c1609981279c3df153fda3c" ON public.film USING btree (film_length);
 
 
 --
@@ -1029,7 +1029,7 @@ CREATE TRIGGER username_tsvector_update BEFORE INSERT OR UPDATE ON public.users 
 --
 
 ALTER TABLE ONLY public.review
-    ADD CONSTRAINT "FK_1337f93918c70837d3cea105d39" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_1337f93918c70837d3cea105d39" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1037,7 +1037,7 @@ ALTER TABLE ONLY public.review
 --
 
 ALTER TABLE ONLY public.favorite_list
-    ADD CONSTRAINT "FK_21938075574309780e33688b0a5" FOREIGN KEY ("listId") REFERENCES public.list(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_21938075574309780e33688b0a5" FOREIGN KEY (list_id) REFERENCES public.list(id) ON DELETE CASCADE;
 
 
 --
@@ -1045,7 +1045,7 @@ ALTER TABLE ONLY public.favorite_list
 --
 
 ALTER TABLE ONLY public.list_like
-    ADD CONSTRAINT "FK_2f7811183028e0c3b9a66f34957" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_2f7811183028e0c3b9a66f34957" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1053,7 +1053,7 @@ ALTER TABLE ONLY public.list_like
 --
 
 ALTER TABLE ONLY public.list_like
-    ADD CONSTRAINT "FK_36bbfd04f2ebcc31a9c42450c36" FOREIGN KEY ("listId") REFERENCES public.list(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_36bbfd04f2ebcc31a9c42450c36" FOREIGN KEY (list_id) REFERENCES public.list(id) ON DELETE CASCADE;
 
 
 --
@@ -1061,7 +1061,7 @@ ALTER TABLE ONLY public.list_like
 --
 
 ALTER TABLE ONLY public.review
-    ADD CONSTRAINT "FK_37e516b0d42e6a177cbbb15da8c" FOREIGN KEY ("listId") REFERENCES public.list(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_37e516b0d42e6a177cbbb15da8c" FOREIGN KEY (list_id) REFERENCES public.list(id) ON DELETE CASCADE;
 
 
 --
@@ -1069,7 +1069,7 @@ ALTER TABLE ONLY public.review
 --
 
 ALTER TABLE ONLY public.list_view
-    ADD CONSTRAINT "FK_4217d199530fdd010220d8d473a" FOREIGN KEY ("listId") REFERENCES public.list(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_4217d199530fdd010220d8d473a" FOREIGN KEY (list_id) REFERENCES public.list(id) ON DELETE CASCADE;
 
 
 --
@@ -1077,7 +1077,7 @@ ALTER TABLE ONLY public.list_view
 --
 
 ALTER TABLE ONLY public.list
-    ADD CONSTRAINT "FK_46ded14b26382088c9f032f8953" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_46ded14b26382088c9f032f8953" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1085,7 +1085,7 @@ ALTER TABLE ONLY public.list
 --
 
 ALTER TABLE ONLY public.to_watch
-    ADD CONSTRAINT "FK_9e1aabc3453a7c955553f498c6e" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_9e1aabc3453a7c955553f498c6e" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1093,7 +1093,7 @@ ALTER TABLE ONLY public.to_watch
 --
 
 ALTER TABLE ONLY public.comment_like
-    ADD CONSTRAINT "FK_a253dba95eab8659c027bbace44" FOREIGN KEY ("commentId") REFERENCES public.comment(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_a253dba95eab8659c027bbace44" FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON DELETE CASCADE;
 
 
 --
@@ -1101,7 +1101,7 @@ ALTER TABLE ONLY public.comment_like
 --
 
 ALTER TABLE ONLY public.list_view
-    ADD CONSTRAINT "FK_a8a0aa213e144f932c9793a6953" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_a8a0aa213e144f932c9793a6953" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1109,7 +1109,7 @@ ALTER TABLE ONLY public.list_view
 --
 
 ALTER TABLE ONLY public.comment_like
-    ADD CONSTRAINT "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_b5a2fc7a9a2b6bcc8c74f6fbb8b" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1117,7 +1117,7 @@ ALTER TABLE ONLY public.comment_like
 --
 
 ALTER TABLE ONLY public.to_watch
-    ADD CONSTRAINT "FK_b678c932a26ad586d6afd5ee42c" FOREIGN KEY ("filmId") REFERENCES public.film(id);
+    ADD CONSTRAINT "FK_b678c932a26ad586d6afd5ee42c" FOREIGN KEY (film_id) REFERENCES public.film(id);
 
 
 --
@@ -1125,7 +1125,7 @@ ALTER TABLE ONLY public.to_watch
 --
 
 ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT "FK_c0354a9a009d3bb45a08655ce3b" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_c0354a9a009d3bb45a08655ce3b" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1133,7 +1133,7 @@ ALTER TABLE ONLY public.comment
 --
 
 ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT "FK_cfc14dc2cafa339954de748ebf3" FOREIGN KEY ("replyToId") REFERENCES public.comment(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_cfc14dc2cafa339954de748ebf3" FOREIGN KEY (reply_to_id) REFERENCES public.comment(id) ON DELETE CASCADE;
 
 
 --
@@ -1141,7 +1141,7 @@ ALTER TABLE ONLY public.comment
 --
 
 ALTER TABLE ONLY public.review
-    ADD CONSTRAINT "FK_f1a2e33731808a7c6fcd644ca7c" FOREIGN KEY ("filmId") REFERENCES public.film(id);
+    ADD CONSTRAINT "FK_f1a2e33731808a7c6fcd644ca7c" FOREIGN KEY (film_id) REFERENCES public.film(id);
 
 
 --
@@ -1149,7 +1149,7 @@ ALTER TABLE ONLY public.review
 --
 
 ALTER TABLE ONLY public.favorite_list
-    ADD CONSTRAINT "FK_fbbb4b0b4654357a4bd1138ccbd" FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_fbbb4b0b4654357a4bd1138ccbd" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1157,7 +1157,7 @@ ALTER TABLE ONLY public.favorite_list
 --
 
 ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT "FK_fc8455c31a9e1a7cfeb0ead49a9" FOREIGN KEY ("listId") REFERENCES public.list(id);
+    ADD CONSTRAINT "FK_fc8455c31a9e1a7cfeb0ead49a9" FOREIGN KEY (list_id) REFERENCES public.list(id);
 
 
 --
@@ -1170,4 +1170,5 @@ ALTER TABLE ONLY public.comment
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20250107102114');
+    ('20250107102114'),
+    ('20250107111932');
