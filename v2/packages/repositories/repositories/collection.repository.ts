@@ -24,21 +24,22 @@ export class CollectionRepository extends ICollectionRepository {
       .select(
         sql<number>`
       ts_rank(
-          collections.searchDocument, 
+          collections.search_document, 
           plainto_tsquery('simple', ${search})
       ) + 
       ts_rank(
-          collections.searchDocument, 
+          collections.search_document, 
           to_tsquery('simple', ${words})
       )`.as("rank")
       )
       .where(
         sql<boolean>`
-        (collections.searchDocument) @@ plainto_tsquery('simple', ${search})
+        (collections.search_document) @@ plainto_tsquery('simple', ${search})
         OR
-        (collections.searchDocument) @@ to_tsquery('simple', ${words})
+        (collections.search_document) @@ to_tsquery('simple', ${words})
       `
       )
+      .where("collections.isPublic", "is", true)
       .limit(limit)
       .orderBy("rank", "desc")
       .execute();

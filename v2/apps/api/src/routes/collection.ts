@@ -12,7 +12,7 @@ export const collectionRoute = new Hono()
       "query",
       z.object({
         search: z.string().default(""),
-        limit: z.number().int().min(1).max(100).default(20),
+        limit: z.coerce.number().int().min(1).max(100).default(20),
       })
     ),
     async (c) => {

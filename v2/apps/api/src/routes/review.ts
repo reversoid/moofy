@@ -17,7 +17,7 @@ export const reviewRoute = new Hono()
     validator(
       "query",
       z.object({
-        limit: z.number().int().min(1).max(100).default(20),
+        limit: z.coerce.number().int().min(1).max(100).default(20),
         search: z.string().optional(),
         cursor: z.string().optional(),
       })

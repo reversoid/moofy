@@ -48,7 +48,7 @@ export const userRoute = new Hono()
     validator(
       "query",
       z.object({
-        limit: z.number().int().min(1).max(100).default(20),
+        limit: z.coerce.number().int().min(1).max(100).default(20),
         cursor: z.string().optional(),
       })
     ),
@@ -76,7 +76,7 @@ export const userRoute = new Hono()
     validator(
       "query",
       z.object({
-        limit: z.number().int().min(1).max(100).default(20),
+        limit: z.coerce.number().int().min(1).max(100).default(20),
         cursor: z.string().optional(),
       })
     ),
@@ -138,7 +138,7 @@ export const userRoute = new Hono()
       "query",
       z.object({
         search: z.string().default(""),
-        limit: z.number().int().min(1).max(100).default(20),
+        limit: z.coerce.number().int().min(1).max(100).default(20),
       })
     ),
     async (c) => {
