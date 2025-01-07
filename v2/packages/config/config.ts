@@ -24,4 +24,6 @@ export default parseEnv(process.env, {
   PG_DATABASE: z.string(),
 
   COOKIE_SECRET: z.string(),
+
+  ENV: z.enum(["development", "test", "production"]),
 });

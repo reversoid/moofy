@@ -30,11 +30,10 @@ export const authRoute = new Hono()
       const token = sessionService.generateSessionToken();
       const session = await sessionService.createSession(token, user);
 
-      setSignedCookie(c, "session", config.COOKIE_SECRET, session.id, {
+      await setSignedCookie(c, "session", config.COOKIE_SECRET, session.id, {
         httpOnly: true,
-        secure: true,
-        sameSite: "Strict",
-        expires: session.expiresAt,
+        secure: config.ENV !== "development",
+        sameSite: "Lax",
       });
 
       return c.json({ user: session.user });
@@ -66,10 +65,10 @@ export const authRoute = new Hono()
         createResult.value
       );
 
-      setSignedCookie(c, "session", config.COOKIE_SECRET, session.id, {
+      await setSignedCookie(c, "session", config.COOKIE_SECRET, session.id, {
         httpOnly: true,
-        secure: true,
-        sameSite: "Strict",
+        secure: config.ENV !== "development",
+        sameSite: "Lax",
         expires: session.expiresAt,
       });
 
