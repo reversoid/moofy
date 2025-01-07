@@ -82,7 +82,34 @@ export const reviewRoute = new Hono()
     async (c) => {
       const { collectionId } = c.req.valid("param");
       const { score, description, filmId } = c.req.valid("json");
+      const user = c.get("user");
+
+      if (!user) {
+        throw new Error("UNAUTHORIZED");
+      }
+
+      // TODO handle all authorization logic in services
       const reviewService = c.get("reviewService");
+      const collectionService = c.get("collectionService");
+
+      const collection = await collectionService.getCollection(
+        new Id(collectionId)
+      );
+
+      if (!collection) {
+        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+      }
+
+      if (
+        !collection.isPublic &&
+        collection.creator.id.value !== user.id.value
+      ) {
+        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+      }
+
+      if (collection?.creator.id.value !== user.id.value) {
+        return c.json({ error: "FORBIDDEN" }, 403);
+      }
 
       const result = await reviewService.createReview({
         score,
@@ -116,7 +143,7 @@ export const reviewRoute = new Hono()
     validator(
       "param",
       z.object({
-        reviewId: z.number().int().positive(),
+        reviewId: z.coerce.number().int().positive(),
       })
     ),
     async (c) => {
@@ -137,7 +164,7 @@ export const reviewRoute = new Hono()
     validator(
       "param",
       z.object({
-        reviewId: z.number().int().positive(),
+        reviewId: z.coerce.number().int().positive(),
       })
     ),
     async (c) => {
@@ -161,7 +188,7 @@ export const reviewRoute = new Hono()
     validator(
       "param",
       z.object({
-        reviewId: z.number().int().positive(),
+        reviewId: z.coerce.number().int().positive(),
       })
     ),
     validator(
@@ -175,6 +202,21 @@ export const reviewRoute = new Hono()
       const { reviewId } = c.req.valid("param");
       const { score, description } = c.req.valid("json");
       const reviewService = c.get("reviewService");
+      const user = c.get("user");
+
+      if (!user) {
+        throw new Error("UNAUTHORIZED");
+      }
+
+      const review = await reviewService.getReview(new Id(reviewId));
+
+      if (!review) {
+        return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
+      }
+
+      if (review.userId.value !== user.id.value) {
+        return c.json({ error: "FORBIDDEN" }, 403);
+      }
 
       const result = await reviewService.editReview(new Id(reviewId), {
         score,

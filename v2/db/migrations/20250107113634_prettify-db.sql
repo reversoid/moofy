@@ -36,6 +36,7 @@ ALTER TABLE "subscription" RENAME TO "subscriptions";
 ALTER TABLE "subscriptions" RENAME COLUMN "follower_id" TO "from_user_id";
 ALTER TABLE "subscriptions" RENAME COLUMN "followed_id" TO "to_user_id";
 ALTER TABLE "favorite_collections" RENAME COLUMN "list_id" TO "collection_id";
+ALTER TABLE "reviews" RENAME COLUMN "list_id" TO "collection_id";
 
 ALTER TABLE "subscriptions" DROP COLUMN "deleted_at";
 
@@ -49,6 +50,10 @@ DROP TABLE "comment" CASCADE;
 DROP TABLE "comment_like" CASCADE;
 DROP TABLE "to_watch" CASCADE;
 DROP TABLE "task" CASCADE;
+
+-- Add created_at to films table
+ALTER TABLE "films" ADD COLUMN created_at timestamp with time zone DEFAULT now() NOT NULL;
+ALTER TABLE "films" ADD COLUMN updated_at timestamp with time zone DEFAULT now() NOT NULL;
 
 -- migrate:down
 
@@ -67,6 +72,10 @@ ALTER TABLE "list_view" RENAME CONSTRAINT "FK_collection_views_collection_id" TO
 ALTER TABLE "favorite_list" RENAME CONSTRAINT "FK_favorite_collections_collection_id" TO "FK_21938075574309780e33688b0a5";
 ALTER TABLE "review" RENAME CONSTRAINT "FK_reviews_collection_id" TO "FK_37e516b0d42e6a177cbbb15da8c";
 ALTER TABLE "list" RENAME CONSTRAINT "FK_comments_collection_id" TO "FK_fc8455c31a9e1a7cfeb0ead49a9";
+
+-- Drop created_at from films table
+ALTER TABLE "films" DROP COLUMN created_at;
+ALTER TABLE "films" DROP COLUMN updated_at;
 
 -- Note: Cannot restore dropped columns and tables in down migration
 -- You would need to manually restore the data structure if rolling back

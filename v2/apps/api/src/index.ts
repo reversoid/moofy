@@ -15,6 +15,8 @@ import {
   FavoriteCollectionService,
   ISubscriptionService,
   SubscriptionService,
+  ReviewService,
+  FilmService,
 } from "@repo/core/services";
 import {
   UserRepository,
@@ -22,10 +24,14 @@ import {
   CollectionRepository,
   FavoriteCollectionRepository,
   SubscriptionRepository,
+  ReviewRepository,
+  FilmRepository,
 } from "@repo/repositories";
 import { withDtoResponse } from "./utils/with-dto-response";
 import { ISessionService, IUserService } from "@repo/core/services";
 import { User } from "@repo/core/entities";
+import { UnofficialKpProvider } from "@repo/film-providers";
+import { searchRoute } from "./routes/search";
 
 declare module "hono" {
   interface ContextVariableMap {
@@ -42,27 +48,44 @@ declare module "hono" {
 
 const app = new Hono()
   .use(async (c, next) => {
-    c.set("userService", new UserService(new UserRepository()));
-    c.set("sessionService", new SessionService(new SessionRepository()));
-    c.set(
-      "collectionService",
-      new CollectionService(new CollectionRepository(), new UserRepository())
+    const filmProvider = new UnofficialKpProvider();
+
+    const userRepository = new UserRepository();
+    const sessionRepository = new SessionRepository();
+    const collectionRepository = new CollectionRepository();
+    const favoriteCollectionRepository = new FavoriteCollectionRepository();
+    const reviewRepository = new ReviewRepository();
+    const filmRepository = new FilmRepository();
+    const subscriptionRepository = new SubscriptionRepository();
+    const userService = new UserService(userRepository);
+    const sessionService = new SessionService(sessionRepository);
+    const collectionService = new CollectionService(
+      collectionRepository,
+      userRepository
     );
-    c.set(
-      "favoriteCollectionService",
-      new FavoriteCollectionService(
-        new FavoriteCollectionRepository(),
-        new CollectionRepository(),
-        new UserRepository()
-      )
+    const filmService = new FilmService(filmRepository);
+    const favoriteCollectionService = new FavoriteCollectionService(
+      favoriteCollectionRepository,
+      collectionRepository,
+      userRepository
     );
-    c.set(
-      "subscriptionService",
-      new SubscriptionService(
-        new SubscriptionRepository(),
-        new UserRepository()
-      )
+    const subscriptionService = new SubscriptionService(
+      subscriptionRepository,
+      userRepository
     );
+    const reviewService = new ReviewService(
+      reviewRepository,
+      filmService,
+      filmProvider,
+      collectionService
+    );
+
+    c.set("userService", userService);
+    c.set("sessionService", sessionService);
+    c.set("collectionService", collectionService);
+    c.set("favoriteCollectionService", favoriteCollectionService);
+    c.set("reviewService", reviewService);
+    c.set("subscriptionService", subscriptionService);
 
     await next();
   })
@@ -72,6 +95,7 @@ const app = new Hono()
   .route("", reviewRoute)
   .route("", collectionRoute)
   .route("", userRoute)
+  .route("", searchRoute)
   .route("", favoritesRoute);
 
 export default app;

@@ -52,6 +52,7 @@ export class ReviewRepository extends IReviewRepository {
 
     let query = this.getSelectQuery()
       .where("collectionId", "=", collectionId.value)
+      .orderBy("reviews.updatedAt", "desc")
       .limit(limit);
 
     if (decodedCursor) {
