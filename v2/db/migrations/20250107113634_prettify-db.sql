@@ -25,7 +25,6 @@ ALTER TABLE "film" RENAME TO "films";
 -- Rename and adjust users table
 ALTER TABLE "users" DROP COLUMN "email";
 ALTER TABLE "users" DROP COLUMN "deleted_at";
-ALTER TABLE "users" RENAME COLUMN "username_search_document" TO "usernameSearchDocument";
 
 -- Rename and adjust collections table columns
 ALTER TABLE "collections" DROP COLUMN "show_rating";

@@ -17,13 +17,13 @@ import {
 
 export const makeUser = (rawData: UserSelects.UserSelectResult): User => {
   return new User({
-    passwordHash: rawData.u_passwordHash,
-    username: rawData.u_username,
-    createdAt: rawData.u_createdAt,
-    description: rawData.u_description,
-    id: new Id(rawData.u_id),
-    imageUrl: rawData.u_imageUrl,
-    updatedAt: rawData.u_updatedAt,
+    passwordHash: rawData["u-passwordHash"],
+    username: rawData["u-username"],
+    createdAt: rawData["u-createdAt"],
+    description: rawData["u-description"],
+    id: new Id(rawData["u-id"]),
+    imageUrl: rawData["u-imageUrl"],
+    updatedAt: rawData["u-updatedAt"],
   });
 };
 
@@ -32,27 +32,27 @@ export const makeCollection = (
     UserSelects.UserSelectResult
 ): Collection => {
   return new Collection({
-    id: new Id(rawData.c_id),
-    name: rawData.c_name,
-    description: rawData.c_description,
+    id: new Id(rawData["c-id"]),
+    name: rawData["c-name"],
+    description: rawData["c-description"],
     creator: makeUser(rawData),
-    isPublic: rawData.c_isPublic,
-    imageUrl: rawData.c_imageUrl,
-    createdAt: rawData.c_createdAt,
-    updatedAt: rawData.c_updatedAt,
+    isPublic: rawData["c-isPublic"],
+    imageUrl: rawData["c-imageUrl"],
+    createdAt: rawData["c-createdAt"],
+    updatedAt: rawData["c-updatedAt"],
   });
 };
 
 export const makeFilm = (rawData: FilmSelects.FilmSelectResult): Film => {
   return new Film({
-    id: rawData.f_id,
-    name: rawData.f_name,
-    filmLength: rawData.f_filmLength,
-    genres: rawData.f_genres,
-    posterPreviewUrl: rawData.f_posterPreviewUrl,
-    posterUrl: rawData.f_posterUrl,
-    year: rawData.f_year,
-    type: FilmType[rawData.f_type],
+    id: rawData["f-id"],
+    name: rawData["f-name"],
+    filmLength: rawData["f-filmLength"],
+    genres: rawData["f-genres"],
+    posterPreviewUrl: rawData["f-posterPreviewUrl"],
+    posterUrl: rawData["f-posterUrl"],
+    year: rawData["f-year"],
+    type: FilmType[rawData["f-type"]],
   });
 };
 
@@ -60,14 +60,14 @@ export const makeReview = (
   rawData: ReviewSelects.ReviewSelectResult & FilmSelects.FilmSelectResult
 ): Review => {
   return new Review({
-    collectionId: new Id(rawData.r_collectionId),
+    collectionId: new Id(rawData["r-collectionId"]),
     film: makeFilm(rawData),
-    createdAt: rawData.r_createdAt,
-    description: rawData.r_description,
-    id: new Id(rawData.r_id),
-    score: rawData.r_score,
-    updatedAt: rawData.r_updatedAt,
-    userId: new Id(rawData.r_userId),
+    createdAt: rawData["r-createdAt"],
+    description: rawData["r-description"],
+    id: new Id(rawData["r-id"]),
+    score: rawData["r-score"],
+    updatedAt: rawData["r-updatedAt"],
+    userId: new Id(rawData["r-userId"]),
   });
 };
 
@@ -75,8 +75,8 @@ export const makeSession = (
   rawData: SessionSelects.SessionSelectResult & UserSelects.UserSelectResult
 ): Session => {
   return new Session({
-    id: rawData.s_id,
-    expiresAt: rawData.s_expiresAt,
+    id: rawData["s-id"],
+    expiresAt: rawData["s-expiresAt"],
     user: makeUser(rawData),
   });
 };

@@ -321,6 +321,17 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: sessions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sessions (
+    id character varying(255) NOT NULL,
+    user_id integer NOT NULL,
+    expires_at timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: subscriptions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -364,7 +375,7 @@ CREATE TABLE public.users (
     password_hash character(60) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    "usernameSearchDocument" tsvector NOT NULL
+    username_search_document tsvector NOT NULL
 );
 
 
@@ -533,6 +544,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: search_film_document_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -557,7 +576,7 @@ CREATE INDEX search_review_document_idx ON public.reviews USING gin (search_docu
 -- Name: username_search_document_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX username_search_document_idx ON public.users USING gin ("usernameSearchDocument");
+CREATE INDEX username_search_document_idx ON public.users USING gin (username_search_document);
 
 
 --
@@ -669,6 +688,14 @@ ALTER TABLE ONLY public.reviews
 
 
 --
+-- Name: sessions sessions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -681,4 +708,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20250107102114'),
     ('20250107111932'),
     ('20250107113634'),
-    ('20250107115051');
+    ('20250107115051'),
+    ('20250107123231');

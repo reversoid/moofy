@@ -6,7 +6,7 @@ type ColumnAliasResult<
   Prefix extends string,
   Fields extends readonly (keyof Selectable<Database[TB]>)[],
 > = {
-  [K in Fields[number] as `${Prefix & string}_${K & string}`]: Selectable<
+  [K in Fields[number] as `${Prefix & string}-${K & string}`]: Selectable<
     Database[TB]
   >[K];
 };
@@ -15,7 +15,7 @@ type MappedSelect<
   TB extends keyof Database,
   Prefix extends string,
   F extends keyof Selectable<Database[TB]>,
-> = `${TB}.${F & string} as ${Prefix & string}_${F & string}`;
+> = `${TB}.${F & string} as ${Prefix & string}-${F & string}`;
 
 function getSelects<
   TB extends keyof Database,
@@ -23,7 +23,7 @@ function getSelects<
   Fields extends ReadonlyArray<keyof Selectable<Database[TB]>>,
 >(table: TB, prefix: Prefix, fields: Fields) {
   return fields.map(
-    (field) => `${table}.${String(field)} as ${prefix}_${String(field)}`
+    (field) => `${table}.${String(field)} as ${prefix}-${String(field)}`
   ) as {
     [Index in keyof Fields]: MappedSelect<TB, Prefix, Fields[Index]>;
   };

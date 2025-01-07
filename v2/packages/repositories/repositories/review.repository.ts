@@ -61,8 +61,8 @@ export class ReviewRepository extends IReviewRepository {
     const data = await query.execute();
 
     const lastItem = data.at(limit);
-    const newCursor = lastItem?.r_updatedAt
-      ? encodeCursor(lastItem.r_updatedAt.getTime())
+    const newCursor = lastItem?.["r-updatedAt"]
+      ? encodeCursor(lastItem["r-updatedAt"].getTime())
       : null;
 
     return {
@@ -99,7 +99,7 @@ export class ReviewRepository extends IReviewRepository {
         score: item.score,
         userId: item.userId.value,
       })
-      .returning("id")
+      .returningAll()
       .executeTakeFirstOrThrow();
 
     return this.getOrThrow(new Id(id));
@@ -107,7 +107,7 @@ export class ReviewRepository extends IReviewRepository {
 
   async get(id: Id): Promise<Review | null> {
     const rawData = await this.getSelectQuery()
-      .where("id", "=", id.value)
+      .where("reviews.id", "=", id.value)
       .executeTakeFirst();
 
     if (!rawData) {
@@ -134,7 +134,7 @@ export class ReviewRepository extends IReviewRepository {
         updatedAt: new Date(),
       })
       .where("id", "=", id.value)
-      .returning("id")
+      .returningAll()
       .executeTakeFirstOrThrow();
 
     return this.getOrThrow(id);

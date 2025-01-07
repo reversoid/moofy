@@ -39,7 +39,7 @@ export class FilmRepository extends IFilmRepository {
     const rawData = await db
       .selectFrom("films")
       .select(FilmSelects.filmSelects)
-      .where("id", "=", id)
+      .where("films.id", "=", id)
       .executeTakeFirst();
 
     if (!rawData) {

@@ -36,7 +36,7 @@ export class UserRepository extends IUserRepository {
   async get(id: Id): Promise<User | null> {
     const result = await db
       .selectFrom("users")
-      .where("id", "=", id.value)
+      .where("users.id", "=", id.value)
       .select(UserSelects.userSelects)
       .executeTakeFirst();
 

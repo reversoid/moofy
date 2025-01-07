@@ -1,22 +1,35 @@
-import { dtoRules } from "./rules";
+import { dtoRules, type PickableFields, type Transformer } from "./rules";
 
-// Main makeDto function
-export function makeDto<T>(data: T): Partial<T> {
+const isTransformer = (
+  rule: PickableFields<unknown> | Transformer<unknown>
+): rule is Transformer<unknown> => typeof rule === "function";
+
+export function makeDto<T>(data: T): unknown {
   if (!data || typeof data !== "object") {
     return data;
   }
 
-  // Handle arrays
   if (Array.isArray(data)) {
-    return data.map((item) => makeDto(item)) as any;
+    return data.map((item) => makeDto(item));
   }
 
-  // Find matching rule for the constructor
   const constructor = data.constructor;
   const rule = dtoRules.get(constructor);
 
   if (!rule) {
-    return data;
+    const result: Partial<T> = {};
+
+    for (const key in data) {
+      const value = data[key];
+
+      result[key as keyof T] = makeDto(value) as T[keyof T];
+    }
+
+    return result;
+  }
+
+  if (isTransformer(rule)) {
+    return rule(data);
   }
 
   const result: Partial<T> = {};
@@ -25,14 +38,7 @@ export function makeDto<T>(data: T): Partial<T> {
     if (!include) continue;
 
     const value = data[key as keyof T];
-
-    if (typeof include === "object") {
-      // Recursive case: nested object with its own rules
-      result[key as keyof T] = makeDto(value) as T[keyof T];
-    } else {
-      // Base case: boolean include/exclude
-      result[key as keyof T] = value;
-    }
+    result[key as keyof T] = makeDto(value) as T[keyof T];
   }
 
   return result;

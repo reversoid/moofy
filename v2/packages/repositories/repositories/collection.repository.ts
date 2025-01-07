@@ -68,8 +68,8 @@ export class CollectionRepository extends ICollectionRepository {
     const data = await query.execute();
 
     const lastItem = data.at(limit);
-    const newCursor = lastItem?.c_updatedAt
-      ? encodeCursor(lastItem.c_updatedAt.getTime())
+    const newCursor = lastItem?.["c-updatedAt"]
+      ? encodeCursor(lastItem["c-updatedAt"].getTime())
       : null;
 
     return {
@@ -92,7 +92,7 @@ export class CollectionRepository extends ICollectionRepository {
         updatedAt: item.updatedAt,
         createdAt: new Date(),
       })
-      .returning("id")
+      .returningAll()
       .executeTakeFirstOrThrow();
 
     return this.getOrThrow(new Id(id));
@@ -100,7 +100,7 @@ export class CollectionRepository extends ICollectionRepository {
 
   async get(id: Id): Promise<Collection | null> {
     const rawData = await this.getSelectQuery()
-      .where("id", "=", id.value)
+      .where("collections.id", "=", id.value)
       .executeTakeFirst();
 
     if (!rawData) {
@@ -120,7 +120,7 @@ export class CollectionRepository extends ICollectionRepository {
         name: value.name,
       })
       .where("id", "=", id.value)
-      .returning("id")
+      .returningAll()
       .executeTakeFirstOrThrow();
 
     return this.getOrThrow(id);

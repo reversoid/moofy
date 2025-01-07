@@ -13,7 +13,7 @@ export class SessionRepository extends ISessionRepository {
         userId: data.user.id.value,
         id: data.id,
       })
-      .returning("id")
+      .returningAll()
       .executeTakeFirstOrThrow();
 
     return this.getOrThrow(id);
@@ -22,10 +22,10 @@ export class SessionRepository extends ISessionRepository {
   async get(id: string): Promise<Session | null> {
     const session = await db
       .selectFrom("sessions")
-      .select(SessionSelects.sessionSelects)
       .innerJoin("users", "users.id", "sessions.userId")
       .select(UserSelects.userSelects)
-      .where("id", "=", id)
+      .select(SessionSelects.sessionSelects)
+      .where("sessions.id", "=", id)
       .executeTakeFirst();
 
     if (!session) {
