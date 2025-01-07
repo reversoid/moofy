@@ -9,7 +9,7 @@
     "migration:new": "dbmate new",
     "migration:up": "dbmate up",
     "migration:down": "dbmate down",
-    "dev:docker": "docker compose -f docker-compose.dev.yml up -d"
+    "dev:docker": "docker compose -f docker-compose.dev.yml up"
   },
   "devDependencies": {
     "dbmate": "^2.24.2",
