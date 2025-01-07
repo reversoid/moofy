@@ -11,4 +11,5 @@ export interface FilmsTable {
   posterUrl: string;
   createdAt: Generated<Date>;
   updatedAt: Date;
+  searchDocument: unknown;
 }
