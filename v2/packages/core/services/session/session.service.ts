@@ -39,6 +39,7 @@ export class SessionService implements ISessionService {
     token: string
   ): Promise<Result<Session, SessionNotFoundError | SessionExpiredError>> {
     const sessionId = await this.hashToken(token);
+
     const session = await this.sessionRepository.get(sessionId);
 
     if (!session) {
