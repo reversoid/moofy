@@ -67,8 +67,8 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     const data = await query.execute();
 
     const lastItem = data.at(limit);
-    const newCursor = lastItem?.u_createdAt
-      ? encodeCursor(lastItem.u_createdAt.getTime())
+    const newCursor = lastItem?.["u-createdAt"]
+      ? encodeCursor(lastItem["u-createdAt"].getTime())
       : null;
 
     return {
@@ -103,8 +103,8 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     const data = await query.execute();
 
     const lastItem = data.at(limit);
-    const newCursor = lastItem?.u_createdAt
-      ? encodeCursor(lastItem.u_createdAt.getTime())
+    const newCursor = lastItem?.["u-createdAt"]
+      ? encodeCursor(lastItem["u-createdAt"].getTime())
       : null;
 
     return {

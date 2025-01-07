@@ -126,6 +126,10 @@ export class ReviewRepository extends IReviewRepository {
   }
 
   async update(id: Id, value: Partial<Review>): Promise<Review> {
+    if (Object.values(value).every((v) => v === undefined)) {
+      return this.getOrThrow(id);
+    }
+
     await db
       .updateTable("reviews")
       .set({

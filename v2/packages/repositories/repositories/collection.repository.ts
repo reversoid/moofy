@@ -112,6 +112,10 @@ export class CollectionRepository extends ICollectionRepository {
   }
 
   async update(id: Id, value: Partial<Collection>): Promise<Collection> {
+    if (Object.values(value).every((v) => v === undefined)) {
+      return this.getOrThrow(id);
+    }
+
     await db
       .updateTable("collections")
       .set({

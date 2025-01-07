@@ -50,6 +50,10 @@ export class FilmRepository extends IFilmRepository {
   }
 
   async update(id: string, value: Partial<Film>): Promise<Film> {
+    if (Object.values(value).every((v) => v === undefined)) {
+      return this.getOrThrow(id);
+    }
+
     const rawData = await db
       .updateTable("films")
       .set({

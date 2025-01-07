@@ -81,8 +81,8 @@ export class FavoriteCollectionRepository
     const data = await query.execute();
 
     const lastItem = data.at(limit);
-    const newCursor = lastItem?.c_createdAt
-      ? encodeCursor(lastItem.c_createdAt.getTime())
+    const newCursor = lastItem?.["c-createdAt"]
+      ? encodeCursor(lastItem["c-createdAt"].getTime())
       : null;
 
     return {

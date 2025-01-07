@@ -36,6 +36,10 @@ export class SessionRepository extends ISessionRepository {
   }
 
   async update(id: string, data: Partial<Session>): Promise<Session> {
+    if (Object.values(data).every((v) => v === undefined)) {
+      return this.getOrThrow(id);
+    }
+
     await db
       .updateTable("sessions")
       .set({ expiresAt: data.expiresAt, userId: data.user?.id.value })

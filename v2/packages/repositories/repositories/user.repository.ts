@@ -97,6 +97,10 @@ export class UserRepository extends IUserRepository {
   }
 
   async update(id: Id, value: User): Promise<User> {
+    if (Object.values(value).every((v) => v === undefined)) {
+      return this.getOrThrow(id);
+    }
+
     const result = await db
       .updateTable("users")
       .where("id", "=", id.value)
