@@ -35,6 +35,8 @@ ALTER TABLE "collections" DROP COLUMN "deleted_at";
 ALTER TABLE "subscription" RENAME TO "subscriptions";
 ALTER TABLE "subscriptions" RENAME COLUMN "follower_id" TO "from_user_id";
 ALTER TABLE "subscriptions" RENAME COLUMN "followed_id" TO "to_user_id";
+ALTER TABLE "favorite_collections" RENAME COLUMN "list_id" TO "collection_id";
+
 ALTER TABLE "subscriptions" DROP COLUMN "deleted_at";
 
 -- Remove deleted_at from other tables
