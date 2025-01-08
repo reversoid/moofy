@@ -8,22 +8,47 @@ const filmType = z.enum([
   "VIDEO",
 ]);
 
-export const filmDtoSchema = z.object({
-  filmId: z.number().optional(),
-  kinopoiskId: z.number().optional(),
-  nameRu: z.string().optional(),
-  nameEn: z.string(),
-  year: z.coerce.number(),
-  posterUrl: z.string().url(),
-  posterUrlPreview: z.string().url(),
-  filmLength: z.string(),
-  genres: z.array(
-    z.object({
-      genre: z.string(),
-    })
-  ),
-  type: filmType,
-});
+export const searchFilmDtoSchema = z
+  .object({
+    filmId: z.number(),
+    nameRu: z.string().optional(),
+    nameEn: z.string().optional(),
+    year: z.coerce.number(),
+    posterUrl: z.string().url(),
+    posterUrlPreview: z.string().url(),
+    filmLength: z
+      .string()
+      .regex(/^\d{2}:\d{2}$/)
+      .transform((time) => {
+        const [hours, minutes] = time.split(":").map(Number);
+        return String(hours * 60 + minutes);
+      }),
+    genres: z.array(
+      z.object({
+        genre: z.string(),
+      })
+    ),
+    type: filmType,
+  })
+  .refine((obj) => obj.nameEn || obj.nameRu);
+
+export const getFilmDtoSchema = z
+  .object({
+    kinopoiskId: z.number(),
+    nameRu: z.string().optional(),
+    nameEn: z.string().nullable(),
+    year: z.coerce.number(),
+    posterUrl: z.string().url(),
+    posterUrlPreview: z.string().url(),
+    filmLength: z.number(),
+    genres: z.array(
+      z.object({
+        genre: z.string(),
+      })
+    ),
+    type: filmType,
+  })
+  .refine((obj) => obj.nameEn || obj.nameRu);
 
 export const filmsSearchResponseSchema = z.object({
   films: z.array(z.unknown()),
