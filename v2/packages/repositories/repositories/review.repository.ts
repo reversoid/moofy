@@ -4,15 +4,14 @@ import {
   PaginatedData,
   CreatableEntity,
   Id,
-  decodeCursor,
-  encodeCursor,
+  makeDateFromCursor,
+  makeCursorFromDate,
 } from "@repo/core/utils";
 import { db } from "../db";
 import { FilmSelects, ReviewSelects } from "./utils/selects";
 import { makeReview } from "./utils/make-entity";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
-import { dayjs } from "@repo/core/sdk";
 
 export class ReviewRepository extends IReviewRepository {
   async searchReviews(search: string, limit: number): Promise<Review[]> {
@@ -49,29 +48,22 @@ export class ReviewRepository extends IReviewRepository {
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<Review>> {
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
+    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = this.getSelectQuery()
       .where("collectionId", "=", collectionId.value)
       .orderBy("reviews.updatedAt", "desc")
       .limit(limit + 1);
 
-    if (decodedCursor) {
-      query = query.where(
-        "reviews.updatedAt",
-        "<=",
-        // TODO: make some util function to add 1ms to the date because pg stores microseconds, not ms, like js.
-        new Date(decodedCursor + 1)
-      );
+    if (cursorDate) {
+      query = query.where("reviews.updatedAt", "<=", cursorDate);
     }
 
     const data = await query.execute();
 
-    const lastItem = data.at(limit);
+    const lastItemDate = data.at(limit)?.["r-updatedAt"];
 
-    const newCursor = lastItem?.["r-updatedAt"]
-      ? encodeCursor(lastItem["r-updatedAt"].getTime())
-      : null;
+    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
 
     return {
       cursor: newCursor,

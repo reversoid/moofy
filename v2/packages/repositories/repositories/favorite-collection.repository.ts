@@ -2,9 +2,9 @@ import { Collection } from "@repo/core/entities";
 import { IFavoriteCollectionRepository } from "@repo/core/repositories";
 import {
   Id,
+  makeCursorFromDate,
+  makeDateFromCursor,
   PaginatedData,
-  decodeCursor,
-  encodeCursor,
 } from "@repo/core/utils";
 import { db } from "../db";
 import { CollectionSelects, UserSelects } from "./utils/selects";
@@ -48,7 +48,7 @@ export class FavoriteCollectionRepository
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<Collection>> {
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
+    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = db
       .selectFrom("favoriteCollections")
@@ -60,6 +60,7 @@ export class FavoriteCollectionRepository
       .innerJoin("users", "users.id", "collections.userId")
       .select(CollectionSelects.collectionSelects)
       .select(UserSelects.userSelects)
+      .select("favoriteCollections.createdAt as fc-createdAt")
       .where("favoriteCollections.userId", "=", userId.value)
       .where((eb) =>
         eb.or([
@@ -70,20 +71,14 @@ export class FavoriteCollectionRepository
       .orderBy("favoriteCollections.createdAt", "desc")
       .limit(limit + 1);
 
-    if (decodedCursor) {
-      query = query.where(
-        "favoriteCollections.createdAt",
-        "<=",
-        new Date(decodedCursor + 1)
-      );
+    if (cursorDate) {
+      query = query.where("favoriteCollections.createdAt", "<=", cursorDate);
     }
 
     const data = await query.execute();
 
-    const lastItem = data.at(limit);
-    const newCursor = lastItem?.["c-createdAt"]
-      ? encodeCursor(lastItem["c-createdAt"].getTime())
-      : null;
+    const lastItemDate = data.at(limit)?.["fc-createdAt"];
+    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
 
     return {
       cursor: newCursor,

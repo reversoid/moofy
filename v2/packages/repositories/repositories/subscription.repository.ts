@@ -2,9 +2,9 @@ import { User } from "@repo/core/entities";
 import { ISubscriptionRepository } from "@repo/core/repositories";
 import {
   Id,
+  makeCursorFromDate,
+  makeDateFromCursor,
   PaginatedData,
-  decodeCursor,
-  encodeCursor,
 } from "@repo/core/utils";
 import { db } from "../db";
 import { UserSelects } from "./utils/selects";
@@ -46,30 +46,25 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<User>> {
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
+    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = db
       .selectFrom("subscriptions")
       .innerJoin("users", "users.id", "subscriptions.fromUserId")
       .select(UserSelects.userSelects)
+      .select("subscriptions.createdAt as s-createdAt")
       .where("subscriptions.toUserId", "=", userId.value)
       .orderBy("subscriptions.createdAt", "desc")
       .limit(limit + 1);
 
-    if (decodedCursor) {
-      query = query.where(
-        "subscriptions.createdAt",
-        "<=",
-        new Date(decodedCursor + 1)
-      );
+    if (cursorDate) {
+      query = query.where("subscriptions.createdAt", "<=", cursorDate);
     }
 
     const data = await query.execute();
 
-    const lastItem = data.at(limit);
-    const newCursor = lastItem?.["u-createdAt"]
-      ? encodeCursor(lastItem["u-createdAt"].getTime())
-      : null;
+    const lastItemDate = data.at(limit)?.["s-createdAt"];
+    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
 
     return {
       cursor: newCursor,
@@ -82,30 +77,25 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<User>> {
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
+    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = db
       .selectFrom("subscriptions")
       .innerJoin("users", "users.id", "subscriptions.toUserId")
       .select(UserSelects.userSelects)
+      .select("subscriptions.createdAt as s-createdAt")
       .where("subscriptions.fromUserId", "=", userId.value)
       .orderBy("subscriptions.createdAt", "desc")
       .limit(limit + 1);
 
-    if (decodedCursor) {
-      query = query.where(
-        "subscriptions.createdAt",
-        "<=",
-        new Date(decodedCursor + 1)
-      );
+    if (cursorDate) {
+      query = query.where("subscriptions.createdAt", "<=", cursorDate);
     }
 
     const data = await query.execute();
 
-    const lastItem = data.at(limit);
-    const newCursor = lastItem?.["u-createdAt"]
-      ? encodeCursor(lastItem["u-createdAt"].getTime())
-      : null;
+    const lastItemDate = data.at(limit)?.["s-createdAt"];
+    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
 
     return {
       cursor: newCursor,

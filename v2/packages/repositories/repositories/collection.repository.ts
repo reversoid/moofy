@@ -2,9 +2,9 @@ import { Collection, User } from "@repo/core/entities";
 import { ICollectionRepository } from "@repo/core/repositories";
 import {
   CreatableEntity,
-  decodeCursor,
-  encodeCursor,
   Id,
+  makeCursorFromDate,
+  makeDateFromCursor,
   PaginatedData,
 } from "@repo/core/utils";
 import { db } from "../db";
@@ -52,27 +52,21 @@ export class CollectionRepository extends ICollectionRepository {
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<Collection>> {
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
+    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = this.getSelectQuery()
       .where("userId", "=", userId.value)
       .orderBy("collections.updatedAt", "desc")
       .limit(limit + 1);
 
-    if (decodedCursor) {
-      query = query.where(
-        "collections.updatedAt",
-        "<=",
-        new Date(decodedCursor + 1)
-      );
+    if (cursorDate) {
+      query = query.where("collections.updatedAt", "<=", cursorDate);
     }
 
     const data = await query.execute();
 
-    const lastItem = data.at(limit);
-    const newCursor = lastItem?.["c-updatedAt"]
-      ? encodeCursor(lastItem["c-updatedAt"].getTime())
-      : null;
+    const lastItemDate = data.at(limit)?.["c-updatedAt"];
+    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
 
     return {
       cursor: newCursor,
