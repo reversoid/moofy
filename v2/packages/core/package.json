@@ -23,6 +23,7 @@
     "./entities": "./entities/index.ts",
     "./repositories": "./repositories/index.ts",
     "./services": "./services/index.ts",
-    "./utils": "./utils/index.ts"
+    "./utils": "./utils/index.ts",
+    "./sdk": "./sdk/index.ts"
   }
 }

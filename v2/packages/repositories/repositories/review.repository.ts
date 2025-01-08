@@ -12,6 +12,7 @@ import { FilmSelects, ReviewSelects } from "./utils/selects";
 import { makeReview } from "./utils/make-entity";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
+import { dayjs } from "@repo/core/sdk";
 
 export class ReviewRepository extends IReviewRepository {
   async searchReviews(search: string, limit: number): Promise<Review[]> {
@@ -53,15 +54,21 @@ export class ReviewRepository extends IReviewRepository {
     let query = this.getSelectQuery()
       .where("collectionId", "=", collectionId.value)
       .orderBy("reviews.updatedAt", "desc")
-      .limit(limit);
+      .limit(limit + 1);
 
     if (decodedCursor) {
-      query = query.where("reviews.updatedAt", ">=", new Date(decodedCursor));
+      query = query.where(
+        "reviews.updatedAt",
+        "<=",
+        // TODO: make some util function to add 1ms to the date because pg stores microseconds, not ms, like js.
+        new Date(decodedCursor + 1)
+      );
     }
 
     const data = await query.execute();
 
     const lastItem = data.at(limit);
+
     const newCursor = lastItem?.["r-updatedAt"]
       ? encodeCursor(lastItem["r-updatedAt"].getTime())
       : null;

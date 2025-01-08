@@ -73,8 +73,8 @@ export class FavoriteCollectionRepository
     if (decodedCursor) {
       query = query.where(
         "favoriteCollections.createdAt",
-        ">=",
-        new Date(decodedCursor)
+        "<=",
+        new Date(decodedCursor + 1)
       );
     }
 

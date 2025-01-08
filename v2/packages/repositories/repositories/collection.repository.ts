@@ -56,13 +56,14 @@ export class CollectionRepository extends ICollectionRepository {
 
     let query = this.getSelectQuery()
       .where("userId", "=", userId.value)
+      .orderBy("collections.updatedAt", "desc")
       .limit(limit + 1);
 
     if (decodedCursor) {
       query = query.where(
         "collections.updatedAt",
-        ">=",
-        new Date(decodedCursor)
+        "<=",
+        new Date(decodedCursor + 1)
       );
     }
 

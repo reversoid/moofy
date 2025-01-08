@@ -59,8 +59,8 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     if (decodedCursor) {
       query = query.where(
         "subscriptions.createdAt",
-        ">=",
-        new Date(decodedCursor)
+        "<=",
+        new Date(decodedCursor + 1)
       );
     }
 
@@ -95,8 +95,8 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     if (decodedCursor) {
       query = query.where(
         "subscriptions.createdAt",
-        ">=",
-        new Date(decodedCursor)
+        "<=",
+        new Date(decodedCursor + 1)
       );
     }
 
