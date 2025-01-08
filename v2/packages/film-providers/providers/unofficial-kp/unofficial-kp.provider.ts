@@ -8,8 +8,8 @@ import { filmDtoSchema, filmsSearchResponseSchema } from "./dto.ts";
 export class UnofficialKpProvider implements IFilmProvider {
   private apiKeyRotator = new ApiKeyRotator(config.UNOFFICIAL_KP_API_KEYS);
 
-  async searchFilmsByName(name: string): Promise<Film[]> {
-    const url = `${config.UNOFFICIAL_KP_URL}/v2.1/films/search-by-keyword`;
+  async searchFilmsByName(name: string, limit: number = 10): Promise<Film[]> {
+    const url = `${config.UNOFFICIAL_KP_URL}/api/v2.1/films/search-by-keyword`;
 
     const response = await ky.get(url, {
       headers: { "X-API-KEY": this.apiKeyRotator.getCurrentKey() },
@@ -19,23 +19,29 @@ export class UnofficialKpProvider implements IFilmProvider {
     });
 
     const data = await response.json();
+
     const parsedData = filmsSearchResponseSchema.parse(data);
 
-    return parsedData.films.map(
-      (f) =>
-        new Film({
-          // TODO do not link id to kpId
-          // TODO learn more about id: can kp_id be undefined? Or films can have different schemas?
-          id: String(f.kinopoiskId ?? f.filmId),
-          filmLength: f.filmLength,
-          genres: f.genres.map((g) => g.genre),
-          name: f.nameRu,
-          posterPreviewUrl: f.posterUrlPreview,
-          posterUrl: f.posterUrl,
-          type: FilmType[f.type],
-          year: f.year,
-        })
-    );
+    return parsedData.films
+      .map((f) => filmDtoSchema.safeParse(f))
+      .filter((result) => result.success)
+      .map((result) => result.data)
+      .map(
+        (f) =>
+          new Film({
+            // TODO do not link id to kpId
+            // TODO learn more about id: can kp_id be undefined? Or films can have different schemas?
+            id: String(f.kinopoiskId ?? f.filmId),
+            filmLength: f.filmLength,
+            genres: f.genres.map((g) => g.genre),
+            name: f.nameRu ?? f.nameEn,
+            posterPreviewUrl: f.posterUrlPreview,
+            posterUrl: f.posterUrl,
+            type: FilmType[f.type],
+            year: f.year,
+          })
+      )
+      .slice(0, limit);
   }
 
   async getFilmByKpId(id: string): Promise<Film | null> {
@@ -53,7 +59,7 @@ export class UnofficialKpProvider implements IFilmProvider {
       id: String(parsedData.kinopoiskId ?? parsedData.filmId),
       filmLength: parsedData.filmLength,
       genres: parsedData.genres.map((g) => g.genre),
-      name: parsedData.nameRu,
+      name: parsedData.nameRu ?? parsedData.nameEn,
       posterPreviewUrl: parsedData.posterUrlPreview,
       posterUrl: parsedData.posterUrl,
       type: FilmType[parsedData.type],

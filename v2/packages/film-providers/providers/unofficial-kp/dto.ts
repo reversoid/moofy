@@ -9,11 +9,11 @@ const filmType = z.enum([
 ]);
 
 export const filmDtoSchema = z.object({
-  kinopoiskId: z.number().optional(),
   filmId: z.number().optional(),
-  nameRu: z.string(),
+  kinopoiskId: z.number().optional(),
+  nameRu: z.string().optional(),
   nameEn: z.string(),
-  year: z.number(),
+  year: z.coerce.number(),
   posterUrl: z.string().url(),
   posterUrlPreview: z.string().url(),
   filmLength: z.string(),
@@ -26,5 +26,5 @@ export const filmDtoSchema = z.object({
 });
 
 export const filmsSearchResponseSchema = z.object({
-  films: z.array(filmDtoSchema),
+  films: z.array(z.unknown()),
 });

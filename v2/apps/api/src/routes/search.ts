@@ -12,11 +12,12 @@ export const searchRoute = new Hono().use(authMiddleware).get(
     "query",
     z.object({
       search: z.string().default(""),
+      limit: z.coerce.number().default(10),
     })
   ),
   async (c) => {
-    const { search } = c.req.valid("query");
-    const films = await filmProvider.searchFilmsByName(search);
+    const { search, limit } = c.req.valid("query");
+    const films = await filmProvider.searchFilmsByName(search, limit);
     return c.json({ films });
   }
 );
