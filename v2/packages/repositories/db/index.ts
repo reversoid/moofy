@@ -36,7 +36,18 @@ const dialect = new PostgresDialect({
 
 export const db = new Kysely<Database>({
   dialect,
-  log: ["query", "error"],
+  log: (event) => {
+    if (event.level === "query") {
+      console.log(event.query.sql);
+      console.log(event.query.parameters);
+    }
+
+    if (event.level === "error") {
+      console.log(event.query.sql);
+      console.log(event.query.parameters);
+      console.log(event.error);
+    }
+  },
   plugins: [new CamelCasePlugin()],
 });
 

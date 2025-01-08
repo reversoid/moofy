@@ -74,11 +74,11 @@ export class UserRepository extends IUserRepository {
       .select(
         sql<number>`
         ts_rank(
-            user.username_search_document, 
+            users.username_search_document, 
             plainto_tsquery('simple', ${username})
         ) + 
         ts_rank(
-            user.username_search_document, 
+            users.username_search_document, 
             to_tsquery('simple', ${words})
         )`.as("rank")
       )
