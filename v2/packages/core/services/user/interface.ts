@@ -1,6 +1,10 @@
 import { Result } from "resulto";
 import { User } from "../../entities/user";
-import { UsernameExistsError } from "./errors";
+import {
+  UsernameExistsError,
+  UserNotFoundError,
+  WrongPasswordError,
+} from "./errors";
 import { Id } from "../../utils/id";
 
 export interface IUserService {
@@ -15,16 +19,13 @@ export interface IUserService {
 
   getUserByUsername(username: string): Promise<User | null>;
 
-  /**
-   * Validate user and password and return the user if the password is correct
-   * @param username
-   * @param password
-   * @returns User or null if the user does not exist or the password is incorrect
-   */
   validateUserAndPassword(
     username: string,
     password: string
-  ): Promise<User | null>;
+  ): Promise<Result<User, UserNotFoundError | WrongPasswordError>>;
 
-  updateUser(id: Id, data: Partial<User>): Promise<User>;
+  updateUser(
+    id: Id,
+    data: Partial<User>
+  ): Promise<Result<User, UserNotFoundError>>;
 }

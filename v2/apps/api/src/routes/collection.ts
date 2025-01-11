@@ -3,6 +3,11 @@ import { authMiddleware } from "../utils/auth-middleware";
 import { validator } from "../utils/validator";
 import { z } from "zod";
 import { Id } from "@repo/core/utils";
+import {
+  CollectionNotFoundError,
+  NotOwnerOfReviewError,
+  UserNotFoundError,
+} from "@repo/core/services";
 
 export const collectionRoute = new Hono()
   .use(authMiddleware)
@@ -61,7 +66,9 @@ export const collectionRoute = new Hono()
       });
 
       if (!result.isOk()) {
-        throw new Error("USER_NOT_FOUND");
+        if (result.error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" }, 404);
+        }
       }
 
       return c.json({ collection: result.unwrap() }, 201);
@@ -107,20 +114,19 @@ export const collectionRoute = new Hono()
         throw new Error("UNAUTHORIZED");
       }
 
-      const collection = await collectionService.getCollection(new Id(id));
-
-      if (!collection) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-      }
-
-      if (collection.creator.id.value !== user.id.value) {
-        return c.json({ error: "FORBIDDEN" }, 403);
-      }
-
-      const result = await collectionService.removeCollection(new Id(id));
+      const result = await collectionService.removeCollection(
+        new Id(id),
+        user.id
+      );
 
       if (!result.isOk()) {
-        throw new Error("COLLECTION_NOT_FOUND");
+        if (result.error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        if (result.error instanceof NotOwnerOfReviewError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
+        }
       }
 
       return c.body(null, 204);
@@ -148,23 +154,20 @@ export const collectionRoute = new Hono()
         throw new Error("UNAUTHORIZED");
       }
 
-      const collection = await collectionService.getCollection(new Id(id));
-
-      if (!collection) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-      }
-
-      if (collection.creator.id.value !== user.id.value) {
-        return c.json({ error: "FORBIDDEN" }, 403);
-      }
-
       const result = await collectionService.editCollection(
         new Id(id),
-        updateData
+        updateData,
+        user.id
       );
 
       if (!result.isOk()) {
-        throw new Error("COLLECTION_NOT_FOUND");
+        if (result.error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        if (result.error instanceof NotOwnerOfReviewError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
+        }
       }
 
       return c.json({ collection: result.unwrap() });

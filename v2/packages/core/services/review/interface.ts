@@ -3,13 +3,16 @@ import { Collection } from "../../entities/collection";
 import { Film } from "../../entities/film";
 import { Review } from "../../entities/review";
 import {
+  CannotSeePrivateCollectionError,
   FilmNotFoundError,
+  NotOwnerOfReviewError,
   ReviewNotFoundError,
   ReviewOnFilmExistsError,
 } from "./errors";
 import { Id } from "../../utils/id";
 import { PaginatedData } from "../../utils/pagination";
 import { CollectionNotFoundError } from "../collection";
+import { User } from "../../entities";
 
 export type CreateReviewDto = {
   filmId: Film["id"];
@@ -27,30 +30,49 @@ export interface IReviewService {
   getReview(id: Id): Promise<Review | null>;
 
   createReview(
-    dto: CreateReviewDto
+    dto: CreateReviewDto,
+    by: User["id"]
   ): Promise<
     Result<
       Review,
-      FilmNotFoundError | ReviewOnFilmExistsError | CollectionNotFoundError
+      | FilmNotFoundError
+      | ReviewOnFilmExistsError
+      | CollectionNotFoundError
+      | NotOwnerOfReviewError
     >
   >;
 
   editReview(
     reviewId: Review["id"],
-    dto: EditReviewDto
-  ): Promise<Result<Review, ReviewNotFoundError>>;
+    dto: EditReviewDto,
+    by: User["id"]
+  ): Promise<Result<Review, ReviewNotFoundError | NotOwnerOfReviewError>>;
 
-  removeReview(id: Id): Promise<Result<null, ReviewNotFoundError>>;
+  removeReview(
+    id: Id,
+    by: User["id"]
+  ): Promise<Result<null, ReviewNotFoundError | NotOwnerOfReviewError>>;
 
   getCollectionReviews(
     collectionId: Collection["id"],
     limit: number,
-    cursor?: string
-  ): Promise<Result<PaginatedData<Review>, CollectionNotFoundError>>;
+    cursor?: string,
+    by?: User["id"]
+  ): Promise<
+    Result<
+      PaginatedData<Review>,
+      | CollectionNotFoundError
+      | NotOwnerOfReviewError
+      | CannotSeePrivateCollectionError
+    >
+  >;
 
   searchReviews(
     search: string,
     collectionId: Collection["id"],
-    limit: number
-  ): Promise<Result<Review[], CollectionNotFoundError>>;
+    limit: number,
+    by?: User["id"]
+  ): Promise<
+    Result<Review[], CollectionNotFoundError | CannotSeePrivateCollectionError>
+  >;
 }

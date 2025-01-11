@@ -6,6 +6,7 @@ import {
   FilmNotFoundError,
   ReviewOnFilmExistsError,
   ReviewNotFoundError,
+  NotOwnerOfReviewError,
 } from "@repo/core/services";
 import { validator } from "../utils/validator";
 import { Id } from "@repo/core/utils";
@@ -89,35 +90,17 @@ export const reviewRoute = new Hono()
         throw new Error("UNAUTHORIZED");
       }
 
-      // TODO handle all authorization logic in services
       const reviewService = c.get("reviewService");
-      const collectionService = c.get("collectionService");
 
-      const collection = await collectionService.getCollection(
-        new Id(collectionId)
+      const result = await reviewService.createReview(
+        {
+          score,
+          description,
+          collectionId: new Id(collectionId),
+          filmId: String(filmId),
+        },
+        user.id
       );
-
-      if (!collection) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-      }
-
-      if (
-        !collection.isPublic &&
-        collection.creator.id.value !== user.id.value
-      ) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-      }
-
-      if (collection?.creator.id.value !== user.id.value) {
-        return c.json({ error: "FORBIDDEN" }, 403);
-      }
-
-      const result = await reviewService.createReview({
-        score,
-        description,
-        collectionId: new Id(collectionId),
-        filmId: String(filmId),
-      });
 
       if (result.isErr()) {
         const error = result.unwrapErr();
@@ -132,6 +115,10 @@ export const reviewRoute = new Hono()
 
         if (error instanceof ReviewOnFilmExistsError) {
           return c.json({ error: "REVIEW_ON_FILM_EXISTS" }, 409);
+        }
+
+        if (error instanceof NotOwnerOfReviewError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
         }
       }
 
@@ -209,25 +196,23 @@ export const reviewRoute = new Hono()
         throw new Error("UNAUTHORIZED");
       }
 
-      const review = await reviewService.getReview(new Id(reviewId));
-
-      if (!review) {
-        return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
-      }
-
-      if (review.userId.value !== user.id.value) {
-        return c.json({ error: "FORBIDDEN" }, 403);
-      }
-
-      const result = await reviewService.editReview(new Id(reviewId), {
-        score,
-        description,
-      });
+      const result = await reviewService.editReview(
+        new Id(reviewId),
+        {
+          score,
+          description,
+        },
+        user.id
+      );
 
       if (result.isErr()) {
         const error = result.unwrapErr();
         if (error instanceof ReviewNotFoundError) {
           return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
+        }
+
+        if (error instanceof NotOwnerOfReviewError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
         }
       }
 

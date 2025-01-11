@@ -1,7 +1,11 @@
 import { err, ok, Result } from "resulto";
 import { User } from "../../entities/user";
 import { Id } from "../../utils/id";
-import { UsernameExistsError } from "./errors";
+import {
+  UsernameExistsError,
+  UserNotFoundError,
+  WrongPasswordError,
+} from "./errors";
 import { IUserService } from "./interface";
 import { IUserRepository } from "../../repositories/user.repository";
 import { comparePasswords, hashPassword } from "../../utils/password";
@@ -38,17 +42,17 @@ export class UserService implements IUserService {
   async validateUserAndPassword(
     username: string,
     password: string
-  ): Promise<User | null> {
+  ): Promise<Result<User, UserNotFoundError | WrongPasswordError>> {
     const user = await this.userRepository.getByUsername(username);
     if (!user) {
-      return null;
+      return err(new UserNotFoundError());
     }
 
     if (await comparePasswords(password, user.passwordHash)) {
-      return user;
+      return ok(user);
     }
 
-    return null;
+    return err(new WrongPasswordError());
   }
 
   async getUserByUsername(username: string): Promise<User | null> {
@@ -56,8 +60,16 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async updateUser(id: Id, data: Partial<User>): Promise<User> {
+  async updateUser(
+    id: Id,
+    data: Partial<User>
+  ): Promise<Result<User, UserNotFoundError>> {
+    const existingUser = await this.userRepository.get(id);
+    if (!existingUser) {
+      return err(new UserNotFoundError());
+    }
+
     const updatedUser = await this.userRepository.update(id, data);
-    return updatedUser;
+    return ok(updatedUser);
   }
 }

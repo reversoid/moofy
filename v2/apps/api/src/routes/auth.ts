@@ -19,13 +19,15 @@ export const authRoute = new Hono()
       const userService = c.get("userService");
       const sessionService = c.get("sessionService");
 
-      const user = await userService.validateUserAndPassword(
+      const userResult = await userService.validateUserAndPassword(
         username,
         password
       );
-      if (!user) {
-        return c.json({ error: "Invalid credentials" }, 401);
+
+      if (!userResult.isOk()) {
+        return c.json({ error: "INVALID_CREDENTIALS" }, 401);
       }
+      const user = userResult.unwrap();
 
       const token = sessionService.generateSessionToken();
       const session = await sessionService.createSession(token, user);

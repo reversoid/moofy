@@ -8,6 +8,7 @@ import {
   CollectionIsPrivateError,
   CollectionNotFavoritedError,
   CollectionNotFoundError,
+  UserNotFoundError,
 } from "@repo/core/services";
 
 export const favoritesRoute = new Hono()
@@ -37,7 +38,9 @@ export const favoritesRoute = new Hono()
       );
 
       if (!result.isOk()) {
-        throw new Error("USER_NOT_FOUND");
+        if (result.error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" }, 404);
+        }
       }
 
       return c.json({ collections: result.unwrap() });

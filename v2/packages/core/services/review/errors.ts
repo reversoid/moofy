@@ -17,3 +17,15 @@ export class ReviewNotFoundError extends CoreError {
     super("Review Is Not Found");
   }
 }
+
+export class NotOwnerOfReviewError extends CoreError {
+  constructor() {
+    super("User Is Not The Owner Of This Review");
+  }
+}
+
+export class CannotSeePrivateCollectionError extends CoreError {
+  constructor() {
+    super("Cannot See Private Collection");
+  }
+}

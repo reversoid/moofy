@@ -4,7 +4,7 @@ import { User } from "../../entities/user";
 import { Id } from "../../utils/id";
 import { PaginatedData } from "../../utils/pagination";
 import { UserNotFoundError } from "../user/errors";
-import { CollectionNotFoundError } from "./errors";
+import { CollectionNotFoundError, NotOwnerOfCollectionError } from "./errors";
 import {
   CreateCollectionDto,
   EditCollectionDto,
@@ -42,11 +42,18 @@ export class CollectionService implements ICollectionService {
   }
 
   async removeCollection(
-    id: Id
-  ): Promise<Result<null, CollectionNotFoundError>> {
+    id: Id,
+    by: User["id"]
+  ): Promise<
+    Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>
+  > {
     const collection = await this.collectionRepository.get(id);
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (collection.creator.id.value !== by.value) {
+      return err(new NotOwnerOfCollectionError());
     }
 
     await this.collectionRepository.remove(id);
@@ -55,11 +62,18 @@ export class CollectionService implements ICollectionService {
 
   async editCollection(
     id: Collection["id"],
-    dto: EditCollectionDto
-  ): Promise<Result<Collection, CollectionNotFoundError>> {
+    dto: EditCollectionDto,
+    by: User["id"]
+  ): Promise<
+    Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
+  > {
     const collection = await this.collectionRepository.get(id);
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (collection.creator.id.value !== by.value) {
+      return err(new NotOwnerOfCollectionError());
     }
 
     const updatedCollection = await this.collectionRepository.update(id, {

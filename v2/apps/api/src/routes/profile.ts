@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { authMiddleware } from "../utils/auth-middleware";
 import { validator } from "../utils/validator";
 import { z } from "zod";
+import { UserNotFoundError } from "@repo/core/services";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
@@ -39,7 +40,9 @@ export const profileRoute = new Hono()
       );
 
       if (!result.isOk()) {
-        throw new Error("USER_NOT_FOUND");
+        if (result.error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" }, 404);
+        }
       }
 
       return c.json({ collections: result.unwrap() });

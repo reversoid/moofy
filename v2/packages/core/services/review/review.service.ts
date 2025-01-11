@@ -7,13 +7,18 @@ import {
   FilmNotFoundError,
   ReviewOnFilmExistsError,
   ReviewNotFoundError,
+  NotOwnerOfReviewError,
 } from "./errors";
 import { CreateReviewDto, EditReviewDto, IReviewService } from "./interface";
 import { IReviewRepository } from "../../repositories/review.repository";
 import { IFilmService } from "../film/interface";
 import { IFilmProvider } from "../../film-providers";
 import { ICollectionService } from "../collection/interface";
-import { CollectionNotFoundError } from "../collection";
+import {
+  CannotSeePrivateCollectionError,
+  CollectionNotFoundError,
+} from "../collection";
+import { User } from "../../entities";
 
 export class ReviewService implements IReviewService {
   constructor(
@@ -26,12 +31,19 @@ export class ReviewService implements IReviewService {
   async searchReviews(
     search: string,
     collectionId: Collection["id"],
-    limit: number
-  ): Promise<Result<Review[], CollectionNotFoundError>> {
+    limit: number,
+    by: User["id"]
+  ): Promise<
+    Result<Review[], CollectionNotFoundError | CannotSeePrivateCollectionError>
+  > {
     const collection = await this.collectionService.getCollection(collectionId);
 
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (!collection.isPublic && collection.creator.id.value !== by.value) {
+      return err(new CannotSeePrivateCollectionError());
     }
 
     const reviews = await this.reviewRepository.searchReviews(search, limit);
@@ -40,11 +52,15 @@ export class ReviewService implements IReviewService {
   }
 
   async createReview(
-    dto: CreateReviewDto
+    dto: CreateReviewDto,
+    by: User["id"]
   ): Promise<
     Result<
       Review,
-      FilmNotFoundError | ReviewOnFilmExistsError | CollectionNotFoundError
+      | FilmNotFoundError
+      | ReviewOnFilmExistsError
+      | CollectionNotFoundError
+      | NotOwnerOfReviewError
     >
   > {
     const collection = await this.collectionService.getCollection(
@@ -53,6 +69,10 @@ export class ReviewService implements IReviewService {
 
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (collection.creator.id.value !== by.value) {
+      return err(new NotOwnerOfReviewError());
     }
 
     const reviewOnFilm = await this.reviewRepository.getReviewOnFilm(
@@ -89,12 +109,17 @@ export class ReviewService implements IReviewService {
 
   async editReview(
     reviewId: Review["id"],
-    dto: EditReviewDto
+    dto: EditReviewDto,
+    by: User["id"]
   ): Promise<Result<Review, ReviewNotFoundError>> {
-    const existingReview = this.reviewRepository.get(reviewId);
+    const existingReview = await this.reviewRepository.get(reviewId);
 
     if (!existingReview) {
       return err(new ReviewNotFoundError());
+    }
+
+    if (existingReview.userId.value !== by.value) {
+      return err(new NotOwnerOfReviewError());
     }
 
     const updatedReview = await this.reviewRepository.update(reviewId, {
@@ -105,11 +130,18 @@ export class ReviewService implements IReviewService {
     return ok(updatedReview);
   }
 
-  async removeReview(id: Id): Promise<Result<null, ReviewNotFoundError>> {
-    const existingReview = this.reviewRepository.get(id);
+  async removeReview(
+    id: Id,
+    by: User["id"]
+  ): Promise<Result<null, ReviewNotFoundError | NotOwnerOfReviewError>> {
+    const existingReview = await this.reviewRepository.get(id);
 
     if (!existingReview) {
       return err(new ReviewNotFoundError());
+    }
+
+    if (existingReview.userId.value !== by.value) {
+      return err(new NotOwnerOfReviewError());
     }
 
     await this.reviewRepository.remove(id);

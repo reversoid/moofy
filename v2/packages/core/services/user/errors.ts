@@ -11,3 +11,9 @@ export class UserNotFoundError extends CoreError {
     super("User Not Found");
   }
 }
+
+export class WrongPasswordError extends CoreError {
+  constructor() {
+    super("Wrong Password");
+  }
+}
