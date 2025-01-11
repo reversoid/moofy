@@ -158,13 +158,25 @@ export const reviewRoute = new Hono()
     async (c) => {
       const { reviewId } = c.req.valid("param");
       const reviewService = c.get("reviewService");
+      const user = c.get("user");
 
-      const result = await reviewService.removeReview(new Id(reviewId));
+      if (!user) {
+        throw new Error("UNAUTHORIZED");
+      }
+
+      const result = await reviewService.removeReview(
+        new Id(reviewId),
+        user.id
+      );
 
       if (result.isErr()) {
         const error = result.unwrapErr();
         if (error instanceof ReviewNotFoundError) {
           return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
+        }
+
+        if (error instanceof NotOwnerOfReviewError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
         }
       }
 
