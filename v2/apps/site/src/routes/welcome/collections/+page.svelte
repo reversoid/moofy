@@ -1,6 +1,5 @@
 <script lang="ts">
-	// You can add more imports as needed
-	import Button from '$lib/shared/ui/button.svelte';
+	import { Button } from '$lib/components/ui/button';
 </script>
 
 <Button>Login</Button>
