@@ -1,6 +1,7 @@
 <script lang="ts">
-	import '../app.css';
 	import '../fonts.css';
+
+	import '../app.css';
 	import { Header, Footer } from '../app/ui';
 	let { children } = $props();
 </script>

@@ -5,7 +5,7 @@
 
 <footer>
 	<Wrapper class="flex items-center justify-between gap-3 py-4 max-sm:flex-col">
-		<div>Creator: <a>reversoid</a></div>
+		<div>Создатель: <a>reversoid</a></div>
 		<div class="flex items-center justify-center gap-2">
 			<a>Github</a>
 			<a>Поддержка</a>

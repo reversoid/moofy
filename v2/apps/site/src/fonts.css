@@ -1,15 +1,32 @@
 @font-face {
-	font-family: 'Lora';
+	font-family: Geist;
 	font-style: normal;
-	font-weight: 500;
-	src: url('/fonts/lora-v20-latin-500.eot'); /* IE9 Compat Modes */
+	font-weight: 400;
+	/* TODO what about otf? Learn */
 	src:
 		local(''),
-		url('/fonts/lora-v20-latin-500.eot?#iefix') format('embedded-opentype'),
-		/* IE6-IE8 */ url('/fonts/lora-v20-latin-500.woff2') format('woff2'),
-		/* Super Modern Browsers */ url('/fonts/lora-v20-latin-500.woff') format('woff'),
-		/* Modern Browsers */ url('/fonts/lora-v20-latin-500.ttf') format('truetype'),
-		/* Safari, Android, iOS */ url('/fonts/lora-v20-latin-500.svg#Lora') format('svg'); /* Legacy iOS */
+		url('/fonts/geist/webfonts/Geist-Regular.woff2') format('woff2'),
+		url('/fonts/geist/ttf/Geist-Regular.ttf') format('truetype');
 }
 
-/* TODO something like this */
+@font-face {
+	font-family: Geist;
+	font-style: normal;
+	font-weight: 500;
+	src:
+		local(''),
+		url('/fonts/geist/webfonts/Geist-Semibold.woff2') format('woff2'),
+		url('/fonts/geist/ttf/Geist-Semibold.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: Geist;
+	font-style: normal;
+	font-weight: 600;
+	src:
+		local(''),
+		url('/fonts/geist/webfonts/Geist-Bold.woff2') format('woff2'),
+		url('/fonts/geist/ttf/Geist-Bold.ttf') format('truetype');
+}
+
+/* TODO what about black, extrabold, thin etc? */
