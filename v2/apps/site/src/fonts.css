@@ -15,14 +15,24 @@
 	font-weight: 500;
 	src:
 		local(''),
-		url('/fonts/geist/webfonts/Geist-Semibold.woff2') format('woff2'),
-		url('/fonts/geist/ttf/Geist-Semibold.ttf') format('truetype');
+		url('/fonts/geist/webfonts/Geist-Medium.woff2') format('woff2'),
+		url('/fonts/geist/ttf/Geist-Medium.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: Geist;
 	font-style: normal;
 	font-weight: 600;
+	src:
+		local(''),
+		url('/fonts/geist/webfonts/Geist-SemiBold.woff2') format('woff2'),
+		url('/fonts/geist/ttf/Geist-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: Geist;
+	font-style: normal;
+	font-weight: 700;
 	src:
 		local(''),
 		url('/fonts/geist/webfonts/Geist-Bold.woff2') format('woff2'),

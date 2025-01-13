@@ -1,6 +1,14 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Card } from '$lib/components/ui/card';
+	import Heading from '$lib/ui/heading.svelte';
+	import Wrapper from '$lib/ui/wrapper.svelte';
+	import { CollectionsGrid } from '$lib/widgets/collections-grid';
 </script>
 
-<Button>Login</Button>
+<!-- TOOD some fetch logic -->
+
+<Wrapper>
+	<Heading type="h2">Мои коллекции</Heading>
+	<Heading type="h2">Избранное</Heading>
+
+	<CollectionsGrid />
+</Wrapper>
