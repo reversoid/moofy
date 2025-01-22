@@ -4,7 +4,7 @@
 	import Wrapper from '$lib/ui/wrapper.svelte';
 </script>
 
-<header class="flex h-20 items-center justify-center backdrop-blur-md">
+<header class="flex items-center justify-center pb-5 pt-3 backdrop-blur-md">
 	<Wrapper class="flex items-center justify-between">
 		<div>
 			<img src="/logo.svg" width="128" height="64" alt="Moofy Logo" />
