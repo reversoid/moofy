@@ -39,7 +39,7 @@
 		</Card.Root>
 	</div>
 
-	<div class="mt-7 flex items-center justify-between gap-4">
+	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>
 		<Button>
 			<IconPlus class="mr-2" size="20" />

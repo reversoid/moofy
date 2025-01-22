@@ -3,9 +3,10 @@
 	import { Avatar } from '$lib/components/ui/avatar';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import Link from '$lib/ui/link.svelte';
+	import { IconLogin, IconLogin2 } from '@tabler/icons-svelte';
 </script>
 
-<header class="flex items-center justify-center pb-5 pt-3 backdrop-blur-md">
+<header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
 	<Wrapper class="flex items-center justify-between">
 		<div>
 			<Link href="/">
@@ -20,7 +21,10 @@
 				<Link href="/search">Поиск</Link>
 			</div>
 
-			<Button>Войти</Button>
+			<Button>
+				<IconLogin2 size="20" class="mr-2" />
+				Войти</Button
+			>
 			<!-- <Avatar>GK</Avatar> -->
 		</div>
 	</Wrapper>
