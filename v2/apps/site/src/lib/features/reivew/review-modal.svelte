@@ -5,16 +5,20 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { IconStar } from '@tabler/icons-svelte';
+
+	export let type: 'create' | 'edit' = 'create';
 </script>
 
 <Dialog.Header>
-	<Dialog.Title>Добавить обзор</Dialog.Title>
+	<Dialog.Title>{type === 'create' ? 'Добавить обзор' : 'Изменить обзор'}</Dialog.Title>
 </Dialog.Header>
 
 <div class="flex flex-col gap-5 py-4">
 	<div class="flex flex-col gap-4">
-		<b>Фильм</b>
-		<Combobox />
+		{#if type === 'create'}
+			<b>Фильм</b>
+			<Combobox />
+		{/if}
 
 		<div class="flex flex-col gap-2">
 			<p class="text-muted-foreground text-sm">Выбранный фильм</p>

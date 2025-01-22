@@ -2,14 +2,14 @@
 	import ReviewModal from './review-modal.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	import CreateReviewButton from './create-review-button.svelte';
+	import EditReviewButton from './edit-review-button.svelte';
 </script>
 
 <Dialog.Root>
 	<Dialog.Trigger>
-		<CreateReviewButton />
+		<EditReviewButton />
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<ReviewModal type="create" />
+		<ReviewModal type="edit" />
 	</Dialog.Content>
 </Dialog.Root>
