@@ -5,7 +5,7 @@
 </script>
 
 <Card.Root class="flex flex-row max-sm:flex-col">
-	<Card.Content class="!pr-0">
+	<Card.Content class="shrink-0 !pr-0">
 		<img
 			src="https://picsum.photos/300/300"
 			alt="Interstellar"
@@ -13,7 +13,7 @@
 		/>
 	</Card.Content>
 
-	<Card.Header class="flex flex-col max-sm:!pb-4 max-sm:pt-0">
+	<Card.Header class="flex flex-1 flex-col gap-2 !pb-6 max-sm:!pb-4 max-sm:pt-0 ">
 		<div class="flex flex-row flex-wrap gap-2">
 			<Card.Title class="text-lg">
 				<Link isExternal target="_blank" href="https://google.com">Видоизмененный углерод</Link>
@@ -21,6 +21,13 @@
 			<Badge class="w-fit text-sm" variant="secondary">2024</Badge>
 		</div>
 
-		<p>Супер фильм!!!!</p>
+		<div class="flex h-full flex-1 flex-col justify-between gap-4">
+			<p>
+				Супер!!! или долго долгое описание про любовь ненависть и смерть и сыр и колбасу и просто
+				набор слов
+			</p>
+
+			<slot name="actions" />
+		</div>
 	</Card.Header>
 </Card.Root>
