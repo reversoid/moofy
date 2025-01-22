@@ -38,5 +38,8 @@
 	</div>
 
 	<Heading class="mt-6" type="h2">Обзоры</Heading>
-	<ReviewsList />
+
+	<div class="mt-4">
+		<ReviewsList />
+	</div>
 </Wrapper>
