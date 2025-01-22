@@ -1,8 +1,7 @@
 <script>
-	import * as Avatar from '$lib/components/ui/avatar';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
-	import { Textarea } from '$lib/components/ui/textarea';
+	import { CreateReviewButton } from '$lib/features/reivew';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
@@ -13,7 +12,9 @@
 <Wrapper>
 	<Heading>Collection 1</Heading>
 
-	<div class="mt-6 grid grid-cols-[4fr_1fr] gap-2">
+	<div
+		class="mt-6 grid grid-cols-[4fr_1fr] gap-2 max-xl:grid-cols-[3fr_1fr] max-lg:grid-cols-[2fr_1fr] max-md:grid-cols-1"
+	>
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Описание</Card.Title>
@@ -41,10 +42,8 @@
 
 	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>
-		<Button>
-			<IconPlus class="mr-2" size="20" />
-			<span>Добавить</span>
-		</Button>
+
+		<CreateReviewButton />
 	</div>
 
 	<div class="mt-4">

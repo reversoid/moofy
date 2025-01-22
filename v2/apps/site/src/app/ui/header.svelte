@@ -4,6 +4,7 @@
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import { IconLogin, IconLogin2 } from '@tabler/icons-svelte';
+	import { AuthButton } from '$lib/entities/auth-button';
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -15,17 +16,13 @@
 		</div>
 
 		<div class="flex items-center gap-5">
-			<div class="flex items-center gap-3">
+			<div class="flex items-center gap-3 max-sm:hidden">
 				<Link href="/welcome/collections">Мои коллекции</Link>
 				<Link href="/welcome/favorites">Избранное</Link>
 				<Link href="/search">Поиск</Link>
 			</div>
 
-			<Button>
-				<IconLogin2 size="20" class="mr-2" />
-				Войти</Button
-			>
-			<!-- <Avatar>GK</Avatar> -->
+			<AuthButton />
 		</div>
 	</Wrapper>
 </header>
