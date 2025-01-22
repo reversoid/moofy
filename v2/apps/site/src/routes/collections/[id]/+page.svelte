@@ -1,11 +1,13 @@
 <script>
 	import * as Avatar from '$lib/components/ui/avatar';
+	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
+	import { IconPlus } from '@tabler/icons-svelte';
 </script>
 
 <Wrapper>
@@ -37,7 +39,13 @@
 		</Card.Root>
 	</div>
 
-	<Heading class="mt-6" type="h2">Обзоры</Heading>
+	<div class="mt-7 flex items-center justify-between gap-4">
+		<Heading type="h2">Обзоры</Heading>
+		<Button>
+			<IconPlus class="mr-2" size="20" />
+			<span>Добавить</span>
+		</Button>
+	</div>
 
 	<div class="mt-4">
 		<ReviewsList />
