@@ -4,7 +4,7 @@
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import { IconLogin, IconLogin2 } from '@tabler/icons-svelte';
-	import { AuthButton } from '$lib/entities/auth-button';
+	import { Auth } from '$lib/entities/auth';
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -22,7 +22,7 @@
 				<Link href="/search">Поиск</Link>
 			</div>
 
-			<AuthButton />
+			<Auth />
 		</div>
 	</Wrapper>
 </header>

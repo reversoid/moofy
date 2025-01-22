@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import { Combobox } from '$lib/components/ui/combobox';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { flyAndScale } from '$lib/utils';
-	import { IconPlus, IconStar } from '@tabler/icons-svelte';
+	import { IconStar } from '@tabler/icons-svelte';
 </script>
 
 <Dialog.Header>
