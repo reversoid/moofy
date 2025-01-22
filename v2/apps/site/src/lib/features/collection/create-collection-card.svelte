@@ -6,7 +6,7 @@
 
 <Card.Root class="flex flex-col items-center justify-center">
 	<Card.Header>
-		<Card.Title>Новая коллекция</Card.Title>
+		<Card.Title class="text-center">Новая коллекция</Card.Title>
 	</Card.Header>
 	<Card.Content>
 		<Button>
