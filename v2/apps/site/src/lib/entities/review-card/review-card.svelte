@@ -16,7 +16,7 @@
 	<Card.Header class="flex flex-col max-sm:!pb-4 max-sm:pt-0">
 		<div class="flex flex-row flex-wrap gap-2">
 			<Card.Title class="text-lg">
-				<Link isExternal href="https://google.com">Видоизмененный углерод</Link>
+				<Link isExternal target="_blank" href="https://google.com">Видоизмененный углерод</Link>
 			</Card.Title>
 			<Badge class="w-fit text-sm" variant="secondary">2024</Badge>
 		</div>

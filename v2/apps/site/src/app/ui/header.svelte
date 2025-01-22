@@ -2,15 +2,24 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Avatar } from '$lib/components/ui/avatar';
 	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Link from '$lib/ui/link.svelte';
 </script>
 
 <header class="flex items-center justify-center pb-5 pt-3 backdrop-blur-md">
 	<Wrapper class="flex items-center justify-between">
 		<div>
-			<img src="/logo.svg" width="128" height="64" alt="Moofy Logo" />
+			<Link href="/">
+				<img src="/logo.svg" width="128" height="64" alt="Moofy Logo" />
+			</Link>
 		</div>
 
-		<div>
+		<div class="flex items-center gap-5">
+			<div class="flex items-center gap-3">
+				<Link href="/welcome/collections">Мои коллекции</Link>
+				<Link href="/welcome/favorites">Избранное</Link>
+				<Link href="/search">Поиск</Link>
+			</div>
+
 			<Button>Войти</Button>
 			<!-- <Avatar>GK</Avatar> -->
 		</div>
