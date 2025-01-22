@@ -1,15 +1,16 @@
 <script>
-	import { Button } from '$lib/components/ui/button';
+	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 </script>
 
-<footer>
+<footer class="flex items-center justify-center">
 	<Wrapper class="flex items-center justify-between gap-3 py-4 max-sm:flex-col">
-		<div>Создатель: <a>reversoid</a></div>
+		<div>Создатель: <Link isExternal href="https://github.com/reversoid">reversoid</Link></div>
+
 		<div class="flex items-center justify-center gap-2">
-			<a>Github</a>
-			<a>Поддержка</a>
-			<a>Roadmap</a>
+			<Link href="https://github.com/reversoid/moofy">Github</Link>
+			<Link href="/support">Поддержка</Link>
+			<Link href="/roadmap">Roadmap</Link>
 		</div>
 	</Wrapper>
 </footer>
