@@ -1,7 +1,7 @@
 <script>
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
-	import { CreateReviewButton } from '$lib/features/reivew';
+	import { CreateReview } from '$lib/features/reivew';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
@@ -43,7 +43,7 @@
 	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>
 
-		<CreateReviewButton />
+		<CreateReview />
 	</div>
 
 	<div class="mt-4">

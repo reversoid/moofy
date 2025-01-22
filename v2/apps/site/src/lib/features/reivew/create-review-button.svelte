@@ -8,6 +8,6 @@
 	<span>Добавить</span>
 </Button>
 
-<Button size="icon" class="flex-center hidden items-center max-sm:flex">
+<Button tag="div" size="icon" class="hidden items-center justify-center max-sm:flex">
 	<IconPlus />
 </Button>
