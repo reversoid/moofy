@@ -11,7 +11,7 @@
 
 		timeoutId = setTimeout(() => {
 			needConfirm = false;
-		}, 3000);
+		}, 30000);
 	}
 
 	const removeTimeout = () => {

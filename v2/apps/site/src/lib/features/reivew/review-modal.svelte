@@ -75,10 +75,12 @@
 	</div>
 </div>
 
-<Dialog.Footer>
-	<DeleteReviewButton />
+<Dialog.Footer class="flex flex-row gap-3 max-sm:flex-col">
+	{#if type === 'edit'}
+		<DeleteReviewButton />
+	{/if}
 
-	<Button type="submit">
-		{type === 'create' ? 'Добавить' : 'Изменить'}
+	<Button class="!ml-0" type="submit">
+		{type === 'create' ? 'Добавить' : 'Сохранить'}
 	</Button>
 </Dialog.Footer>
