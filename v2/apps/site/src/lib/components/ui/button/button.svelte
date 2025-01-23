@@ -72,7 +72,7 @@
 		this={tag}
 		class={cn(buttonVariants({ variant, size }), className)}
 		role="button"
-		tabindex="0"
+		tabindex={undefined}
 		onclick={restProps.onclick}
 		{...restProps}
 	>
