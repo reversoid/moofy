@@ -5,7 +5,7 @@
 	import * as Card from '$lib/components/ui/card';
 </script>
 
-<Card.Root>
+<Card.Root class="focus-within:border-primary">
 	<Card.Content>
 		<div class="grid w-full items-center">
 			<Label for="picture">
@@ -15,7 +15,7 @@
 				</div>
 			</Label>
 
-			<Input id="picture" class="hidden" type="file" />
+			<Input id="picture" class="sr-only" type="file" />
 		</div>
 	</Card.Content>
 </Card.Root>
