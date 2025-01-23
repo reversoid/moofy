@@ -3,11 +3,11 @@
 	import { IconLogin2 } from '@tabler/icons-svelte';
 </script>
 
-<Button class="max-sm:hidden">
+<Button tag="div" class="max-sm:hidden">
 	<IconLogin2 size="20" class="mr-2" />
 	<span>Войти</span>
 </Button>
 
-<Button size="icon" class="flex-center hidden items-center max-sm:flex">
+<Button tag="div" size="icon" class="flex-center hidden items-center max-sm:flex">
 	<IconLogin2 />
 </Button>

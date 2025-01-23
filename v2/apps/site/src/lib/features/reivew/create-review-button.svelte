@@ -3,7 +3,7 @@
 	import { IconPlus } from '@tabler/icons-svelte';
 </script>
 
-<Button class="max-sm:hidden">
+<Button tag="div" class="max-sm:hidden">
 	<IconPlus class="mr-2" size="20" />
 	<span>Добавить</span>
 </Button>

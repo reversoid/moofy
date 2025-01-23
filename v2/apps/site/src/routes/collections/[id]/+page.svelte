@@ -6,7 +6,6 @@
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
-	import { IconPlus } from '@tabler/icons-svelte';
 </script>
 
 <Wrapper>

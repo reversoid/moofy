@@ -7,6 +7,14 @@
 	import { IconStar } from '@tabler/icons-svelte';
 
 	export let type: 'create' | 'edit' = 'create';
+
+	let needConfirm = false;
+
+	function handleDeleteClick() {
+		console.log('hallow');
+
+		needConfirm = true;
+	}
 </script>
 
 <Dialog.Header>
@@ -69,5 +77,11 @@
 </div>
 
 <Dialog.Footer>
-	<Button type="submit">Сохранить</Button>
+	<Button type="button" variant="destructive" on:click={handleDeleteClick}>
+		{needConfirm ? 'Подтвердить' : 'Удалить'}
+	</Button>
+
+	<Button type="submit" on:click={(e) => console.log(e)}>
+		{type === 'create' ? 'Добавить' : 'Изменить'}
+	</Button>
 </Dialog.Footer>
