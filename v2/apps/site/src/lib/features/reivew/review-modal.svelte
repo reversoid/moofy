@@ -53,7 +53,7 @@
 
 	<div class="flex flex-col gap-4">
 		<b>Оценка</b>
-		<div class="flex items-center justify-between gap-6 max-sm:gap-2">
+		<div class="flex items-center justify-between gap-4 max-sm:gap-2">
 			<Badge variant="secondary" class="flex-1 justify-center">
 				<IconStar class="mr-1" size="16" />
 				<span>1</span>
