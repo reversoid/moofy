@@ -1,15 +1,35 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { onDestroy } from 'svelte';
 
-	let needConfirm = false;
+	let needConfirm = $state(false);
+	let timeoutId: NodeJS.Timeout;
 
 	function handleDeleteClick() {
-		console.log('click');
-
+		removeTimeout();
 		needConfirm = true;
+
+		timeoutId = setTimeout(() => {
+			needConfirm = false;
+		}, 3000);
 	}
+
+	const removeTimeout = () => {
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+		}
+	};
+
+	onDestroy(() => {
+		removeTimeout();
+	});
 </script>
 
-<Button type="button" variant="destructive" on:click={handleDeleteClick}>
-	{needConfirm ? 'Подтвердить' : 'Удалить'}
+<Button
+	type="button"
+	aria-label={needConfirm ? 'Подтвердить удаление' : 'Удалить'}
+	variant={needConfirm ? 'destructive' : 'outline'}
+	onclick={handleDeleteClick}
+>
+	Удалить
 </Button>

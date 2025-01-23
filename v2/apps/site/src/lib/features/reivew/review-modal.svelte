@@ -1,3 +1,9 @@
+<script lang="ts" module>
+	export type ReviewModalProps = {
+		type: 'create' | 'edit';
+	};
+</script>
+
 <script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -5,16 +11,9 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { IconStar } from '@tabler/icons-svelte';
+	import DeleteReviewButton from './delete-review-button.svelte';
 
-	export let type: 'create' | 'edit' = 'create';
-
-	let needConfirm = false;
-
-	function handleDeleteClick() {
-		console.log('hallow');
-
-		needConfirm = true;
-	}
+	const { type }: ReviewModalProps = $props();
 </script>
 
 <Dialog.Header>
@@ -77,11 +76,9 @@
 </div>
 
 <Dialog.Footer>
-	<Button type="button" variant="destructive" on:click={handleDeleteClick}>
-		{needConfirm ? 'Подтвердить' : 'Удалить'}
-	</Button>
+	<DeleteReviewButton />
 
-	<Button type="submit" on:click={(e) => console.log(e)}>
+	<Button type="submit">
 		{type === 'create' ? 'Добавить' : 'Изменить'}
 	</Button>
 </Dialog.Footer>
