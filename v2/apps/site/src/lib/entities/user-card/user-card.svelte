@@ -3,7 +3,7 @@
 	import * as Card from '$lib/components/ui/card';
 </script>
 
-<a aria-label={`Profile username`} href="/profile/username">
+<a aria-label={`Profile username`} href="/profiles/username">
 	<Card.Root class="flex flex-col gap-4">
 		<div class="flex flex-row justify-between">
 			<Card.Header>
