@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
 </script>
 
