@@ -1,4 +1,5 @@
 <script>
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { EditCollection } from '$lib/features/collection';
@@ -7,7 +8,8 @@
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
-	import { IconBookmark, IconHeart, IconSettings } from '@tabler/icons-svelte';
+	import { IconBookmark, IconHeart, IconLock } from '@tabler/icons-svelte';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 </script>
 
 <Wrapper>
@@ -28,12 +30,27 @@
 
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>О коллекции</Card.Title>
+				<div class="flex items-center justify-between">
+					<Card.Title>О коллекции</Card.Title>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<IconLock size={22} />
+							</Tooltip.Trigger>
+							<Tooltip.Content class="max-w-[320px] text-sm">
+								<p>
+									Эту коллекцию можете просматривать только вы<br />
+									Изменить данное поведение можно в настройках коллекции
+								</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+				</div>
 			</Card.Header>
 
 			<Card.Content>
 				<ul class="flex flex-col gap-1">
-					<li>Создатель: <Link href="/users/reversoid">reversoid</Link></li>
+					<li>Создатель: <Link href="/profiles/reversoid">reversoid</Link></li>
 					<li>Обновлено: 12.01.2025</li>
 				</ul>
 

@@ -11,5 +11,5 @@
 
 <Button class={className} tag="div" variant="secondary">
 	<IconSettings />
-	<span>Изменить</span>
+	<span>Настройки</span>
 </Button>
