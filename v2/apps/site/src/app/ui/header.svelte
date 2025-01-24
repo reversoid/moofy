@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Avatar } from '$lib/components/ui/avatar';
-	import Wrapper from '$lib/ui/wrapper.svelte';
-	import Link from '$lib/ui/link.svelte';
-	import { IconLogin, IconLogin2 } from '@tabler/icons-svelte';
 	import { Auth } from '$lib/entities/auth';
+	import Link from '$lib/ui/link.svelte';
+	import Wrapper from '$lib/ui/wrapper.svelte';
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -19,7 +16,7 @@
 			<div class="flex items-center gap-3 max-sm:hidden">
 				<Link href="/welcome/collections">Мои коллекции</Link>
 				<Link href="/welcome/favorites">Избранное</Link>
-				<Link href="/search">Поиск</Link>
+				<Link href="/search/profiles">Поиск</Link>
 			</div>
 
 			<Auth />

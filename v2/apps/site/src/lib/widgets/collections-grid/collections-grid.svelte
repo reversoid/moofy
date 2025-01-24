@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { CollectionCard } from '$lib/entities/collection-card';
-	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import { IconSearch } from '@tabler/icons-svelte';
+	import type { Snippet } from 'svelte';
+
+	const { firstCard }: { firstCard?: Snippet } = $props();
 </script>
 
 <div class="flex flex-col gap-4">
@@ -13,8 +15,9 @@
 	</Input>
 
 	<div class="grid grid-cols-4 gap-4 max-xl:grid-cols-3 max-md:grid-cols-2 max-sm:gap-2">
-		<CreateCollectionCard />
+		{@render firstCard?.()}
 
+		<CollectionCard />
 		<CollectionCard />
 		<CollectionCard />
 		<CollectionCard />
