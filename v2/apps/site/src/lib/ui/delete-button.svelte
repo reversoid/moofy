@@ -3,15 +3,27 @@
 	import { IconLock, IconTrash } from '@tabler/icons-svelte';
 	import { onDestroy } from 'svelte';
 
-	let needConfirm = $state(false);
+	let confirmedDelete = $state(false);
 	let timeoutId: NodeJS.Timeout;
 
+	export type DeleteButtonProps = {
+		onDelete?: () => void;
+		class?: string;
+	};
+
+	const { onDelete, class: className }: DeleteButtonProps = $props();
+
 	function handleDeleteClick() {
+		if (confirmedDelete) {
+			onDelete?.();
+			return;
+		}
+
 		removeTimeout();
-		needConfirm = true;
+		confirmedDelete = true;
 
 		timeoutId = setTimeout(() => {
-			needConfirm = false;
+			confirmedDelete = false;
 		}, 3000);
 	}
 
@@ -27,12 +39,13 @@
 </script>
 
 <Button
+	class={className}
 	type="button"
-	aria-label={needConfirm ? 'Подтвердить удаление' : 'Удалить'}
-	variant={needConfirm ? 'destructive' : 'outline'}
+	aria-label={confirmedDelete ? 'Подтвердить удаление' : 'Удалить'}
+	variant={confirmedDelete ? 'destructive' : 'outline'}
 	onclick={handleDeleteClick}
 >
-	{#if needConfirm}
+	{#if confirmedDelete}
 		<IconTrash />
 	{:else}
 		<IconLock />

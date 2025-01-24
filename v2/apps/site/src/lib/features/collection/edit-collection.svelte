@@ -6,9 +6,9 @@
 
 <Dialog.Root>
 	<Dialog.Trigger>
-		<EditCollectionButton />
+		<EditCollectionButton class="w-full" />
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<CollectionModal type="create" />
+		<CollectionModal type="edit" />
 	</Dialog.Content>
 </Dialog.Root>

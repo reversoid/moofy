@@ -1,7 +1,7 @@
 <script>
-	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import { EditCollection } from '$lib/features/collection';
 	import { CreateReview } from '$lib/features/reivew';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
@@ -50,10 +50,7 @@
 						</Button>
 					</div>
 
-					<Button variant="secondary">
-						<IconSettings />
-						<span>Изменить</span>
-					</Button>
+					<EditCollection />
 				</div>
 			</Card.Content>
 		</Card.Root>
