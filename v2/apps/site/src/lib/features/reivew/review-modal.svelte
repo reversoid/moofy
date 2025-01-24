@@ -10,14 +10,14 @@
 	import { Combobox } from '$lib/components/ui/combobox';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { IconStar } from '@tabler/icons-svelte';
+	import { IconDeviceFloppy, IconPencil, IconStar } from '@tabler/icons-svelte';
 	import DeleteReviewButton from './delete-review-button.svelte';
 
 	const { type }: ReviewModalProps = $props();
 </script>
 
 <Dialog.Header>
-	<Dialog.Title>{type === 'create' ? 'Добавить обзор' : 'Изменить обзор'}</Dialog.Title>
+	<Dialog.Title>{type === 'create' ? 'Создать обзор' : 'Изменить обзор'}</Dialog.Title>
 </Dialog.Header>
 
 <div class="flex flex-col gap-5 py-4">
@@ -81,6 +81,12 @@
 	{/if}
 
 	<Button class="!ml-0" type="submit">
-		{type === 'create' ? 'Добавить' : 'Сохранить'}
+		{#if type === 'create'}
+			<IconPencil />
+		{:else}
+			<IconDeviceFloppy />
+		{/if}
+
+		{type === 'create' ? 'Создать' : 'Сохранить'}
 	</Button>
 </Dialog.Footer>

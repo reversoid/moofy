@@ -4,8 +4,8 @@
 </script>
 
 <Button tag="div" class="max-sm:hidden">
-	<IconPlus class="mr-2" size="20" />
-	<span>Добавить</span>
+	<IconPlus size="20" />
+	<span>Создать</span>
 </Button>
 
 <Button tag="div" size="icon" class="hidden items-center justify-center max-sm:flex">

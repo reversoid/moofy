@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { IconLock, IconTrash } from '@tabler/icons-svelte';
 	import { onDestroy } from 'svelte';
 
 	let needConfirm = $state(false);
@@ -31,5 +32,11 @@
 	variant={needConfirm ? 'destructive' : 'outline'}
 	onclick={handleDeleteClick}
 >
+	{#if needConfirm}
+		<IconTrash />
+	{:else}
+		<IconLock />
+	{/if}
+
 	Удалить
 </Button>

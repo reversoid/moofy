@@ -4,7 +4,7 @@
 </script>
 
 <Button tag="div" class="max-sm:hidden">
-	<IconLogin2 size="20" class="mr-2" />
+	<IconLogin2 size="20" />
 	<span>Войти</span>
 </Button>
 
