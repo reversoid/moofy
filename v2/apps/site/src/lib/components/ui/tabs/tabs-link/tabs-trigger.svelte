@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import type { Snippet } from 'svelte';
 
-	let { href, ariaLabel, children }: { href: string; ariaLabel: string; children: any } = $props();
+	let { href, ariaLabel, children }: { href: string; ariaLabel: string; children: Snippet } =
+		$props();
 
 	function pathMatches(path: string) {
 		if (path.startsWith('/')) {
