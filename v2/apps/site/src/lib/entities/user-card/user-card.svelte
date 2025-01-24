@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+
+	const username = 'username123';
 </script>
 
-<a aria-label={`Profile username`} href="/profiles/username">
+<a aria-label="Profile {username}" href="/profiles/{username}">
 	<Card.Root class="flex flex-col gap-4">
 		<div class="flex flex-row justify-between gap-4 max-sm:flex-col-reverse max-sm:items-center">
 			<Card.Header class="pr-0 max-sm:px-0 max-sm:pt-0">

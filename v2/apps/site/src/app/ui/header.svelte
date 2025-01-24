@@ -1,7 +1,9 @@
 <script lang="ts">
+	import Button from '$lib/components/ui/button/button.svelte';
 	import { Auth } from '$lib/entities/auth';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
+	import { IconSearch } from '@tabler/icons-svelte';
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
