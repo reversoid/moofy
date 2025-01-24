@@ -9,7 +9,9 @@
 	<Dialog.Description>Коллекции позволяют группировать фильмы</Dialog.Description>
 </Dialog.Header>
 
-<CreateCollectionForm />
+<div class="mt-2">
+	<CreateCollectionForm />
+</div>
 
 <Dialog.Footer>
 	<Button>Создать</Button>

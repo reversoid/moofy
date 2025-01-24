@@ -4,7 +4,6 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { enhance } from '$app/forms';
 </script>
 
 <Tabs.Root value="login">
@@ -16,9 +15,7 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Вход</Card.Title>
-				<Card.Description class="!mt-2"
-					>Введите ваше имя пользователя и пароль для входа</Card.Description
-				>
+				<Card.Description>Введите ваше имя пользователя и пароль для входа</Card.Description>
 			</Card.Header>
 			<Card.Content class="flex flex-col gap-4">
 				<div class="flex flex-col gap-3">
@@ -40,12 +37,10 @@
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Регистрация</Card.Title>
-				<Card.Description class="!mt-2"
-					>Придумайте имя пользователя и пароль для регистрации</Card.Description
-				>
+				<Card.Description>Придумайте имя пользователя и пароль для регистрации</Card.Description>
 			</Card.Header>
 			<Card.Content>
-				<form use:enhance id="register-form" class="flex flex-col gap-4">
+				<form id="register-form" class="flex flex-col gap-4">
 					<div class="flex flex-col gap-3">
 						<Label for="username">Имя пользователя</Label>
 						<Input id="username" type="text" />

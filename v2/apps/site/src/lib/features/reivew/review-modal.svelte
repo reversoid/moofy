@@ -12,6 +12,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { IconDeviceFloppy, IconPencil, IconStar } from '@tabler/icons-svelte';
 	import DeleteReviewButton from './delete-review-button.svelte';
+	import { Label } from '$lib/components/ui/label';
 
 	const { type }: ReviewModalProps = $props();
 </script>
@@ -20,11 +21,11 @@
 	<Dialog.Title>{type === 'create' ? 'Создать обзор' : 'Изменить обзор'}</Dialog.Title>
 </Dialog.Header>
 
-<div class="flex flex-col gap-5 py-4">
+<div class="flex flex-col gap-5 pb-4 pt-2">
 	<div class="flex flex-col gap-4">
 		{#if type === 'create'}
-			<b>Фильм</b>
-			<Combobox />
+			<Label for="film">Фильм</Label>
+			<Combobox id="film" />
 		{/if}
 
 		<div class="flex flex-col gap-2">
@@ -46,14 +47,14 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col gap-4">
-		<b>Описание</b>
-		<Textarea placeholder="Описание..." />
+	<div class="flex flex-col gap-3">
+		<Label for="description">Описание</Label>
+		<Textarea id="description" placeholder="Описание..." />
 	</div>
 
-	<div class="flex flex-col gap-4">
-		<b>Оценка</b>
-		<div class="flex items-center justify-between gap-4 max-sm:gap-2">
+	<div class="flex flex-col gap-3">
+		<Label for="rating">Оценка</Label>
+		<div id="rating" class="flex items-center justify-between gap-4 max-sm:gap-2">
 			<Badge variant="secondary" class="flex-1 justify-center">
 				<IconStar class="mr-1" size="16" />
 				<span>1</span>
