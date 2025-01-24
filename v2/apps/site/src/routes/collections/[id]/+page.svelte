@@ -7,7 +7,7 @@
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
-	import { IconBookmark, IconHeart } from '@tabler/icons-svelte';
+	import { IconBookmark, IconHeart, IconSettings } from '@tabler/icons-svelte';
 </script>
 
 <Wrapper>
@@ -35,18 +35,24 @@
 				<ul class="flex flex-col gap-1">
 					<li>Создатель: <Link href="/users/reversoid">reversoid</Link></li>
 					<li>Обновлено: 12.01.2025</li>
-					<li>Приватная коллекция</li>
 				</ul>
 
-				<div class="mt-3 flex gap-2">
-					<Button variant="outline">
-						<IconHeart />
-						<span>56</span>
-					</Button>
+				<div class="mt-3 flex flex-col gap-2">
+					<div class="flex gap-2">
+						<Button class="flex-grow" variant="outline">
+							<IconHeart />
+							<span>56</span>
+						</Button>
 
-					<Button variant="outline">
-						<IconBookmark />
-						<span>73</span>
+						<Button class="flex-grow" variant="outline">
+							<IconBookmark />
+							<span>73</span>
+						</Button>
+					</div>
+
+					<Button variant="secondary">
+						<IconSettings />
+						<span>Изменить</span>
 					</Button>
 				</div>
 			</Card.Content>
