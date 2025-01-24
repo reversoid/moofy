@@ -5,7 +5,9 @@
 	import * as Card from '$lib/components/ui/card';
 </script>
 
-<Card.Root class="focus-within:border-primary">
+<Card.Root
+	class="focus-within:border-primary focus-within:ring-primary focus-within:ring-2 focus-within:ring-offset-2"
+>
 	<Card.Content>
 		<div class="grid w-full items-center">
 			<Label for="picture">

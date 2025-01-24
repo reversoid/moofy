@@ -1,4 +1,5 @@
 <script>
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { CreateReview } from '$lib/features/reivew';
@@ -6,6 +7,7 @@
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
+	import { IconBookmark, IconHeart } from '@tabler/icons-svelte';
 </script>
 
 <Wrapper>
@@ -35,6 +37,18 @@
 					<li>Обновлено: 12.01.2025</li>
 					<li>Приватная коллекция</li>
 				</ul>
+
+				<div class="mt-3 flex gap-2">
+					<Button variant="outline">
+						<IconHeart />
+						<span>56</span>
+					</Button>
+
+					<Button variant="outline">
+						<IconBookmark />
+						<span>73</span>
+					</Button>
+				</div>
 			</Card.Content>
 		</Card.Root>
 	</div>
