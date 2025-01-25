@@ -10,14 +10,16 @@
 	const { firstCard }: { firstCard?: Snippet } = $props();
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="@container flex flex-col gap-4">
 	<Input placeholder="Поиск">
 		{#snippet inputPrefix()}
 			<IconSearch size={20} />
 		{/snippet}
 	</Input>
 
-	<div class="grid grid-cols-4 gap-4 max-xl:grid-cols-3 max-md:grid-cols-2 max-sm:gap-2">
+	<!-- TODO make responsive by min width, not max-width 
+	 -->
+	<div class="@5xl:grid-cols-4 @xl:grid-cols-3 @xl:gap-4 @sm:grid-cols-2 grid grid-cols-1 gap-2">
 		{@render firstCard?.()}
 
 		<CollectionCard />

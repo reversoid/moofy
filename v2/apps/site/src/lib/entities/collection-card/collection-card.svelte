@@ -12,7 +12,7 @@
 			<Card.Description>Some collection description</Card.Description>
 		</Card.Header>
 
-		<Card.Content>
+		<Card.Content class="max-md:!pt-0">
 			<img
 				class="aspect-[4/3] w-full rounded-md object-cover"
 				src="https://picsum.photos/300/300"
