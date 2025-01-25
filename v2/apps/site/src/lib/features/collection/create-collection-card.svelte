@@ -8,7 +8,7 @@
 		<Card.Title class="text-center">Новая коллекция</Card.Title>
 	</Card.Header>
 
-	<Card.Content>
+	<Card.Content class="max-md:!pt-0">
 		<CreateCollection />
 	</Card.Content>
 </Card.Root>
