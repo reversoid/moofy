@@ -101,9 +101,6 @@ importers:
       '@tabler/icons-svelte':
         specifier: ^3.29.0
         version: 3.29.0(svelte@5.19.2)
-      '@tailwindcss/container-queries':
-        specifier: ^0.1.1
-        version: 0.1.1(tailwindcss@3.4.17)
       '@tailwindcss/forms':
         specifier: ^0.5.10
         version: 0.5.10(tailwindcss@3.4.17)
@@ -126,6 +123,9 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^4.0.4
         version: 4.0.4(svelte@5.19.2)(vite@5.4.14)
+      '@tailwindcss/container-queries':
+        specifier: ^0.1.1
+        version: 0.1.1(tailwindcss@3.4.17)
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.1)
@@ -1862,7 +1862,7 @@ packages:
       tailwindcss: '>=3.2.0'
     dependencies:
       tailwindcss: 3.4.17
-    dev: false
+    dev: true
 
   /@tailwindcss/forms@0.5.10(tailwindcss@3.4.17):
     resolution: {integrity: sha512-utI1ONF6uf/pPNO68kmN1b8rEwNXv3czukalo8VtJH8ksIkZXr3Q3VYudZLkCsDd4Wku120uF02hYK25XGPorw==}
