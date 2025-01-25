@@ -4,8 +4,6 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { Label } from '$lib/components/ui/label';
 
-	let rating = $state<string>('');
-
 	function handleValueChange(value: string) {
 		rating = value;
 	}
@@ -18,6 +16,12 @@
 			rating = '';
 		}
 	};
+
+	interface Props {
+		rating?: string;
+	}
+
+	let { rating = $bindable() }: Props = $props();
 </script>
 
 <RadioGroup.Root
