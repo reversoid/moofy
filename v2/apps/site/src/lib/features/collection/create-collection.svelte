@@ -1,12 +1,12 @@
 <script>
 	import * as Dialog from '$lib/components/ui/dialog';
 	import CollectionModal from './collection-modal.svelte';
-	import EditCollectionButton from './edit-collection-button.svelte';
+	import CreateCollectionButton from './create-collection-button.svelte';
 </script>
 
 <Dialog.Root>
 	<Dialog.Trigger>
-		<EditCollectionButton />
+		<CreateCollectionButton />
 	</Dialog.Trigger>
 	<Dialog.Content>
 		<CollectionModal type="create" />
