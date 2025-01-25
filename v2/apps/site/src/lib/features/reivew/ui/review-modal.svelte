@@ -15,6 +15,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import SearchFilm from './search-film.svelte';
 	import RatingSelect from './rating-select.svelte';
+	import Film from './film.svelte';
 
 	const { type }: ReviewModalProps = $props();
 </script>
@@ -33,19 +34,7 @@
 		<div class="flex flex-col gap-2">
 			<p class="text-muted-foreground text-sm">Выбранный фильм</p>
 
-			<!-- TODO make film component -->
-			<div class="bg-secondary flex flex-row gap-4 rounded-lg p-4">
-				<img
-					src="https://picsum.photos/200/300"
-					class="aspect-[2/3] h-20 rounded-lg object-cover"
-					alt="s"
-				/>
-
-				<div class="flex flex-col gap-1">
-					<b>Интерстеллар</b>
-					<p class="text-muted-foreground text-sm">2024</p>
-				</div>
-			</div>
+			<Film name="Интерстеллар" year="2024" posterUrl="https://picsum.photos/200/300" />
 		</div>
 	</div>
 
