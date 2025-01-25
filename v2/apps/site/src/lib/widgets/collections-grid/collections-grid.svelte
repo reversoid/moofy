@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { CollectionCard } from '$lib/entities/collection-card';
-	import { IconSearch } from '@tabler/icons-svelte';
+	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
+	import { IconChevronDown, IconSearch } from '@tabler/icons-svelte';
 	import type { Snippet } from 'svelte';
+	import { onMount } from 'svelte';
 
 	const { firstCard }: { firstCard?: Snippet } = $props();
 </script>
@@ -25,4 +28,6 @@
 		<CollectionCard />
 		<CollectionCard />
 	</div>
+
+	<LoadMoreButton />
 </div>

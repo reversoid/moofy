@@ -1,6 +1,7 @@
 <script>
 	import { Input } from '$lib/components/ui/input';
 	import { UserCard } from '$lib/entities/user-card';
+	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
 	import { IconSearch } from '@tabler/icons-svelte';
 </script>
 
@@ -20,4 +21,6 @@
 		<UserCard />
 		<UserCard />
 	</div>
+
+	<LoadMoreButton />
 </div>

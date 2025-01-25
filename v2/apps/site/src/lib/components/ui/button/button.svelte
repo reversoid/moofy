@@ -38,11 +38,13 @@
 			size?: ButtonSize;
 		} & {
 			tag?: keyof HTMLElementTagNameMap;
+			isLoading?: boolean;
 		};
 </script>
 
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
+	import LoaderCircle from 'lucide-svelte/icons/loader-circle';
 
 	let {
 		class: className,
@@ -53,6 +55,7 @@
 		type = 'button',
 		children,
 		tag,
+		isLoading,
 		...restProps
 	}: ButtonProps = $props();
 </script>
@@ -86,6 +89,10 @@
 		onclick={restProps.onclick}
 		{...restProps}
 	>
-		{@render children?.()}
+		{#if isLoading}
+			<LoaderCircle class="animate-spin" />
+		{:else}
+			{@render children?.()}
+		{/if}
 	</button>
 {/if}

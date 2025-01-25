@@ -2,6 +2,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { ReviewCard } from '$lib/entities/review-card';
 	import { EditReview } from '$lib/features/reivew';
+	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
 	import { IconSearch } from '@tabler/icons-svelte';
 </script>
 
@@ -48,4 +49,6 @@
 			<EditReview slot="actions" />
 		</ReviewCard>
 	</div>
+
+	<LoadMoreButton />
 </div>
