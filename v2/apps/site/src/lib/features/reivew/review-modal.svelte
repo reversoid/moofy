@@ -14,6 +14,7 @@
 	import DeleteButton from '$lib/ui/delete-button.svelte';
 	import { Label } from '$lib/components/ui/label';
 	import SearchFilm from './search-film.svelte';
+	import RatingSelect from './rating-select.svelte';
 
 	const { type }: ReviewModalProps = $props();
 </script>
@@ -55,25 +56,7 @@
 
 	<div class="flex flex-col gap-3">
 		<Label for="rating">Оценка</Label>
-		<div id="rating" class="flex items-center justify-between gap-4 max-sm:gap-2">
-			<Badge variant="secondary" class="flex-1 justify-center">
-				<IconStar class="mr-1" size="16" />
-				<span>1</span>
-			</Badge>
-			<Badge variant="secondary" class="flex-1 justify-center">
-				<IconStar class="mr-1" size="16" />
-				<span>2</span>
-			</Badge><Badge class="flex-1 justify-center">
-				<IconStar class="mr-1" size="16" />
-				<span>3</span>
-			</Badge><Badge variant="secondary" class="flex-1 justify-center">
-				<IconStar class="mr-1" size="16" />
-				<span>4</span>
-			</Badge><Badge variant="secondary" class="flex-1 justify-center">
-				<IconStar class="mr-1" size="16" />
-				<span>5</span>
-			</Badge>
-		</div>
+		<RatingSelect />
 	</div>
 </div>
 
