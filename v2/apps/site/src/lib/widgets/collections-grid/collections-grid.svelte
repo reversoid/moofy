@@ -19,7 +19,7 @@
 
 	<!-- TODO make responsive by min width, not max-width 
 	 -->
-	<div class="@5xl:grid-cols-4 @xl:grid-cols-3 @xl:gap-4 @sm:grid-cols-2 grid grid-cols-1 gap-2">
+	<div class="@5xl:grid-cols-4 @xl:grid-cols-3 @xl:gap-4 @md:grid-cols-2 grid grid-cols-1 gap-2">
 		{@render firstCard?.()}
 
 		<CollectionCard />

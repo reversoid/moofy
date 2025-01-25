@@ -13,6 +13,7 @@
 	import { IconDeviceFloppy, IconPencil, IconStar } from '@tabler/icons-svelte';
 	import DeleteButton from '$lib/ui/delete-button.svelte';
 	import { Label } from '$lib/components/ui/label';
+	import SearchFilm from './search-film.svelte';
 
 	const { type }: ReviewModalProps = $props();
 </script>
@@ -25,7 +26,7 @@
 	<div class="flex flex-col gap-4">
 		{#if type === 'create'}
 			<Label for="film">Фильм</Label>
-			<Combobox id="film" />
+			<SearchFilm />
 		{/if}
 
 		<div class="flex flex-col gap-2">
