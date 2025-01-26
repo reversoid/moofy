@@ -1,11 +1,10 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import AppSidebar from '$lib/ui/app-sidebar.svelte';
 
 	import '../fonts.css';
 
 	import '../app.css';
-	import { Header, Footer } from '../app/ui';
+	import { Header, Footer, AppSidebar } from '../app/ui';
 	let { children } = $props();
 </script>
 

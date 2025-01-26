@@ -1,19 +1,10 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog';
 	import AuthButton from './auth-button.svelte';
-	import AuthCard from './auth-card.svelte';
+	import AuthModal from './auth-modal.svelte';
 </script>
 
-<Dialog.Root>
-	<Dialog.Trigger>
+<AuthModal>
+	{#snippet trigger()}
 		<AuthButton />
-	</Dialog.Trigger>
-
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>Добро пожаловать!</Dialog.Title>
-		</Dialog.Header>
-
-		<AuthCard />
-	</Dialog.Content>
-</Dialog.Root>
+	{/snippet}
+</AuthModal>

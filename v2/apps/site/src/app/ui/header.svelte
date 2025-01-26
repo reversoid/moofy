@@ -5,8 +5,11 @@
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { IconMenu } from '@tabler/icons-svelte';
+	import ProfileButton from './profile-button.svelte';
 
 	const sidebar = useSidebar();
+
+	const isLoggedIn = true;
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -18,19 +21,27 @@
 		</div>
 
 		<div class="flex items-center gap-5">
-			<div class="flex items-center gap-3 max-sm:hidden">
-				<Link href="/welcome/collections">Мои коллекции</Link>
-				<Link href="/welcome/favorites">Избранное</Link>
-				<Link href="/search/profiles">Поиск</Link>
-			</div>
+			{#if isLoggedIn}
+				<div class="flex items-center gap-3 max-sm:hidden">
+					<Link href="/welcome/collections">Мои коллекции</Link>
+					<Link href="/welcome/favorites">Избранное</Link>
+					<Link href="/search/profiles">Поиск</Link>
+				</div>
 
-			<div class="max-sm:hidden">
-				<Auth />
-			</div>
+				<div class="flex items-center justify-center max-sm:hidden">
+					<ProfileButton src="https://github.com/shadcn.png" username="shadcn" />
+				</div>
+			{/if}
 
-			<Button class="sm:hidden" size="icon" variant="outline" onclick={() => sidebar.toggle()}>
-				<IconMenu />
-			</Button>
+			{#if isLoggedIn}
+				<Button class="sm:hidden" size="icon" variant="outline" onclick={() => sidebar.toggle()}>
+					<IconMenu />
+				</Button>
+			{:else}
+				<div>
+					<Auth />
+				</div>
+			{/if}
 		</div>
 	</Wrapper>
 </header>
