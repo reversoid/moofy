@@ -46,7 +46,7 @@ declare module "hono" {
   }
 }
 
-const app = new Hono()
+const api = new Hono()
   .use(async (c, next) => {
     const filmProvider = new UnofficialKpProvider();
 
@@ -98,4 +98,6 @@ const app = new Hono()
   .route("", searchRoute)
   .route("", favoritesRoute);
 
-export default app;
+export default api;
+
+export type Api = typeof api;

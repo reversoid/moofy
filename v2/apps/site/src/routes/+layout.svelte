@@ -5,7 +5,7 @@
 
 	import '../app.css';
 	import { Header, Footer, AppSidebar } from '../app/ui';
-	let { children } = $props();
+	let { children, data } = $props();
 </script>
 
 <Sidebar.Provider>

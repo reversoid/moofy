@@ -12,18 +12,17 @@ if (!workspaceDir) {
 
 dotenv.config({ path: path.join(workspaceDir, ".env") });
 
-export default parseEnv(process.env, {
+const schema = {
   UNOFFICIAL_KP_API_KEYS: z.string().transform((v) => v.split(",")),
   UNOFFICIAL_KP_URL: z.string(),
-
   PG_USER: z.string(),
   PG_PASSWORD: z.string(),
   PG_HOST: z.string(),
   PG_PORT: z.coerce.number().int(),
   PG_MAX_CONNECTIONS: z.coerce.number().int(),
   PG_DATABASE: z.string(),
-
   COOKIE_SECRET: z.string(),
-
   ENV: z.enum(["development", "test", "production"]),
-});
+};
+
+export default parseEnv(process.env, schema);
