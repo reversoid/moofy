@@ -1,9 +1,12 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { Auth } from '$lib/entities/auth';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { IconSearch } from '@tabler/icons-svelte';
+	import { IconMenu } from '@tabler/icons-svelte';
+
+	const sidebar = useSidebar();
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -21,7 +24,13 @@
 				<Link href="/search/profiles">Поиск</Link>
 			</div>
 
-			<Auth />
+			<div class="max-sm:hidden">
+				<Auth />
+			</div>
+
+			<Button class="sm:hidden" size="icon" variant="outline" onclick={() => sidebar.toggle()}>
+				<IconMenu />
+			</Button>
 		</div>
 	</Wrapper>
 </header>
