@@ -14,7 +14,9 @@
 		<Header />
 		<AppSidebar />
 
-		<main class="flex-grow">{@render children()}</main>
+		<main class="min-h-[calc(100svh-100px-60px)] flex-grow max-sm:min-h-[calc(100svh-100px-96px)]">
+			{@render children()}
+		</main>
 		<Footer />
 	</div>
 </Sidebar.Provider>

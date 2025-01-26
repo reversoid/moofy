@@ -23,7 +23,6 @@
 	];
 
 	const handleItemClick = () => {
-		console.log('click');
 		sidebar.toggle();
 	};
 </script>
