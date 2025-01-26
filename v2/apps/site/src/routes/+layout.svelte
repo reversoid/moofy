@@ -5,7 +5,12 @@
 
 	import '../app.css';
 	import { Header, Footer, AppSidebar } from '../app/ui';
+	import { globalState } from '$lib/state/state.svelte';
 	let { children, data } = $props();
+
+	const user = data.user;
+
+	globalState.user = user?.username ?? null;
 </script>
 
 <Sidebar.Provider>

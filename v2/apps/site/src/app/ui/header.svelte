@@ -6,10 +6,11 @@
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { IconMenu } from '@tabler/icons-svelte';
 	import ProfileButton from './profile-button.svelte';
+	import { globalState } from '$lib/state/state.svelte';
 
 	const sidebar = useSidebar();
 
-	const isLoggedIn = false;
+	const user = globalState.user;
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -21,7 +22,7 @@
 		</div>
 
 		<div class="flex items-center gap-5">
-			{#if isLoggedIn}
+			{#if user}
 				<div class="flex items-center gap-3 max-sm:hidden">
 					<Link href="/welcome/collections">Мои коллекции</Link>
 					<Link href="/welcome/favorites">Избранное</Link>
@@ -29,11 +30,11 @@
 				</div>
 
 				<div class="flex items-center justify-center max-sm:hidden">
-					<ProfileButton src="https://github.com/shadcn.png" username="shadcn" />
+					<ProfileButton src="https://github.com/shadcn.png" username={user} />
 				</div>
 			{/if}
 
-			{#if isLoggedIn}
+			{#if user}
 				<Button class="sm:hidden" size="icon" variant="outline" onclick={() => sidebar.toggle()}>
 					<IconMenu />
 				</Button>

@@ -29,7 +29,7 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Group>
 				<DropdownMenu.Item>
-					<a class="flex w-full items-center gap-2" href="/profiles/1">
+					<a class="flex w-full items-center gap-2" href="/profiles/{username}">
 						<IconUser />
 						<span>Профиль</span>
 					</a>

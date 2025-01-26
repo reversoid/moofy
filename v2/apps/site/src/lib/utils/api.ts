@@ -1,11 +1,6 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { hc } from 'hono/client';
 import type { Api } from '@repo/api';
-
-export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
-}
+import { hc, type ClientResponse } from 'hono/client';
+import { err, ok, type Result } from 'resulto';
 
 let browserClient: ReturnType<typeof hc<Api>>;
 
@@ -24,4 +19,14 @@ export const makeClient = (fetch: Window['fetch']) => {
 	}
 
 	return client;
+};
+
+export const handleResponse = async <T>(
+	res: ClientResponse<T>
+): Promise<Result<T, { error: string }>> => {
+	if (!res.ok) {
+		return err((await res.json()) as { error: string });
+	}
+
+	return ok(res.json() as T);
 };

@@ -12,18 +12,18 @@ importers:
         specifier: ^1.4.2
         version: 1.4.2
       zod:
-        specifier: ^3.23.8
-        version: 3.23.8
+        specifier: ^3.24.1
+        version: 3.24.1
     devDependencies:
       dbmate:
-        specifier: ^2.24.2
-        version: 2.24.2
+        specifier: ^2.25.0
+        version: 2.25.0
       prettier:
-        specifier: ^3.2.5
-        version: 3.3.3
+        specifier: ^3.4.2
+        version: 3.4.2
       turbo:
-        specifier: ^2.2.3
-        version: 2.2.3
+        specifier: ^2.3.4
+        version: 2.3.4
       typescript:
         specifier: 5.5.4
         version: 5.5.4
@@ -290,7 +290,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.5.4)
       '@vercel/style-guide':
         specifier: ^5.2.0
-        version: 5.2.0(eslint@8.57.1)(prettier@3.3.3)(typescript@5.5.4)
+        version: 5.2.0(eslint@8.57.1)(prettier@3.4.2)(typescript@5.5.4)
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@8.57.1)
@@ -608,56 +608,56 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@dbmate/darwin-arm64@2.24.2:
-    resolution: {integrity: sha512-wzE2tZXToUTe/DBpYBXNw/aF/AQ40OJ/oVf07AP4UdyxvLX0S2rjQb4mnDbQN13U9ll8JBJ1BKJ2Kl0DlUHVLQ==}
+  /@dbmate/darwin-arm64@2.25.0:
+    resolution: {integrity: sha512-nXx9yniTuYFewva6P/kilsMXUD8+hQTDit8KMG+3okxrMTfB70lo2Qe5mLjsJcXaBeyq1cFlkRDSpmGR+0UOig==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/darwin-x64@2.24.2:
-    resolution: {integrity: sha512-XcIYKjFDr6l8yx0Qfu6D+L8oEuxPyfXNeh9k+b4/5WTY8tVsmINrlkPPXhR/HTngsI8JhdCb0lf06d6eEC++Ng==}
+  /@dbmate/darwin-x64@2.25.0:
+    resolution: {integrity: sha512-zhk+oQwL31bHJDfyss++lLbjsm0Rxe13YX79uOxxsPmfipRay5d01Hdner7PjGiKKEQZ1/VL2D2j2qclCVJIUw==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-arm64@2.24.2:
-    resolution: {integrity: sha512-smiy4rI7j1EnQt8WFPCbht4klV525/YNxvJBqQVCJa2mB2qeoOKDgYZGk/3NW+c5aMwoLLwFFhXe9KrWxn9k8A==}
+  /@dbmate/linux-arm64@2.25.0:
+    resolution: {integrity: sha512-x/f+d51Hqpg9o8LygbNp4Qg//4t5gC3SIfsTYGwUZFzkCa8C06R2rwjqIyNmgNIRKCz4vXj5vZnXjJw3qbC95w==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-arm@2.24.2:
-    resolution: {integrity: sha512-9u8R427hg2mD8xskx2lfZoiKIapiaRYJLjhFhbC/PTZ2cLaHe93HOISMI/uifJxPtU50QOtMAiTqusYKqtyJtg==}
+  /@dbmate/linux-arm@2.25.0:
+    resolution: {integrity: sha512-ATRKjqB0sDYYSshQOBoQ7ryr/fPSiWrW/DYS/Z8aq2mp6zKBuqlxAv2VrQkFZezTqVe8Ph7PpAJKa4Hcg/XyOw==}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-ia32@2.24.2:
-    resolution: {integrity: sha512-krUuMp1FTuKKfHvY4ABVSmtCYwI1RaCJDVzdQPs59UC94+H6MMC6TqDoHZ9Q2hp1berqRLpKILu/5VrG06bS/A==}
+  /@dbmate/linux-ia32@2.25.0:
+    resolution: {integrity: sha512-B1Hs0sdFeSlC9ZEmue67WdgPPh8lStcPV2f+nZUhDU/pdttGi/aJDbqOu/nWhuDAB3bHzMZkkfVjKB8n2jpiGA==}
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-x64@2.24.2:
-    resolution: {integrity: sha512-lzSIaOKPwsMn+mzV2O4Z7Rh9cX2/Biue52Dklv4dA3lrYzxRmWltu3iyClk942KX1JipWyQS33RtDuealF5n2g==}
+  /@dbmate/linux-x64@2.25.0:
+    resolution: {integrity: sha512-l+Abtc2pzNVGIeodw72Gq4NNtVGm9T7/UTkwW2wzxUYT8fs5iO/AYY0O6Zd3K8MQPvJDCpwnwCJ8lOPAlPBwGQ==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/win32-x64@2.24.2:
-    resolution: {integrity: sha512-tbUEnPGMYsaI4kDSeAprEWbRiHIY+GgXXsmWrDH0DXPaeHHVK9TYeLmcZXSGdAih6/HYMKXsOyXzP/DQFnbXFw==}
+  /@dbmate/win32-x64@2.25.0:
+    resolution: {integrity: sha512-5ouAh77t2ybjQFEZFpFhhW7cgxe7YcF9ic/GbOdY3LuXgl6bTac6bBKxO+kfAsXpZS6Tm2B1I3WhKBr8wRN2gw==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
@@ -2598,7 +2598,7 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@vercel/style-guide@5.2.0(eslint@8.57.1)(prettier@3.3.3)(typescript@5.5.4):
+  /@vercel/style-guide@5.2.0(eslint@8.57.1)(prettier@3.4.2)(typescript@5.5.4):
     resolution: {integrity: sha512-fNSKEaZvSkiBoF6XEefs8CcgAV9K9e+MbcsDZjUsktHycKdA0jvjAzQi1W/FzLS+Nr5zZ6oejCwq/97dHUKe0g==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -2635,8 +2635,8 @@ packages:
       eslint-plugin-testing-library: 6.3.0(eslint@8.57.1)(typescript@5.5.4)
       eslint-plugin-tsdoc: 0.2.17
       eslint-plugin-unicorn: 48.0.1(eslint@8.57.1)
-      prettier: 3.3.3
-      prettier-plugin-packagejson: 2.5.2(prettier@3.3.3)
+      prettier: 3.4.2
+      prettier-plugin-packagejson: 2.5.2(prettier@3.4.2)
       typescript: 5.5.4
     transitivePeerDependencies:
       - eslint-import-resolver-node
@@ -3534,17 +3534,17 @@ packages:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
     requiresBuild: true
 
-  /dbmate@2.24.2:
-    resolution: {integrity: sha512-b+gr5sCZovkj7QhR7WxEE1NmI0EQb0E5dDuffWb8qPwSteKPzTZDRzayh55IsTxHn3ktRNE+FeGXX+Wd9WNpLg==}
+  /dbmate@2.25.0:
+    resolution: {integrity: sha512-xTl+1DOeMi5UJ2VjZZQVRVqIqMRtXnMXfpsrc2+8QhC5In9D2engq98fmpY7EgKzyTWYWeN3gIzWszf8fxUTrw==}
     hasBin: true
     optionalDependencies:
-      '@dbmate/darwin-arm64': 2.24.2
-      '@dbmate/darwin-x64': 2.24.2
-      '@dbmate/linux-arm': 2.24.2
-      '@dbmate/linux-arm64': 2.24.2
-      '@dbmate/linux-ia32': 2.24.2
-      '@dbmate/linux-x64': 2.24.2
-      '@dbmate/win32-x64': 2.24.2
+      '@dbmate/darwin-arm64': 2.25.0
+      '@dbmate/darwin-x64': 2.25.0
+      '@dbmate/linux-arm': 2.25.0
+      '@dbmate/linux-arm64': 2.25.0
+      '@dbmate/linux-ia32': 2.25.0
+      '@dbmate/linux-x64': 2.25.0
+      '@dbmate/win32-x64': 2.25.0
     dev: true
 
   /debug@3.2.7:
@@ -6774,7 +6774,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-packagejson@2.5.2(prettier@3.3.3):
+  /prettier-plugin-packagejson@2.5.2(prettier@3.4.2):
     resolution: {integrity: sha512-w+TmoLv2pIa+siplW1cCj2ujEXQQS6z7wmWLOiLQK/2QVl7Wy6xh/ZUpqQw8tbKMXDodmSW4GONxlA33xpdNOg==}
     peerDependencies:
       prettier: '>= 1.16.0'
@@ -6782,7 +6782,7 @@ packages:
       prettier:
         optional: true
     dependencies:
-      prettier: 3.3.3
+      prettier: 3.4.2
       sort-package-json: 2.10.1
       synckit: 0.9.1
     dev: true
@@ -6854,11 +6854,6 @@ packages:
     dependencies:
       prettier: 3.4.2
       prettier-plugin-svelte: 3.3.3(prettier@3.4.2)(svelte@5.19.2)
-    dev: true
-
-  /prettier@3.3.3:
-    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
-    engines: {node: '>=14'}
     dev: true
 
   /prettier@3.4.2:
@@ -8024,64 +8019,64 @@ packages:
       typescript: 5.5.4
     dev: true
 
-  /turbo-darwin-64@2.2.3:
-    resolution: {integrity: sha512-Rcm10CuMKQGcdIBS3R/9PMeuYnv6beYIHqfZFeKWVYEWH69sauj4INs83zKMTUiZJ3/hWGZ4jet9AOwhsssLyg==}
+  /turbo-darwin-64@2.3.4:
+    resolution: {integrity: sha512-uOi/cUIGQI7uakZygH+cZQ5D4w+aMLlVCN2KTGot+cmefatps2ZmRRufuHrEM0Rl63opdKD8/JIu+54s25qkfg==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64@2.2.3:
-    resolution: {integrity: sha512-+EIMHkuLFqUdJYsA3roj66t9+9IciCajgj+DVek+QezEdOJKcRxlvDOS2BUaeN8kEzVSsNiAGnoysFWYw4K0HA==}
+  /turbo-darwin-arm64@2.3.4:
+    resolution: {integrity: sha512-IIM1Lq5R+EGMtM1YFGl4x8Xkr0MWb4HvyU8N4LNoQ1Be5aycrOE+VVfH+cDg/Q4csn+8bxCOxhRp5KmUflrVTQ==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64@2.2.3:
-    resolution: {integrity: sha512-UBhJCYnqtaeOBQLmLo8BAisWbc9v9daL9G8upLR+XGj6vuN/Nz6qUAhverN4Pyej1g4Nt1BhROnj6GLOPYyqxQ==}
+  /turbo-linux-64@2.3.4:
+    resolution: {integrity: sha512-1aD2EfR7NfjFXNH3mYU5gybLJEFi2IGOoKwoPLchAFRQ6OEJQj201/oNo9CDL75IIrQo64/NpEgVyZtoPlfhfA==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64@2.2.3:
-    resolution: {integrity: sha512-hJYT9dN06XCQ3jBka/EWvvAETnHRs3xuO/rb5bESmDfG+d9yQjeTMlhRXKrr4eyIMt6cLDt1LBfyi+6CQ+VAwQ==}
+  /turbo-linux-arm64@2.3.4:
+    resolution: {integrity: sha512-MxTpdKwxCaA5IlybPxgGLu54fT2svdqTIxRd0TQmpRJIjM0s4kbM+7YiLk0mOh6dGqlWPUsxz/A0Mkn8Xr5o7Q==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64@2.2.3:
-    resolution: {integrity: sha512-NPrjacrZypMBF31b4HE4ROg4P3nhMBPHKS5WTpMwf7wydZ8uvdEHpESVNMOtqhlp857zbnKYgP+yJF30H3N2dQ==}
+  /turbo-windows-64@2.3.4:
+    resolution: {integrity: sha512-yyCrWqcRGu1AOOlrYzRnizEtdkqi+qKP0MW9dbk9OsMDXaOI5jlWtTY/AtWMkLw/czVJ7yS9Ex1vi9DB6YsFvw==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64@2.2.3:
-    resolution: {integrity: sha512-fnNrYBCqn6zgKPKLHu4sOkihBI/+0oYFr075duRxqUZ+1aLWTAGfHZLgjVeLh3zR37CVzuerGIPWAEkNhkWEIw==}
+  /turbo-windows-arm64@2.3.4:
+    resolution: {integrity: sha512-PggC3qH+njPfn1PDVwKrQvvQby8X09ufbqZ2Ha4uSu+5TvPorHHkAbZVHKYj2Y+tvVzxRzi4Sv6NdHXBS9Be5w==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo@2.2.3:
-    resolution: {integrity: sha512-5lDvSqIxCYJ/BAd6rQGK/AzFRhBkbu4JHVMLmGh/hCb7U3CqSnr5Tjwfy9vc+/5wG2DJ6wttgAaA7MoCgvBKZQ==}
+  /turbo@2.3.4:
+    resolution: {integrity: sha512-1kiLO5C0Okh5ay1DbHsxkPsw9Sjsbjzm6cF85CpWjR0BIyBFNDbKqtUyqGADRS1dbbZoQanJZVj4MS5kk8J42Q==}
     hasBin: true
     optionalDependencies:
-      turbo-darwin-64: 2.2.3
-      turbo-darwin-arm64: 2.2.3
-      turbo-linux-64: 2.2.3
-      turbo-linux-arm64: 2.2.3
-      turbo-windows-64: 2.2.3
-      turbo-windows-arm64: 2.2.3
+      turbo-darwin-64: 2.3.4
+      turbo-darwin-arm64: 2.3.4
+      turbo-linux-64: 2.3.4
+      turbo-linux-arm64: 2.3.4
+      turbo-windows-64: 2.3.4
+      turbo-windows-arm64: 2.3.4
     dev: true
 
   /type-check@0.4.0:
@@ -8181,6 +8176,7 @@ packages:
   /typescript@5.5.4:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
+    hasBin: true
     dev: true
 
   /typescript@5.7.3:
@@ -8623,10 +8619,6 @@ packages:
       zod: 3.24.1
     dev: true
     optional: true
-
-  /zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-    dev: false
 
   /zod@3.24.1:
     resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
