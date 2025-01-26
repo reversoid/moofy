@@ -4,15 +4,20 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient, handleResponse } from '$lib/utils';
 
 	const api = makeClient(fetch);
 
 	function login() {
-		api.auth.login.$post({ json: { username: '777', password: 'password' } }).then(async (v) => {
-			const x = await v.json();
-			console.log(x);
-		});
+		api.auth.login
+			.$post({ json: { username: '777', password: 'password' } })
+			.then(handleResponse)
+			.then(async (f) => {
+				if (!f.ok) {
+					const x = await f.json();
+					console.log(x);
+				}
+			});
 	}
 </script>
 

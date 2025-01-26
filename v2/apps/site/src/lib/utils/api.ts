@@ -22,7 +22,7 @@ export const makeClient = (fetch: Window['fetch']) => {
 };
 
 export const handleResponse = async <T>(
-	res: ClientResponse<T>
+	res: ClientResponse<T | { error: string }>
 ): Promise<Result<T, { error: string }>> => {
 	if (!res.ok) {
 		return err((await res.json()) as { error: string });
