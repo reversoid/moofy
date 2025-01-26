@@ -81,7 +81,7 @@
 {/snippet}
 
 {#snippet LogoutButton()}
-	<Sidebar.MenuItem>
+	<Sidebar.MenuItem class="list-none">
 		<Sidebar.MenuButton>
 			<IconLogout2 /> <span>Выйти</span>
 		</Sidebar.MenuButton>

@@ -9,7 +9,7 @@
 
 	const sidebar = useSidebar();
 
-	const isLoggedIn = true;
+	const isLoggedIn = false;
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
