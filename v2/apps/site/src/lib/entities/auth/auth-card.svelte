@@ -4,6 +4,16 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { handleResponse, makeClient } from '$lib/utils';
+
+	const api = makeClient(fetch);
+
+	function login() {
+		api.auth.login.$post({ json: { username: '777', password: 'password' } }).then(async (v) => {
+			const x = await v.json();
+			console.log(x);
+		});
+	}
 </script>
 
 <Tabs.Root value="login">
@@ -28,7 +38,7 @@
 				</div>
 			</Card.Content>
 			<Card.Footer>
-				<Button>Войти</Button>
+				<Button onclick={login}>Войти</Button>
 			</Card.Footer>
 		</Card.Root>
 	</Tabs.Content>
