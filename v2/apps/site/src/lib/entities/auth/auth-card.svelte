@@ -13,8 +13,8 @@
 			.$post({ json: { username: '777', password: 'password' } })
 			.then(handleResponse)
 			.then(async (f) => {
-				if (!f.ok) {
-					const x = await f.json();
+				if (f.isOk()) {
+					const x = f.value;
 					console.log(x);
 				}
 			});

@@ -3,6 +3,7 @@ import { validator } from "../utils/validator";
 import z from "zod";
 import { deleteCookie, getCookie, setSignedCookie } from "hono/cookie";
 import config from "@repo/config";
+import { makeDto } from "../utils/make-dto";
 
 export const authRoute = new Hono()
   .post(
