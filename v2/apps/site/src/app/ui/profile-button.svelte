@@ -9,7 +9,7 @@
 		username: string;
 	}
 
-	let { src, username }: Props = $props();
+	let { src, username = '' }: Props = $props();
 
 	function logout() {
 		console.log('logout');

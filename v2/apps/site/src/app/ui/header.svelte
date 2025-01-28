@@ -9,8 +9,6 @@
 	import { globalState } from '$lib/state/state.svelte';
 
 	const sidebar = useSidebar();
-
-	const user = globalState.user;
 </script>
 
 <header class="flex items-center justify-center pb-7 pt-3 backdrop-blur-md">
@@ -22,7 +20,7 @@
 		</div>
 
 		<div class="flex items-center gap-5">
-			{#if user}
+			{#if globalState.currentUser}
 				<div class="flex items-center gap-3 max-sm:hidden">
 					<Link href="/welcome/collections">Мои коллекции</Link>
 					<Link href="/welcome/favorites">Избранное</Link>
@@ -30,11 +28,14 @@
 				</div>
 
 				<div class="flex items-center justify-center max-sm:hidden">
-					<ProfileButton src="https://github.com/shadcn.png" username={user} />
+					<ProfileButton
+						src="https://github.com/shadcn.png"
+						username={globalState.currentUser.username}
+					/>
 				</div>
 			{/if}
 
-			{#if user}
+			{#if globalState.currentUser}
 				<Button class="sm:hidden" size="icon" variant="outline" onclick={() => sidebar.toggle()}>
 					<IconMenu />
 				</Button>

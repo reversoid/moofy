@@ -71,8 +71,6 @@ type DtoTypeInternal<T> =
 /** The type of the DTO based on entity */
 export type DtoType<T> = DtoTypeInternal<T>;
 
-type x = DtoType<{ c: Collection[] }>;
-
 const isTransformer = (
   rule: PickableFields<unknown> | Transformer<unknown>
 ): rule is Transformer<unknown> => typeof rule === "function";

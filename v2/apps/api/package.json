@@ -15,6 +15,7 @@
     "@types/bun": "latest"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./dtos": "./src/utils/make-dto/dtos.ts"
   }
 }

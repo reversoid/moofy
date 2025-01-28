@@ -14,7 +14,7 @@ export const profileRoute = new Hono()
       throw new Error("UNAUTHORIZED");
     }
 
-    return c.json({ user });
+    return c.json(makeDto({ user }));
   })
   .get(
     "/profile/collections",

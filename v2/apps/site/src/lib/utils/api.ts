@@ -28,5 +28,5 @@ export const handleResponse = async <T>(
 		return err((await res.json()) as { error: string });
 	}
 
-	return ok(res.json() as T);
+	return ok((await res.json()) as T);
 };

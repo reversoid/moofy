@@ -1,7 +1,13 @@
+import type { UserDto } from '@repo/api/dtos';
+
 interface GlobalState {
-	user: string | null;
-	// collections: PaginatedData<Collection>;
-	// favoriteCollections: PaginatedData<Collection>;
+	currentUser: UserDto | null;
 }
 
-export const globalState = $state<GlobalState>({ user: null });
+export const globalState = $state<GlobalState>({
+	currentUser: null
+});
+
+export const setCurrentUser = (user: UserDto | null) => {
+	globalState.currentUser = user;
+};
