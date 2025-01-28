@@ -116,4 +116,4 @@ export function makeDto<T>(data: T): DtoType<T> {
   return result as DtoType<T>;
 }
 
-const userDto = makeDto(1 as any as User);
+// TODO define types based on rules. There should not be two sources of truth.

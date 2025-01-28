@@ -9,6 +9,7 @@ import {
   NotFollowingError,
 } from "@repo/core/services";
 import { UserNotFoundError } from "@repo/core/services";
+import { makeDto } from "../utils/make-dto";
 
 export const userRoute = new Hono()
   .use(authMiddleware)
@@ -39,7 +40,7 @@ export const userRoute = new Hono()
         }
       }
 
-      return c.json({ user: result.unwrap() });
+      return c.json(makeDto({ user: result.unwrap() }));
     }
   )
   .get(
@@ -67,7 +68,7 @@ export const userRoute = new Hono()
         return c.json({ error: "USER_NOT_FOUND" }, 404);
       }
 
-      return c.json({ users: result.unwrap() });
+      return c.json(makeDto({ users: result.unwrap() }));
     }
   )
   .get(
@@ -95,7 +96,7 @@ export const userRoute = new Hono()
         return c.json({ error: "USER_NOT_FOUND" }, 404);
       }
 
-      return c.json({ users: result.unwrap() });
+      return c.json(makeDto({ users: result.unwrap() }));
     }
   )
   .delete(
@@ -123,7 +124,7 @@ export const userRoute = new Hono()
         }
       }
 
-      return c.json({ user: result.unwrap() });
+      return c.json(makeDto({ user: result.unwrap() }));
     }
   )
   .get("/users/existence/:username", async (c) => {
@@ -147,6 +148,6 @@ export const userRoute = new Hono()
 
       const users = await userService.searchUsers(search, limit);
 
-      return c.json({ users });
+      return c.json(makeDto({ users }));
     }
   );

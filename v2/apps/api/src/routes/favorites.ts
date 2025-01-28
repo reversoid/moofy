@@ -10,6 +10,7 @@ import {
   CollectionNotFoundError,
   UserNotFoundError,
 } from "@repo/core/services";
+import { makeDto } from "../utils/make-dto";
 
 export const favoritesRoute = new Hono()
   .use(authMiddleware)
@@ -43,7 +44,7 @@ export const favoritesRoute = new Hono()
         }
       }
 
-      return c.json({ collections: result.unwrap() });
+      return c.json(makeDto({ collections: result.unwrap() }));
     }
   )
   .get(
@@ -66,7 +67,7 @@ export const favoritesRoute = new Hono()
         new Id(collectionId)
       );
 
-      return c.json({ isFavorited });
+      return c.json(makeDto({ isFavorited }));
     }
   )
   .put(
@@ -104,7 +105,7 @@ export const favoritesRoute = new Hono()
         }
       }
 
-      return c.json({ collection: result.unwrap() });
+      return c.json(makeDto({ collection: result.unwrap() }));
     }
   )
   .delete(
@@ -141,6 +142,6 @@ export const favoritesRoute = new Hono()
         }
       }
 
-      return c.json({ collection: result.unwrap() });
+      return c.json(makeDto({ collection: result.unwrap() }));
     }
   );

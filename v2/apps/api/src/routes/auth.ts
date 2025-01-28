@@ -40,7 +40,7 @@ export const authRoute = new Hono()
         path: "/",
       });
 
-      return c.json({ user: session.user });
+      return c.json(makeDto({ user: session.user }));
     }
   )
   .post(
@@ -76,7 +76,7 @@ export const authRoute = new Hono()
         path: "/",
       });
 
-      return c.json({ user: session.user });
+      return c.json(makeDto({ user: session.user }));
     }
   )
   .post("/auth/logout", async (c) => {

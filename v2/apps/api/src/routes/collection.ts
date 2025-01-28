@@ -8,6 +8,7 @@ import {
   NotOwnerOfReviewError,
   UserNotFoundError,
 } from "@repo/core/services";
+import { makeDto } from "../utils/make-dto";
 
 export const collectionRoute = new Hono()
   .use(authMiddleware)
@@ -34,7 +35,7 @@ export const collectionRoute = new Hono()
         limit
       );
 
-      return c.json({ collections });
+      return c.json(makeDto({ collections }));
     }
   )
   .post(
@@ -71,7 +72,7 @@ export const collectionRoute = new Hono()
         }
       }
 
-      return c.json({ collection: result.unwrap() }, 201);
+      return c.json(makeDto({ collection: result.unwrap() }), 201);
     }
   )
   .get(
@@ -99,7 +100,7 @@ export const collectionRoute = new Hono()
         return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
       }
 
-      return c.json({ collection });
+      return c.json(makeDto({ collection }));
     }
   )
   .delete(
@@ -170,6 +171,6 @@ export const collectionRoute = new Hono()
         }
       }
 
-      return c.json({ collection: result.unwrap() });
+      return c.json(makeDto({ collection: result.unwrap() }));
     }
   );

@@ -10,6 +10,7 @@ import {
 } from "@repo/core/services";
 import { validator } from "../utils/validator";
 import { Id } from "@repo/core/utils";
+import { makeDto } from "../utils/make-dto";
 
 export const reviewRoute = new Hono()
   .use(authMiddleware)
@@ -47,7 +48,7 @@ export const reviewRoute = new Hono()
           }
         }
 
-        return c.json({ reviews: result.unwrap() });
+        return c.json(makeDto({ reviews: result.unwrap() }));
       } else {
         const result = await reviewService.getCollectionReviews(
           new Id(collectionId),
@@ -63,7 +64,7 @@ export const reviewRoute = new Hono()
         }
 
         const reviews = result.unwrap();
-        return c.json({ reviews });
+        return c.json(makeDto({ reviews }));
       }
     }
   )
@@ -123,7 +124,7 @@ export const reviewRoute = new Hono()
       }
 
       const review = result.unwrap();
-      return c.json({ review }, 201);
+      return c.json(makeDto({ review }), 201);
     }
   )
   .get(
@@ -144,7 +145,7 @@ export const reviewRoute = new Hono()
         return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
       }
 
-      return c.json({ review });
+      return c.json(makeDto({ review }));
     }
   )
   .delete(
@@ -229,6 +230,6 @@ export const reviewRoute = new Hono()
       }
 
       const updatedReview = result.unwrap();
-      return c.json({ review: updatedReview });
+      return c.json(makeDto({ review: updatedReview }));
     }
   );

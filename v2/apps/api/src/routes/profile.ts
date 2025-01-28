@@ -3,6 +3,7 @@ import { authMiddleware } from "../utils/auth-middleware";
 import { validator } from "../utils/validator";
 import { z } from "zod";
 import { UserNotFoundError } from "@repo/core/services";
+import { makeDto } from "../utils/make-dto";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
@@ -45,7 +46,7 @@ export const profileRoute = new Hono()
         }
       }
 
-      return c.json({ collections: result.unwrap() });
+      return c.json(makeDto({ collections: result.unwrap() }));
     }
   )
   .patch(
@@ -71,6 +72,6 @@ export const profileRoute = new Hono()
         imageUrl,
       });
 
-      return c.json({ user: updatedUser });
+      return c.json(makeDto({ user: updatedUser }));
     }
   );
