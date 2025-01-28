@@ -1,3 +1,5 @@
+import { Entity } from "./entity";
+
 export enum FilmType {
   FILM = "FILM",
   TV_SERIES = "TV_SERIES",
@@ -6,7 +8,7 @@ export enum FilmType {
   VIDEO = "VIDEO",
 }
 
-export class Film {
+export class Film extends Entity {
   id: string;
   name: string;
   year: number;
@@ -26,6 +28,8 @@ export class Film {
     posterUrl: string;
     genres: string[];
   }) {
+    super();
+
     this.id = props.id;
     this.name = props.name;
     this.year = props.year;

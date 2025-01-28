@@ -1,7 +1,8 @@
 import { Id } from "../utils/id";
+import { Entity } from "./entity";
 import { User } from "./user";
 
-export class Collection {
+export class Collection extends Entity {
   id: Id;
   name: string;
   description: string | null;
@@ -21,6 +22,8 @@ export class Collection {
     updatedAt?: Date;
     creator: User;
   }) {
+    super();
+
     this.id = props.id ?? new Id();
     this.name = props.name;
     this.description = props.description ?? null;

@@ -27,7 +27,7 @@ import {
   ReviewRepository,
   FilmRepository,
 } from "@repo/repositories";
-import { withDtoResponse } from "./utils/with-dto-response";
+import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
 import { User } from "@repo/core/entities";
 import { UnofficialKpProvider } from "@repo/film-providers";
@@ -89,7 +89,7 @@ const api = new Hono()
 
     await next();
   })
-  .use(withDtoResponse())
+  .use(withEntityCheck())
   .route("", authRoute)
   .route("", profileRoute)
   .route("", reviewRoute)

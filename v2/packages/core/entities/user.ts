@@ -1,6 +1,7 @@
 import { Id } from "../utils/id";
+import { Entity } from "./entity";
 
-export class User {
+export class User extends Entity {
   id: Id;
   username: string;
   description: string | null;
@@ -18,6 +19,8 @@ export class User {
     createdAt?: Date;
     updatedAt?: Date;
   }) {
+    super();
+
     const now = new Date();
 
     this.id = props.id ?? new Id();

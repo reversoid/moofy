@@ -1,7 +1,8 @@
 import { Id } from "../utils/id";
+import { Entity } from "./entity";
 import { Film } from "./film";
 
-export class Review {
+export class Review extends Entity {
   id: Id;
   score: number | null;
   description: string | null;
@@ -21,6 +22,8 @@ export class Review {
     collectionId: Id;
     userId: Id;
   }) {
+    super();
+
     const now = new Date();
 
     this.id = props.id ?? new Id();
