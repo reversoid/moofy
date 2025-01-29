@@ -21,6 +21,7 @@
 	const { collections, firstCard, disableAutoLoad = false, onLoadMore, onSearch }: Props = $props();
 
 	let isLoading = $state(false);
+	let isSearching = $state(false);
 
 	async function onLoadMoreWithLoading(cursor: string) {
 		isLoading = true;
@@ -28,13 +29,15 @@
 		isLoading = false;
 	}
 
-	const handleInput = debounce((e: Parameters<FormEventHandler<HTMLInputElement>>[0]) => {
-		onSearch?.((e.target as HTMLInputElement).value);
+	const handleInput = debounce(async (e: Parameters<FormEventHandler<HTMLInputElement>>[0]) => {
+		isSearching = true;
+		await onSearch?.((e.target as HTMLInputElement).value);
+		isSearching = false;
 	}, 300);
 </script>
 
 <div class="@container flex flex-col gap-4">
-	<Input placeholder="Поиск" oninput={handleInput}>
+	<Input placeholder="Поиск" oninput={handleInput} isLoading={isSearching}>
 		{#snippet inputPrefix()}
 			<IconSearch size={20} />
 		{/snippet}
