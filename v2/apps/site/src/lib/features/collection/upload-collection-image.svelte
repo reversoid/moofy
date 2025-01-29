@@ -6,9 +6,10 @@
 
 	interface UploadCollectionImageProps {
 		id: string;
+		value: string | null;
 	}
 
-	const { id }: UploadCollectionImageProps = $props();
+	const { id, value = $bindable() }: UploadCollectionImageProps = $props();
 </script>
 
 <Card.Root

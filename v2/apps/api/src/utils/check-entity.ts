@@ -2,9 +2,9 @@ import { MiddlewareHandler } from "hono";
 import { Entity } from "@repo/core/entities";
 
 export class EntityReturnedError extends Error {
-  constructor(method: string) {
+  constructor(path: string, method: string) {
     super(
-      `The entity is returned in api method '${method}'. Apply 'makeDto' to the response`
+      `The entity is returned in '${path}' '${method}' method. Apply 'makeDto' to the response`
     );
   }
 }
@@ -36,7 +36,7 @@ export const withEntityCheck = (): MiddlewareHandler => async (c, next) => {
 
   c.json = function (data: any, ...args: any[]) {
     if (containsEntity(data)) {
-      throw new EntityReturnedError(c.req.method);
+      throw new EntityReturnedError(c.req.path, c.req.method);
     }
 
     return originalJson(data, ...args);

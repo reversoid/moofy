@@ -6,7 +6,8 @@ import { IBaseRepository } from "./base.repository";
 export abstract class ICollectionRepository extends IBaseRepository<Collection> {
   abstract searchCollections(
     search: string,
-    limit: number
+    limit: number,
+    filter?: { userId?: User["id"]; withPrivate?: boolean }
   ): Promise<Collection[]>;
 
   abstract getUserCollections(

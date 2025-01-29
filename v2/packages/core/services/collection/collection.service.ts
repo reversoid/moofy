@@ -89,17 +89,29 @@ export class CollectionService implements ICollectionService {
   async getUserCollections(
     userId: User["id"],
     limit: number,
-    cursor?: string
+    cursor?: string | null,
+    search?: string,
+    withPrivate?: boolean
   ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>> {
     const user = await this.userRepository.get(userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
+    if (search) {
+      const collections = await this.collectionRepository.searchCollections(
+        search,
+        limit,
+        { userId: user.id, withPrivate: withPrivate ?? false }
+      );
+
+      return ok({ cursor: null, items: collections });
+    }
+
     const collections = await this.collectionRepository.getUserCollections(
       userId,
       limit,
-      cursor
+      cursor ?? undefined
     );
 
     return ok(collections);

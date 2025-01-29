@@ -21,13 +21,14 @@ export const profileRoute = new Hono()
     validator(
       "query",
       z.object({
+        search: z.string().optional(),
         limit: z.coerce.number().int().min(1).max(100).default(20),
         cursor: z.string().optional(),
       })
     ),
     async (c) => {
       const user = c.get("user");
-      const { limit, cursor } = c.req.valid("query");
+      const { limit, cursor, search } = c.req.valid("query");
       const collectionService = c.get("collectionService");
 
       if (!user) {
@@ -37,7 +38,9 @@ export const profileRoute = new Hono()
       const result = await collectionService.getUserCollections(
         user.id,
         limit,
-        cursor
+        cursor,
+        search,
+        true
       );
 
       if (!result.isOk()) {

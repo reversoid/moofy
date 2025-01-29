@@ -16,11 +16,12 @@ import { getTsQueryFromString } from "./utils/fulltext-search";
 export class CollectionRepository extends ICollectionRepository {
   async searchCollections(
     search: string,
-    limit: number
+    limit: number,
+    filter?: { userId?: User["id"]; withPrivate?: boolean }
   ): Promise<Collection[]> {
     const words = getTsQueryFromString(search);
 
-    const results = await this.getSelectQuery()
+    let query = this.getSelectQuery()
       .select(
         sql<number>`
       ts_rank(
@@ -32,17 +33,26 @@ export class CollectionRepository extends ICollectionRepository {
           to_tsquery('simple', ${words})
       )`.as("rank")
       )
-      .where(
-        sql<boolean>`
-        (collections.search_document) @@ plainto_tsquery('simple', ${search})
-        OR
-        (collections.search_document) @@ to_tsquery('simple', ${words})
-      `
-      )
-      .where("collections.isPublic", "is", true)
       .limit(limit)
-      .orderBy("rank", "desc")
-      .execute();
+      .orderBy("rank", "desc");
+
+    const searchCondition = sql<boolean>`(
+        (collections.search_document @@ plainto_tsquery('simple', ${search}))
+        OR
+        (collections.search_document @@ to_tsquery('simple', ${words}))
+    )`;
+
+    query = query.where(searchCondition);
+
+    if (filter?.userId) {
+      query = query.where("collections.userId", "=", filter.userId.value);
+    }
+
+    if (!filter?.withPrivate) {
+      query = query.where("collections.isPublic", "is", true);
+    }
+
+    const results = await query.execute();
 
     return results.map(makeCollection);
   }

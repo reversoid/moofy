@@ -42,7 +42,9 @@ export interface ICollectionService {
   getUserCollections(
     userId: User["id"],
     limit: number,
-    cursor?: string
+    cursor?: string | null,
+    search?: string,
+    withPrivate?: boolean
   ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>>;
 
   getCollection(id: Collection["id"]): Promise<Collection | null>;

@@ -9,9 +9,11 @@
 	export type DeleteButtonProps = {
 		onDelete?: () => void;
 		class?: string;
+		type?: 'submit' | 'button';
+		form?: string;
 	};
 
-	const { onDelete, class: className }: DeleteButtonProps = $props();
+	const { onDelete, class: className, type = 'button', form }: DeleteButtonProps = $props();
 
 	function handleDeleteClick() {
 		if (confirmedDelete) {
@@ -40,7 +42,8 @@
 
 <Button
 	class={className}
-	type="button"
+	{type}
+	{form}
 	aria-label={confirmedDelete ? 'Подтвердить удаление' : 'Удалить'}
 	variant={confirmedDelete ? 'destructive' : 'outline'}
 	onclick={handleDeleteClick}
