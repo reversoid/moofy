@@ -19,12 +19,13 @@ export const favoritesRoute = new Hono()
     validator(
       "query",
       z.object({
+        search: z.string().optional(),
         limit: z.coerce.number().int().min(1).max(100).default(20),
         cursor: z.string().optional(),
       })
     ),
     async (c) => {
-      const { limit, cursor } = c.req.valid("query");
+      const { limit, cursor, search } = c.req.valid("query");
       const user = c.get("user");
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
@@ -35,7 +36,8 @@ export const favoritesRoute = new Hono()
       const result = await favoriteCollectionService.getUserFavoriteCollections(
         user.id,
         limit,
-        cursor
+        cursor,
+        search
       );
 
       if (!result.isOk()) {

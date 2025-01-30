@@ -88,11 +88,22 @@ export class FavoriteCollectionService implements IFavoriteCollectionService {
   async getUserFavoriteCollections(
     userId: User["id"],
     limit: number,
-    cursor?: string
+    cursor?: string,
+    search?: string
   ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>> {
     const user = await this.userRepository.get(userId);
     if (!user) {
       return err(new UserNotFoundError());
+    }
+
+    if (search) {
+      const collections = await this.collectionRepository.searchCollections(
+        search,
+        limit,
+        { favoritedBy: user.id }
+      );
+
+      return ok({ items: collections, cursor: null });
     }
 
     const collections =

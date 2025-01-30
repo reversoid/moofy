@@ -17,7 +17,11 @@ export class CollectionRepository extends ICollectionRepository {
   async searchCollections(
     search: string,
     limit: number,
-    filter?: { userId?: User["id"]; withPrivate?: boolean }
+    filter?: {
+      userId?: User["id"];
+      withPrivate?: boolean;
+      favoritedBy: User["id"];
+    }
   ): Promise<Collection[]> {
     const words = getTsQueryFromString(search);
 
@@ -50,6 +54,16 @@ export class CollectionRepository extends ICollectionRepository {
 
     if (!filter?.withPrivate) {
       query = query.where("collections.isPublic", "is", true);
+    }
+
+    if (filter?.favoritedBy) {
+      query = query
+        .innerJoin(
+          "favoriteCollections",
+          "favoriteCollections.collectionId",
+          "collections.id"
+        )
+        .where("favoriteCollections.userId", "=", filter.favoritedBy.value);
     }
 
     const results = await query.execute();

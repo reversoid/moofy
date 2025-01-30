@@ -7,7 +7,11 @@ export abstract class ICollectionRepository extends IBaseRepository<Collection> 
   abstract searchCollections(
     search: string,
     limit: number,
-    filter?: { userId?: User["id"]; withPrivate?: boolean }
+    filter?: {
+      userId?: User["id"];
+      withPrivate?: boolean;
+      favoritedBy: User["id"];
+    }
   ): Promise<Collection[]>;
 
   abstract getUserCollections(

@@ -57,6 +57,9 @@
 					imageUrl={collection.imageUrl}
 				/>
 			</div>
+		{:else}
+			<!-- TODO add empty state -->
+			<div>No collections</div>
 		{/each}
 	</div>
 

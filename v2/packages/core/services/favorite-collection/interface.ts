@@ -38,7 +38,8 @@ export interface IFavoriteCollectionService {
   getUserFavoriteCollections(
     userId: User["id"],
     limit: number,
-    cursor?: string
+    cursor?: string,
+    search?: string
   ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>>;
 
   isCollectionFavorited(
