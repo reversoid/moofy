@@ -17,7 +17,9 @@
 
 	let isFollowing = $state(initialIsFollowing);
 
-	async function follow() {
+	async function follow(e: MouseEvent) {
+		e.preventDefault();
+
 		isLoading = true;
 
 		const response = await api.users[':id'].followers
@@ -37,7 +39,9 @@
 		isLoading = false;
 	}
 
-	async function unfollow() {
+	async function unfollow(e: MouseEvent) {
+		e.preventDefault();
+
 		isLoading = true;
 
 		const response = await api.users[':id'].followers
@@ -58,7 +62,12 @@
 	}
 </script>
 
-<Button onclick={isFollowing ? unfollow : follow} {isLoading}>
+<Button
+	variant={isFollowing ? 'outline' : 'default'}
+	class="w-full"
+	onclick={isFollowing ? unfollow : follow}
+	{isLoading}
+>
 	{#if isFollowing}
 		<IconUserMinus />
 		<span>Отписаться</span>

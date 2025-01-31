@@ -6,7 +6,9 @@
 
 	let { data }: PageProps = $props();
 
-	let users = $state<UserDto[]>(data.users);
+	let users = $state<(UserDto & { isFollowing: boolean })[]>(
+		data.users.map((user) => ({ ...user, isFollowing: false }))
+	);
 
 	async function searchUsers(search: string) {
 		const api = makeClient(fetch);
@@ -15,7 +17,7 @@
 
 		const { users: newUsers } = response.unwrap();
 
-		users = newUsers;
+		users = newUsers.map((user) => ({ ...user, isFollowing: false }));
 	}
 </script>
 

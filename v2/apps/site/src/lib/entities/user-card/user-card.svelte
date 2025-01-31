@@ -1,15 +1,18 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import { FollowButton } from '$lib/features/profile';
+	import type { UserDto } from '@repo/api/dtos';
 	import { IconUser } from '@tabler/icons-svelte';
 
 	interface Props {
 		username: string;
 		description: string | null;
 		imageUrl: string | null;
+		userId: UserDto['id'];
+		isFollowing: boolean;
 	}
 
-	const { username, description, imageUrl }: Props = $props();
+	const { username, description, imageUrl, userId, isFollowing }: Props = $props();
 </script>
 
 <a aria-label="Profile {username}" href="/profiles/{username}">
@@ -32,7 +35,7 @@
 		</div>
 
 		<Card.Footer>
-			<Button onclick={(e) => e.preventDefault()} class="w-full">Follow</Button>
+			<FollowButton {userId} {isFollowing} />
 		</Card.Footer>
 	</Card.Root>
 </a>

@@ -6,7 +6,7 @@
 	import { flip } from 'svelte/animate';
 
 	interface Props {
-		users: UserDto[];
+		users: (UserDto & { isFollowing: boolean })[];
 		cursor?: string | null;
 		disableAutoLoad?: boolean;
 
@@ -34,9 +34,11 @@
 		{#each users as user (user.id)}
 			<div animate:flip={{ duration: 350 }}>
 				<UserCard
+					userId={user.id}
 					username={user.username}
 					description={user.description}
 					imageUrl={user.imageUrl}
+					isFollowing={user.isFollowing}
 				/>
 			</div>
 		{/each}
