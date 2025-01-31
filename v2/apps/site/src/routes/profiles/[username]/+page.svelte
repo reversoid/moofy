@@ -1,12 +1,90 @@
-<script>
-	import { Button } from '$lib/components/ui/button';
+<script lang="ts">
 	import { Textarea } from '$lib/components/ui/textarea';
-	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
-	import { IconSettings } from '@tabler/icons-svelte';
+	import { IconUser } from '@tabler/icons-svelte';
+	import type { PageProps } from './$types';
+	import { handleResponse, makeClient } from '$lib/utils';
+	import type { CollectionDto } from '@repo/api/dtos';
+	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
+	import { FollowButton } from '$lib/features/profile';
+
+	const { data }: PageProps = $props();
+
+	let collections = $state(data.collections);
+	let favoriteCollections = $state(data.favoriteCollections);
+
+	const profile = data.profile;
+	const currentUser = data.user;
+	const social = data.social;
+
+	async function searchCollections(search: string) {
+		const api = makeClient(fetch);
+
+		const collectionsResult = await api.users[':id'].collections
+			.$get({
+				param: { id: String(profile.id) },
+				query: { search }
+			})
+			.then(handleResponse);
+
+		collections = collectionsResult.unwrap().collections;
+	}
+
+	async function loadCollections(cursor?: string) {
+		const api = makeClient(fetch);
+
+		const collectionsResult = await api.users[':id'].collections
+			.$get({
+				param: { id: String(profile.id) },
+				query: { cursor, limit: '8' }
+			})
+			.then(handleResponse);
+
+		const newCollections = collectionsResult.unwrap().collections;
+
+		collections = {
+			items: [...collections.items, ...newCollections.items],
+			cursor: newCollections.cursor
+		};
+	}
+
+	async function handleCollectionCreated(collection: CollectionDto) {
+		collections.items.unshift(collection);
+	}
+
+	async function searchFavoriteCollections(search: string) {
+		const api = makeClient(fetch);
+
+		const collectionsResult = await api.favorites
+			.$get({
+				query: { search }
+			})
+			.then(handleResponse);
+
+		favoriteCollections = collectionsResult.unwrap().collections;
+	}
+
+	async function loadFavoriteCollections(cursor?: string) {
+		if (!favoriteCollections) return;
+
+		const api = makeClient(fetch);
+
+		const collectionsResult = await api.favorites
+			.$get({ query: { cursor, limit: '8' } })
+			.then(handleResponse);
+
+		const newCollections = collectionsResult.unwrap().collections;
+
+		favoriteCollections = {
+			items: [...favoriteCollections.items, ...newCollections.items],
+			cursor: newCollections.cursor
+		};
+	}
+
+	const isOwner = profile.id === currentUser?.id;
 </script>
 
 <Wrapper>
@@ -14,63 +92,84 @@
 		class="grid grid-cols-[1fr_5fr] gap-12 max-xl:grid-cols-[1fr_4fr] max-xl:gap-10 max-lg:grid-cols-[1fr_3fr] max-md:grid-cols-1"
 	>
 		<div class="flex flex-col gap-5 max-md:items-center">
-			<img
-				src="https://picsum.photos/200/200"
-				alt="Profile avatar"
-				class="aspect-square w-full rounded-full object-cover max-md:size-36"
-			/>
-			<h1 class="text-center text-2xl font-medium">reversoid</h1>
+			{#if profile.imageUrl}
+				<img
+					src={profile.imageUrl}
+					alt="Profile avatar"
+					class="bg-muted flex aspect-square w-full items-center justify-center rounded-full object-cover text-center max-md:size-36"
+				/>
+			{:else}
+				<div class="bg-muted aspect-square w-full rounded-full object-cover max-md:size-36">
+					<IconUser />
+				</div>
+			{/if}
 
-			<!-- <Button>
-				<IconUserPlus />
-				<span>Подписаться</span>
-			</Button>
-
-			<Button>
-				<IconUserMinus />
-				<span>Отписаться</span>
-			</Button> -->
+			<h1 class="text-center text-2xl font-medium">{profile.username}</h1>
 
 			<ul class="flex flex-col justify-between gap-1 text-sm">
 				<li class="text-center">
 					<Link href="followers">
 						<span>Подписчики</span>
-						<span>100</span>
+						<span>{social.followers}</span>
 					</Link>
 				</li>
 
 				<li class="text-center">
 					<Link href="followees">
 						<span>Подписки</span>
-						<span>1</span>
+						<span>{social.followees}</span>
 					</Link>
 				</li>
 			</ul>
 
 			<div class="flex w-full flex-col gap-4">
-				<Textarea placeholder="Описание" />
+				<Textarea readonly placeholder="Описание" value={profile.description} class="resize-none" />
 			</div>
 
-			<Button class="w-full" variant="outline">
+			<!-- <Button class="w-full" variant="outline">
 				<IconSettings />
 				<span>Настройки</span>
-			</Button>
+			</Button> -->
+
+			{#if !isOwner}
+				<FollowButton userId={profile.id} isFollowing={social.isFollowing} />
+			{/if}
 		</div>
 
 		<div class="flex flex-col gap-8">
 			<div class="flex flex-col gap-4">
 				<Heading type="h2">Коллекции</Heading>
-				<CollectionsGrid>
+				<CollectionsGrid
+					collections={collections.items}
+					cursor={collections.cursor}
+					defaultEmptyDescription={isOwner
+						? 'У вас пока нет коллекций'
+						: 'У этого пользователя пока нет коллекций'}
+					disableAutoLoad
+					onSearch={searchCollections}
+					onLoadMore={loadCollections}
+				>
 					{#snippet firstCard()}
-						<CreateCollectionCard />
+						{#if isOwner}
+							<CreateCollectionCard onCollectionCreated={handleCollectionCreated} />
+						{/if}
 					{/snippet}
 				</CollectionsGrid>
 			</div>
 
-			<div class="flex flex-col gap-4">
-				<Heading type="h2">Избранное</Heading>
-				<CollectionsGrid />
-			</div>
+			{#if favoriteCollections}
+				<div class="flex flex-col gap-4">
+					<Heading type="h2">Избранное</Heading>
+					<CollectionsGrid
+						collections={favoriteCollections.items}
+						cursor={favoriteCollections.cursor}
+						defaultEmptyDescription="Вы можете добавить коллекции в избранное, чтобы они отображались здесь"
+						disableAutoLoad
+						onSearch={searchFavoriteCollections}
+						onLoadMore={loadFavoriteCollections}
+					/>
+				</div>
+			{/if}
 		</div>
 	</div></Wrapper
 >

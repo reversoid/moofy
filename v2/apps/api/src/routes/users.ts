@@ -10,6 +10,7 @@ import {
 } from "@repo/core/services";
 import { UserNotFoundError } from "@repo/core/services";
 import { makeDto } from "../utils/make-dto";
+import { User } from "@repo/core/entities";
 
 export const userRoute = new Hono()
   .use(authMiddleware)
@@ -30,13 +31,13 @@ export const userRoute = new Hono()
       if (!result.isOk()) {
         const error = result.unwrapErr();
         if (error instanceof UserNotFoundError) {
-          return c.json({ error: "USER_NOT_FOUND" }, 404);
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
         }
         if (error instanceof AlreadyFollowingError) {
-          return c.json({ error: "ALREADY_FOLLOWING" }, 400);
+          return c.json({ error: "ALREADY_FOLLOWING" as const }, 400);
         }
         if (error instanceof CannotFollowSelfError) {
-          return c.json({ error: "CANNOT_FOLLOW_SELF" }, 400);
+          return c.json({ error: "CANNOT_FOLLOW_SELF" as const }, 400);
         }
       }
 
@@ -65,7 +66,7 @@ export const userRoute = new Hono()
       );
 
       if (!result.isOk()) {
-        return c.json({ error: "USER_NOT_FOUND" }, 404);
+        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
       }
 
       return c.json(makeDto({ users: result.unwrap() }));
@@ -93,7 +94,7 @@ export const userRoute = new Hono()
       );
 
       if (!result.isOk()) {
-        return c.json({ error: "USER_NOT_FOUND" }, 404);
+        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
       }
 
       return c.json(makeDto({ users: result.unwrap() }));
@@ -116,11 +117,11 @@ export const userRoute = new Hono()
       if (!result.isOk()) {
         const error = result.unwrapErr();
         if (error instanceof UserNotFoundError) {
-          return c.json({ error: "USER_NOT_FOUND" }, 404);
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
         }
 
         if (error instanceof NotFollowingError) {
-          return c.json({ error: "NOT_FOLLOWING" }, 400);
+          return c.json({ error: "NOT_FOLLOWING" as const }, 400);
         }
       }
 
@@ -149,5 +150,54 @@ export const userRoute = new Hono()
       const users = await userService.searchUsers(search, limit);
 
       return c.json(makeDto({ users }));
+    }
+  )
+  .get(
+    "/users/:username",
+    validator("param", z.object({ username: z.string() })),
+    async (c) => {
+      const { username } = c.req.valid("param");
+      const userService = c.get("userService");
+      const user = await userService.getUserByUsername(username);
+
+      if (!user) {
+        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+      }
+
+      return c.json(makeDto({ user }));
+    }
+  )
+  .get(
+    "/users/:id/collections",
+    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "query",
+      z.object({
+        limit: z.coerce.number().int().min(1).max(100).default(20),
+        cursor: z.string().optional(),
+        search: z.string().default(""),
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      const user = c.get("user");
+
+      const { limit, cursor, search } = c.req.valid("query");
+
+      const collectionService = c.get("collectionService");
+
+      const collections = await collectionService.getUserCollections(
+        new Id(id),
+        limit,
+        cursor,
+        search,
+        user?.id.value === id
+      );
+
+      if (!collections.isOk()) {
+        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+      }
+
+      return c.json(makeDto({ collections: collections.unwrap() }));
     }
   );

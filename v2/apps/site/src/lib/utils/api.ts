@@ -21,11 +21,11 @@ export const makeClient = (fetch: Window['fetch']) => {
 	return client;
 };
 
-export const handleResponse = async <T>(
-	res: ClientResponse<T | { error: string }>
-): Promise<Result<T, { error: string }>> => {
+export const handleResponse = async <T, E extends string>(
+	res: ClientResponse<T | { error: E }>
+): Promise<Result<T, { error: E }>> => {
 	if (!res.ok) {
-		return err((await res.json()) as { error: string });
+		return err((await res.json()) as { error: E });
 	}
 
 	return ok((await res.json()) as T);
