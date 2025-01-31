@@ -13,12 +13,14 @@
 
 	const { data }: PageProps = $props();
 
+	const initialCollections = $derived(data.collections);
+	const initialFavoriteCollections = $derived(data.favoriteCollections);
+	const profile = $derived(data.profile);
+	const currentUser = $derived(data.user);
+	const social = $derived(data.social);
+
 	let collections = $state(data.collections);
 	let favoriteCollections = $state(data.favoriteCollections);
-
-	const profile = data.profile;
-	const currentUser = data.user;
-	const social = data.social;
 
 	async function searchCollections(search: string) {
 		const api = makeClient(fetch);
@@ -46,13 +48,13 @@
 		const newCollections = collectionsResult.unwrap().collections;
 
 		collections = {
-			items: [...collections.items, ...newCollections.items],
+			items: [...initialCollections.items, ...newCollections.items],
 			cursor: newCollections.cursor
 		};
 	}
 
 	async function handleCollectionCreated(collection: CollectionDto) {
-		collections.items.unshift(collection);
+		initialCollections.items.unshift(collection);
 	}
 
 	async function searchFavoriteCollections(search: string) {
@@ -68,7 +70,7 @@
 	}
 
 	async function loadFavoriteCollections(cursor?: string) {
-		if (!favoriteCollections) return;
+		if (!initialFavoriteCollections) return;
 
 		const api = makeClient(fetch);
 
@@ -79,12 +81,12 @@
 		const newCollections = collectionsResult.unwrap().collections;
 
 		favoriteCollections = {
-			items: [...favoriteCollections.items, ...newCollections.items],
+			items: [...initialFavoriteCollections.items, ...newCollections.items],
 			cursor: newCollections.cursor
 		};
 	}
 
-	const isOwner = profile.id === currentUser?.id;
+	const isOwner = $derived(profile.id === currentUser?.id);
 </script>
 
 <Wrapper>
@@ -140,8 +142,8 @@
 			<div class="flex flex-col gap-4">
 				<Heading type="h2">Коллекции</Heading>
 				<CollectionsGrid
-					collections={collections.items}
-					cursor={collections.cursor}
+					collections={initialCollections.items}
+					cursor={initialCollections.cursor}
 					defaultEmptyDescription={isOwner
 						? 'У вас пока нет коллекций'
 						: 'У этого пользователя пока нет коллекций'}
@@ -157,12 +159,12 @@
 				</CollectionsGrid>
 			</div>
 
-			{#if favoriteCollections}
+			{#if initialFavoriteCollections}
 				<div class="flex flex-col gap-4">
 					<Heading type="h2">Избранное</Heading>
 					<CollectionsGrid
-						collections={favoriteCollections.items}
-						cursor={favoriteCollections.cursor}
+						collections={initialFavoriteCollections.items}
+						cursor={initialFavoriteCollections.cursor}
 						defaultEmptyDescription="Вы можете добавить коллекции в избранное, чтобы они отображались здесь"
 						disableAutoLoad
 						onSearch={searchFavoriteCollections}
