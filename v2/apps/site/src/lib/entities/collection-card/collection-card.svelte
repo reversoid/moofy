@@ -19,7 +19,7 @@
 			<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
 				{name}
 			</Card.Title>
-			<Card.Description class="line-clamp-2">
+			<Card.Description class="line-clamp-1">
 				{description?.trim() || 'Описание отсутствует'}
 			</Card.Description>
 		</Card.Header>

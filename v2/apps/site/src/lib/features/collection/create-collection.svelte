@@ -6,7 +6,7 @@
 	import { handleResponse, makeClient } from '$lib/utils';
 
 	interface Props {
-		onCollectionCreated: (collection: CollectionDto) => void;
+		onCollectionCreated?: (collection: CollectionDto) => void;
 	}
 
 	async function createCollection(props: {
@@ -29,7 +29,7 @@
 
 		const collection = response.unwrap().collection;
 
-		onCollectionCreated(collection);
+		onCollectionCreated?.(collection);
 	}
 
 	const { onCollectionCreated }: Props = $props();
@@ -38,7 +38,7 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Trigger>
+	<Dialog.Trigger class="w-full">
 		<CreateCollectionButton />
 	</Dialog.Trigger>
 	<Dialog.Content>

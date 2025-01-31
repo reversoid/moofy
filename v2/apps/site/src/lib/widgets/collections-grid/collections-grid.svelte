@@ -1,8 +1,10 @@
 <script lang="ts">
+	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { CollectionCard } from '$lib/entities/collection-card';
 	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
 	import Search from '$lib/ui/search.svelte';
 	import type { CollectionDto } from '@repo/api/dtos';
+	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import type { Snippet } from 'svelte';
 	import { flip } from 'svelte/animate';
 
@@ -13,6 +15,7 @@
 		firstCard?: Snippet;
 		onLoadMore?: (cursor: string) => Promise<void>;
 		onSearch?: (search: string) => Promise<void>;
+		defaultEmptyDescription: string;
 	}
 
 	const {
@@ -21,7 +24,8 @@
 		disableAutoLoad = false,
 		onLoadMore,
 		onSearch,
-		cursor
+		cursor,
+		defaultEmptyDescription
 	}: Props = $props();
 
 	let isLoading = $state(false);
@@ -31,15 +35,37 @@
 		await onLoadMore?.(cursor);
 		isLoading = false;
 	}
+
+	let isSearch = $state(false);
+	async function handleSearch(search: string) {
+		await onSearch?.(search);
+		isSearch = Boolean(search);
+	}
+
+	let placholderDescription = $derived(
+		`${isSearch ? 'Попробуйте изменить параметры поиска' : defaultEmptyDescription}`
+	);
 </script>
 
 <div class="@container flex flex-col gap-4">
-	<Search {onSearch} />
+	<Search onSearch={handleSearch} />
+
+	{#if collections.length === 0}
+		<div>
+			<Alert.Root>
+				<IconPercentage0 size={20} />
+				<Alert.Title>Коллекций не найдено</Alert.Title>
+				<Alert.Description>{placholderDescription}</Alert.Description>
+			</Alert.Root>
+		</div>
+	{/if}
 
 	<!-- TODO make responsive by min width, not max-width 
 	 -->
 	<div class="@5xl:grid-cols-4 @xl:grid-cols-3 @xl:gap-4 @md:grid-cols-2 grid grid-cols-1 gap-2">
-		{@render firstCard?.()}
+		{#if !isSearch}
+			{@render firstCard?.()}
+		{/if}
 
 		{#each collections as collection (collection.id)}
 			<div animate:flip={{ duration: 350 }}>
@@ -50,9 +76,6 @@
 					imageUrl={collection.imageUrl}
 				/>
 			</div>
-		{:else}
-			<!-- TODO add empty state -->
-			<div>No collections</div>
 		{/each}
 	</div>
 

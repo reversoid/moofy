@@ -40,4 +40,10 @@
 	}
 </script>
 
-<CollectionsGrid {collections} onLoadMore={loadCollections} onSearch={searchCollections} />
+<CollectionsGrid
+	collections={collections.items}
+	cursor={collections.cursor}
+	onLoadMore={loadCollections}
+	onSearch={searchCollections}
+	defaultEmptyDescription="Вы можете добавить коллекции в избранное, чтобы они отображались здесь"
+/>

@@ -10,12 +10,12 @@
 	const { onCollectionCreated }: Props = $props();
 </script>
 
-<Card.Root class="flex flex-col items-center justify-center">
-	<Card.Header>
+<Card.Root class="flex h-full w-full flex-col items-center justify-center gap-1">
+	<!-- <Card.Header class="max-md:hidden">
 		<Card.Title class="text-center">Новая коллекция</Card.Title>
-	</Card.Header>
+	</Card.Header> -->
 
-	<Card.Content class="max-md:!pt-0">
+	<Card.Content class="min-md:!pt-0 w-full">
 		<CreateCollection {onCollectionCreated} />
 	</Card.Content>
 </Card.Root>

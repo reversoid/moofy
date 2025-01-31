@@ -47,12 +47,15 @@
 </script>
 
 <CollectionsGrid
+	defaultEmptyDescription="Вы можете создать коллекцию, чтобы она отображалась здесь"
 	onSearch={searchCollections}
 	collections={collections.items}
 	cursor={collections.cursor}
 	onLoadMore={loadCollections}
 >
 	{#snippet firstCard()}
-		<CreateCollectionCard onCollectionCreated={addCollection} />
+		<div class="h-full max-sm:col-span-full">
+			<CreateCollectionCard onCollectionCreated={addCollection} />
+		</div>
 	{/snippet}
 </CollectionsGrid>
