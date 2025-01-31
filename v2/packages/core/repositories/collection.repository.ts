@@ -17,7 +17,8 @@ export abstract class ICollectionRepository extends IBaseRepository<Collection> 
   abstract getUserCollections(
     userId: User["id"],
     limit: number,
-    cursor?: string
+    cursor?: string,
+    withPrivate?: boolean
   ): Promise<PaginatedData<Collection>>;
 
   abstract getOldestPublicCollections(limit: number): Promise<Collection[]>;

@@ -111,7 +111,8 @@ export class CollectionService implements ICollectionService {
     const collections = await this.collectionRepository.getUserCollections(
       userId,
       limit,
-      cursor ?? undefined
+      cursor ?? undefined,
+      withPrivate
     );
 
     return ok(collections);

@@ -85,7 +85,8 @@ export class CollectionRepository extends ICollectionRepository {
   async getUserCollections(
     userId: User["id"],
     limit: number,
-    cursor?: string
+    cursor?: string,
+    withPrivate?: boolean
   ): Promise<PaginatedData<Collection>> {
     const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
@@ -96,6 +97,10 @@ export class CollectionRepository extends ICollectionRepository {
 
     if (cursorDate) {
       query = query.where("collections.updatedAt", "<=", cursorDate);
+    }
+
+    if (!withPrivate) {
+      query = query.where("collections.isPublic", "is", true);
     }
 
     const data = await query.execute();
