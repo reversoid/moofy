@@ -28,7 +28,7 @@
 				<Heading type="h2" class="text-center">и делись</Heading>
 			</div>
 
-			<Button href="/welcome/collections" size="lg" class="w-56">
+			<Button href="/welcome/collections" size="lg" class="w-64">
 				<span>Начать</span>
 			</Button>
 		</div>
