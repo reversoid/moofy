@@ -8,6 +8,17 @@ import { UserSelects } from "./utils/selects";
 import { makeUser } from "./utils/make-entity";
 
 export class UserRepository extends IUserRepository {
+  async getOldestUsers(limit: number): Promise<User[]> {
+    const result = await db
+      .selectFrom("users")
+      .select(UserSelects.userSelects)
+      .orderBy("createdAt", "asc")
+      .limit(limit)
+      .execute();
+
+    return result.map(makeUser);
+  }
+
   async create(value: CreatableEntity<User>): Promise<User> {
     const result = await db
       .insertInto("users")

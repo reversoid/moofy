@@ -14,6 +14,10 @@ export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async searchUsers(search: string, limit: number): Promise<User[]> {
+    if (!search) {
+      return this.userRepository.getOldestUsers(limit);
+    }
+
     const users = await this.userRepository.searchUsers(search, limit);
     return users;
   }
