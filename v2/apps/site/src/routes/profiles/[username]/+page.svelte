@@ -4,12 +4,13 @@
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
-	import { IconUser } from '@tabler/icons-svelte';
+	import { IconSettings, IconUser } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
 	import { handleResponse, makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import { FollowButton } from '$lib/features/profile';
+	import { Button } from '$lib/components/ui/button';
 
 	const { data }: PageProps = $props();
 
@@ -101,8 +102,10 @@
 					class="bg-muted flex aspect-square w-full items-center justify-center rounded-full object-cover text-center max-md:size-36"
 				/>
 			{:else}
-				<div class="bg-muted aspect-square w-full rounded-full object-cover max-md:size-36">
-					<IconUser />
+				<div
+					class="bg-muted flex aspect-square w-full items-center justify-center rounded-full max-md:size-36"
+				>
+					<IconUser size={48} />
 				</div>
 			{/if}
 
@@ -128,12 +131,12 @@
 				<Textarea readonly placeholder="Описание" value={profile.description} class="resize-none" />
 			</div>
 
-			<!-- <Button class="w-full" variant="outline">
-				<IconSettings />
-				<span>Настройки</span>
-			</Button> -->
-
-			{#if !isOwner}
+			{#if isOwner}
+				<Button class="w-full" variant="outline">
+					<IconSettings />
+					<span>Настройки</span>
+				</Button>
+			{:else}
 				<FollowButton userId={profile.id} isFollowing={social.isFollowing} />
 			{/if}
 		</div>
