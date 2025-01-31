@@ -54,7 +54,7 @@
 		<div>
 			<Alert.Root>
 				<IconPercentage0 size={20} />
-				<Alert.Title>Коллекций не найдено</Alert.Title>
+				<Alert.Title>Коллекции не найдены</Alert.Title>
 				<Alert.Description>{placholderDescription}</Alert.Description>
 			</Alert.Root>
 		</div>

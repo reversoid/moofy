@@ -48,13 +48,13 @@
 		const newCollections = collectionsResult.unwrap().collections;
 
 		collections = {
-			items: [...initialCollections.items, ...newCollections.items],
+			items: [...collections.items, ...newCollections.items],
 			cursor: newCollections.cursor
 		};
 	}
 
 	async function handleCollectionCreated(collection: CollectionDto) {
-		initialCollections.items.unshift(collection);
+		collections.items.unshift(collection);
 	}
 
 	async function searchFavoriteCollections(search: string) {
@@ -70,7 +70,7 @@
 	}
 
 	async function loadFavoriteCollections(cursor?: string) {
-		if (!initialFavoriteCollections) return;
+		if (!favoriteCollections) return;
 
 		const api = makeClient(fetch);
 
@@ -81,7 +81,7 @@
 		const newCollections = collectionsResult.unwrap().collections;
 
 		favoriteCollections = {
-			items: [...initialFavoriteCollections.items, ...newCollections.items],
+			items: [...favoriteCollections.items, ...newCollections.items],
 			cursor: newCollections.cursor
 		};
 	}
@@ -142,8 +142,8 @@
 			<div class="flex flex-col gap-4">
 				<Heading type="h2">Коллекции</Heading>
 				<CollectionsGrid
-					collections={initialCollections.items}
-					cursor={initialCollections.cursor}
+					collections={collections.items}
+					cursor={collections.cursor}
 					defaultEmptyDescription={isOwner
 						? 'У вас пока нет коллекций'
 						: 'У этого пользователя пока нет коллекций'}
@@ -159,12 +159,12 @@
 				</CollectionsGrid>
 			</div>
 
-			{#if initialFavoriteCollections}
+			{#if favoriteCollections}
 				<div class="flex flex-col gap-4">
 					<Heading type="h2">Избранное</Heading>
 					<CollectionsGrid
-						collections={initialFavoriteCollections.items}
-						cursor={initialFavoriteCollections.cursor}
+						collections={favoriteCollections.items}
+						cursor={favoriteCollections.cursor}
 						defaultEmptyDescription="Вы можете добавить коллекции в избранное, чтобы они отображались здесь"
 						disableAutoLoad
 						onSearch={searchFavoriteCollections}
