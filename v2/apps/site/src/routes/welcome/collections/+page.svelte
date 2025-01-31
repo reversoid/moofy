@@ -46,7 +46,12 @@
 	}
 </script>
 
-<CollectionsGrid onSearch={searchCollections} {collections} onLoadMore={loadCollections}>
+<CollectionsGrid
+	onSearch={searchCollections}
+	collections={collections.items}
+	cursor={collections.cursor}
+	onLoadMore={loadCollections}
+>
 	{#snippet firstCard()}
 		<CreateCollectionCard onCollectionCreated={addCollection} />
 	{/snippet}

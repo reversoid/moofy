@@ -13,14 +13,14 @@
 	const { id, name, description, imageUrl }: Props = $props();
 </script>
 
-<Link href="/collections/{id}">
-	<Card.Root>
+<Link href="/collections/{id}" class="block h-full">
+	<Card.Root class="flex h-full flex-col justify-between">
 		<Card.Header>
 			<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
 				{name}
 			</Card.Title>
-			<Card.Description>
-				{description ?? 'Описание отсутствует'}
+			<Card.Description class="line-clamp-2">
+				{description?.trim() || 'Описание отсутствует'}
 			</Card.Description>
 		</Card.Header>
 

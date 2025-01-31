@@ -126,6 +126,10 @@ export class CollectionService implements ICollectionService {
     search: string,
     limit: number
   ): Promise<Collection[]> {
+    if (!search) {
+      return this.collectionRepository.getOldestPublicCollections(limit);
+    }
+
     return this.collectionRepository.searchCollections(search, limit);
   }
 }

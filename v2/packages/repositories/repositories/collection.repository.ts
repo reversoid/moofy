@@ -14,6 +14,17 @@ import { sql } from "kysely";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 
 export class CollectionRepository extends ICollectionRepository {
+  async getOldestPublicCollections(limit: number): Promise<Collection[]> {
+    const query = this.getSelectQuery()
+      .orderBy("collections.createdAt", "asc")
+      .where("collections.isPublic", "is", true)
+      .limit(limit);
+
+    const results = await query.execute();
+
+    return results.map(makeCollection);
+  }
+
   async searchCollections(
     search: string,
     limit: number,

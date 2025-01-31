@@ -10,7 +10,7 @@ export abstract class ICollectionRepository extends IBaseRepository<Collection> 
     filter?: {
       userId?: User["id"];
       withPrivate?: boolean;
-      favoritedBy: User["id"];
+      favoritedBy?: User["id"];
     }
   ): Promise<Collection[]>;
 
@@ -19,4 +19,6 @@ export abstract class ICollectionRepository extends IBaseRepository<Collection> 
     limit: number,
     cursor?: string
   ): Promise<PaginatedData<Collection>>;
+
+  abstract getOldestPublicCollections(limit: number): Promise<Collection[]>;
 }

@@ -2,20 +2,27 @@
 	import { CollectionCard } from '$lib/entities/collection-card';
 	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
 	import Search from '$lib/ui/search.svelte';
-	import type { PaginatedData } from '$lib/utils/types';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import type { Snippet } from 'svelte';
 	import { flip } from 'svelte/animate';
 
 	interface Props {
 		disableAutoLoad?: boolean;
-		collections: PaginatedData<CollectionDto>;
+		collections: CollectionDto[];
+		cursor?: string | null;
 		firstCard?: Snippet;
 		onLoadMore?: (cursor: string) => Promise<void>;
 		onSearch?: (search: string) => Promise<void>;
 	}
 
-	const { collections, firstCard, disableAutoLoad = false, onLoadMore, onSearch }: Props = $props();
+	const {
+		collections,
+		firstCard,
+		disableAutoLoad = false,
+		onLoadMore,
+		onSearch,
+		cursor
+	}: Props = $props();
 
 	let isLoading = $state(false);
 
@@ -34,7 +41,7 @@
 	<div class="@5xl:grid-cols-4 @xl:grid-cols-3 @xl:gap-4 @md:grid-cols-2 grid grid-cols-1 gap-2">
 		{@render firstCard?.()}
 
-		{#each collections.items as collection (collection.id)}
+		{#each collections as collection (collection.id)}
 			<div animate:flip={{ duration: 350 }}>
 				<CollectionCard
 					id={collection.id}
@@ -49,12 +56,7 @@
 		{/each}
 	</div>
 
-	{#if collections.cursor}
-		<LoadMoreButton
-			{isLoading}
-			onLoadMore={onLoadMoreWithLoading}
-			cursor={collections.cursor}
-			{disableAutoLoad}
-		/>
+	{#if cursor}
+		<LoadMoreButton {isLoading} onLoadMore={onLoadMoreWithLoading} {cursor} {disableAutoLoad} />
 	{/if}
 </div>
