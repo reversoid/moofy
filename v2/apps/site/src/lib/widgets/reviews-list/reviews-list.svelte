@@ -1,19 +1,21 @@
 <script lang="ts">
-	import { Input } from '$lib/components/ui/input';
 	import { ReviewCard } from '$lib/entities/review-card';
 	import { EditReview } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
 	import Search from '$lib/ui/search.svelte';
 	import type { ReviewDto } from '@repo/api/dtos';
+	import * as Alert from '$lib/components/ui/alert';
+	import { IconPercentage0 } from '@tabler/icons-svelte';
 
 	interface Props {
 		reviews: ReviewDto[];
 		cursor?: string | null;
 		onSearch?: (search: string) => Promise<void>;
 		onLoadMore?: (cursor: string) => Promise<void>;
+		defaultEmptyDescription: string;
 	}
 
-	const { reviews, cursor, onLoadMore, onSearch }: Props = $props();
+	const { reviews, cursor, onLoadMore, onSearch, defaultEmptyDescription }: Props = $props();
 
 	let isLoading = $state(false);
 
@@ -22,10 +24,30 @@
 		await onLoadMore?.(cursor);
 		isLoading = false;
 	}
+
+	let isSearch = $state(false);
+	async function handleSearch(search: string) {
+		await onSearch?.(search);
+		isSearch = Boolean(search);
+	}
+
+	let placholderDescription = $derived(
+		`${isSearch ? 'Попробуйте изменить параметры поиска' : defaultEmptyDescription}`
+	);
 </script>
 
 <div class="flex flex-col gap-4">
-	<Search {onSearch} />
+	<Search onSearch={handleSearch} />
+
+	{#if reviews.length === 0}
+		<div>
+			<Alert.Root>
+				<IconPercentage0 size={20} />
+				<Alert.Title>Обзоров не найдено</Alert.Title>
+				<Alert.Description>{placholderDescription}</Alert.Description>
+			</Alert.Root>
+		</div>
+	{/if}
 
 	<div class="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
 		{#each reviews as review (review.id)}

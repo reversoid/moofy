@@ -19,6 +19,8 @@
 	let reviews = $state(data.reviews);
 	let social = $state(data.social);
 
+	const isOwner = $derived(collection.creator.id === data.user?.id);
+
 	const formattedUpdatedAt = $derived(dayjs(collection.updatedAt).format('DD.MM.YYYY'));
 
 	async function loadMoreReviews(cursor?: string) {
@@ -133,6 +135,9 @@
 			cursor={reviews.cursor}
 			onLoadMore={loadMoreReviews}
 			onSearch={searchReviews}
+			defaultEmptyDescription={isOwner
+				? 'Вы можете добавить обзор в эту коллекцию'
+				: 'Эта коллекция пуста'}
 		/>
 	</div>
 </Wrapper>
