@@ -46,7 +46,11 @@ export class ReviewService implements IReviewService {
       return err(new CannotSeePrivateCollectionError());
     }
 
-    const reviews = await this.reviewRepository.searchReviews(search, limit);
+    const reviews = await this.reviewRepository.searchReviews(
+      collection.id,
+      search,
+      limit
+    );
 
     return ok(reviews);
   }

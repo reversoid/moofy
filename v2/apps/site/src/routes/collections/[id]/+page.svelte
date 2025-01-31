@@ -1,19 +1,60 @@
-<script>
-	import { Badge } from '$lib/components/ui/badge';
+<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { EditCollection } from '$lib/features/collection';
 	import { CreateReview } from '$lib/features/reivew';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
+	import { handleResponse, makeClient } from '$lib/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
+	import { dayjs } from '@repo/core/sdk';
 	import { IconBookmark, IconHeart, IconLock } from '@tabler/icons-svelte';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import type { PageProps } from './$types';
+
+	const { data }: PageProps = $props();
+
+	let collection = $state(data.collection);
+	let reviews = $state(data.reviews);
+	let social = $state(data.social);
+
+	const formattedUpdatedAt = $derived(dayjs(collection.updatedAt).format('DD.MM.YYYY'));
+
+	async function loadMoreReviews(cursor?: string) {
+		const api = makeClient(fetch);
+		const response = await api.collections[':collectionId'].reviews
+			.$get({
+				param: { collectionId: String(data.collection.id) },
+				query: { cursor, limit: '20' }
+			})
+			.then(handleResponse);
+
+		const { reviews: newReviews } = response.unwrap();
+		reviews.items = [...reviews.items, ...newReviews.items];
+		reviews.cursor = newReviews.cursor;
+	}
+
+	async function searchReviews(search: string) {
+		if (!search) {
+			await loadMoreReviews();
+		}
+
+		const api = makeClient(fetch);
+		const response = await api.collections[':collectionId'].reviews
+			.$get({
+				param: { collectionId: String(data.collection.id) },
+				query: { search, limit: '20' }
+			})
+			.then(handleResponse);
+
+		const { reviews: newReviews } = response.unwrap();
+		reviews = newReviews;
+	}
 </script>
 
 <Wrapper>
-	<Heading>Collection 1</Heading>
+	<Heading>{collection.name}</Heading>
 
 	<div
 		class="mt-6 grid grid-cols-[4fr_1fr] gap-2 max-xl:grid-cols-[3fr_1fr] max-lg:grid-cols-[2fr_1fr] max-md:grid-cols-1"
@@ -24,7 +65,7 @@
 			</Card.Header>
 
 			<Card.Content>
-				<p>Some description</p>
+				<p>{collection.description || 'Описание отсутствует'}</p>
 			</Card.Content>
 		</Card.Root>
 
@@ -32,38 +73,45 @@
 			<Card.Header>
 				<div class="flex items-center justify-between">
 					<Card.Title>О коллекции</Card.Title>
-					<Tooltip.Provider>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<IconLock size={22} />
-							</Tooltip.Trigger>
-							<Tooltip.Content class="max-w-[320px] text-sm">
-								<p>
-									Эту коллекцию можете просматривать только вы<br />
-									Изменить данное поведение можно в настройках коллекции
-								</p>
-							</Tooltip.Content>
-						</Tooltip.Root>
-					</Tooltip.Provider>
+					{#if !collection.isPublic}
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<IconLock size={22} />
+								</Tooltip.Trigger>
+								<Tooltip.Content class="max-w-[320px] text-sm">
+									<p>
+										Эту коллекцию можете просматривать только вы<br />
+										Изменить данное поведение можно в настройках коллекции
+									</p>
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					{/if}
 				</div>
 			</Card.Header>
 
 			<Card.Content>
 				<ul class="flex flex-col gap-1">
-					<li>Создатель: <Link href="/profiles/reversoid">reversoid</Link></li>
-					<li>Обновлено: 12.01.2025</li>
+					<li>
+						Создатель: <Link href="/profiles/{collection.creator.username}"
+							>{collection.creator.username}</Link
+						>
+					</li>
+
+					<li>Обновлено: {formattedUpdatedAt}</li>
 				</ul>
 
 				<div class="mt-3 flex flex-col gap-2">
 					<div class="flex gap-2">
 						<Button class="flex-grow" variant="outline">
 							<IconHeart />
-							<span>56</span>
+							<span>{social.likes}</span>
 						</Button>
 
 						<Button class="flex-grow" variant="outline">
 							<IconBookmark />
-							<span>73</span>
+							<span>{social.bookmarks}</span>
 						</Button>
 					</div>
 
@@ -80,6 +128,11 @@
 	</div>
 
 	<div class="mt-4">
-		<ReviewsList />
+		<ReviewsList
+			reviews={reviews.items}
+			cursor={reviews.cursor}
+			onLoadMore={loadMoreReviews}
+			onSearch={searchReviews}
+		/>
 	</div>
 </Wrapper>

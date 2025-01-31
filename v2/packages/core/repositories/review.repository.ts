@@ -5,7 +5,11 @@ import { PaginatedData } from "../utils/pagination";
 import { IBaseRepository } from "./base.repository";
 
 export abstract class IReviewRepository extends IBaseRepository<Review> {
-  abstract searchReviews(search: string, limit: number): Promise<Review[]>;
+  abstract searchReviews(
+    collectionId: Collection["id"],
+    search: string,
+    limit: number
+  ): Promise<Review[]>;
 
   abstract getCollectionReviews(
     collectionId: Collection["id"],

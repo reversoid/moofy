@@ -14,31 +14,52 @@ import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
 
 export class ReviewRepository extends IReviewRepository {
-  async searchReviews(search: string, limit: number): Promise<Review[]> {
+  async searchReviews(
+    collectionId: Collection["id"],
+    search: string,
+    limit: number
+  ): Promise<Review[]> {
     const words = getTsQueryFromString(search);
 
-    const results = await this.getSelectQuery()
+    const searchCondition = sql<boolean>`(
+        (films.search_document @@ plainto_tsquery('simple', ${search}))
+        OR
+        (films.search_document @@ to_tsquery('simple', ${words}))
+        OR
+        (reviews.search_document @@ plainto_tsquery('simple', ${search}))
+        OR
+        (reviews.search_document @@ to_tsquery('simple', ${words}))
+    )`;
+
+    let query = this.getSelectQuery()
       .select(
         sql<number>`
       ts_rank(
-          reviews.searchDocument, 
+          films.search_document, 
+          plainto_tsquery('simple', ${search})
+      ) +
+      ts_rank(
+          films.search_document, 
+          to_tsquery('simple', ${words})
+      ) +
+      ts_rank(
+          reviews.search_document, 
           plainto_tsquery('simple', ${search})
       ) + 
       ts_rank(
-          reviews.searchDocument, 
+          reviews.search_document, 
           to_tsquery('simple', ${words})
       )`.as("rank")
       )
-      .where(
-        sql<boolean>`
-        (reviews.searchDocument) @@ plainto_tsquery('simple', ${search})
-        OR
-        (reviews.searchDocument) @@ to_tsquery('simple', ${words})
-      `
-      )
+      .where(searchCondition)
       .limit(limit)
-      .orderBy("rank", "desc")
-      .execute();
+      .orderBy("rank", "desc");
+
+    if (collectionId) {
+      query = query.where("collectionId", "=", collectionId.value);
+    }
+
+    const results = await query.execute();
 
     return results.map(makeReview);
   }

@@ -67,12 +67,7 @@
 
 		{#each collections as collection (collection.id)}
 			<div animate:flip={{ duration: 350 }}>
-				<CollectionCard
-					id={collection.id}
-					name={collection.name}
-					description={collection.description}
-					imageUrl={collection.imageUrl}
-				/>
+				<CollectionCard {collection} />
 			</div>
 		{/each}
 	</div>

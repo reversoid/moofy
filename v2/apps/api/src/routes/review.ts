@@ -13,120 +13,6 @@ import { Id } from "@repo/core/utils";
 import { makeDto } from "../utils/make-dto";
 
 export const reviewRoute = new Hono()
-  .use(authMiddleware)
-  .get(
-    "/collections/:collectionId/reviews",
-    validator(
-      "query",
-      z.object({
-        limit: z.coerce.number().int().min(1).max(100).default(20),
-        search: z.string().optional(),
-        cursor: z.string().optional(),
-      })
-    ),
-    validator(
-      "param",
-      z.object({ collectionId: z.coerce.number().int().positive() })
-    ),
-    async (c) => {
-      const { collectionId } = c.req.valid("param");
-      const { limit, cursor, search } = c.req.valid("query");
-
-      const reviewService = c.get("reviewService");
-
-      if (search) {
-        const result = await reviewService.searchReviews(
-          search,
-          new Id(collectionId),
-          limit
-        );
-
-        if (result.isErr()) {
-          const error = result.unwrapErr();
-          if (error instanceof CollectionNotFoundError) {
-            return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-          }
-        }
-
-        return c.json(makeDto({ reviews: result.unwrap() }));
-      } else {
-        const result = await reviewService.getCollectionReviews(
-          new Id(collectionId),
-          limit,
-          cursor
-        );
-
-        if (result.isErr()) {
-          const error = result.unwrapErr();
-          if (error instanceof CollectionNotFoundError) {
-            return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-          }
-        }
-
-        const reviews = result.unwrap();
-        return c.json(makeDto({ reviews }));
-      }
-    }
-  )
-  .post(
-    "/collections/:collectionId/reviews",
-    validator(
-      "json",
-      z.object({
-        score: z.number().int().min(1).max(10),
-        description: z.string().min(1).max(1000),
-        filmId: z.coerce.number().int().positive(),
-      })
-    ),
-    validator(
-      "param",
-      z.object({ collectionId: z.coerce.number().int().positive() })
-    ),
-    async (c) => {
-      const { collectionId } = c.req.valid("param");
-      const { score, description, filmId } = c.req.valid("json");
-      const user = c.get("user");
-
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const reviewService = c.get("reviewService");
-
-      const result = await reviewService.createReview(
-        {
-          score,
-          description,
-          collectionId: new Id(collectionId),
-          filmId: String(filmId),
-        },
-        user.id
-      );
-
-      if (result.isErr()) {
-        const error = result.unwrapErr();
-
-        if (error instanceof CollectionNotFoundError) {
-          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-        }
-
-        if (error instanceof FilmNotFoundError) {
-          return c.json({ error: "FILM_NOT_FOUND" }, 404);
-        }
-
-        if (error instanceof ReviewOnFilmExistsError) {
-          return c.json({ error: "REVIEW_ON_FILM_EXISTS" }, 409);
-        }
-
-        if (error instanceof NotOwnerOfReviewError) {
-          return c.json({ error: "FORBIDDEN" }, 403);
-        }
-      }
-
-      const review = result.unwrap();
-      return c.json(makeDto({ review }), 201);
-    }
-  )
   .get(
     "/reviews/:reviewId",
     validator(
@@ -150,6 +36,7 @@ export const reviewRoute = new Hono()
   )
   .delete(
     "/reviews/:reviewId",
+    authMiddleware,
     validator(
       "param",
       z.object({
@@ -186,6 +73,7 @@ export const reviewRoute = new Hono()
   )
   .patch(
     "/reviews/:reviewId",
+    authMiddleware,
     validator(
       "param",
       z.object({
