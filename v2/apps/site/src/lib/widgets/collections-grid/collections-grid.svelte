@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { Input } from '$lib/components/ui/input';
 	import { CollectionCard } from '$lib/entities/collection-card';
 	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
+	import Search from '$lib/ui/search.svelte';
 	import type { PaginatedData } from '$lib/utils/types';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconSearch } from '@tabler/icons-svelte';
 	import type { Snippet } from 'svelte';
 	import { flip } from 'svelte/animate';
-	import debounce from 'lodash.debounce';
-	import type { FormEventHandler } from 'svelte/elements';
 
 	interface Props {
 		disableAutoLoad?: boolean;
@@ -21,27 +18,16 @@
 	const { collections, firstCard, disableAutoLoad = false, onLoadMore, onSearch }: Props = $props();
 
 	let isLoading = $state(false);
-	let isSearching = $state(false);
 
 	async function onLoadMoreWithLoading(cursor: string) {
 		isLoading = true;
 		await onLoadMore?.(cursor);
 		isLoading = false;
 	}
-
-	const handleInput = debounce(async (e: Parameters<FormEventHandler<HTMLInputElement>>[0]) => {
-		isSearching = true;
-		await onSearch?.((e.target as HTMLInputElement).value);
-		isSearching = false;
-	}, 300);
 </script>
 
 <div class="@container flex flex-col gap-4">
-	<Input placeholder="Поиск" oninput={handleInput} isLoading={isSearching}>
-		{#snippet inputPrefix()}
-			<IconSearch size={20} />
-		{/snippet}
-	</Input>
+	<Search {onSearch} />
 
 	<!-- TODO make responsive by min width, not max-width 
 	 -->
