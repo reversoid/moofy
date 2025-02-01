@@ -7,6 +7,7 @@ import { UserNotFoundError } from "../user/errors";
 import {
   AlreadyFollowingError,
   CannotFollowSelfError,
+  CannotUnfollowSelfError,
   NotFollowingError,
 } from "./errors";
 import { ISubscriptionService } from "./interface";
@@ -17,22 +18,22 @@ export class SubscriptionService implements ISubscriptionService {
     private readonly userRepository: IUserRepository
   ) {}
 
-  async follow(
-    fromUserId: User["id"],
-    toUserId: User["id"]
-  ): Promise<
+  async follow(props: {
+    fromUserId: User["id"];
+    toUserId: User["id"];
+  }): Promise<
     Result<
-      User,
+      null,
       UserNotFoundError | AlreadyFollowingError | CannotFollowSelfError
     >
   > {
-    if (fromUserId.value === toUserId.value) {
+    if (props.fromUserId.value === props.toUserId.value) {
       return err(new CannotFollowSelfError());
     }
 
     const [fromUser, toUser] = await Promise.all([
-      this.userRepository.get(fromUserId),
-      this.userRepository.get(toUserId),
+      this.userRepository.get(props.fromUserId),
+      this.userRepository.get(props.toUserId),
     ]);
 
     if (!fromUser || !toUser) {
@@ -40,25 +41,30 @@ export class SubscriptionService implements ISubscriptionService {
     }
 
     const isFollowing = await this.subscriptionRepository.isFollowing(
-      fromUserId,
-      toUserId
+      props.fromUserId,
+      props.toUserId
     );
 
     if (isFollowing) {
       return err(new AlreadyFollowingError());
     }
 
-    await this.subscriptionRepository.follow(fromUserId, toUserId);
-    return ok(toUser);
+    await this.subscriptionRepository.follow(props.fromUserId, props.toUserId);
+    return ok(null);
   }
 
-  async unfollow(
-    fromUserId: User["id"],
-    toUserId: User["id"]
-  ): Promise<Result<User, UserNotFoundError | NotFollowingError>> {
+  async unfollow(props: {
+    fromUserId: User["id"];
+    toUserId: User["id"];
+  }): Promise<
+    Result<
+      null,
+      UserNotFoundError | NotFollowingError | CannotUnfollowSelfError
+    >
+  > {
     const [fromUser, toUser] = await Promise.all([
-      this.userRepository.get(fromUserId),
-      this.userRepository.get(toUserId),
+      this.userRepository.get(props.fromUserId),
+      this.userRepository.get(props.toUserId),
     ]);
 
     if (!fromUser || !toUser) {
@@ -66,60 +72,67 @@ export class SubscriptionService implements ISubscriptionService {
     }
 
     const isFollowing = await this.subscriptionRepository.isFollowing(
-      fromUserId,
-      toUserId
+      props.fromUserId,
+      props.toUserId
     );
 
     if (!isFollowing) {
       return err(new NotFollowingError());
     }
 
-    await this.subscriptionRepository.unfollow(fromUserId, toUserId);
-    return ok(toUser);
+    await this.subscriptionRepository.unfollow(
+      props.fromUserId,
+      props.toUserId
+    );
+
+    return ok(null);
   }
 
-  async getFollowers(
-    userId: User["id"],
-    limit: number,
-    cursor?: string
-  ): Promise<Result<PaginatedData<User>, UserNotFoundError>> {
-    const user = await this.userRepository.get(userId);
+  async getFollowers(props: {
+    userId: User["id"];
+    limit: number;
+    cursor?: string;
+  }): Promise<Result<PaginatedData<User>, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
     const followers = await this.subscriptionRepository.getFollowers(
-      userId,
-      limit,
-      cursor
+      props.userId,
+      props.limit,
+      props.cursor
     );
 
     return ok(followers);
   }
 
-  async getFollowees(
-    userId: User["id"],
-    limit: number,
-    cursor?: string
-  ): Promise<Result<PaginatedData<User>, UserNotFoundError>> {
-    const user = await this.userRepository.get(userId);
+  async getFollowees(props: {
+    userId: User["id"];
+    limit: number;
+    cursor?: string;
+  }): Promise<Result<PaginatedData<User>, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
     const followees = await this.subscriptionRepository.getFollowees(
-      userId,
-      limit,
-      cursor
+      props.userId,
+      props.limit,
+      props.cursor
     );
 
     return ok(followees);
   }
 
-  async isFollowing(
-    fromUserId: User["id"],
-    toUserId: User["id"]
-  ): Promise<boolean> {
-    return this.subscriptionRepository.isFollowing(fromUserId, toUserId);
+  async isFollowing(props: {
+    fromUserId: User["id"];
+    toUserId: User["id"];
+  }): Promise<boolean> {
+    return this.subscriptionRepository.isFollowing(
+      props.fromUserId,
+      props.toUserId
+    );
   }
 }

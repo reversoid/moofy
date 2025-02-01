@@ -5,36 +5,45 @@ import { UserNotFoundError } from "../user/errors";
 import {
   AlreadyFollowingError,
   CannotFollowSelfError,
+  CannotUnfollowSelfError,
   NotFollowingError,
 } from "./errors";
 
 export interface ISubscriptionService {
-  follow(
-    fromUserId: User["id"],
-    toUserId: User["id"]
-  ): Promise<
+  follow(props: {
+    fromUserId: User["id"];
+    toUserId: User["id"];
+  }): Promise<
     Result<
-      User,
+      null,
       UserNotFoundError | AlreadyFollowingError | CannotFollowSelfError
     >
   >;
 
-  unfollow(
-    fromUserId: User["id"],
-    toUserId: User["id"]
-  ): Promise<Result<User, UserNotFoundError | NotFollowingError>>;
+  unfollow(props: {
+    fromUserId: User["id"];
+    toUserId: User["id"];
+  }): Promise<
+    Result<
+      null,
+      UserNotFoundError | NotFollowingError | CannotUnfollowSelfError
+    >
+  >;
 
-  getFollowers(
-    userId: User["id"],
-    limit: number,
-    cursor?: string
-  ): Promise<Result<PaginatedData<User>, UserNotFoundError>>;
+  getFollowers(props: {
+    userId: User["id"];
+    limit: number;
+    cursor?: string;
+  }): Promise<Result<PaginatedData<User>, UserNotFoundError>>;
 
-  getFollowees(
-    userId: User["id"],
-    limit: number,
-    cursor?: string
-  ): Promise<Result<PaginatedData<User>, UserNotFoundError>>;
+  getFollowees(props: {
+    userId: User["id"];
+    limit: number;
+    cursor?: string;
+  }): Promise<Result<PaginatedData<User>, UserNotFoundError>>;
 
-  isFollowing(fromUserId: User["id"], toUserId: User["id"]): Promise<boolean>;
+  isFollowing(props: {
+    fromUserId: User["id"];
+    toUserId: User["id"];
+  }): Promise<boolean>;
 }

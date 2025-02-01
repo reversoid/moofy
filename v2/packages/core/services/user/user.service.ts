@@ -6,30 +6,30 @@ import {
   UserNotFoundError,
   WrongPasswordError,
 } from "./errors";
-import { IUserService } from "./interface";
+import { IUserService, UpdateUserDto } from "./interface";
 import { IUserRepository } from "../../repositories/user.repository";
 import { comparePasswords, hashPassword } from "../../utils/password";
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async searchUsers(search: string, limit: number): Promise<User[]> {
-    if (!search) {
-      return this.userRepository.getOldestUsers(limit);
+  async searchUsers(props: { search: string; limit: number }): Promise<User[]> {
+    if (!props.search) {
+      return this.userRepository.getOldestUsers(props.limit);
     }
-
-    const users = await this.userRepository.searchUsers(search, limit);
-    return users;
+    return this.userRepository.searchUsers(props.search, props.limit);
   }
 
-  async createUser(
-    username: string,
-    password: string
-  ): Promise<Result<User, UsernameExistsError>> {
-    const passwordHash = await hashPassword(password);
-    const newUser = new User({ username, passwordHash });
+  async createUser(props: {
+    username: string;
+    password: string;
+  }): Promise<Result<User, UsernameExistsError>> {
+    const passwordHash = await hashPassword(props.password);
+    const newUser = new User({ username: props.username, passwordHash });
 
-    const existingUser = await this.userRepository.getByUsername(username);
+    const existingUser = await this.userRepository.getByUsername(
+      props.username
+    );
     if (existingUser) {
       return err(new UsernameExistsError());
     }
@@ -43,16 +43,16 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async validateUserAndPassword(
-    username: string,
-    password: string
-  ): Promise<Result<User, UserNotFoundError | WrongPasswordError>> {
-    const user = await this.userRepository.getByUsername(username);
+  async validateUserAndPassword(props: {
+    username: string;
+    password: string;
+  }): Promise<Result<User, UserNotFoundError | WrongPasswordError>> {
+    const user = await this.userRepository.getByUsername(props.username);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
-    if (await comparePasswords(password, user.passwordHash)) {
+    if (await comparePasswords(props.password, user.passwordHash)) {
       return ok(user);
     }
 
@@ -64,16 +64,35 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async updateUser(
-    id: Id,
-    data: Partial<User>
-  ): Promise<Result<User, UserNotFoundError>> {
-    const existingUser = await this.userRepository.get(id);
+  async updateUser(props: {
+    id: Id;
+    data: UpdateUserDto;
+  }): Promise<Result<User, UserNotFoundError>> {
+    const existingUser = await this.userRepository.get(props.id);
     if (!existingUser) {
       return err(new UserNotFoundError());
     }
 
-    const updatedUser = await this.userRepository.update(id, data);
+    if (props.data.username) {
+      const existingUserWithUsername = await this.userRepository.getByUsername(
+        props.data.username
+      );
+      if (existingUserWithUsername) {
+        return err(new UsernameExistsError());
+      }
+    }
+
+    const newPasswordHash = props.data.password
+      ? await hashPassword(props.data.password)
+      : undefined;
+
+    const updatedUser = await this.userRepository.update(props.id, {
+      imageUrl: props.data.imageUrl,
+      description: props.data.description,
+      username: props.data.username,
+      passwordHash: newPasswordHash,
+    });
+
     return ok(updatedUser);
   }
 }

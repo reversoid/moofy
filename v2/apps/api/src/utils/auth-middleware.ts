@@ -1,40 +1,18 @@
-import config from "@repo/config";
 import { MiddlewareHandler } from "hono";
-import { getSignedCookie } from "hono/cookie";
-
-type AuthMiddlewareResponse = {
-  error: "UNAUTHORIZED";
-};
 
 export const authMiddleware: MiddlewareHandler<
   {},
   string,
   {
     in: {};
-    out: {
-      Response: AuthMiddlewareResponse;
-    };
+    out: {};
   }
 > = async (c, next) => {
-  const sessionService = c.get("sessionService");
+  const user = c.get("user");
 
-  const sessionToken = await getSignedCookie(
-    c,
-    config.COOKIE_SECRET,
-    "session"
-  );
-
-  if (!sessionToken) {
+  if (!user) {
     return c.json({ error: "UNAUTHORIZED" }, 401);
   }
-
-  const session = await sessionService.validateSessionToken(sessionToken);
-
-  if (!session.isOk()) {
-    return c.json({ error: "UNAUTHORIZED" }, 401);
-  }
-
-  c.set("user", session.value.user);
 
   return next();
 };

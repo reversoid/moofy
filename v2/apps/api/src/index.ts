@@ -32,6 +32,7 @@ import { ISessionService, IUserService } from "@repo/core/services";
 import { User } from "@repo/core/entities";
 import { UnofficialKpProvider } from "@repo/film-providers";
 import { searchRoute } from "./routes/search";
+import { userMiddleware } from "./utils/user-middleware";
 
 declare module "hono" {
   interface ContextVariableMap {
@@ -48,8 +49,10 @@ declare module "hono" {
 
 const api = new Hono()
   .use(async (c, next) => {
+    // Providers
     const filmProvider = new UnofficialKpProvider();
 
+    // Repositories
     const userRepository = new UserRepository();
     const sessionRepository = new SessionRepository();
     const collectionRepository = new CollectionRepository();
@@ -57,6 +60,8 @@ const api = new Hono()
     const reviewRepository = new ReviewRepository();
     const filmRepository = new FilmRepository();
     const subscriptionRepository = new SubscriptionRepository();
+
+    // Services
     const userService = new UserService(userRepository);
     const sessionService = new SessionService(sessionRepository);
     const collectionService = new CollectionService(
@@ -67,7 +72,8 @@ const api = new Hono()
     const favoriteCollectionService = new FavoriteCollectionService(
       favoriteCollectionRepository,
       collectionRepository,
-      userRepository
+      userRepository,
+      collectionService
     );
     const subscriptionService = new SubscriptionService(
       subscriptionRepository,
@@ -77,7 +83,8 @@ const api = new Hono()
       reviewRepository,
       filmService,
       filmProvider,
-      collectionService
+      collectionService,
+      userRepository
     );
 
     c.set("userService", userService);
@@ -90,6 +97,7 @@ const api = new Hono()
     await next();
   })
   .use(withEntityCheck())
+  .use(userMiddleware)
   .route("", authRoute)
   .route("", profileRoute)
   .route("", reviewRoute)

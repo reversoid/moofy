@@ -1,16 +1,14 @@
 import { Hono } from "hono";
-import { authMiddleware } from "../utils/auth-middleware";
 import { z } from "zod";
 import {
-  CollectionNotFoundError,
-  FilmNotFoundError,
-  ReviewOnFilmExistsError,
   ReviewNotFoundError,
   NotOwnerOfReviewError,
+  NoAccessToPrivateCollectionError,
 } from "@repo/core/services";
 import { validator } from "../utils/validator";
 import { Id } from "@repo/core/utils";
 import { makeDto } from "../utils/make-dto";
+import { authMiddleware } from "../utils/auth-middleware";
 
 export const reviewRoute = new Hono()
   .get(
@@ -24,11 +22,26 @@ export const reviewRoute = new Hono()
     async (c) => {
       const { reviewId } = c.req.valid("param");
       const reviewService = c.get("reviewService");
+      const user = c.get("user");
 
-      const review = await reviewService.getReview(new Id(reviewId));
+      const reviewResult = await reviewService.getReview({
+        id: new Id(reviewId),
+        by: user?.id,
+      });
+
+      if (reviewResult.isErr()) {
+        const error = reviewResult.unwrapErr();
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw error;
+      }
+
+      const review = reviewResult.unwrap();
 
       if (!review) {
-        return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
+        return c.json({ error: "REVIEW_NOT_FOUND" as const }, 404);
       }
 
       return c.json(makeDto({ review }));
@@ -46,29 +59,25 @@ export const reviewRoute = new Hono()
     async (c) => {
       const { reviewId } = c.req.valid("param");
       const reviewService = c.get("reviewService");
-      const user = c.get("user");
+      const user = c.get("user")!;
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const result = await reviewService.removeReview(
-        new Id(reviewId),
-        user.id
-      );
+      const result = await reviewService.removeReview({
+        reviewId: new Id(reviewId),
+        by: user.id,
+      });
 
       if (result.isErr()) {
         const error = result.unwrapErr();
         if (error instanceof ReviewNotFoundError) {
-          return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
+          return c.json({ error: "REVIEW_NOT_FOUND" as const }, 404);
         }
 
         if (error instanceof NotOwnerOfReviewError) {
-          return c.json({ error: "FORBIDDEN" }, 403);
+          return c.json({ error: "FORBIDDEN" as const }, 403);
         }
       }
 
-      return new Response(null, { status: 204 });
+      return c.json({});
     }
   )
   .patch(
@@ -83,37 +92,33 @@ export const reviewRoute = new Hono()
     validator(
       "json",
       z.object({
-        score: z.number().int().min(1).max(10),
-        description: z.string().min(1).max(1000),
+        score: z.number().int().min(1).max(10).nullish(),
+        description: z.string().min(1).max(1000).nullish(),
       })
     ),
     async (c) => {
       const { reviewId } = c.req.valid("param");
       const { score, description } = c.req.valid("json");
       const reviewService = c.get("reviewService");
-      const user = c.get("user");
+      const user = c.get("user")!;
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const result = await reviewService.editReview(
-        new Id(reviewId),
-        {
+      const result = await reviewService.editReview({
+        reviewId: new Id(reviewId),
+        dto: {
           score,
           description,
         },
-        user.id
-      );
+        by: user.id,
+      });
 
       if (result.isErr()) {
         const error = result.unwrapErr();
         if (error instanceof ReviewNotFoundError) {
-          return c.json({ error: "REVIEW_NOT_FOUND" }, 404);
+          return c.json({ error: "REVIEW_NOT_FOUND" as const }, 404);
         }
 
         if (error instanceof NotOwnerOfReviewError) {
-          return c.json({ error: "FORBIDDEN" }, 403);
+          return c.json({ error: "FORBIDDEN" as const }, 403);
         }
       }
 

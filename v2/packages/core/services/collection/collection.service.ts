@@ -1,10 +1,13 @@
 import { err, ok, Result } from "resulto";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
-import { Id } from "../../utils/id";
 import { PaginatedData } from "../../utils/pagination";
 import { UserNotFoundError } from "../user/errors";
-import { CollectionNotFoundError, NotOwnerOfCollectionError } from "./errors";
+import {
+  CollectionNotFoundError,
+  NotOwnerOfCollectionError,
+  NoAccessToPrivateCollectionError,
+} from "./errors";
 import {
   CreateCollectionDto,
   EditCollectionDto,
@@ -19,118 +22,138 @@ export class CollectionService implements ICollectionService {
     private readonly userRepository: IUserRepository
   ) {}
 
-  async createCollection(
-    dto: CreateCollectionDto
-  ): Promise<Result<Collection, UserNotFoundError>> {
-    const user = await this.userRepository.get(dto.userId);
+  async createCollection(props: {
+    userId: User["id"];
+    dto: CreateCollectionDto;
+  }): Promise<Result<Collection, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
     const newCollection = new Collection({
       creator: user,
-      isPublic: dto.isPublic ?? false,
-      name: dto.name,
-      description: dto.description,
-      imageUrl: dto.imageUrl,
+      isPublic: props.dto.isPublic ?? false,
+      name: props.dto.name,
+      description: props.dto.description,
+      imageUrl: props.dto.imageUrl,
     });
 
     const createdCollection =
       await this.collectionRepository.create(newCollection);
-
     return ok(createdCollection);
   }
 
-  async removeCollection(
-    id: Id,
-    by: User["id"]
-  ): Promise<
+  async removeCollection(props: {
+    id: Collection["id"];
+    by: User["id"];
+  }): Promise<
     Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>
   > {
-    const collection = await this.collectionRepository.get(id);
+    const collection = await this.collectionRepository.get(props.id);
     if (!collection) {
       return err(new CollectionNotFoundError());
     }
 
-    if (collection.creator.id.value !== by.value) {
+    if (collection.creator.id.value !== props.by.value) {
       return err(new NotOwnerOfCollectionError());
     }
 
-    await this.collectionRepository.remove(id);
+    await this.collectionRepository.remove(props.id);
     return ok(null);
   }
 
-  async editCollection(
-    id: Collection["id"],
-    dto: EditCollectionDto,
-    by: User["id"]
-  ): Promise<
+  async editCollection(props: {
+    id: Collection["id"];
+    dto: EditCollectionDto;
+    by: User["id"];
+  }): Promise<
     Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
   > {
-    const collection = await this.collectionRepository.get(id);
+    const collection = await this.collectionRepository.get(props.id);
     if (!collection) {
       return err(new CollectionNotFoundError());
     }
 
-    if (collection.creator.id.value !== by.value) {
+    if (collection.creator.id.value !== props.by.value) {
       return err(new NotOwnerOfCollectionError());
     }
 
-    const updatedCollection = await this.collectionRepository.update(id, {
-      description: dto.description,
-      imageUrl: dto.imageUrl,
-      isPublic: dto.isPublic,
-      name: dto.name,
+    const updatedCollection = await this.collectionRepository.update(props.id, {
+      description: props.dto.description,
+      imageUrl: props.dto.imageUrl,
+      isPublic: props.dto.isPublic,
+      name: props.dto.name,
     });
 
     return ok(updatedCollection);
   }
 
-  async getUserCollections(
-    userId: User["id"],
-    limit: number,
-    cursor?: string | null,
-    search?: string,
-    withPrivate?: boolean
-  ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>> {
-    const user = await this.userRepository.get(userId);
+  async getUserCollections(props: {
+    userId: User["id"];
+    limit: number;
+    by?: User["id"];
+    cursor?: string | null;
+    search?: string;
+  }): Promise<Result<PaginatedData<Collection>, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
-    if (search) {
+    if (props.search) {
       const collections = await this.collectionRepository.searchCollections(
-        search,
-        limit,
-        { userId: user.id, withPrivate: withPrivate ?? false }
+        props.search,
+        props.limit,
+        {
+          userId: user.id,
+          withPrivate: props.userId.value === props.by?.value,
+        }
       );
 
       return ok({ cursor: null, items: collections });
     }
 
     const collections = await this.collectionRepository.getUserCollections(
-      userId,
-      limit,
-      cursor ?? undefined,
-      withPrivate
+      props.userId,
+      props.limit,
+      props.cursor ?? undefined,
+      props.userId.value === props.by?.value
     );
 
     return ok(collections);
   }
 
-  async getCollection(id: Collection["id"]): Promise<Collection | null> {
-    const collection = await this.collectionRepository.get(id);
-    return collection;
-  }
-
-  async searchCollections(
-    search: string,
-    limit: number
-  ): Promise<Collection[]> {
-    if (!search) {
-      return this.collectionRepository.getOldestPublicCollections(limit);
+  async getCollection(props: {
+    id: Collection["id"];
+    by?: User["id"];
+  }): Promise<Result<Collection | null, NoAccessToPrivateCollectionError>> {
+    const collection = await this.collectionRepository.get(props.id);
+    if (!collection) {
+      return ok(null);
     }
 
-    return this.collectionRepository.searchCollections(search, limit);
+    if (
+      !collection.isPublic &&
+      collection.creator.id.value !== props.by?.value
+    ) {
+      return err(new NoAccessToPrivateCollectionError());
+    }
+
+    return ok(collection);
+  }
+
+  async searchPublicCollections(props: {
+    search: string;
+    limit: number;
+  }): Promise<Collection[]> {
+    if (!props.search) {
+      return this.collectionRepository.getOldestPublicCollections(props.limit);
+    }
+
+    return this.collectionRepository.searchCollections(
+      props.search,
+      props.limit
+    );
   }
 }

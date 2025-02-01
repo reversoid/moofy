@@ -24,8 +24,8 @@ export class NotOwnerOfReviewError extends CoreError {
   }
 }
 
-export class CannotSeePrivateCollectionError extends CoreError {
+export class NoAccessToCollectionError extends CoreError {
   constructor() {
-    super("Cannot See Private Collection");
+    super("No Access To Collection");
   }
 }

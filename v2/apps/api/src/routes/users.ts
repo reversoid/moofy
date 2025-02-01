@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import { validator } from "../utils/validator";
 import z from "zod";
-import { authMiddleware } from "../utils/auth-middleware";
 import { Id } from "@repo/core/utils";
 import {
   AlreadyFollowingError,
@@ -10,38 +9,40 @@ import {
 } from "@repo/core/services";
 import { UserNotFoundError } from "@repo/core/services";
 import { makeDto } from "../utils/make-dto";
-import { User } from "@repo/core/entities";
+import { authMiddleware } from "../utils/auth-middleware";
 
 export const userRoute = new Hono()
-  .use(authMiddleware)
   .put(
     "/users/:id/followers",
+    authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const subscriptionService = c.get("subscriptionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
+      const result = await subscriptionService.follow({
+        fromUserId: user.id,
+        toUserId: new Id(id),
+      });
 
-      const result = await subscriptionService.follow(user.id, new Id(id));
-
-      if (!result.isOk()) {
+      if (result.isErr()) {
         const error = result.unwrapErr();
+
         if (error instanceof UserNotFoundError) {
           return c.json({ error: "USER_NOT_FOUND" as const }, 404);
         }
+
         if (error instanceof AlreadyFollowingError) {
-          return c.json({ error: "ALREADY_FOLLOWING" as const }, 400);
+          return c.json({ error: "ALREADY_FOLLOWING" as const }, 409);
         }
+
         if (error instanceof CannotFollowSelfError) {
           return c.json({ error: "CANNOT_FOLLOW_SELF" as const }, 400);
         }
       }
 
-      return c.json(makeDto({ user: result.unwrap() }));
+      return c.json({});
     }
   )
   .get(
@@ -59,14 +60,19 @@ export const userRoute = new Hono()
       const { limit, cursor } = c.req.valid("query");
       const subscriptionService = c.get("subscriptionService");
 
-      const result = await subscriptionService.getFollowers(
-        new Id(id),
+      const result = await subscriptionService.getFollowers({
+        userId: new Id(id),
         limit,
-        cursor
-      );
+        cursor,
+      });
 
-      if (!result.isOk()) {
-        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
       }
 
       return c.json(makeDto({ users: result.unwrap() }));
@@ -87,14 +93,20 @@ export const userRoute = new Hono()
       const { limit, cursor } = c.req.valid("query");
       const subscriptionService = c.get("subscriptionService");
 
-      const result = await subscriptionService.getFollowees(
-        new Id(id),
+      const result = await subscriptionService.getFollowees({
+        userId: new Id(id),
         limit,
-        cursor
-      );
+        cursor,
+      });
 
-      if (!result.isOk()) {
-        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+
+        if (error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
       }
 
       return c.json(makeDto({ users: result.unwrap() }));
@@ -102,20 +114,21 @@ export const userRoute = new Hono()
   )
   .delete(
     "/users/:id/followers",
+    authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const subscriptionService = c.get("subscriptionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
+      const result = await subscriptionService.unfollow({
+        fromUserId: user.id,
+        toUserId: new Id(id),
+      });
 
-      const result = await subscriptionService.unfollow(user.id, new Id(id));
-
-      if (!result.isOk()) {
+      if (result.isErr()) {
         const error = result.unwrapErr();
+
         if (error instanceof UserNotFoundError) {
           return c.json({ error: "USER_NOT_FOUND" as const }, 404);
         }
@@ -125,7 +138,7 @@ export const userRoute = new Hono()
         }
       }
 
-      return c.json(makeDto({ user: result.unwrap() }));
+      return c.json({});
     }
   )
   .get("/users/existence/:username", async (c) => {
@@ -136,6 +149,7 @@ export const userRoute = new Hono()
   })
   .get(
     "/users",
+    authMiddleware,
     validator(
       "query",
       z.object({
@@ -147,7 +161,7 @@ export const userRoute = new Hono()
       const { search, limit } = c.req.valid("query");
       const userService = c.get("userService");
 
-      const users = await userService.searchUsers(search, limit);
+      const users = await userService.searchUsers({ search, limit });
 
       return c.json(makeDto({ users }));
     }
@@ -186,16 +200,21 @@ export const userRoute = new Hono()
 
       const collectionService = c.get("collectionService");
 
-      const collections = await collectionService.getUserCollections(
-        new Id(id),
+      const collections = await collectionService.getUserCollections({
+        userId: new Id(id),
         limit,
         cursor,
         search,
-        user?.id.value === id
-      );
+        by: user?.id,
+      });
 
-      if (!collections.isOk()) {
-        return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+      if (collections.isErr()) {
+        const error = collections.unwrapErr();
+        if (error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
       }
 
       return c.json(makeDto({ collections: collections.unwrap() }));

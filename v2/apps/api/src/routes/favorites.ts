@@ -1,16 +1,15 @@
-import { Hono } from "hono";
-import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
-import { z } from "zod";
-import { Id } from "@repo/core/utils";
 import {
   CollectionAlreadyFavoritedError,
-  CollectionIsPrivateError,
   CollectionNotFavoritedError,
   CollectionNotFoundError,
-  UserNotFoundError,
+  NoAccessToPrivateCollectionError,
 } from "@repo/core/services";
+import { Id } from "@repo/core/utils";
+import { Hono } from "hono";
+import { z } from "zod";
+import { authMiddleware } from "../utils/auth-middleware";
 import { makeDto } from "../utils/make-dto";
+import { validator } from "../utils/validator";
 
 export const favoritesRoute = new Hono()
   .use(authMiddleware)
@@ -26,25 +25,17 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { limit, cursor, search } = c.req.valid("query");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
       const result = await favoriteCollectionService.getUserFavoriteCollections(
-        user.id,
-        limit,
-        cursor,
-        search
-      );
-
-      if (!result.isOk()) {
-        if (result.error instanceof UserNotFoundError) {
-          return c.json({ error: "USER_NOT_FOUND" }, 404);
+        {
+          userId: user.id,
+          limit,
+          cursor,
+          search,
         }
-      }
+      );
 
       return c.json(makeDto({ collections: result.unwrap() }));
     }
@@ -57,16 +48,14 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
       const isFavorited = await favoriteCollectionService.isCollectionFavorited(
-        user.id,
-        new Id(collectionId)
+        {
+          userId: user.id,
+          collectionId: new Id(collectionId),
+        }
       );
 
       return c.json(makeDto({ isFavorited }));
@@ -80,31 +69,30 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const result = await favoriteCollectionService.addToFavorites(
-        user.id,
-        new Id(collectionId)
-      );
+      const result = await favoriteCollectionService.addToFavorites({
+        userId: user.id,
+        collectionId: new Id(collectionId),
+      });
 
       if (!result.isOk()) {
         const error = result.unwrapErr();
 
-        if (
-          error instanceof CollectionNotFoundError ||
-          error instanceof CollectionIsPrivateError
-        ) {
-          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
         }
 
         if (error instanceof CollectionAlreadyFavoritedError) {
-          return c.json({ error: "COLLECTION_ALREADY_FAVORITED" }, 400);
+          return c.json({ error: "COLLECTION_ALREADY_FAVORITED" }, 409);
         }
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        throw error;
       }
 
       return c.json(makeDto({ collection: result.unwrap() }));
@@ -118,30 +106,30 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
+      const result = await favoriteCollectionService.removeFromFavorites({
+        userId: user.id,
+        collectionId: new Id(collectionId),
+      });
 
-      const result = await favoriteCollectionService.removeFromFavorites(
-        user.id,
-        new Id(collectionId)
-      );
-
-      if (!result.isOk()) {
+      if (result.isErr()) {
         const error = result.unwrapErr();
-        if (
-          error instanceof CollectionNotFoundError ||
-          error instanceof CollectionIsPrivateError
-        ) {
+
+        if (error instanceof CollectionNotFoundError) {
           return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
         }
 
         if (error instanceof CollectionNotFavoritedError) {
           return c.json({ error: "COLLECTION_NOT_FAVORITED" }, 400);
         }
+
+        throw error;
       }
 
       return c.json(makeDto({ collection: result.unwrap() }));

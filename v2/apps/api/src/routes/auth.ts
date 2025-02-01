@@ -4,6 +4,7 @@ import z from "zod";
 import { deleteCookie, getCookie, setSignedCookie } from "hono/cookie";
 import config from "@repo/config";
 import { makeDto } from "../utils/make-dto";
+import { UsernameExistsError } from "@repo/core/services";
 
 export const authRoute = new Hono()
   .post(
@@ -20,14 +21,15 @@ export const authRoute = new Hono()
       const userService = c.get("userService");
       const sessionService = c.get("sessionService");
 
-      const userResult = await userService.validateUserAndPassword(
+      const userResult = await userService.validateUserAndPassword({
         username,
-        password
-      );
+        password,
+      });
 
-      if (!userResult.isOk()) {
-        return c.json({ error: "INVALID_CREDENTIALS" }, 401);
+      if (userResult.isErr()) {
+        return c.json({ error: "INVALID_CREDENTIALS" as const }, 401);
       }
+
       const user = userResult.unwrap();
 
       const token = sessionService.generateSessionToken();
@@ -57,17 +59,25 @@ export const authRoute = new Hono()
       const userService = c.get("userService");
       const sessionService = c.get("sessionService");
 
-      const createResult = await userService.createUser(username, password);
+      const createResult = await userService.createUser({
+        username,
+        password,
+      });
 
-      if (!createResult.isOk()) {
-        return c.json({ error: createResult.error.message }, 400);
+      if (createResult.isErr()) {
+        const error = createResult.unwrapErr();
+
+        if (error instanceof UsernameExistsError) {
+          return c.json({ error: "USERNAME_EXISTS" as const }, 400);
+        }
+
+        throw error;
       }
 
+      const newUser = createResult.unwrap();
+
       const token = sessionService.generateSessionToken();
-      const session = await sessionService.createSession(
-        token,
-        createResult.value
-      );
+      const session = await sessionService.createSession(token, newUser);
 
       await setSignedCookie(c, "session", token, config.COOKIE_SECRET, {
         httpOnly: true,

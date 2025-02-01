@@ -1,20 +1,19 @@
-import { Hono } from "hono";
-import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
-import { z } from "zod";
-import { Id, PaginatedData } from "@repo/core/utils";
 import {
   CollectionNotFoundError,
   FilmNotFoundError,
-  NotOwnerOfReviewError,
+  NoAccessToCollectionError,
+  NoAccessToPrivateCollectionError,
+  NotOwnerOfCollectionError,
   ReviewOnFilmExistsError,
-  UserNotFoundError,
 } from "@repo/core/services";
+import { Id } from "@repo/core/utils";
+import { Hono } from "hono";
+import { z } from "zod";
+import { authMiddleware } from "../utils/auth-middleware";
 import { makeDto } from "../utils/make-dto";
-import { Review } from "@repo/core/entities";
+import { validator } from "../utils/validator";
 
 export const collectionRoute = new Hono()
-  .use(authMiddleware)
   .get(
     "/collections",
     validator(
@@ -26,23 +25,19 @@ export const collectionRoute = new Hono()
     ),
     async (c) => {
       const { search, limit } = c.req.valid("query");
-      const user = c.get("user");
       const collectionService = c.get("collectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const collections = await collectionService.searchCollections(
+      const collections = await collectionService.searchPublicCollections({
         search,
-        limit
-      );
+        limit,
+      });
 
       return c.json(makeDto({ collections }));
     }
   )
   .post(
     "/collections",
+    authMiddleware,
     validator(
       "json",
       z.object({
@@ -53,27 +48,19 @@ export const collectionRoute = new Hono()
       })
     ),
     async (c) => {
-      const user = c.get("user");
+      const user = c.get("user")!;
       const { name, description, imageUrl, isPublic } = c.req.valid("json");
       const collectionService = c.get("collectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
       const result = await collectionService.createCollection({
         userId: user.id,
-        name,
-        description: description ?? undefined,
-        imageUrl: imageUrl ?? undefined,
-        isPublic,
+        dto: {
+          name,
+          description: description ?? undefined,
+          imageUrl: imageUrl ?? undefined,
+          isPublic,
+        },
       });
-
-      if (!result.isOk()) {
-        if (result.error instanceof UserNotFoundError) {
-          return c.json({ error: "USER_NOT_FOUND" }, 404);
-        }
-      }
 
       return c.json(makeDto({ collection: result.unwrap() }), 201);
     }
@@ -86,21 +73,25 @@ export const collectionRoute = new Hono()
       const user = c.get("user");
       const collectionService = c.get("collectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
+      const collectionResult = await collectionService.getCollection({
+        id: new Id(id),
+        by: user?.id,
+      });
+
+      if (collectionResult.isErr()) {
+        const error = collectionResult.unwrapErr();
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw error;
       }
 
-      const collection = await collectionService.getCollection(new Id(id));
+      const collection = collectionResult.unwrap();
 
       if (!collection) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-      }
-
-      if (
-        !collection.isPublic &&
-        collection.creator.id.value !== user.id.value
-      ) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
       }
 
       return c.json(makeDto({ collection }));
@@ -108,29 +99,29 @@ export const collectionRoute = new Hono()
   )
   .delete(
     "/collections/:id",
+    authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const collectionService = c.get("collectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
+      const result = await collectionService.removeCollection({
+        id: new Id(id),
+        by: user.id,
+      });
 
-      const result = await collectionService.removeCollection(
-        new Id(id),
-        user.id
-      );
-
-      if (!result.isOk()) {
-        if (result.error instanceof CollectionNotFoundError) {
-          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
         }
 
-        if (result.error instanceof NotOwnerOfReviewError) {
-          return c.json({ error: "FORBIDDEN" }, 403);
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
         }
+
+        throw error;
       }
 
       return c.body(null, 204);
@@ -138,6 +129,7 @@ export const collectionRoute = new Hono()
   )
   .patch(
     "/collections/:id",
+    authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     validator(
       "json",
@@ -151,27 +143,26 @@ export const collectionRoute = new Hono()
     async (c) => {
       const { id } = c.req.valid("param");
       const updateData = c.req.valid("json");
-      const user = c.get("user");
+      const user = c.get("user")!;
       const collectionService = c.get("collectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
+      const result = await collectionService.editCollection({
+        id: new Id(id),
+        by: user.id,
+        dto: updateData,
+      });
 
-      const result = await collectionService.editCollection(
-        new Id(id),
-        updateData,
-        user.id
-      );
-
-      if (!result.isOk()) {
-        if (result.error instanceof CollectionNotFoundError) {
-          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
         }
 
-        if (result.error instanceof NotOwnerOfReviewError) {
-          return c.json({ error: "FORBIDDEN" }, 403);
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
         }
+
+        throw error;
       }
 
       return c.json(makeDto({ collection: result.unwrap() }));
@@ -192,45 +183,63 @@ export const collectionRoute = new Hono()
       z.object({ collectionId: z.coerce.number().int().positive() })
     ),
     async (c) => {
+      const user = c.get("user");
+
       const { collectionId } = c.req.valid("param");
       const { limit, cursor, search } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
 
       if (search) {
-        const result = await reviewService.searchReviews(
+        const result = await reviewService.searchReviews({
           search,
-          new Id(collectionId),
-          limit
-        );
+          collectionId: new Id(collectionId),
+          limit,
+          by: user?.id,
+        });
 
         if (result.isErr()) {
           const error = result.unwrapErr();
           if (error instanceof CollectionNotFoundError) {
-            return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+            return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
           }
+
+          if (error instanceof NoAccessToPrivateCollectionError) {
+            return c.json({ error: "FORBIDDEN" as const }, 403);
+          }
+
+          throw error;
         }
+
+        const reviews = result.unwrap();
 
         return c.json(
           makeDto({
             reviews: {
-              items: result.unwrap(),
+              items: reviews,
               cursor: null,
             },
           })
         );
       } else {
-        const result = await reviewService.getCollectionReviews(
-          new Id(collectionId),
+        const result = await reviewService.getCollectionReviews({
+          collectionId: new Id(collectionId),
           limit,
-          cursor
-        );
+          cursor,
+          by: user?.id,
+        });
 
         if (result.isErr()) {
           const error = result.unwrapErr();
           if (error instanceof CollectionNotFoundError) {
-            return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+            return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
           }
+
+          if (error instanceof NoAccessToPrivateCollectionError) {
+            return c.json({ error: "FORBIDDEN" as const }, 403);
+          }
+
+          throw error;
         }
 
         const reviews = result.unwrap();
@@ -240,11 +249,12 @@ export const collectionRoute = new Hono()
   )
   .post(
     "/collections/:collectionId/reviews",
+    authMiddleware,
     validator(
       "json",
       z.object({
-        score: z.number().int().min(1).max(10),
-        description: z.string().min(1).max(1000),
+        score: z.number().int().min(1).max(10).nullish(),
+        description: z.string().min(1).max(1000).nullish(),
         filmId: z.coerce.number().int().positive(),
       })
     ),
@@ -255,42 +265,40 @@ export const collectionRoute = new Hono()
     async (c) => {
       const { collectionId } = c.req.valid("param");
       const { score, description, filmId } = c.req.valid("json");
-      const user = c.get("user");
-
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
+      const user = c.get("user")!;
 
       const reviewService = c.get("reviewService");
 
-      const result = await reviewService.createReview(
-        {
-          score,
-          description,
-          collectionId: new Id(collectionId),
+      const result = await reviewService.createReview({
+        collectionId: new Id(collectionId),
+        by: user.id,
+        dto: {
           filmId: String(filmId),
+          score: score ?? undefined,
+          description: description ?? undefined,
         },
-        user.id
-      );
+      });
 
       if (result.isErr()) {
         const error = result.unwrapErr();
 
         if (error instanceof CollectionNotFoundError) {
-          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
         }
 
         if (error instanceof FilmNotFoundError) {
-          return c.json({ error: "FILM_NOT_FOUND" }, 404);
+          return c.json({ error: "FILM_NOT_FOUND" as const }, 400);
         }
 
         if (error instanceof ReviewOnFilmExistsError) {
-          return c.json({ error: "REVIEW_ON_FILM_EXISTS" }, 409);
+          return c.json({ error: "REVIEW_ON_FILM_EXISTS" as const }, 409);
         }
 
-        if (error instanceof NotOwnerOfReviewError) {
-          return c.json({ error: "FORBIDDEN" }, 403);
+        if (error instanceof NoAccessToCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
         }
+
+        throw error;
       }
 
       const review = result.unwrap();

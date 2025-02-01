@@ -17,3 +17,9 @@ export class CannotFollowSelfError extends CoreError {
     super("Cannot Follow Self");
   }
 }
+
+export class CannotUnfollowSelfError extends CoreError {
+  constructor() {
+    super("Cannot Unfollow Self");
+  }
+}

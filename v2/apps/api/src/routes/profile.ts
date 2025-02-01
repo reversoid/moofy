@@ -1,19 +1,14 @@
+import { UsernameExistsError } from "@repo/core/services";
 import { Hono } from "hono";
-import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
 import { z } from "zod";
-import { UserNotFoundError } from "@repo/core/services";
+import { authMiddleware } from "../utils/auth-middleware";
 import { makeDto } from "../utils/make-dto";
+import { validator } from "../utils/validator";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
   .get("/profile", async (c) => {
-    const user = c.get("user");
-
-    if (!user) {
-      throw new Error("UNAUTHORIZED");
-    }
-
+    const user = c.get("user")!;
     return c.json(makeDto({ user }));
   })
   .get(
@@ -27,27 +22,17 @@ export const profileRoute = new Hono()
       })
     ),
     async (c) => {
-      const user = c.get("user");
+      const user = c.get("user")!;
       const { limit, cursor, search } = c.req.valid("query");
       const collectionService = c.get("collectionService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const result = await collectionService.getUserCollections(
-        user.id,
+      const result = await collectionService.getUserCollections({
+        userId: user.id,
         limit,
         cursor,
         search,
-        true
-      );
-
-      if (!result.isOk()) {
-        if (result.error instanceof UserNotFoundError) {
-          return c.json({ error: "USER_NOT_FOUND" }, 404);
-        }
-      }
+        by: user.id,
+      });
 
       return c.json(makeDto({ collections: result.unwrap() }));
     }
@@ -57,24 +42,36 @@ export const profileRoute = new Hono()
     validator(
       "json",
       z.object({
+        username: z.string().optional(),
+        password: z.string().optional(),
         description: z.string().optional(),
         imageUrl: z.string().optional(),
       })
     ),
     async (c) => {
-      const user = c.get("user");
-      const { description, imageUrl } = c.req.valid("json");
+      const user = c.get("user")!;
+      const { description, imageUrl, password, username } = c.req.valid("json");
       const userService = c.get("userService");
 
-      if (!user) {
-        throw new Error("UNAUTHORIZED");
-      }
-
-      const updatedUser = await userService.updateUser(user.id, {
-        description,
-        imageUrl,
+      const updatedUserResult = await userService.updateUser({
+        id: user.id,
+        data: {
+          description,
+          imageUrl,
+          username,
+          password,
+        },
       });
 
-      return c.json(makeDto({ user: updatedUser }));
+      if (updatedUserResult.isErr()) {
+        const error = updatedUserResult.unwrapErr();
+        if (error instanceof UsernameExistsError) {
+          return c.json({ error: "USERNAME_ALREADY_EXISTS" }, 409);
+        }
+
+        throw error;
+      }
+
+      return c.json(makeDto({ user: updatedUserResult.unwrap() }));
     }
   );

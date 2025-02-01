@@ -2,12 +2,14 @@ import { Result } from "resulto";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
 import { UserNotFoundError } from "../user/errors";
-import { Id } from "../../utils/id";
-import { CollectionNotFoundError, NotOwnerOfCollectionError } from "./errors";
+import {
+  NoAccessToPrivateCollectionError,
+  CollectionNotFoundError,
+  NotOwnerOfCollectionError,
+} from "./errors";
 import { PaginatedData } from "../../utils/pagination";
 
 export type CreateCollectionDto = {
-  userId: User["id"];
   name: string;
   description?: string;
   imageUrl?: string;
@@ -22,32 +24,41 @@ export type EditCollectionDto = {
 };
 
 export interface ICollectionService {
-  createCollection(
-    dto: CreateCollectionDto
-  ): Promise<Result<Collection, UserNotFoundError>>;
+  createCollection(props: {
+    userId: User["id"];
+    dto: CreateCollectionDto;
+  }): Promise<Result<Collection, UserNotFoundError>>;
 
-  removeCollection(
-    id: Id,
-    removeBy: User["id"]
-  ): Promise<Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>>;
+  removeCollection(props: {
+    id: Collection["id"];
+    by: User["id"];
+  }): Promise<
+    Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>
+  >;
 
-  editCollection(
-    id: Collection["id"],
-    dto: EditCollectionDto,
-    editBy: User["id"]
-  ): Promise<
+  editCollection(props: {
+    id: Collection["id"];
+    dto: EditCollectionDto;
+    by: User["id"];
+  }): Promise<
     Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
   >;
 
-  getUserCollections(
-    userId: User["id"],
-    limit: number,
-    cursor?: string | null,
-    search?: string,
-    withPrivate?: boolean
-  ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>>;
+  getUserCollections(props: {
+    userId: User["id"];
+    limit: number;
+    by?: User["id"];
+    cursor?: string | null;
+    search?: string;
+  }): Promise<Result<PaginatedData<Collection>, UserNotFoundError>>;
 
-  getCollection(id: Collection["id"]): Promise<Collection | null>;
+  getCollection(props: {
+    id: Collection["id"];
+    by?: User["id"];
+  }): Promise<Result<Collection | null, NoAccessToPrivateCollectionError>>;
 
-  searchCollections(search: string, limit: number): Promise<Collection[]>;
+  searchPublicCollections(props: {
+    search: string;
+    limit: number;
+  }): Promise<Collection[]>;
 }

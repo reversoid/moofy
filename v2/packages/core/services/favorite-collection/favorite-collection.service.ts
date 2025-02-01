@@ -5,101 +5,147 @@ import { ICollectionRepository } from "../../repositories/collection.repository"
 import { IFavoriteCollectionRepository } from "../../repositories";
 import { IUserRepository } from "../../repositories/user.repository";
 import { PaginatedData } from "../../utils/pagination";
-import { CollectionNotFoundError } from "../collection/errors";
+import {
+  CollectionNotFoundError,
+  NoAccessToPrivateCollectionError,
+} from "../collection/errors";
 import { UserNotFoundError } from "../user/errors";
 import {
   CollectionAlreadyFavoritedError,
-  CollectionIsPrivateError,
   CollectionNotFavoritedError,
 } from "./errors";
 import { IFavoriteCollectionService } from "./interface";
+import { ICollectionService } from "../collection";
 
 export class FavoriteCollectionService implements IFavoriteCollectionService {
   constructor(
     private readonly favoriteCollectionRepository: IFavoriteCollectionRepository,
     private readonly collectionRepository: ICollectionRepository,
-    private readonly userRepository: IUserRepository
+    private readonly userRepository: IUserRepository,
+    private readonly collectionService: ICollectionService
   ) {}
 
-  async addToFavorites(
-    userId: User["id"],
-    collectionId: Collection["id"]
-  ): Promise<
+  async addToFavorites(props: {
+    userId: User["id"];
+    collectionId: Collection["id"];
+  }): Promise<
     Result<
-      Collection,
+      null,
+      | UserNotFoundError
       | CollectionNotFoundError
       | CollectionAlreadyFavoritedError
-      | CollectionIsPrivateError
+      | NoAccessToPrivateCollectionError
     >
   > {
-    const collection = await this.collectionRepository.get(collectionId);
-    if (!collection) {
-      return err(new CollectionNotFoundError());
-    }
-
-    if (!collection.isPublic && collection.creator.id !== userId) {
-      return err(new CollectionIsPrivateError());
-    }
-
-    const exists = await this.favoriteCollectionRepository.exists(
-      userId,
-      collectionId
-    );
-    if (exists) {
-      return err(new CollectionAlreadyFavoritedError());
-    }
-
-    await this.favoriteCollectionRepository.add(userId, collectionId);
-    return ok(collection);
-  }
-
-  async removeFromFavorites(
-    userId: User["id"],
-    collectionId: Collection["id"]
-  ): Promise<
-    Result<
-      Collection,
-      | CollectionNotFoundError
-      | CollectionNotFavoritedError
-      | CollectionIsPrivateError
-    >
-  > {
-    const collection = await this.collectionRepository.get(collectionId);
-    if (!collection) {
-      return err(new CollectionNotFoundError());
-    }
-
-    if (!collection.isPublic && collection.creator.id !== userId) {
-      return err(new CollectionIsPrivateError());
-    }
-
-    const exists = await this.favoriteCollectionRepository.exists(
-      userId,
-      collectionId
-    );
-    if (!exists) {
-      return err(new CollectionNotFavoritedError());
-    }
-
-    await this.favoriteCollectionRepository.remove(userId, collectionId);
-    return ok(collection);
-  }
-
-  async getUserFavoriteCollections(
-    userId: User["id"],
-    limit: number,
-    cursor?: string,
-    search?: string
-  ): Promise<Result<PaginatedData<Collection>, UserNotFoundError>> {
-    const user = await this.userRepository.get(userId);
+    const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
-    if (search) {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.userId,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.unwrapErr();
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(error);
+      }
+
+      throw error;
+    }
+
+    const collection = collectionResult.unwrap();
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const exists = await this.favoriteCollectionRepository.exists(
+      props.userId,
+      props.collectionId
+    );
+
+    if (exists) {
+      return err(new CollectionAlreadyFavoritedError());
+    }
+
+    await this.favoriteCollectionRepository.add(
+      props.userId,
+      props.collectionId
+    );
+
+    return ok(null);
+  }
+
+  async removeFromFavorites(props: {
+    userId: User["id"];
+    collectionId: Collection["id"];
+  }): Promise<
+    Result<
+      null,
+      | UserNotFoundError
+      | CollectionNotFoundError
+      | CollectionNotFavoritedError
+      | NoAccessToPrivateCollectionError
+    >
+  > {
+    const user = await this.userRepository.get(props.userId);
+    if (!user) {
+      return err(new UserNotFoundError());
+    }
+
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.userId,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.unwrapErr();
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(error);
+      }
+
+      throw error;
+    }
+
+    const collection = collectionResult.unwrap();
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const exists = await this.favoriteCollectionRepository.exists(
+      props.userId,
+      props.collectionId
+    );
+
+    if (!exists) {
+      return err(new CollectionNotFavoritedError());
+    }
+
+    await this.favoriteCollectionRepository.remove(
+      props.userId,
+      props.collectionId
+    );
+
+    return ok(null);
+  }
+
+  async getUserFavoriteCollections(props: {
+    userId: User["id"];
+    limit: number;
+    cursor?: string;
+    search?: string;
+  }): Promise<Result<PaginatedData<Collection>, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
+    if (!user) {
+      return err(new UserNotFoundError());
+    }
+
+    if (props.search) {
       const collections = await this.collectionRepository.searchCollections(
-        search,
-        limit,
+        props.search,
+        props.limit,
         { favoritedBy: user.id }
       );
 
@@ -108,18 +154,21 @@ export class FavoriteCollectionService implements IFavoriteCollectionService {
 
     const collections =
       await this.favoriteCollectionRepository.getUserFavoriteCollections(
-        userId,
-        limit,
-        cursor
+        props.userId,
+        props.limit,
+        props.cursor
       );
 
     return ok(collections);
   }
 
-  async isCollectionFavorited(
-    userId: User["id"],
-    collectionId: Collection["id"]
-  ): Promise<boolean> {
-    return this.favoriteCollectionRepository.exists(userId, collectionId);
+  async isCollectionFavorited(props: {
+    userId: User["id"];
+    collectionId: Collection["id"];
+  }): Promise<boolean> {
+    return this.favoriteCollectionRepository.exists(
+      props.userId,
+      props.collectionId
+    );
   }
 }

@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import { authMiddleware } from "../utils/auth-middleware";
 import { validator } from "../utils/validator";
 import z from "zod";
 import { UnofficialKpProvider } from "@repo/film-providers";
 import { makeDto } from "../utils/make-dto";
+import { authMiddleware } from "../utils/auth-middleware";
 
 const filmProvider = new UnofficialKpProvider();
 
