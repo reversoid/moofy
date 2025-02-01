@@ -5,28 +5,28 @@
 	import { Label } from '$lib/components/ui/label';
 
 	function handleValueChange(value: string) {
-		rating = value;
+		rating = Number(value);
 	}
 
 	const handleResetRating = (event: MouseEvent, clickedRating: string) => {
-		if (clickedRating === rating) {
+		if (clickedRating === String(rating)) {
 			event.preventDefault();
 			event.stopPropagation();
 
-			rating = '';
+			rating = null;
 		}
 	};
 
 	interface Props {
-		rating?: string;
+		rating?: number | null;
 	}
 
 	let { rating = $bindable() }: Props = $props();
 </script>
 
 <RadioGroup.Root
-	class="flex justify-between gap-2"
-	value={rating}
+	class="flex flex-wrap justify-between gap-2"
+	value={String(rating)}
 	onValueChange={handleValueChange}
 >
 	{#each ['1', '2', '3', '4', '5'] as value}
@@ -37,8 +37,8 @@
 				onclick={(e) => handleResetRating(e, value)}
 				for="r{value}"
 				class="{badgeVariants({
-					variant: rating === value ? 'default' : 'secondary'
-				})} flex cursor-pointer items-center justify-center gap-1"
+					variant: rating === Number(value) ? 'default' : 'secondary'
+				})} flex cursor-pointer items-center justify-center gap-1 py-1"
 			>
 				<IconStar size="16" />
 				<span>{value}</span>

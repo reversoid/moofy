@@ -6,6 +6,7 @@
 	import type { ReviewDto } from '@repo/api/dtos';
 	import * as Alert from '$lib/components/ui/alert';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
+	import { flip } from 'svelte/animate';
 
 	interface Props {
 		reviews: ReviewDto[];
@@ -15,7 +16,13 @@
 		defaultEmptyDescription: string;
 	}
 
-	const { reviews, cursor, onLoadMore, onSearch, defaultEmptyDescription }: Props = $props();
+	let {
+		reviews = $bindable(),
+		cursor,
+		onLoadMore,
+		onSearch,
+		defaultEmptyDescription
+	}: Props = $props();
 
 	let isLoading = $state(false);
 
@@ -34,6 +41,14 @@
 	let placholderDescription = $derived(
 		`${isSearch ? 'Попробуйте изменить параметры поиска' : defaultEmptyDescription}`
 	);
+
+	function handleReviewUpdated(review: ReviewDto) {
+		reviews = [review, ...reviews.filter((r) => r.id !== review.id)];
+	}
+
+	function handleReviewDeleted(reviewId: ReviewDto['id']) {
+		reviews = reviews.filter((r) => r.id !== reviewId);
+	}
 </script>
 
 <div class="flex flex-col gap-4">
@@ -51,11 +66,17 @@
 
 	<div class="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
 		{#each reviews as review (review.id)}
-			<ReviewCard {review}>
-				{#snippet actions()}
-					<EditReview />
-				{/snippet}
-			</ReviewCard>
+			<div animate:flip={{ duration: 350 }}>
+				<ReviewCard {review}>
+					{#snippet actions()}
+						<EditReview
+							existingReview={review}
+							onReviewUpdated={handleReviewUpdated}
+							onReviewDeleted={handleReviewDeleted}
+						/>
+					{/snippet}
+				</ReviewCard>
+			</div>
 		{/each}
 	</div>
 

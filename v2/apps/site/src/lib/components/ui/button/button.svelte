@@ -84,15 +84,23 @@
 {:else}
 	<button
 		bind:this={ref}
-		class={cn(buttonVariants({ variant, size }), className)}
+		class={cn(buttonVariants({ variant, size }), className, 'relative')}
 		{type}
 		onclick={restProps.onclick}
+		disabled={restProps.disabled ?? isLoading ?? false}
 		{...restProps}
 	>
 		{#if isLoading}
-			<LoaderCircle class="animate-spin" />
+			<span class="absolute inset-0 flex items-center justify-center">
+				<LoaderCircle class="animate-spin" />
+			</span>
+			<div class="invisible inline-flex items-center justify-center gap-2">
+				{@render children?.()}
+			</div>
 		{:else}
-			{@render children?.()}
+			<div class="inline-flex w-full items-center justify-between gap-2">
+				{@render children?.()}
+			</div>
 		{/if}
 	</button>
 {/if}

@@ -5,37 +5,21 @@
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils';
+	import { cn, handleResponse, makeClient } from '$lib/utils';
+	import type { FilmDto } from '@repo/api/dtos';
+	import uniqBy from 'lodash.uniqby';
+	import debounce from 'lodash.debounce';
+	import type { FormEventHandler } from 'svelte/elements';
 
-	const films = [
-		{
-			value: 'sveltekit',
-			label: 'SvelteKit'
-		},
-		{
-			value: 'next.js',
-			label: 'Next.js'
-		},
-		{
-			value: 'nuxt.js',
-			label: 'Nuxt.js'
-		},
-		{
-			value: 'remix',
-			label: 'Remix'
-		},
-		{
-			value: 'astro',
-			label: 'Astro'
-		}
-	];
+	interface Props {
+		film?: FilmDto | null;
+	}
+
+	let { film = $bindable() }: Props = $props();
 
 	let open = $state(false);
-	let value = $state('');
 	let inputWidth = $state(462);
 	let triggerRef = $state<HTMLButtonElement>(null!);
-
-	const selectedValue = $derived(films.find((f) => f.value === value)?.label);
 
 	// We want to refocus the trigger button when the user selects
 	// an item from the list so users can continue navigating the
@@ -60,6 +44,29 @@
 			return () => resizeObserver.disconnect();
 		}
 	});
+
+	let films = $state<FilmDto[]>([]);
+
+	async function searchFilm(search: string) {
+		const api = makeClient(fetch);
+		const response = await api.search.films
+			.$get({ query: { limit: '5', search } })
+			.then(handleResponse);
+
+		if (response.isOk()) {
+			const newFilms = response.unwrap().films;
+			films = newFilms;
+		}
+	}
+
+	const handleInputSearch = debounce(
+		async (e: Parameters<FormEventHandler<HTMLInputElement>>[0]) => {
+			await searchFilm((e.target as HTMLInputElement).value);
+		},
+		300
+	);
+
+	const visibleFilms = $derived(uniqBy([film, ...films].filter(Boolean) as FilmDto[], 'id'));
 </script>
 
 <Popover.Root bind:open>
@@ -72,27 +79,41 @@
 				role="combobox"
 				aria-expanded={open}
 			>
-				{selectedValue || 'Выберите фильм...'}
+				{film?.name || 'Выберите фильм...'}
 				<ChevronsUpDown class="opacity-50" />
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
 	<Popover.Content align="start" class="w-full p-0">
-		<Command.Root style={{ width: `${inputWidth}px` }}>
-			<Command.Input placeholder="Название фильма" />
+		<Command.Root style={{ width: `${inputWidth}px` }} shouldFilter={false}>
+			<Command.Input placeholder="Название фильма" oninput={handleInputSearch} />
 			<Command.List>
 				<Command.Empty>Фильмы не найдены</Command.Empty>
 				<Command.Group>
-					{#each films as film}
+					{#each visibleFilms as f}
 						<Command.Item
-							value={film.value}
+							class="flex items-start gap-2"
+							value={f.id}
 							onSelect={() => {
-								value = film.value;
 								closeAndFocusTrigger();
+								film = f;
 							}}
 						>
-							<Check class={cn(value !== film.value && 'text-transparent')} />
-							{film.label}
+							<img
+								src={f.posterUrl}
+								alt={`${f.name} poster`}
+								class="aspect-[2/3] h-20 rounded object-cover"
+							/>
+							<div class="flex h-full flex-col">
+								<h6 class="font-medium">
+									<div class="flex items-center gap-2">
+										{f.name}
+
+										<Check class={cn(film?.id !== f.id && 'text-transparent')} />
+									</div>
+								</h6>
+								<span class="text-muted-foreground">{f.year}</span>
+							</div>
 						</Command.Item>
 					{/each}
 				</Command.Group>

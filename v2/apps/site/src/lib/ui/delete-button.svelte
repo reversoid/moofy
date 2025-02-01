@@ -11,9 +11,16 @@
 		class?: string;
 		type?: 'submit' | 'button';
 		form?: string;
+		isLoading?: boolean;
 	};
 
-	const { onDelete, class: className, type = 'button', form }: DeleteButtonProps = $props();
+	const {
+		onDelete,
+		class: className,
+		type = 'button',
+		form,
+		isLoading
+	}: DeleteButtonProps = $props();
 
 	function handleDeleteClick() {
 		if (confirmedDelete) {
@@ -41,6 +48,7 @@
 </script>
 
 <Button
+	{isLoading}
 	class={className}
 	{type}
 	{form}

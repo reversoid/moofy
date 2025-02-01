@@ -1,60 +1,130 @@
-<script lang="ts" module>
-	export type ReviewModalProps = {
-		type: 'create' | 'edit';
-	};
-</script>
-
 <script lang="ts">
-	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { Combobox } from '$lib/components/ui/combobox';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { IconDeviceFloppy, IconPencil, IconStar } from '@tabler/icons-svelte';
-	import DeleteButton from '$lib/ui/delete-button.svelte';
 	import { Label } from '$lib/components/ui/label';
-	import SearchFilm from './search-film.svelte';
-	import RatingSelect from './rating-select.svelte';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import DeleteButton from '$lib/ui/delete-button.svelte';
+	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
 	import Film from './film.svelte';
+	import RatingSelect from './rating-select.svelte';
+	import SearchFilm from './search-film.svelte';
+	import type { FilmDto, ReviewDto } from '@repo/api/dtos';
 
-	const { type }: ReviewModalProps = $props();
+	type ReviewForm = {
+		film: FilmDto | null;
+		description: string | null;
+		score: number | null;
+	};
+
+	export type CompleteReviewForm = ReviewForm & {
+		film: FilmDto;
+	};
+
+	type ReviewModalProps = {
+		existingReview?: ReviewDto;
+		onSubmit: (form: CompleteReviewForm) => Promise<void>;
+		onSubmitDelete?: (id: ReviewDto['id']) => Promise<void>;
+	};
+
+	const { existingReview, onSubmit, onSubmitDelete }: ReviewModalProps = $props();
+
+	const type = existingReview ? 'edit' : 'create';
+
+	let form = $state<ReviewForm>({
+		film: existingReview?.film ?? null,
+		description: existingReview?.description ?? null,
+		score: existingReview?.score ?? null
+	});
+
+	let isSubmitting = $state(false);
+
+	async function onSubmitWithLoading(props: CompleteReviewForm) {
+		isSubmitting = true;
+		await onSubmit(props);
+		isSubmitting = false;
+	}
+
+	let isDeleting = $state(false);
+
+	async function onSubmitDeleteWithLoading(id: ReviewDto['id']) {
+		isDeleting = true;
+		console.log('start');
+
+		await onSubmitDelete?.(id);
+		console.log('end');
+
+		isDeleting = false;
+	}
 </script>
 
 <Dialog.Header>
 	<Dialog.Title>{type === 'create' ? 'Создать обзор' : 'Изменить обзор'}</Dialog.Title>
 </Dialog.Header>
 
-<div class="flex flex-col gap-5 py-4">
+<form
+	id="review-form"
+	class="flex flex-col gap-5 py-4"
+	onsubmit={() => {
+		if (!form.film) {
+			return;
+		}
+
+		onSubmitWithLoading({ film: form.film, description: form.description, score: form.score });
+	}}
+>
 	<div class="flex flex-col gap-4">
 		{#if type === 'create'}
 			<Label for="film">Фильм</Label>
-			<SearchFilm />
+			<SearchFilm bind:film={form.film} />
 		{/if}
 
-		<div class="flex flex-col gap-2">
-			<p class="text-muted-foreground text-sm">Выбранный фильм</p>
+		{#if form.film}
+			<div class="flex flex-col gap-2">
+				<p class="text-muted-foreground text-sm">Выбранный фильм</p>
 
-			<Film name="Интерстеллар" year="2024" posterUrl="https://picsum.photos/200/300" />
-		</div>
+				<Film name={form.film.name} year={form.film.year} posterUrl={form.film.posterUrl} />
+			</div>
+		{/if}
 	</div>
 
 	<div class="flex flex-col gap-3">
 		<Label for="description">Описание</Label>
-		<Textarea id="description" placeholder="Описание..." />
+		<Textarea bind:value={form.description} id="description" placeholder="Описание..." />
 	</div>
 
 	<div class="flex flex-col gap-3">
 		<Label for="rating">Оценка</Label>
-		<RatingSelect />
+		<RatingSelect bind:rating={form.score} />
 	</div>
-</div>
+</form>
 
 <Dialog.Footer class="flex flex-row gap-3 max-sm:flex-col">
 	{#if type === 'edit'}
-		<DeleteButton />
+		<DeleteButton
+			isLoading={isDeleting}
+			type="button"
+			onDelete={() => {
+				if (!existingReview) {
+					return;
+				}
+
+				onSubmitDeleteWithLoading(existingReview.id);
+			}}
+		/>
+		<DeleteButton
+			isLoading={true}
+			type="button"
+			onDelete={() => {
+				if (!existingReview) {
+					return;
+				}
+
+				onSubmitDeleteWithLoading(existingReview.id);
+			}}
+		/>
 	{/if}
 
-	<Button class="!ml-0" type="submit">
+	<Button isLoading={isSubmitting} class="!ml-0" type="submit" form="review-form">
 		{#if type === 'create'}
 			<IconPencil />
 		{:else}

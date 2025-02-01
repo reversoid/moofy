@@ -25,6 +25,7 @@
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@types/color-hash": "^2.0.0",
 		"@types/lodash.debounce": "^4.0.9",
+		"@types/lodash.uniqby": "^4.7.9",
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "1.0.0-next.81",
 		"clsx": "^2.1.1",
@@ -57,6 +58,7 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"color-hash": "^2.0.2",
 		"hono": "^4.6.15",
-		"lodash.debounce": "^4.0.8"
+		"lodash.debounce": "^4.0.8",
+		"lodash.uniqby": "^4.7.0"
 	}
 }

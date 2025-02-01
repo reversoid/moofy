@@ -1,7 +1,7 @@
 <script lang="ts">
 	interface Props {
 		name: string;
-		year: string;
+		year: number;
 		posterUrl: string;
 	}
 

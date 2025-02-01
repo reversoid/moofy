@@ -12,6 +12,7 @@
 	import { dayjs } from '@repo/core/sdk';
 	import { IconBookmark, IconHeart, IconLock } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
+	import type { ReviewDto } from '@repo/api/dtos';
 
 	const { data }: PageProps = $props();
 
@@ -52,6 +53,10 @@
 
 		const { reviews: newReviews } = response.unwrap();
 		reviews = newReviews;
+	}
+
+	function handleReviewCreated(review: ReviewDto) {
+		reviews.items = [review, ...reviews.items];
 	}
 </script>
 
@@ -126,12 +131,14 @@
 	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>
 
-		<CreateReview />
+		{#if isOwner}
+			<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />
+		{/if}
 	</div>
 
 	<div class="mt-4">
 		<ReviewsList
-			reviews={reviews.items}
+			bind:reviews={reviews.items}
 			cursor={reviews.cursor}
 			onLoadMore={loadMoreReviews}
 			onSearch={searchReviews}
