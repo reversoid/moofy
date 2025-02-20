@@ -1,0 +1,37 @@
+{
+  "type": "module",
+  "name": "@repo/core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
+    "@types/heic-convert": "^2.1.0",
+    "mock-aws-s3": "^4.0.2",
+    "nock": "^14.0.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dayjs": "^1.11.13",
+    "easy-yandex-s3": "^2.0.0",
+    "heic-convert": "^2.1.0",
+    "sharp": "^0.33.5",
+    "sqids": "^0.3.0"
+  },
+  "exports": {
+    "./film-providers": "./film-providers/index.ts",
+    "./entities": "./entities/index.ts",
+    "./repositories": "./repositories/index.ts",
+    "./services": "./services/index.ts",
+    "./utils": "./utils/index.ts",
+    "./sdk": "./sdk/index.ts"
+  }
+}

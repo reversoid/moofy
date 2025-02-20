@@ -1,0 +1,65 @@
+name: moofy-v2
+run-name: Deploy v2
+on:
+  push:
+    branches:
+      - "v2"
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Setup .env file
+        run: |
+          rm .env
+          touch .env
+
+          echo NODE_ENV=test >> .env
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
+
+          echo REDIS_PASSWORD=${{ secrets.REDIS_TEST_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_TEST_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_TEST_PORT }} >> .env
+
+          echo POSTGRES_USER=${{ secrets.POSTGRES_TEST_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_TEST_PASSWORD }} >> .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_TEST_HOST }} >> .env
+          echo POSTGRES_PORT=${{ secrets.POSTGRES_TEST_PORT }} >> .env
+          echo POSTGRES_DB_NAME=${{ secrets.POSTGRES_TEST_USER }} >> .env
+
+          echo KP_API_KEY=${{ secrets.KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEY=${{ secrets.UNOFFICIAL_KP_API_KEY }} >> .env
+          echo UNOFFICIAL_KP_API_KEYS=${{ secrets.UNOFFICIAL_KP_API_KEYS }} >> .env
+          echo PG_ADMIN_TEST_EMAIL=${{ secrets.PG_ADMIN_TEST_EMAIL }} >> .env
+          echo PG_ADMIN_TEST_PASSWORD=${{ secrets.PG_ADMIN_TEST_PASSWORD }} >> .env
+          echo S3_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env
+          echo S3_KEY_SECRET=${{ secrets.S3_KEY_SECRET }} >> .env
+          echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+          echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
+
+          echo POSTGRES_KNOWN_HOST=postgres-test-db >> .env
+
+          echo REDIS_KNOWN_HOST=redis-test-db >> .env
+
+          mkdir ./backend/config
+          cp .env ./backend/config
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
+
+      - name: Set up Docker context
+        run: |
+          docker context create moofy-server --docker "host=ssh://${{secrets.VPS_USERNAME}}@${{secrets.VPS_IP}}"
+          docker context use moofy-server
+
+      - name: Compose test docker
+        run: docker --context moofy-server compose --env-file .env -f ./deploy/docker-compose.yml up --build -d
