@@ -15,7 +15,6 @@ jobs:
 
       - name: Setup .env file
         run: |
-          rm .env
           touch .env
 
           echo NODE_ENV=test >> .env
@@ -46,8 +45,8 @@ jobs:
 
           echo REDIS_KNOWN_HOST=redis-test-db >> .env
 
-          mkdir ./backend/config
-          cp .env ./backend/config
+          # mkdir ./backend/config
+          # cp .env ./backend/config
 
       - name: Configure SSH
         run: |
