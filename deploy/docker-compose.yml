@@ -9,8 +9,8 @@ services:
     container_name: root-proxy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "3000:80"
+      - "3001:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - /etc/nginx/vhost.d
