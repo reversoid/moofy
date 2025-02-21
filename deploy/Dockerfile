@@ -7,18 +7,17 @@ RUN corepack enable
 
 RUN pnpm install -g deno
 
-
 FROM base AS api
-COPY ../ /api
+COPY . /api
 WORKDIR /api
 
+RUN ls -a
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 EXPOSE 8080
 
 CMD [ "pnpm", "--filter=@repo/api", "run", "start" ]
-
 
 FROM base AS site
 COPY --from=api . /site
