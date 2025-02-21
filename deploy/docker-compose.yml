@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   ######################### Proxy #########################
-  nginx-proxy:
+  root-proxy:
     build: 
       context: ./nginx-proxy
       dockerfile: Dockerfile
-    container_name: nginx-proxy
+    container_name: root-proxy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -20,20 +20,20 @@ services:
       - moofy-network
 
   ######################### SSL #########################
-  acme-companion:
+  ssl-companion:
     image: nginxproxy/acme-companion
-    container_name: acme-companion
+    container_name: ssl-companion
     restart: unless-stopped
     volumes_from:
-      - "nginx-proxy"
+      - "root-proxy"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/acme.sh
     environment:
       - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
-      - NGINX_PROXY_CONTAINER=nginx-proxy
+      - NGINX_PROXY_CONTAINER=root-proxy
     depends_on:
-      - nginx-proxy
+      - root-proxy
 
     ######################## Site #########################
   site:
