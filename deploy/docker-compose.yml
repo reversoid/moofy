@@ -67,6 +67,19 @@ services:
       - LETSENCRYPT_HOST=api.v2.moofy.ru
     networks:
       - moofy-network
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+  migrations:
+    image: amacneil/dbmate
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - ../db:/db
+    command: -d /db/migrations up
+    networks:
+      - moofy-network
 
 networks:
   moofy-network:
