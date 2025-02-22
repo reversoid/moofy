@@ -74,6 +74,9 @@ jobs:
         run: docker --context moofy-server compose --env-file .env -f deploy/docker-compose.yml up --build -d
 
   # TODO what if no migrations were run?
+  # we can check for status code? Is this real?
+  # Or we can check dbmate status for version
+  # Or we can check for "Applying" grep...
   # cleanup:
   #   needs: [migrate, deploy]
   #   if: failure() || cancelled()

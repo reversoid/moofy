@@ -48,6 +48,7 @@ services:
       - VIRTUAL_HOST=v2.moofy.ru
       - LETSENCRYPT_HOST=v2.moofy.ru
       - VIRTUAL_PORT=3000
+      - ORIGIN=http://v2.moofy.ru:3000 # TODO: change to https and without port
     networks:
       - moofy-network
 
