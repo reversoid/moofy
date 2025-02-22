@@ -1,0 +1,17 @@
+name: moofy-migrations-v2
+run-name: Deploy migrations v2
+on: workflow_dispatch
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .env file
+        run: |
+          touch .env
+          echo DATABASE_URL=postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{ secrets.POSTGRES_TEST_HOST }}:${{ secrets.POSTGRES_TEST_PORT }}/${{ secrets.POSTGRES_TEST_USER }} >> .env
+
+      - name: Run migrations
+        run: |
+          docker run --rm -v "$(pwd)/db:/db" --env-file .env ghcr.io/amacneil/dbmate up
