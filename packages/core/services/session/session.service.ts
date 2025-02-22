@@ -6,6 +6,7 @@ import { ISessionService } from "./interface";
 import { SessionExpiredError, SessionNotFoundError } from "./errors";
 import crypto from "node:crypto";
 import { User } from "../../entities";
+import { Buffer } from "node:buffer";
 
 const SESSION_EXPIRATION = { amount: 60, unit: "days" } as const;
 const SESSION_EXTENSION_THRESHOLD = { amount: 30, unit: "days" } as const;

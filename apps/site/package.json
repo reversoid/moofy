@@ -20,6 +20,7 @@
 		"@eslint/js": "^9.18.0",
 		"@repo/api": "workspace:*",
 		"@repo/core": "workspace:*",
+		"@repo/config": "workspace:*",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.16.1",

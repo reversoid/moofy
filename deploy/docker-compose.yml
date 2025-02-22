@@ -53,18 +53,14 @@ services:
 
   ######################### Api #########################
 
-  api:
+  site-api:
     image: moofy-api
     restart: unless-stopped
-    container_name: api
+    container_name: site-api
     build:
       context: ../
       dockerfile: deploy/Dockerfile
       target: api
-    environment:
-      - VIRTUAL_HOST=api.v2.moofy.ru
-      - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=api.v2.moofy.ru
     networks:
       - moofy-network
 
