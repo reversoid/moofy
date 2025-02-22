@@ -15,7 +15,7 @@ jobs:
         run: |
           touch .env
 
-          echo DATABASE_URL=postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{ secrets.POSTGRES_TEST_HOST }}:${{ secrets.POSTGRES_TEST_PORT }}/${{ secrets.POSTGRES_TEST_USER }} >> .env
+          echo DATABASE_URL=postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{ secrets.POSTGRES_TEST_HOST }}:${{ secrets.POSTGRES_TEST_PORT }}/${{ secrets.POSTGRES_TEST_DB_NAME }} >> .env
 
       - name: Run migrations
         run: |
