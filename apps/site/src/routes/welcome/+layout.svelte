@@ -6,6 +6,10 @@
 	let { children } = $props();
 </script>
 
+<svelte:head>
+	<title>Welcome | Moofy</title>
+</svelte:head>
+
 <Wrapper>
 	<Heading>Добро пожаловать!</Heading>
 

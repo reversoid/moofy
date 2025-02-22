@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | Support</title>
+	<title>Support | Moofy</title>
 </svelte:head>
 
 <Wrapper>

@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | Search</title>
+	<title>Search | Moofy</title>
 </svelte:head>
 
 <Wrapper>

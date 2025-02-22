@@ -30,7 +30,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | Register</title>
+	<title>Register | Moofy</title>
 </svelte:head>
 
 <AuthCard form={registerForm} type="register" />

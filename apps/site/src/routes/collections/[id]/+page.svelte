@@ -73,7 +73,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | {collection.name}</title>
+	<title>{collection.name} | Moofy</title>
 </svelte:head>
 
 <Wrapper>

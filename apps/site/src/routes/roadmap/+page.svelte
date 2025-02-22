@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | Roadmap</title>
+	<title>Roadmap | Moofy</title>
 </svelte:head>
 
 <Wrapper>

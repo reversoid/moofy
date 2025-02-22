@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | {data.profile.username}</title>
+	<title>{data.profile.username} | Moofy</title>
 </svelte:head>
 
 {@render children()}

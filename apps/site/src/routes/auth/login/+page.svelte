@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | Login</title>
+	<title>Login | Moofy</title>
 </svelte:head>
 
 <AuthCard type="login" form={loginForm} />

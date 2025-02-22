@@ -4,6 +4,10 @@
 	import Wrapper from '$lib/ui/wrapper.svelte';
 </script>
 
+<svelte:head>
+	<title>Moofy</title>
+</svelte:head>
+
 <Wrapper class="min-h-[inherit]">
 	<Wrapper
 		class="bg-muted relative flex min-h-[inherit] flex-col items-center justify-center gap-10 overflow-hidden rounded-3xl"

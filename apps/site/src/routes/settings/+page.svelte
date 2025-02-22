@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-	<title>Moofy | Settings</title>
+	<title>Settings | Moofy</title>
 </svelte:head>
 
 <Wrapper>
