@@ -61,7 +61,7 @@
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.16",
 		"color-hash": "^2.0.2",
-		"hono": "^4.6.15",
+		"hono": "^4.7.2",
 		"lodash.debounce": "^4.0.8",
 		"lodash.uniqby": "^4.7.0"
 	}

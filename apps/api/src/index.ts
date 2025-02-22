@@ -37,6 +37,7 @@ import { UnofficialKpProvider } from "@repo/film-providers";
 import { searchRoute } from "./routes/search";
 import { userMiddleware } from "./utils/user-middleware";
 import { uploadRoute } from "./routes/upload";
+import { hc } from "hono/client";
 
 declare module "hono" {
   interface ContextVariableMap {

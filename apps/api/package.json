@@ -9,7 +9,7 @@
     "@repo/core": "workspace:*",
     "@repo/film-providers": "workspace:*",
     "@repo/repositories": "workspace:*",
-    "hono": "^4.6.15"
+    "hono": "^4.7.2"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

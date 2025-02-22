@@ -1,4 +1,4 @@
-import { loginSchema } from '$lib/entities/auth/schema.js';
+import { loginSchema } from '$lib/entities/auth/schema';
 import { handleResponse, makeClient } from '$lib/utils';
 import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate, message } from 'sveltekit-superforms';

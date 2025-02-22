@@ -1,22 +1,16 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Default",
   "compilerOptions": {
-     "lib": ["esnext"],
-     "module": "ESNext",
-     "target": "esnext",
-     "moduleResolution": "Bundler",
-
-     "allowImportingTsExtensions": true,
-     "noEmit": true,
- 
-     "strict": true,
-     "skipLibCheck": true,
-     "esModuleInterop": true,
-     "allowJs": false,
-     "forceConsistentCasingInFileNames": true,
-     "isolatedModules": true,
- 
-     "resolveJsonModule": true
+      "target": "es2022",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "declaration": true,
+      "strict": true,
+      "incremental": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "rootDir": "./src",
+      "outDir": "./build",
+      "composite": true
   }
 }
