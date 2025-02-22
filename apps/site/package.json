@@ -13,7 +13,7 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"start": "deno run --allow-ffi --allow-net --allow-read --allow-env build/index.js"
+		"start": "node ./build/index.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
