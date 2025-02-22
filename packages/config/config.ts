@@ -13,10 +13,12 @@ if (!workspaceDir) {
 dotenv.config({ path: path.join(workspaceDir, ".env") });
 
 const schema = {
-  ENV: z.enum(["development", "test", "production"]),
+  ENV: z.enum(["development", "staging", "production"]),
 
   UNOFFICIAL_KP_API_KEYS: z.string().transform((v) => v.split(",")),
-  UNOFFICIAL_KP_URL: z.string(),
+  UNOFFICIAL_KP_URL: z
+    .string()
+    .default("https://kinopoiskapiunofficial.tech/api"),
 
   COOKIE_SECRET: z.string(),
 
