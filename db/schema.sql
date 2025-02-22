@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -101,7 +102,7 @@ CREATE TABLE public.collection_likes (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     user_id integer NOT NULL,
-    list_id integer NOT NULL
+    collection_id integer NOT NULL
 );
 
 
@@ -142,7 +143,7 @@ CREATE TABLE public.favorite_collections (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     user_id integer NOT NULL,
-    list_id integer
+    collection_id integer
 );
 
 
@@ -179,7 +180,9 @@ CREATE TABLE public.films (
     poster_preview_url character varying(120),
     poster_url character varying(120),
     genres character varying(32)[],
-    search_document tsvector NOT NULL
+    search_document tsvector NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 
@@ -286,7 +289,7 @@ CREATE TABLE public.reviews (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     film_id character varying(32) NOT NULL,
     user_id integer NOT NULL,
-    list_id integer NOT NULL,
+    collection_id integer NOT NULL,
     search_document tsvector NOT NULL
 );
 
@@ -644,7 +647,7 @@ ALTER TABLE ONLY public.collection_views
 --
 
 ALTER TABLE ONLY public.collection_likes
-    ADD CONSTRAINT "FK_collection_likes_collection_id" FOREIGN KEY (list_id) REFERENCES public.collections(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_collection_likes_collection_id" FOREIGN KEY (collection_id) REFERENCES public.collections(id) ON DELETE CASCADE;
 
 
 --
@@ -668,7 +671,7 @@ ALTER TABLE ONLY public.reviews
 --
 
 ALTER TABLE ONLY public.favorite_collections
-    ADD CONSTRAINT "FK_favorite_collections_collection_id" FOREIGN KEY (list_id) REFERENCES public.collections(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_favorite_collections_collection_id" FOREIGN KEY (collection_id) REFERENCES public.collections(id) ON DELETE CASCADE;
 
 
 --
@@ -684,7 +687,7 @@ ALTER TABLE ONLY public.favorite_collections
 --
 
 ALTER TABLE ONLY public.reviews
-    ADD CONSTRAINT "FK_reviews_collection_id" FOREIGN KEY (list_id) REFERENCES public.collections(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_reviews_collection_id" FOREIGN KEY (collection_id) REFERENCES public.collections(id) ON DELETE CASCADE;
 
 
 --
