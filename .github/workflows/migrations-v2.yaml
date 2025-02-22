@@ -1,6 +1,10 @@
 name: moofy-migrations-v2
 run-name: Deploy migrations v2
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - "v2"
+  # workflow_dispatch
 jobs:
   migrate:
     runs-on: ubuntu-latest
