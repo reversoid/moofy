@@ -7,21 +7,35 @@ const replaceApiUrl = (url: string, withUrl: string) => {
 };
 
 const handleRoute = ({ fetch, request }: RequestEvent) => {
-	console.log('hehey i can be proxied', request.url);
+	console.log('it will be proxied', request.url);
 
 	if (config.ENV === 'development') {
 		const transformedRequest = new Request(
 			replaceApiUrl(request.url, 'http://localhost:8080'),
 			request
 		);
-		return fetch(transformedRequest);
+		return fetch(transformedRequest).finally((data) => {
+			console.log(
+				'it was proxied',
+				request.url,
+				replaceApiUrl(request.url, 'http://localhost:8080'),
+				data
+			);
+		});
 	}
 
 	const transformedRequest = new Request(
 		replaceApiUrl(request.url, 'http://site-api:8080'),
 		request
 	);
-	return fetch(transformedRequest);
+	return fetch(transformedRequest).finally((data) => {
+		console.log(
+			'it was proxied',
+			request.url,
+			replaceApiUrl(request.url, 'http://site-api:8080'),
+			data
+		);
+	});
 };
 
 export const GET = handleRoute;
