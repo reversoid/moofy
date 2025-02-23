@@ -39,9 +39,14 @@ export const handleFetch: HandleFetch = async ({ request, fetch }) => {
 		return fetch(request);
 	}
 
-	const url = new URL(request.url);
-	if (url.pathname.startsWith('/api')) {
+	if (request.url.includes('/api')) {
 		const newUrl = replaceApiUrl(request.url);
+
+		// const cookie = event.request.headers.get('cookie');
+		// if (cookie) {
+		// 	request.headers.set('cookie', cookie);
+		// }
+
 		request = new Request(newUrl, request);
 	}
 

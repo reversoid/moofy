@@ -11,8 +11,6 @@ FROM base AS api
 COPY . /api
 WORKDIR /api
 
-RUN ls -a
-
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 EXPOSE 8080
