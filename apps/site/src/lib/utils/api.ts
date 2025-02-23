@@ -24,17 +24,17 @@ export const makeClient = (fetch: Window['fetch']) => {
 export const handleResponse = async <T, E extends string>(
 	res: ClientResponse<T | { error: E }>
 ): Promise<Result<T, { error: E }>> => {
+	console.log('text', await res.text());
+
 	if (!res.ok) {
 		return err((await res.json()) as { error: E });
 	}
 
 	try {
-		console.log('text', await res.text());
-
 		const json = await res.json();
 		return ok(json as T);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 
 		throw error;
 	}

@@ -40,7 +40,7 @@ jobs:
         run: |
           touch .env
 
-          echo ENV=production >> .env
+          echo ENV=staging >> .env
 
           echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
 

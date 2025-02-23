@@ -6,7 +6,7 @@ const replaceApiUrl = (url: string) => {
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (config.ENV !== 'production') {
+	if (config.ENV === 'development') {
 		// Request is proxied via Vite
 		return await resolve(event);
 	}
