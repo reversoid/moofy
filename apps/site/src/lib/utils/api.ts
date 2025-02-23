@@ -32,6 +32,8 @@ export const handleResponse = async <T, E extends string>(
 		try {
 			// Try to parse it as JSON
 			const json = JSON.parse(text);
+			console.log('Response error body:', json);
+
 			return err(json as { error: E });
 		} catch {
 			// If parsing fails, log the raw text
@@ -42,6 +44,8 @@ export const handleResponse = async <T, E extends string>(
 
 	try {
 		const json = await res.json();
+		console.log('Response success body:', json);
+
 		return ok(json as T);
 	} catch (error) {
 		console.error('Failed to parse JSON response:', error);
