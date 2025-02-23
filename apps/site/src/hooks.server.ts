@@ -1,6 +1,10 @@
 import config from '@repo/config';
 import type { Handle } from '@sveltejs/kit';
 
+const replaceApiUrl = (url: string) => {
+	return url.replace(/.*\/api/, 'http://site-api:8080');
+};
+
 export const handle: Handle = async ({ event, resolve }) => {
 	if (config.ENV !== 'production') {
 		// Request is proxied via Vite
@@ -8,11 +12,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	if (event.url.pathname.startsWith('/api')) {
-		const req = event.request;
+		const newUrl = replaceApiUrl(event.url.toString());
+		const newRequest = new Request(newUrl, event.request);
 
 		return await resolve({
 			...event,
-			request: { ...req, url: req.url.replace(/.*\/api/, 'http://site-api:8080') }
+			request: newRequest
 		});
 	}
 
