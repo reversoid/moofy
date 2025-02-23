@@ -28,5 +28,14 @@ export const handleResponse = async <T, E extends string>(
 		return err((await res.json()) as { error: E });
 	}
 
-	return ok((await res.json()) as T);
+	try {
+		console.log('text', await res.text());
+
+		const json = await res.json();
+		return ok(json as T);
+	} catch (error) {
+		console.log(error);
+
+		throw error;
+	}
 };
