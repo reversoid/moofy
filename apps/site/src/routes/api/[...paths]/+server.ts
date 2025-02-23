@@ -21,6 +21,7 @@ const handleRoute = ({ fetch, request }: RequestEvent) => {
 				replaceApiUrl(request.url, 'http://localhost:8080'),
 				data
 			);
+			return data;
 		});
 	}
 
@@ -35,6 +36,7 @@ const handleRoute = ({ fetch, request }: RequestEvent) => {
 			replaceApiUrl(request.url, 'http://site-api:8080'),
 			data
 		);
+		return data;
 	});
 };
 
