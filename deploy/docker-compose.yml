@@ -17,7 +17,7 @@ services:
       - /usr/share/nginx/html
       - /etc/nginx/certs
     networks:
-      - moofy-network
+      - moofy-network-v2
 
   ######################### SSL #########################
   ssl-companion:
@@ -50,7 +50,7 @@ services:
       - VIRTUAL_PORT=3000
       - ORIGIN=http://v2.moofy.ru:3000 # TODO: change to https and without port
     networks:
-      - moofy-network
+      - moofy-network-v2
 
   ######################### Api #########################
 
@@ -63,8 +63,8 @@ services:
       dockerfile: deploy/Dockerfile
       target: api
     networks:
-      - moofy-network
+      - moofy-network-v2
 
 networks:
-  moofy-network:
+  moofy-network-v2:
     driver: bridge

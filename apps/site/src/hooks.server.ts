@@ -12,7 +12,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		return await resolve({
 			...event,
-			request: { ...req, url: req.url.replace(/.*\/api/, 'site-api:8080') }
+			request: { ...req, url: req.url.replace(/.*\/api/, 'http://site-api:8080') }
 		});
 	}
 
