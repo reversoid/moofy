@@ -2,7 +2,7 @@
   "name": "@repo/api",
   "scripts": {
     "dev": "deno run --allow-ffi --allow-read --allow-env --unstable-sloppy-imports --allow-net --watch src/index.ts",
-    "start": "deno run --allow-ffi --allow-net --allow-read --allow-env src/index.ts"
+    "start": "deno run --allow-ffi --allow-net --allow-read --unstable-sloppy-imports --allow-env src/index.ts"
   },
   "dependencies": {
     "@repo/config": "workspace:*",
