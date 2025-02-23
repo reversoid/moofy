@@ -58,6 +58,8 @@ jobs:
           echo S3_SECRET_ACCESS_KEY=${{ secrets.S3_KEY_SECRET }} >> .env
           echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
 
+          echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
+
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
