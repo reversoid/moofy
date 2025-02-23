@@ -21,8 +21,6 @@
 	const currentUser = $derived(data.user);
 	const social = $derived(data.social);
 
-	$inspect(social);
-
 	let collections = $state(data.collections);
 	let favoriteCollections = $state(data.favoriteCollections);
 

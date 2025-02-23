@@ -3,8 +3,6 @@
 	import type { PageProps } from './$types';
 
 	const { children, data }: PageProps & { children: Snippet } = $props();
-
-	$inspect(data);
 </script>
 
 <svelte:head>

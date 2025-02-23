@@ -48,8 +48,6 @@
 	});
 
 	const username = $derived(data.user.username);
-
-	$inspect($formData);
 </script>
 
 <svelte:head>
