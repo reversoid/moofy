@@ -7,6 +7,8 @@ const replaceApiUrl = (url: string, withUrl: string) => {
 };
 
 const handleRoute = ({ fetch, request }: RequestEvent) => {
+	console.log('hehey i can be proxied', request.url);
+
 	if (config.ENV === 'development') {
 		const transformedRequest = new Request(
 			replaceApiUrl(request.url, 'http://localhost:8080'),
@@ -28,3 +30,4 @@ export const PUT = handleRoute;
 export const PATCH = handleRoute;
 export const DELETE = handleRoute;
 export const OPTIONS = handleRoute;
+export const HEAD = handleRoute;
