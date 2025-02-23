@@ -6,6 +6,8 @@ const replaceApiUrl = (url: string) => {
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
+	console.log('handling requestt');
+
 	if (config.ENV === 'development') {
 		// Request is proxied via Vite
 		return await resolve(event);
@@ -14,6 +16,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname.startsWith('/api')) {
 		const newUrl = replaceApiUrl(event.url.toString());
 		const newRequest = new Request(newUrl, event.request);
+
+		console.log('newRequest', newRequest);
 
 		return await resolve({
 			...event,
