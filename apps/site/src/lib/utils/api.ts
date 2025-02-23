@@ -12,7 +12,7 @@ export const makeClient = (fetch: Window['fetch']) => {
 		return browserClient;
 	}
 
-	const client = hc<Api>(origin + '/api', { fetch });
+	const client = hc<Api>(origin + '/rpc', { fetch });
 
 	if (isBrowser) {
 		browserClient = client;
