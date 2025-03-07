@@ -22,12 +22,9 @@ const handleRoute: RequestHandler = async ({ fetch, request }) => {
 	const headers = new Headers(response.headers);
 	// https://github.com/sveltejs/kit/issues/12197
 	headers.delete('content-encoding');
+	headers.delete('content-length');
 
-	// Clone the response to ensure we can read the body multiple times if needed
-	const clonedResponse = response.clone();
-	const body = await clonedResponse.text();
-
-	return new Response(body, {
+	return new Response(response.body, {
 		headers,
 		status: response.status,
 		statusText: response.statusText
