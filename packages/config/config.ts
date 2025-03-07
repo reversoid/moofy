@@ -26,7 +26,7 @@ const schema = {
   PG_PASSWORD: z.string(),
   PG_HOST: z.string(),
   PG_PORT: z.coerce.number().int(),
-  PG_MAX_CONNECTIONS: z.coerce.number().int(),
+  PG_MAX_CONNECTIONS: z.coerce.number().int().default(10),
   PG_DATABASE: z.string(),
 
   S3_ACCESS_KEY_ID: z.string(),
