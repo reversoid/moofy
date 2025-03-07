@@ -6,31 +6,27 @@ const replaceRpcUrl = (url: string, withUrl: string) => {
 	return url.replace(/.*\/rpc/, withUrl);
 };
 
-const handleRoute: RequestHandler = ({ fetch, request }) => {
+const handleRoute: RequestHandler = async ({ fetch, request }) => {
 	console.log('it will be proxied', request.url, 'accept', request.headers.get('accept'));
 
-	if (config.ENV === 'development') {
-		const transformedRequest = new Request(
-			replaceRpcUrl(request.url, 'http://localhost:8080'),
-			request
-		);
-		return fetch(transformedRequest).finally(() => {
-			console.log(
-				'it was proxied',
-				request.url,
-				replaceRpcUrl(request.url, 'http://localhost:8080')
-			);
-			return;
-		});
-	}
+	const targetUrl = config.ENV === 'development' ? 'http://localhost:8080' : 'http://site-api:8080';
 
-	const transformedRequest = new Request(
-		replaceRpcUrl(request.url, 'http://site-api:8080'),
-		request
-	);
-	return fetch(transformedRequest).finally(() => {
-		console.log('it was proxied', request.url, replaceRpcUrl(request.url, 'http://site-api:8080'));
+	const newUrl = replaceRpcUrl(request.url, targetUrl);
+	const transformedRequest = new Request(newUrl, request);
+
+	const response = await fetch(transformedRequest).finally(() => {
+		console.log('it was proxied', request.url, newUrl);
 		return;
+	});
+
+	const headers = new Headers(response.headers);
+	// https://github.com/sveltejs/kit/issues/12197
+	headers.delete('content-encoding');
+
+	return new Response(response.body, {
+		headers,
+		status: response.status,
+		statusText: response.statusText
 	});
 };
 
