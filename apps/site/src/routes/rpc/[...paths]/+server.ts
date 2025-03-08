@@ -7,15 +7,12 @@ const replaceRpcUrl = (url: string, withUrl: string) => {
 };
 
 const handleRoute: RequestHandler = async ({ fetch, request }) => {
-	console.log('it will be proxied', request.url, 'accept', request.headers.get('accept'));
-
 	const targetUrl = config.ENV === 'development' ? 'http://localhost:8080' : 'http://site-api:8080';
 
 	const newUrl = replaceRpcUrl(request.url, targetUrl);
 	const transformedRequest = new Request(newUrl, request);
 
 	const response = await fetch(transformedRequest).finally(() => {
-		console.log('it was proxied', request.url, newUrl);
 		return;
 	});
 

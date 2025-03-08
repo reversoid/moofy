@@ -24,15 +24,12 @@ export const makeClient = (fetch: Window['fetch']) => {
 export const handleResponse = async <T, E extends string>(
 	res: ClientResponse<T | { error: E }>
 ): Promise<Result<T, { error: E }>> => {
-	console.log('Response received for request URL:', res.url);
-
 	if (!res.ok) {
 		// Read the response body once
 		const text = await res.text();
 		try {
 			// Try to parse it as JSON
 			const json = JSON.parse(text);
-			console.log('Response error body:', json);
 
 			return err(json as { error: E });
 		} catch {
@@ -44,7 +41,6 @@ export const handleResponse = async <T, E extends string>(
 
 	try {
 		const json = await res.json();
-		console.log('Response success body:', json);
 
 		return ok(json as T);
 	} catch (error) {
