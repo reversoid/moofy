@@ -15,7 +15,6 @@ export const sessionCookieMiddleware: MiddlewareHandler = async (c, next) => {
   );
 
   if (!session || !sessionToken) {
-    deleteCookie(c, "session");
     return next();
   }
 
