@@ -22,11 +22,11 @@ export const reviewRoute = new Hono()
     async (c) => {
       const { reviewId } = c.req.valid("param");
       const reviewService = c.get("reviewService");
-      const user = c.get("user");
+      const session = c.get("session");
 
       const reviewResult = await reviewService.getReview({
         id: new Id(reviewId),
-        by: user?.id,
+        by: session?.user?.id,
       });
 
       if (reviewResult.isErr()) {
@@ -59,11 +59,11 @@ export const reviewRoute = new Hono()
     async (c) => {
       const { reviewId } = c.req.valid("param");
       const reviewService = c.get("reviewService");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
 
       const result = await reviewService.removeReview({
         reviewId: new Id(reviewId),
-        by: user.id,
+        by: session.user.id,
       });
 
       if (result.isErr()) {
@@ -100,7 +100,7 @@ export const reviewRoute = new Hono()
       const { reviewId } = c.req.valid("param");
       const { score, description } = c.req.valid("json");
       const reviewService = c.get("reviewService");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
 
       const result = await reviewService.editReview({
         reviewId: new Id(reviewId),
@@ -108,7 +108,7 @@ export const reviewRoute = new Hono()
           score,
           description,
         },
-        by: user.id,
+        by: session.user.id,
       });
 
       if (result.isErr()) {

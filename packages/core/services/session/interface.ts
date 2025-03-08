@@ -8,7 +8,7 @@ export interface ISessionService {
 
   generateSessionToken(): string;
 
-  validateSessionToken(
+  validateAndExtendSession(
     token: string
   ): Promise<Result<Session, SessionExpiredError | SessionNotFoundError>>;
 

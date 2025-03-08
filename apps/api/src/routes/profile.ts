@@ -8,7 +8,7 @@ import { validator } from "../utils/validator";
 export const profileRoute = new Hono()
   .use(authMiddleware)
   .get("/profile", async (c) => {
-    const user = c.get("user")!;
+    const user = c.get("session")!;
     return c.json(makeDto({ user }));
   })
   .get(
@@ -22,16 +22,16 @@ export const profileRoute = new Hono()
       })
     ),
     async (c) => {
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const { limit, cursor, search } = c.req.valid("query");
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.getUserCollections({
-        userId: user.id,
+        userId: session.user.id,
         limit,
         cursor,
         search,
-        by: user.id,
+        by: session.user.id,
       });
 
       return c.json(makeDto({ collections: result.unwrap() }));
@@ -54,12 +54,12 @@ export const profileRoute = new Hono()
       })
     ),
     async (c) => {
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const { description, imageUrl, password, username } = c.req.valid("json");
       const userService = c.get("userService");
 
       const updatedUserResult = await userService.updateUser({
-        id: user.id,
+        id: session.user.id,
         data: {
           description,
           imageUrl,

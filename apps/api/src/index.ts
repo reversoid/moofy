@@ -32,12 +32,12 @@ import {
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
-import { User } from "@repo/core/entities";
+import { Session } from "@repo/core/entities";
 import { UnofficialKpProvider } from "@repo/film-providers";
 import { searchRoute } from "./routes/search";
-import { userMiddleware } from "./utils/user-middleware";
+import { sessionMiddleware } from "./utils/session-middleware";
 import { uploadRoute } from "./routes/upload";
-import { hc } from "hono/client";
+import { sessionCookieMiddleware } from "./utils/session-cookie-middleware";
 
 declare module "hono" {
   interface ContextVariableMap {
@@ -49,7 +49,7 @@ declare module "hono" {
     subscriptionService: ISubscriptionService;
     imageService: IImageService;
 
-    user?: User;
+    session?: Session;
   }
 }
 
@@ -108,7 +108,8 @@ const api = new Hono()
     await next();
   })
   .use(withEntityCheck())
-  .use(userMiddleware)
+  .use(sessionMiddleware)
+  .use(sessionCookieMiddleware)
   .route("", authRoute)
   .route("", profileRoute)
   .route("", reviewRoute)

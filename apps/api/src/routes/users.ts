@@ -18,11 +18,11 @@ export const userRoute = new Hono()
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const subscriptionService = c.get("subscriptionService");
 
       const result = await subscriptionService.follow({
-        fromUserId: user.id,
+        fromUserId: session.user.id,
         toUserId: new Id(id),
       });
 
@@ -58,7 +58,7 @@ export const userRoute = new Hono()
     ),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const session = c.get("session");
 
       const { limit, cursor, search } = c.req.valid("query");
       const subscriptionService = c.get("subscriptionService");
@@ -82,7 +82,7 @@ export const userRoute = new Hono()
       const users = result.unwrap();
 
       const isFollowingMany = await subscriptionService.isFollowingMany({
-        fromUserId: user?.id,
+        fromUserId: session?.user?.id,
         toUserIds: users.items.map((user) => user.id),
       });
 
@@ -112,7 +112,7 @@ export const userRoute = new Hono()
     ),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const session = c.get("session");
       const { limit, cursor, search } = c.req.valid("query");
       const subscriptionService = c.get("subscriptionService");
 
@@ -135,7 +135,7 @@ export const userRoute = new Hono()
       const users = result.unwrap();
 
       const isFollowingMany = await subscriptionService.isFollowingMany({
-        fromUserId: user?.id,
+        fromUserId: session?.user?.id,
         toUserIds: users.items.map((user) => user.id),
       });
 
@@ -158,11 +158,11 @@ export const userRoute = new Hono()
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const subscriptionService = c.get("subscriptionService");
 
       const result = await subscriptionService.unfollow({
-        fromUserId: user.id,
+        fromUserId: session.user.id,
         toUserId: new Id(id),
       });
 
@@ -199,7 +199,7 @@ export const userRoute = new Hono()
     ),
     async (c) => {
       const { search, limit } = c.req.valid("query");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
 
       const userService = c.get("userService");
       const subscriptionService = c.get("subscriptionService");
@@ -207,7 +207,7 @@ export const userRoute = new Hono()
       const users = await userService.searchUsers({ search, limit });
 
       const isFollowingMany = await subscriptionService.isFollowingMany({
-        fromUserId: user.id,
+        fromUserId: session.user.id,
         toUserIds: users.map((user) => user.id),
       });
 
@@ -227,7 +227,7 @@ export const userRoute = new Hono()
     async (c) => {
       const { username } = c.req.valid("param");
       const userService = c.get("userService");
-      const currentUser = c.get("user");
+      const currentUser = c.get("session")?.user;
 
       const user = await userService.getUserByUsername(username);
 
@@ -264,7 +264,7 @@ export const userRoute = new Hono()
     ),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const session = c.get("session");
 
       const { limit, cursor, search } = c.req.valid("query");
 
@@ -275,7 +275,7 @@ export const userRoute = new Hono()
         limit,
         cursor,
         search,
-        by: user?.id,
+        by: session?.user?.id,
       });
 
       if (collections.isErr()) {

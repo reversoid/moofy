@@ -37,9 +37,10 @@ export const authRoute = new Hono()
 
       await setSignedCookie(c, "session", token, config.COOKIE_SECRET, {
         httpOnly: true,
-        secure: false,
+        secure: config.ENV === "production" || config.ENV === "staging",
         sameSite: "Lax",
         path: "/",
+        expires: session.expiresAt,
       });
 
       return c.json(makeDto({ user: session.user }));
@@ -81,9 +82,10 @@ export const authRoute = new Hono()
 
       await setSignedCookie(c, "session", token, config.COOKIE_SECRET, {
         httpOnly: true,
-        secure: false,
+        secure: config.ENV === "production" || config.ENV === "staging",
         sameSite: "Lax",
         path: "/",
+        expires: session.expiresAt,
       });
 
       return c.json(makeDto({ user: session.user }));

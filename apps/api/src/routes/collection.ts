@@ -50,7 +50,7 @@ export const collectionRoute = new Hono()
       })
     ),
     async (c) => {
-      const user = c.get("user")!;
+      const { user } = c.get("session")!;
       const { name, description, imageUrl, isPublic } = c.req.valid("json");
       const collectionService = c.get("collectionService");
 
@@ -72,12 +72,12 @@ export const collectionRoute = new Hono()
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const session = c.get("session");
       const collectionService = c.get("collectionService");
 
       const collectionResult = await collectionService.getCollection({
         id: new Id(id),
-        by: user?.id,
+        by: session?.user?.id,
       });
 
       if (collectionResult.isErr()) {
@@ -105,12 +105,12 @@ export const collectionRoute = new Hono()
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.removeCollection({
         id: new Id(id),
-        by: user.id,
+        by: session.user.id,
       });
 
       if (result.isErr()) {
@@ -145,12 +145,12 @@ export const collectionRoute = new Hono()
     async (c) => {
       const { id } = c.req.valid("param");
       const updateData = c.req.valid("json");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.editCollection({
         id: new Id(id),
-        by: user.id,
+        by: session.user.id,
         dto: updateData,
       });
 
@@ -185,7 +185,7 @@ export const collectionRoute = new Hono()
       z.object({ collectionId: z.coerce.number().int().positive() })
     ),
     async (c) => {
-      const user = c.get("user");
+      const session = c.get("session");
 
       const { collectionId } = c.req.valid("param");
       const { limit, cursor, search } = c.req.valid("query");
@@ -196,7 +196,7 @@ export const collectionRoute = new Hono()
         collectionId: new Id(collectionId),
         limit,
         cursor,
-        by: user?.id,
+        by: session?.user?.id,
         search,
       });
 
@@ -235,13 +235,13 @@ export const collectionRoute = new Hono()
     async (c) => {
       const { collectionId } = c.req.valid("param");
       const { score, description, filmId } = c.req.valid("json");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
 
       const reviewService = c.get("reviewService");
 
       const result = await reviewService.createReview({
         collectionId: new Id(collectionId),
-        by: user.id,
+        by: session.user.id,
         dto: {
           filmId: String(filmId),
           score: score ?? undefined,
@@ -284,12 +284,12 @@ export const collectionRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.likeCollection({
         collectionId: new Id(collectionId),
-        userId: user.id,
+        userId: session.user.id,
       });
 
       if (result.isErr()) {
@@ -322,12 +322,12 @@ export const collectionRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.unlikeCollection({
         collectionId: new Id(collectionId),
-        userId: user.id,
+        userId: session.user.id,
       });
 
       if (result.isErr()) {
@@ -356,12 +356,12 @@ export const collectionRoute = new Hono()
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
-      const user = c.get("user");
+      const session = c.get("session");
       const collectionService = c.get("collectionService");
 
       const socialsResult = await collectionService.getSocials({
         collectionId: new Id(id),
-        by: user?.id,
+        by: session?.user?.id,
       });
 
       if (socialsResult.isErr()) {

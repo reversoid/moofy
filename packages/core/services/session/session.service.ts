@@ -36,7 +36,7 @@ export class SessionService implements ISessionService {
     );
   }
 
-  async validateSessionToken(
+  async validateAndExtendSession(
     token: string
   ): Promise<Result<Session, SessionNotFoundError | SessionExpiredError>> {
     const sessionId = await this.hashToken(token);

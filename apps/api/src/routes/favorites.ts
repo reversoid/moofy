@@ -25,12 +25,12 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { limit, cursor, search } = c.req.valid("query");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
       const result = await favoriteCollectionService.getUserFavoriteCollections(
         {
-          userId: user.id,
+          userId: session.user.id,
           limit,
           cursor,
           search,
@@ -48,11 +48,11 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
       const result = await favoriteCollectionService.addToFavorites({
-        userId: user.id,
+        userId: session.user.id,
         collectionId: new Id(collectionId),
       });
 
@@ -88,11 +88,11 @@ export const favoritesRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const user = c.get("user")!;
+      const session = c.get("session")!;
       const favoriteCollectionService = c.get("favoriteCollectionService");
 
       const result = await favoriteCollectionService.removeFromFavorites({
-        userId: user.id,
+        userId: session.user.id,
         collectionId: new Id(collectionId),
       });
 
