@@ -53,9 +53,9 @@ jobs:
           echo PG_DATABASE=${{ secrets.POSTGRES_TEST_DB_NAME }} >> .env
           echo DATABASE_URL=postgresql://${{ secrets.POSTGRES_TEST_USER }}:${{ secrets.POSTGRES_TEST_PASSWORD }}@${{ secrets.POSTGRES_TEST_HOST }}:${{ secrets.POSTGRES_TEST_PORT }}/${{ secrets.POSTGRES_TEST_DB_NAME }} >> .env
 
-          echo S3_ACCESS_KEY_ID=${{ secrets.S3_KEY_ID }} >> .env
-          echo S3_SECRET_ACCESS_KEY=${{ secrets.S3_KEY_SECRET }} >> .env
-          echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+          echo S3_ACCESS_KEY_ID="${{ secrets.S3_KEY_ID }}" >> .env
+          echo S3_SECRET_ACCESS_KEY="${{ secrets.S3_KEY_SECRET }}" >> .env
+          echo S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}" >> .env
 
           echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
