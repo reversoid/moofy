@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { AuthButton } from '$lib/entities/auth';
-	import { globalState } from '$lib/state/state.svelte';
+	import { globalState, setCurrentUser } from '$lib/state/state.svelte';
+	import { handleResponse, makeClient } from '$lib/utils';
 	import {
 		IconBookmark,
 		IconList,
@@ -46,6 +48,18 @@
 	const handleItemClick = () => {
 		sidebar.toggle();
 	};
+
+	const api = makeClient(fetch);
+
+	async function logout() {
+		// TODO dont do handleResponse, just check if ok, and get rid of resulto library on site
+		const response = await api.auth.logout.$post().then(handleResponse);
+
+		if (response.isOk()) {
+			goto('/');
+			setCurrentUser(null);
+		}
+	}
 </script>
 
 {#snippet LoginButton()}
@@ -75,7 +89,7 @@
 
 {#snippet LogoutButton()}
 	<Sidebar.MenuItem class="list-none">
-		<Sidebar.MenuButton size="lg" class="text-lg font-medium">
+		<Sidebar.MenuButton onclick={logout} size="lg" class="text-lg font-medium">
 			<IconLogout2 /> <span>Выйти</span>
 		</Sidebar.MenuButton>
 	</Sidebar.MenuItem>
