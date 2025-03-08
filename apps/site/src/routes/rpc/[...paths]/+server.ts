@@ -19,8 +19,8 @@ const handleRoute: RequestHandler = async ({ fetch, request }) => {
 		return;
 	});
 
+	// https://github.com/sveltejs/kit/issues/12197#issuecomment-2125714400
 	const headers = new Headers(response.headers);
-	// https://github.com/sveltejs/kit/issues/12197
 	headers.delete('content-encoding');
 	headers.delete('content-length');
 

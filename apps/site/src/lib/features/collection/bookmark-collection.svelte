@@ -2,7 +2,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { handleResponse, makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconBookmark } from '@tabler/icons-svelte';
+	import { IconBookmark, IconBookmarkFilled } from '@tabler/icons-svelte';
 
 	interface Props {
 		isBookmarked: boolean;
@@ -62,11 +62,10 @@
 	}
 </script>
 
-<Button
-	{isLoading}
-	class="flex-grow"
-	variant={isBookmarked ? 'default' : 'outline'}
-	onclick={handleClick}
->
-	<IconBookmark />
+<Button {isLoading} variant="outline" class="flex-grow" onclick={handleClick}>
+	{#if isBookmarked}
+		<IconBookmarkFilled />
+	{:else}
+		<IconBookmark />
+	{/if}
 </Button>

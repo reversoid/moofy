@@ -2,7 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { handleResponse, makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconHeart } from '@tabler/icons-svelte';
+	import { IconHeart, IconHeartFilled } from '@tabler/icons-svelte';
 
 	interface Props {
 		likesAmount: number;
@@ -71,12 +71,11 @@
 	}
 </script>
 
-<Button
-	{isLoading}
-	class="flex-grow"
-	variant={isLiked ? 'default' : 'outline'}
-	onclick={handleClick}
->
-	<IconHeart />
+<Button {isLoading} variant="outline" class="flex-grow" onclick={handleClick}>
+	{#if isLiked}
+		<IconHeartFilled />
+	{:else}
+		<IconHeart />
+	{/if}
 	<span>{likesAmount}</span>
 </Button>

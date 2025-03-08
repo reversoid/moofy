@@ -13,10 +13,12 @@
 
 	const sidebar = Sidebar.useSidebar();
 
-	const items = [
+	const username = $derived(globalState.currentUser?.username);
+
+	const items = $derived([
 		{
 			title: 'Профиль',
-			url: '/profiles/1',
+			url: `/profiles/${username}`,
 			icon: IconUser
 		},
 		{
@@ -39,13 +41,11 @@
 			url: '/settings',
 			icon: IconSettings
 		}
-	];
+	]);
 
 	const handleItemClick = () => {
 		sidebar.toggle();
 	};
-
-	const username = $derived(globalState.currentUser?.username);
 </script>
 
 {#snippet LoginButton()}

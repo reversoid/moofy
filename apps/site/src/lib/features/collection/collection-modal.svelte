@@ -18,7 +18,6 @@
 	import type { CollectionDto } from '@repo/api/dtos';
 	import Image from '$lib/ui/image.svelte';
 	import UploadImage from '$lib/ui/upload-image.svelte';
-	import { Badge } from '$lib/components/ui/badge';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { collectionSchema } from './collection-schema';
@@ -55,11 +54,13 @@
 				return;
 			}
 
+			isLoading = true;
 			await onSubmit({ ...form.data, isPublic: !form.data.isPrivate });
+			isLoading = false;
 		}
 	});
 
-	const { form: formData, enhance, errors } = form;
+	const { form: formData, enhance } = form;
 
 	let isLoading = $state(false);
 	let isDeleting = $state(false);

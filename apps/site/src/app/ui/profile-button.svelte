@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { setCurrentUser } from '$lib/state/state.svelte';
 	import { handleResponse, makeClient } from '$lib/utils';
@@ -40,21 +39,22 @@
 			<DropdownMenu.GroupHeading>{username}</DropdownMenu.GroupHeading>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Group>
-				<DropdownMenu.Item>
-					<a class="flex w-full items-center gap-2" href="/profiles/{username}">
+				<DropdownMenu.Item class="p-0">
+					<a class="flex w-full items-center gap-2 px-2 py-1.5" href="/profiles/{username}">
 						<IconUser />
 						<span>Профиль</span>
 					</a>
 				</DropdownMenu.Item>
 
-				<DropdownMenu.Item>
-					<a class="flex w-full items-center gap-2" href="/settings">
+				<!-- TODO make dropdown menu link item to remove px-0, px-2 things -->
+				<DropdownMenu.Item class="p-0">
+					<a class="flex w-full items-center gap-2 px-2 py-1.5" href="/settings">
 						<IconSettings />
 						<span>Настройки</span>
 					</a>
 				</DropdownMenu.Item>
 
-				<DropdownMenu.Item onclick={logout}>
+				<DropdownMenu.Item class="cursor-pointer" onclick={logout}>
 					<IconLogout2 />
 					<span>Выйти</span>
 				</DropdownMenu.Item>
