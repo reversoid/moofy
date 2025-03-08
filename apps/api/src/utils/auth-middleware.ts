@@ -1,9 +1,9 @@
 import { MiddlewareHandler } from "hono";
 
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  const user = c.get("session");
+  const session = c.get("session");
 
-  if (!user) {
+  if (!session) {
     return c.json({ error: "UNAUTHORIZED" }, 401);
   }
 

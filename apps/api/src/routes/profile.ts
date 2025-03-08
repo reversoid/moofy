@@ -8,8 +8,8 @@ import { validator } from "../utils/validator";
 export const profileRoute = new Hono()
   .use(authMiddleware)
   .get("/profile", async (c) => {
-    const user = c.get("session")!;
-    return c.json(makeDto({ user }));
+    const session = c.get("session")!;
+    return c.json(makeDto({ user: session.user }));
   })
   .get(
     "/profile/collections",
