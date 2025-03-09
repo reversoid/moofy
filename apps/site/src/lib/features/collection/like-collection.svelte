@@ -8,12 +8,14 @@
 		likesAmount: number;
 		isLiked: boolean;
 		collectionId: CollectionDto['id'];
+		disabled?: boolean;
 	}
 
 	const {
 		likesAmount: initialLikesAmount,
 		isLiked: isInitialLiked,
-		collectionId
+		collectionId,
+		disabled = false
 	}: Props = $props();
 
 	let isLiked = $state(isInitialLiked);
@@ -71,7 +73,7 @@
 	}
 </script>
 
-<Button {isLoading} variant="outline" class="flex-grow" onclick={handleClick}>
+<Button {disabled} {isLoading} variant="outline" class="flex-grow" onclick={handleClick}>
 	{#if isLiked}
 		<IconHeartFilled />
 	{:else}

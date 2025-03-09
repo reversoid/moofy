@@ -137,7 +137,7 @@
 			</ul>
 
 			<div class="flex w-full flex-col gap-4">
-				<Textarea readonly placeholder="Описание" value={profile.description} class="resize-none" />
+				<Textarea readonly placeholder="Описание" value={profile.description} />
 			</div>
 
 			{#if isOwner}
@@ -145,7 +145,7 @@
 					<IconSettings />
 					<span>Настройки</span>
 				</Button>
-			{:else}
+			{:else if currentUser}
 				<FollowButton userId={profile.id} isFollowing={social.isFollowing} />
 			{/if}
 		</div>

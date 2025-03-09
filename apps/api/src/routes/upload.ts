@@ -8,7 +8,7 @@ import {
 } from "@repo/core/services";
 
 export const uploadRoute = new Hono().post(
-  "/upload/image/:resource",
+  "/image/:resource",
   validator("param", z.object({ resource: z.enum(["collection", "user"]) })),
   validator("form", z.object({ image: z.instanceof(File) })),
   async (c) => {

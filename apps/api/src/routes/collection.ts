@@ -17,7 +17,7 @@ import { validator } from "../utils/validator";
 
 export const collectionRoute = new Hono()
   .get(
-    "/collections",
+    "",
     validator(
       "query",
       z.object({
@@ -38,7 +38,7 @@ export const collectionRoute = new Hono()
     }
   )
   .post(
-    "/collections",
+    "",
     authMiddleware,
     validator(
       "json",
@@ -68,7 +68,7 @@ export const collectionRoute = new Hono()
     }
   )
   .get(
-    "/collections/:id",
+    "/:id",
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");
@@ -100,7 +100,7 @@ export const collectionRoute = new Hono()
     }
   )
   .delete(
-    "/collections/:id",
+    "/:id",
     authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
@@ -130,7 +130,7 @@ export const collectionRoute = new Hono()
     }
   )
   .patch(
-    "/collections/:id",
+    "/:id",
     authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     validator(
@@ -171,7 +171,7 @@ export const collectionRoute = new Hono()
     }
   )
   .get(
-    "/collections/:collectionId/reviews",
+    "/:collectionId/reviews",
     validator(
       "query",
       z.object({
@@ -218,7 +218,7 @@ export const collectionRoute = new Hono()
     }
   )
   .post(
-    "/collections/:collectionId/reviews",
+    "/:collectionId/reviews",
     authMiddleware,
     validator(
       "json",
@@ -276,7 +276,7 @@ export const collectionRoute = new Hono()
     }
   )
   .put(
-    "/collections/:collectionId/likes",
+    "/:collectionId/likes",
     authMiddleware,
     validator(
       "param",
@@ -314,7 +314,7 @@ export const collectionRoute = new Hono()
     }
   )
   .delete(
-    "/collections/:collectionId/likes",
+    "/:collectionId/likes",
     authMiddleware,
     validator(
       "param",
@@ -352,7 +352,7 @@ export const collectionRoute = new Hono()
     }
   )
   .get(
-    "/collections/:id/socials",
+    "/:id/socials",
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
       const { id } = c.req.valid("param");

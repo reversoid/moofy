@@ -13,7 +13,7 @@ import { authMiddleware } from "../utils/auth-middleware";
 
 export const userRoute = new Hono()
   .put(
-    "/users/:id/followers",
+    "/:id/followers",
     authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
@@ -46,7 +46,7 @@ export const userRoute = new Hono()
     }
   )
   .get(
-    "/users/:id/followers",
+    "/:id/followers",
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     validator(
       "query",
@@ -100,7 +100,7 @@ export const userRoute = new Hono()
     }
   )
   .get(
-    "/users/:id/followees",
+    "/:id/followees",
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     validator(
       "query",
@@ -153,7 +153,7 @@ export const userRoute = new Hono()
     }
   )
   .delete(
-    "/users/:id/followers",
+    "/:id/followers",
     authMiddleware,
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     async (c) => {
@@ -181,14 +181,14 @@ export const userRoute = new Hono()
       return c.json({ ok: true });
     }
   )
-  .get("/users/existence/:username", async (c) => {
+  .get("/existence/:username", async (c) => {
     const { username } = c.req.param();
     const userService = c.get("userService");
     const user = await userService.getUserByUsername(username);
     return c.json({ exists: user !== null });
   })
   .get(
-    "/users",
+    "",
     authMiddleware,
     validator(
       "query",
@@ -222,7 +222,7 @@ export const userRoute = new Hono()
     }
   )
   .get(
-    "/users/:username",
+    "/:username",
     validator("param", z.object({ username: z.string() })),
     async (c) => {
       const { username } = c.req.valid("param");
@@ -252,7 +252,7 @@ export const userRoute = new Hono()
     }
   )
   .get(
-    "/users/:id/collections",
+    "/:id/collections",
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
     validator(
       "query",

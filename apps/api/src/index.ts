@@ -110,14 +110,14 @@ const api = new Hono()
   .use(withEntityCheck())
   .use(sessionMiddleware)
   .use(sessionCookieMiddleware)
-  .route("", authRoute)
-  .route("", profileRoute)
-  .route("", reviewRoute)
-  .route("", collectionRoute)
-  .route("", userRoute)
-  .route("", searchRoute)
-  .route("", favoritesRoute)
-  .route("", uploadRoute);
+  .route("auth", authRoute)
+  .route("profile", profileRoute)
+  .route("reviews", reviewRoute)
+  .route("collections", collectionRoute)
+  .route("users", userRoute)
+  .route("search", searchRoute)
+  .route("favorites", favoritesRoute)
+  .route("upload", uploadRoute);
 
 Deno.serve({ port: 8080 }, api.fetch);
 

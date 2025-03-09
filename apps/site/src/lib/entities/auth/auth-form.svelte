@@ -11,6 +11,7 @@
 		form: SuperForm<{ username: string; password: string }, any>;
 		schema: ZodObject<ZodRawShape>;
 		onFormStateChange: (state: FormState) => void;
+		type: 'login' | 'register';
 	}
 
 	let data: Props = $props();
@@ -32,7 +33,11 @@
 		<Form.Control>
 			{#snippet children({ attrs }: { attrs: any })}
 				<Form.Label>Имя пользователя</Form.Label>
-				<Input {...attrs} bind:value={$formData.username} />
+				<Input
+					autocomplete={data.type === 'login' ? 'username' : 'off'}
+					{...attrs}
+					bind:value={$formData.username}
+				/>
 			{/snippet}
 		</Form.Control>
 		<Form.Description />
@@ -43,7 +48,12 @@
 		<Form.Control>
 			{#snippet children({ attrs }: { attrs: any })}
 				<Form.Label>Пароль</Form.Label>
-				<Input {...attrs} bind:value={$formData.password} type="password" />
+				<Input
+					autocomplete={data.type === 'login' ? 'current-password' : 'new-password'}
+					{...attrs}
+					bind:value={$formData.password}
+					type="password"
+				/>
 			{/snippet}
 		</Form.Control>
 		<Form.Description />

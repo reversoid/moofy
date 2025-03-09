@@ -14,7 +14,7 @@ import { validator } from "../utils/validator";
 export const favoritesRoute = new Hono()
   .use(authMiddleware)
   .get(
-    "/favorites",
+    "",
     validator(
       "query",
       z.object({
@@ -41,7 +41,7 @@ export const favoritesRoute = new Hono()
     }
   )
   .put(
-    "/favorites/:collectionId",
+    "/:collectionId",
     validator(
       "param",
       z.object({ collectionId: z.coerce.number().int().positive() })
@@ -81,7 +81,7 @@ export const favoritesRoute = new Hono()
     }
   )
   .delete(
-    "/favorites/:collectionId",
+    "/:collectionId",
     validator(
       "param",
       z.object({ collectionId: z.coerce.number().int().positive() })

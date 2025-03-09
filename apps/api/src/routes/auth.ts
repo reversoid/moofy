@@ -8,7 +8,7 @@ import { UsernameExistsError } from "@repo/core/services";
 
 export const authRoute = new Hono()
   .post(
-    "/auth/login",
+    "/login",
     validator(
       "json",
       z.object({
@@ -47,7 +47,7 @@ export const authRoute = new Hono()
     }
   )
   .post(
-    "/auth/register",
+    "/register",
     validator(
       "json",
       z.object({
@@ -91,7 +91,7 @@ export const authRoute = new Hono()
       return c.json(makeDto({ user: session.user }));
     }
   )
-  .post("/auth/logout", async (c) => {
+  .post("/logout", async (c) => {
     const sessionToken = getCookie(c, "session");
     const sessionService = c.get("sessionService");
 

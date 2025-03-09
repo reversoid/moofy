@@ -8,7 +8,7 @@ import { authMiddleware } from "../utils/auth-middleware";
 const filmProvider = new UnofficialKpProvider();
 
 export const searchRoute = new Hono().use(authMiddleware).get(
-  "/search/films",
+  "/films",
   validator(
     "query",
     z.object({

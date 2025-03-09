@@ -42,7 +42,7 @@
 
 		{#if currentUser?.id !== userId}
 			<Card.Footer class="max-sm:px-4">
-				<FollowButton {userId} {isFollowing} />
+				<FollowButton {userId} {isFollowing} disabled={!currentUser} />
 			</Card.Footer>
 		{/if}
 	</Card.Root>

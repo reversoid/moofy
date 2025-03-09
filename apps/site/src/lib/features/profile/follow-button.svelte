@@ -7,9 +7,10 @@
 	interface Props {
 		userId: UserDto['id'];
 		isFollowing: boolean;
+		disabled?: boolean;
 	}
 
-	const { userId, isFollowing: initialIsFollowing }: Props = $props();
+	const { userId, isFollowing: initialIsFollowing, disabled = false }: Props = $props();
 
 	const api = makeClient(fetch);
 
@@ -67,6 +68,7 @@
 	class="w-full"
 	onclick={isFollowing ? unfollow : follow}
 	{isLoading}
+	{disabled}
 >
 	{#if isFollowing}
 		<IconUserMinus />

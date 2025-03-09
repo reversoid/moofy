@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
 	import { CreateReview } from '$lib/features/reivew';
@@ -9,11 +8,11 @@
 	import { handleResponse, makeClient } from '$lib/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconBookmark, IconHeart } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import { goto } from '$app/navigation';
+	import { globalState } from '$lib/state/state.svelte';
 
 	const { data }: PageProps = $props();
 
@@ -70,6 +69,8 @@
 	function handleCollectionDeleted() {
 		goto('/welcome/collections');
 	}
+
+	const currentUser = globalState.currentUser;
 </script>
 
 <svelte:head>
@@ -116,12 +117,17 @@
 				<div class="mt-3 flex flex-col gap-2">
 					<div class="flex gap-2">
 						<LikeCollection
+							disabled={!currentUser}
 							likesAmount={socials.likesAmount}
 							isLiked={socials.isLiked}
 							collectionId={collection.id}
 						/>
 
-						<BookmarkCollection isBookmarked={socials.isFavorited} collectionId={collection.id} />
+						<BookmarkCollection
+							disabled={!currentUser}
+							isBookmarked={socials.isFavorited}
+							collectionId={collection.id}
+						/>
 					</div>
 
 					{#if isOwner}

@@ -12,7 +12,7 @@ import { authMiddleware } from "../utils/auth-middleware";
 
 export const reviewRoute = new Hono()
   .get(
-    "/reviews/:reviewId",
+    "/:reviewId",
     validator(
       "param",
       z.object({
@@ -48,7 +48,7 @@ export const reviewRoute = new Hono()
     }
   )
   .delete(
-    "/reviews/:reviewId",
+    "/:reviewId",
     authMiddleware,
     validator(
       "param",
@@ -81,7 +81,7 @@ export const reviewRoute = new Hono()
     }
   )
   .patch(
-    "/reviews/:reviewId",
+    "/:reviewId",
     authMiddleware,
     validator(
       "param",

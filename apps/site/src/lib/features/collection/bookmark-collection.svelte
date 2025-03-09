@@ -7,9 +7,10 @@
 	interface Props {
 		isBookmarked: boolean;
 		collectionId: CollectionDto['id'];
+		disabled?: boolean;
 	}
 
-	const { isBookmarked: isInitialBookmarked, collectionId }: Props = $props();
+	const { isBookmarked: isInitialBookmarked, collectionId, disabled = false }: Props = $props();
 
 	let isBookmarked = $state(isInitialBookmarked);
 	let isLoading = $state(false);
@@ -62,7 +63,7 @@
 	}
 </script>
 
-<Button {isLoading} variant="outline" class="flex-grow" onclick={handleClick}>
+<Button {disabled} {isLoading} variant="outline" class="flex-grow" onclick={handleClick}>
 	{#if isBookmarked}
 		<IconBookmarkFilled />
 	{:else}

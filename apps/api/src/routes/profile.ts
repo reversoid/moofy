@@ -7,12 +7,12 @@ import { validator } from "../utils/validator";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
-  .get("/profile", async (c) => {
+  .get("", async (c) => {
     const session = c.get("session")!;
     return c.json(makeDto({ user: session.user }));
   })
   .get(
-    "/profile/collections",
+    "/collections",
     validator(
       "query",
       z.object({
@@ -38,7 +38,7 @@ export const profileRoute = new Hono()
     }
   )
   .patch(
-    "/profile",
+    "",
     validator(
       "json",
       z.object({
