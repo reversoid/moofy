@@ -1,4 +1,0 @@
-export enum SubscribeErrors {
-  ALREADY_SUBSCRIBED = 'ALREADY_SUBSCRIBED',
-  NOT_SUBSCRIBED = 'NOT_SUBSCRIBED',
-}

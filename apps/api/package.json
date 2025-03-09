@@ -1,0 +1,24 @@
+{
+  "name": "@repo/api",
+  "scripts": {
+    "dev": "deno run --allow-ffi --allow-read --allow-env --unstable-sloppy-imports --allow-net --watch src/index.ts",
+    "start": "deno run --allow-ffi --allow-net --allow-read --unstable-sloppy-imports --allow-env src/index.ts"
+  },
+  "dependencies": {
+    "@repo/config": "workspace:*",
+    "@repo/core": "workspace:*",
+    "@repo/film-providers": "workspace:*",
+    "@repo/repositories": "workspace:*",
+    "hono": "^4.7.2"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/deno": "^2.0.0",
+    "deno": "^2.1.4",
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./dtos": "./src/utils/make-dto/dtos.ts"
+  }
+}

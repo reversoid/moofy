@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  ######################### Proxy #########################
+  root-proxy:
+    build: 
+      context: ./nginx-proxy
+      dockerfile: Dockerfile
+    container_name: root-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /etc/nginx/certs
+    networks:
+      - moofy-network-v2
+
+  ######################### SSL #########################
+  ssl-companion:
+    image: nginxproxy/acme-companion
+    container_name: ssl-companion
+    restart: unless-stopped
+    volumes_from:
+      - "root-proxy"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
+      - NGINX_PROXY_CONTAINER=root-proxy
+    depends_on:
+      - root-proxy
+
+    ######################## Site #########################
+  site:
+    image: moofy-site
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+      target: site
+    container_name: site
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=moofy.ru
+      - LETSENCRYPT_HOST=moofy.ru
+      - VIRTUAL_PORT=3000
+    networks:
+      - moofy-network-v2
+
+  ######################### Api #########################
+
+  site-api:
+    image: moofy-api
+    restart: unless-stopped
+    container_name: site-api
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+      target: api
+    networks:
+      - moofy-network-v2
+
+networks:
+  moofy-network-v2:
+    driver: bridge

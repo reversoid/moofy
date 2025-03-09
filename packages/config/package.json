@@ -1,0 +1,24 @@
+{
+  "type": "module",
+  "name": "@repo/config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@pnpm/find-workspace-dir": "^7.0.2",
+    "dotenv": "^16.4.5",
+    "znv": "^0.4.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "exports": {
+    ".": "./config.ts"
+  }
+}

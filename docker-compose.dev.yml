@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres
+    restart: no
+    environment:
+      POSTGRES_USER: "${PG_USER}"
+      POSTGRES_PASSWORD: "${PG_PASSWORD}"
+      POSTGRES_DB: "${PG_DATABASE}"
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres-db
+    restart: no
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "bober@email.com"
+      PGADMIN_DEFAULT_PASSWORD: "boberkurwa123"
+    ports:
+      - 5050:80
+
+volumes:
+  postgres-db:
+    driver: local

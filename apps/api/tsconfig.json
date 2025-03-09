@@ -1,0 +1,15 @@
+{
+  "extends": ["@repo/typescript-config/base.json"],
+  "compilerOptions": {
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "types": ["hono", "deno"],
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "module": "ESNext",
+		"esModuleInterop": true,
+		"rootDir": "./src",
+		"outDir": "./build",
+		"composite": true
+  }
+}

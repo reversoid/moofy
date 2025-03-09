@@ -1,0 +1,28 @@
+{
+  "name": "v2",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "sh -c 'pnpm --filter=${0} dev ${@:1}'",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "migration:new": "dbmate new",
+    "migration:up": "dbmate up",
+    "migration:down": "dbmate down",
+    "dev:docker": "docker compose -f docker-compose.dev.yml up"
+  },
+  "devDependencies": {
+    "dbmate": "^2.25.0",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.4",
+    "typescript": "5.5.4"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "resulto": "^1.4.2",
+    "zod": "^3.24.2"
+  }
+}
