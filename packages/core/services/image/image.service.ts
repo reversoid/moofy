@@ -8,7 +8,6 @@ import { IImageService } from "./interface";
 import easyYandexS3 from "easy-yandex-s3";
 import config from "@repo/config";
 import * as sharp from "sharp";
-import convert from "heic-convert";
 
 const EasyYandexS3 = (easyYandexS3 as any).default as typeof easyYandexS3;
 
@@ -30,24 +29,6 @@ export class ImageService implements IImageService {
     Bucket: config.S3_BUCKET_NAME,
   });
 
-  private async preprocessFile(file: File): Promise<File> {
-    if (this.getFileExtension(file) === "heic") {
-      const jpegBuffer = await convert({
-        // https://github.com/catdad-experiments/heic-convert/issues/34#issuecomment-1935394276
-        buffer: new Uint8Array(
-          await file.arrayBuffer()
-        ) as unknown as ArrayBufferLike,
-        format: "JPEG",
-      });
-
-      return new File([new Uint8Array(jpegBuffer)], file.name, {
-        type: "image/jpeg",
-      });
-    }
-
-    return file;
-  }
-
   async uploadImage(
     file: File,
     resource: "collection" | "user"
@@ -63,10 +44,8 @@ export class ImageService implements IImageService {
         return err(new WrongFileTypeError());
       }
 
-      let fileToConvert = await this.preprocessFile(file);
-
       const convertedImageResult = await this.convertImage(
-        fileToConvert,
+        file,
         ASPECT_RATIOS[resource]
       );
 
