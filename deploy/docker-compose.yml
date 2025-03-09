@@ -45,8 +45,8 @@ services:
     container_name: site
     restart: unless-stopped
     environment:
-      - VIRTUAL_HOST=moofy.ru
-      - LETSENCRYPT_HOST=moofy.ru
+      - VIRTUAL_HOST=v2.moofy.ru
+      - LETSENCRYPT_HOST=v2.moofy.ru
       - VIRTUAL_PORT=3000
     networks:
       - moofy-network-v2
