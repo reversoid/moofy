@@ -19,8 +19,8 @@
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
 		"@repo/api": "workspace:*",
-		"@repo/core": "workspace:*",
 		"@repo/config": "workspace:*",
+		"@repo/core": "workspace:*",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.16.1",
@@ -55,7 +55,7 @@
 		"typescript": "^5.7.3",
 		"typescript-eslint": "^8.21.0",
 		"vite": "^5.4.14",
-		"vitest": "^2.1.8"
+		"vitest": "^2.1.9"
 	},
 	"dependencies": {
 		"@tabler/icons-svelte": "^3.29.0",
