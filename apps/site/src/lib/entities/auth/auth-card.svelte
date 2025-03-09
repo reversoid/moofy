@@ -33,6 +33,7 @@
 	</Card.Header>
 	<Card.Content>
 		<AuthForm
+			{type}
 			id={formId}
 			{form}
 			schema={type === 'login' ? loginSchema : registerSchema}
