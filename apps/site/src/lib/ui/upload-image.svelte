@@ -3,6 +3,7 @@
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { cn, handleResponse, makeClient } from '$lib/utils';
 	import type { Snippet } from 'svelte';
+	import { toast } from 'svelte-sonner';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	interface Props {
@@ -21,6 +22,8 @@
 		inputAttributes,
 		class: className
 	}: Props = $props();
+
+	// TODO props id
 	const id = 'upload-image';
 
 	async function uploadImage(e: Event) {
@@ -41,6 +44,9 @@
 			.then(handleResponse);
 
 		if (result.isErr()) {
+			isLoading = false;
+			toast.error('Не удалось загрузить изображение');
+
 			console.error(result.error.error);
 			return;
 		}
@@ -60,6 +66,13 @@
 		{@render children?.({ isLoading, imageUrl })}
 	</Label>
 
-	<Input disabled={isLoading} {id} class="hidden" type="file" onchange={uploadImage} />
+	<Input
+		accept="image/jpeg, image/png, image/webp, image/heic"
+		disabled={isLoading}
+		{id}
+		class="hidden"
+		type="file"
+		onchange={uploadImage}
+	/>
 	<input type="hidden" value={imageUrl ?? ''} readonly {...inputAttributes} />
 </div>
