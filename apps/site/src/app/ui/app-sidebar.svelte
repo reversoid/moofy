@@ -96,6 +96,9 @@
 {/snippet}
 
 <Sidebar.Root side="right" variant="sidebar" collapsible="offcanvas">
+	<!-- https://github.com/huntabyte/bits-ui/issues/427#issuecomment-2025696636 -->
+	<input class="fixed left-0 top-0 h-0 w-0" type="checkbox" />
+
 	<Sidebar.Content>
 		<Sidebar.Group>
 			<Sidebar.GroupLabel>{username ?? 'Гость'}</Sidebar.GroupLabel>

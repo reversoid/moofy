@@ -27,6 +27,8 @@
 		)}
 		{...restProps}
 	>
+		<!-- TODO update bitsui to use another hack with focusing on div-->
+		<!-- https://github.com/huntabyte/bits-ui/issues/427#issuecomment-2025696636 -->
 		<input class="fixed left-0 top-0 h-0 w-0" type="checkbox" />
 
 		{@render children?.()}
