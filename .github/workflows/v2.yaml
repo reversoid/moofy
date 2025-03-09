@@ -1,10 +1,7 @@
-name: moofy-v2
-run-name: Deploy v2
+name: Deploy
+run-name: Deploy
 on:
-  push:
-    branches:
-      - "v2"
-      # TODO add workflow_dispatch when merged to main
+  workflow_dispatch:
 
 concurrency:
   group: "v2"
