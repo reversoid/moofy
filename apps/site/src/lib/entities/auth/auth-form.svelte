@@ -36,7 +36,7 @@
 				<Input
 					autocomplete={data.type === 'login' ? 'username' : 'off'}
 					{...attrs}
-					bind:value={$formData.username}
+					bind:value={() => $formData.username, (v) => ($formData.username = v.toLowerCase())}
 				/>
 			{/snippet}
 		</Form.Control>

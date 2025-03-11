@@ -29,7 +29,7 @@ export interface IUserService {
 
   getUserByUsername(username: string): Promise<User | null>;
 
-  validateUserAndPassword(props: {
+  validateUsernameAndPassword(props: {
     username: string;
     password: string;
   }): Promise<Result<User, UserNotFoundError | WrongPasswordError>>;

@@ -21,7 +21,7 @@ export const authRoute = new Hono()
       const userService = c.get("userService");
       const sessionService = c.get("sessionService");
 
-      const userResult = await userService.validateUserAndPassword({
+      const userResult = await userService.validateUsernameAndPassword({
         username,
         password,
       });

@@ -25,11 +25,12 @@ export class UserService implements IUserService {
     password: string;
   }): Promise<Result<User, UsernameExistsError>> {
     const passwordHash = await hashPassword(props.password);
-    const newUser = new User({ username: props.username, passwordHash });
+    const newUser = new User({
+      username: props.username.toLowerCase(),
+      passwordHash,
+    });
 
-    const existingUser = await this.userRepository.getByUsername(
-      props.username
-    );
+    const existingUser = await this.getUserByUsername(props.username);
     if (existingUser) {
       return err(new UsernameExistsError());
     }
@@ -43,11 +44,12 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async validateUserAndPassword(props: {
+  async validateUsernameAndPassword(props: {
     username: string;
     password: string;
   }): Promise<Result<User, UserNotFoundError | WrongPasswordError>> {
-    const user = await this.userRepository.getByUsername(props.username);
+    const user = await this.getUserByUsername(props.username);
+
     if (!user) {
       return err(new UserNotFoundError());
     }
@@ -60,7 +62,9 @@ export class UserService implements IUserService {
   }
 
   async getUserByUsername(username: string): Promise<User | null> {
-    const user = await this.userRepository.getByUsername(username);
+    const user = await this.userRepository.getByUsername(
+      username.toLowerCase()
+    );
     return user;
   }
 
@@ -79,7 +83,7 @@ export class UserService implements IUserService {
     const shouldUpdateImageUrl = props.data.imageUrl !== existingUser.imageUrl;
 
     if (props.data.username && shouldUpdateUsername) {
-      const existingUserWithUsername = await this.userRepository.getByUsername(
+      const existingUserWithUsername = await this.getUserByUsername(
         props.data.username
       );
       if (existingUserWithUsername) {
@@ -104,7 +108,9 @@ export class UserService implements IUserService {
     const updatedUser = await this.userRepository.update(props.id, {
       imageUrl: shouldUpdateImageUrl ? props.data.imageUrl : undefined,
       description: shouldUpdateDescription ? props.data.description : undefined,
-      username: shouldUpdateUsername ? props.data.username : undefined,
+      username: shouldUpdateUsername
+        ? props.data.username?.toLowerCase()
+        : undefined,
       passwordHash: newPasswordHash,
     });
 
