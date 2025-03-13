@@ -36,7 +36,7 @@
 	<Card.Header class="flex flex-1 flex-col gap-2 !pb-6 max-sm:!pb-4 max-sm:pt-0 ">
 		<div class="flex flex-row flex-wrap gap-2">
 			<Card.Title class="text-lg">
-				<Link isExternal target="_blank" href="https:/kinopoisk.ru/film/{review.film.id}"
+				<Link isExternal target="_blank" href="https://kinopoisk.ru/film/{review.film.id}"
 					>{review.film.name}</Link
 				>
 			</Card.Title>
