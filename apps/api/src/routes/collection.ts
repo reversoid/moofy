@@ -7,6 +7,7 @@ import {
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
   ReviewOnFilmExistsError,
+  UserNotFoundError,
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
@@ -65,6 +66,39 @@ export const collectionRoute = new Hono()
       });
 
       return c.json(makeDto({ collection: result.unwrap() }), 201);
+    }
+  )
+  .post(
+    "/:id/views",
+    authMiddleware,
+    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    async (c) => {
+      const { id } = c.req.valid("param");
+      const session = c.get("session")!;
+      const collectionService = c.get("collectionService");
+
+      const result = await collectionService.viewCollection({
+        collectionId: new Id(id),
+        userId: session.user.id,
+      });
+
+      if (result.isErr()) {
+        if (result.error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        if (result.error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (result.error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw result.error;
+      }
+
+      return c.json({ ok: true });
     }
   )
   .get(

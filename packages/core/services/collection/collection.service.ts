@@ -4,6 +4,7 @@ import { User } from "../../entities/user";
 import {
   ICollectionLikeRepository,
   ICollectionRepository,
+  ICollectionViewRepository,
   IFavoriteCollectionRepository,
   IUserRepository,
 } from "../../repositories";
@@ -27,8 +28,47 @@ export class CollectionService implements ICollectionService {
     private readonly collectionRepository: ICollectionRepository,
     private readonly userRepository: IUserRepository,
     private readonly collectionLikeRepository: ICollectionLikeRepository,
-    private readonly favoriteCollectionRepository: IFavoriteCollectionRepository
+    private readonly favoriteCollectionRepository: IFavoriteCollectionRepository,
+    private readonly collectionViewRepository: ICollectionViewRepository
   ) {}
+
+  async viewCollection(props: {
+    collectionId: Collection["id"];
+    userId: User["id"];
+  }): Promise<
+    Result<
+      null,
+      | CollectionNotFoundError
+      | UserNotFoundError
+      | NoAccessToPrivateCollectionError
+    >
+  > {
+    const user = await this.userRepository.get(props.userId);
+    if (!user) {
+      return err(new UserNotFoundError());
+    }
+
+    const collectionResult = await this.getCollection({
+      id: props.collectionId,
+      by: props.userId,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(collectionResult.unwrapErr());
+    }
+
+    const collection = collectionResult.unwrap();
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    await this.collectionViewRepository.viewCollection(
+      collection.id,
+      props.userId
+    );
+
+    return ok(null);
+  }
 
   async getSocials(props: {
     collectionId: Collection["id"];

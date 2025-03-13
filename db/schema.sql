@@ -113,7 +113,7 @@ CREATE TABLE public.collection_views (
     id integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     user_id integer NOT NULL,
-    list_id integer NOT NULL
+    collection_id integer NOT NULL
 );
 
 
@@ -654,7 +654,7 @@ ALTER TABLE ONLY public.collection_likes
 --
 
 ALTER TABLE ONLY public.collection_views
-    ADD CONSTRAINT "FK_collection_views_collection_id" FOREIGN KEY (list_id) REFERENCES public.collections(id) ON DELETE CASCADE;
+    ADD CONSTRAINT "FK_collection_views_collection_id" FOREIGN KEY (collection_id) REFERENCES public.collections(id) ON DELETE CASCADE;
 
 
 --
@@ -711,4 +711,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20250107111932'),
     ('20250107113634'),
     ('20250107115051'),
-    ('20250107123231');
+    ('20250107123231'),
+    ('20250313132920');

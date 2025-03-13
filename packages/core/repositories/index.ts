@@ -6,3 +6,4 @@ export * from "./user.repository";
 export * from "./session.repository";
 export * from "./subscription.repository";
 export * from "./collection-like.repository";
+export * from "./collection-view.repository";

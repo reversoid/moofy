@@ -11,6 +11,7 @@ import {
 } from "./tables";
 import { SessionsTable } from "./tables/sessions";
 import { CollectionLikesTable } from "./tables/collection-likes";
+import { CollectionViewsTable } from "./tables/collection-view";
 
 const { Pool } = (pg as any).default as typeof pg;
 
@@ -25,6 +26,7 @@ export interface Database {
   favoriteCollections: FavoriteCollectionsTable;
   subscriptions: SubscriptionsTable;
   collectionLikes: CollectionLikesTable;
+  collectionViews: CollectionViewsTable;
 }
 
 const dialect = new PostgresDialect({

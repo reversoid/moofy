@@ -71,6 +71,11 @@
 	}
 
 	const currentUser = globalState.currentUser;
+
+	$effect(() => {
+		const api = makeClient(fetch);
+		void api.collections[':id'].views.$post({ param: { id: String(collection.id) } });
+	});
 </script>
 
 <svelte:head>

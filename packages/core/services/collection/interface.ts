@@ -26,6 +26,18 @@ export type EditCollectionDto = {
 };
 
 export interface ICollectionService {
+  viewCollection(props: {
+    collectionId: Collection["id"];
+    userId: User["id"];
+  }): Promise<
+    Result<
+      null,
+      | CollectionNotFoundError
+      | UserNotFoundError
+      | NoAccessToPrivateCollectionError
+    >
+  >;
+
   createCollection(props: {
     userId: User["id"];
     dto: CreateCollectionDto;

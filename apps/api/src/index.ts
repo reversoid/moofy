@@ -29,6 +29,7 @@ import {
   ReviewRepository,
   FilmRepository,
   CollectionLikeRepository,
+  CollectionViewRepository,
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -65,6 +66,7 @@ const reviewRepository = new ReviewRepository();
 const filmRepository = new FilmRepository();
 const subscriptionRepository = new SubscriptionRepository();
 const collectionLikeRepository = new CollectionLikeRepository();
+const collectionViewRepository = new CollectionViewRepository();
 
 // Services
 const userService = new UserService(userRepository);
@@ -73,7 +75,8 @@ const collectionService = new CollectionService(
   collectionRepository,
   userRepository,
   collectionLikeRepository,
-  favoriteCollectionRepository
+  favoriteCollectionRepository,
+  collectionViewRepository
 );
 const filmService = new FilmService(filmRepository);
 const favoriteCollectionService = new FavoriteCollectionService(
