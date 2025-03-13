@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "sh -c 'pnpm --filter=${0} dev ${@:1}'",
+    "run:one-time": "pnpm --filter=one-time-scripts run:script",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migration:new": "dbmate new",

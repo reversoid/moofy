@@ -1,0 +1,22 @@
+{
+  "name": "@repo/one-time-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run:script": "sh -c 'tsx ${0}/run.ts'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@repo/core": "workspace:*",
+    "@repo/repositories": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "tsx": "^4.19.3"
+  }
+}
