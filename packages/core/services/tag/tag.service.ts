@@ -264,4 +264,55 @@ export class TagService implements ITagService {
 
     return ok(tag);
   }
+
+  async getReviewTags(props: {
+    collectionId: Id;
+    reviewIds: Id[];
+    by?: User["id"];
+  }): Promise<
+    Result<
+      { reviewId: Id; tag: ReviewTag[] }[],
+      NoAccessToPrivateCollectionError | CollectionNotFoundError
+    >
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const collection = collectionResult.value;
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    if (collection.creator.id.value !== props.by?.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const reviewTags = await this.reviewTagRepository.getReviewTags(
+      props.reviewIds
+    );
+
+    const reviewTagsMap = reviewTags.reduce((acc, tag) => {
+      if (!acc.has(tag.reviewId.value)) {
+        acc.set(tag.reviewId.value, [tag]);
+      }
+
+      acc.get(tag.reviewId.value)?.push(tag);
+
+      return acc;
+    }, new Map<number, ReviewTag[]>());
+
+    return ok(
+      props.reviewIds.map((reviewId) => ({
+        reviewId,
+        tag: reviewTagsMap.get(reviewId.value) || [],
+      }))
+    );
+  }
 }

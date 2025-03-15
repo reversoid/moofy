@@ -69,4 +69,15 @@ export interface ITagService {
       CollectionTagNotFoundError | NotOwnerOfCollectionError
     >
   >;
+
+  getReviewTags(props: {
+    collectionId: Id;
+    reviewIds: Id[];
+    by?: User["id"];
+  }): Promise<
+    Result<
+      { reviewId: Id; tag: ReviewTag[] }[],
+      NoAccessToPrivateCollectionError | CollectionNotFoundError
+    >
+  >;
 }

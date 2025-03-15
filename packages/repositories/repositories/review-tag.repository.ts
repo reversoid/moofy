@@ -58,4 +58,18 @@ export class ReviewTagRepository extends IReviewTagRepository {
   async remove(id: Id): Promise<void> {
     await db.deleteFrom("reviewTags").where("id", "=", id.value).execute();
   }
+
+  async getReviewTags(reviewsId: Id[]): Promise<ReviewTag[]> {
+    const tags = await db
+      .selectFrom("reviewTags")
+      .select(ReviewTagSelects.reviewTagSelects)
+      .where(
+        "reviewId",
+        "in",
+        reviewsId.map((id) => id.value)
+      )
+      .execute();
+
+    return tags.map(makeReviewTag);
+  }
 }
