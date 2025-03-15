@@ -6,3 +6,4 @@ export * from "./session";
 export * from "./favorite-collection";
 export * from "./subscription";
 export * from "./image";
+export * from "./tag";

@@ -19,6 +19,8 @@ import {
   FilmService,
   IImageService,
   ImageService,
+  TagService,
+  ITagService,
 } from "@repo/core/services";
 import {
   UserRepository,
@@ -30,6 +32,8 @@ import {
   FilmRepository,
   CollectionLikeRepository,
   CollectionViewRepository,
+  CollectionTagRepository,
+  ReviewTagRepository,
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -49,6 +53,7 @@ declare module "hono" {
     favoriteCollectionService: IFavoriteCollectionService;
     subscriptionService: ISubscriptionService;
     imageService: IImageService;
+    tagService: ITagService;
 
     session?: Session;
   }
@@ -67,6 +72,8 @@ const filmRepository = new FilmRepository();
 const subscriptionRepository = new SubscriptionRepository();
 const collectionLikeRepository = new CollectionLikeRepository();
 const collectionViewRepository = new CollectionViewRepository();
+const collectionTagRepository = new CollectionTagRepository();
+const reviewTagRepository = new ReviewTagRepository();
 
 // Services
 const userService = new UserService(userRepository);
@@ -97,6 +104,12 @@ const reviewService = new ReviewService(
   userRepository
 );
 const imageService = new ImageService();
+const tagService = new TagService(
+  collectionTagRepository,
+  reviewTagRepository,
+  collectionService,
+  reviewService
+);
 
 const api = new Hono()
   .use(async (c, next) => {
@@ -107,7 +120,7 @@ const api = new Hono()
     c.set("reviewService", reviewService);
     c.set("subscriptionService", subscriptionService);
     c.set("imageService", imageService);
-
+    c.set("tagService", tagService);
     await next();
   })
   .use(withEntityCheck())

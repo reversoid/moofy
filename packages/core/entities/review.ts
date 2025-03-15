@@ -11,6 +11,7 @@ export class Review extends Entity {
   film: Film;
   collectionId: Id;
   userId: Id;
+  tags: Tag[];
 
   constructor(props: {
     id?: Id;
@@ -21,6 +22,7 @@ export class Review extends Entity {
     film: Film;
     collectionId: Id;
     userId: Id;
+    tags?: Tag[];
   }) {
     super();
 
@@ -34,5 +36,30 @@ export class Review extends Entity {
     this.film = props.film;
     this.collectionId = props.collectionId;
     this.userId = props.userId;
+    this.tags = props.tags ?? [];
+  }
+}
+
+export class Tag extends Entity {
+  id: Id;
+  name: string;
+  hslColor: string;
+  createdAt: Date;
+  collectionId: Id;
+
+  constructor(props: {
+    id?: Id;
+    name: string;
+    hslColor: string;
+    createdAt?: Date;
+    collectionId: Id;
+  }) {
+    super();
+
+    this.id = props.id ?? new Id();
+    this.name = props.name;
+    this.hslColor = props.hslColor;
+    this.createdAt = props.createdAt ?? new Date();
+    this.collectionId = props.collectionId;
   }
 }

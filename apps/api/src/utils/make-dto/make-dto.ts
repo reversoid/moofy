@@ -1,5 +1,12 @@
 import { dtoRules, type PickableFields, type Transformer } from "./rules";
-import { User, Collection, Review, Session, Film } from "@repo/core/entities";
+import {
+  User,
+  Collection,
+  Review,
+  Session,
+  Film,
+  Tag,
+} from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 
 /** Utility type to map a type T to a new type K */
@@ -31,6 +38,7 @@ type SimpleMappings = [
     | "score"
     | "createdAt"
     | "updatedAt"
+    | "tags"
   >,
   TypeMap<Session, "id" | "user" | "expiresAt">,
   TypeMap<
@@ -44,6 +52,7 @@ type SimpleMappings = [
     | "type"
     | "year"
   >,
+  TypeMap<Tag, "id" | "name" | "hslColor" | "createdAt">,
 ];
 
 /** Transforms the type T using the mappings M */
@@ -81,6 +90,8 @@ export function makeDto<T>(data: T): DtoType<T> {
   }
 
   if (Array.isArray(data)) {
+    console.log("is array", data);
+
     return data.map((item) => makeDto(item)) as DtoType<T>;
   }
 
