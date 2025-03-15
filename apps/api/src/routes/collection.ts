@@ -17,6 +17,8 @@ import { authMiddleware } from "../utils/auth-middleware";
 import { makeDto } from "../utils/make-dto";
 import { validator } from "../utils/validator";
 
+const hslColorSchema = z.string().regex(/^hsl\(\d{1,3}, \d{1,3}%, \d{1,3}%\)$/);
+
 export const collectionRoute = new Hono()
   .get(
     "",
@@ -258,7 +260,7 @@ export const collectionRoute = new Hono()
     validator(
       "json",
       z.object({
-        score: z.number().int().min(1).max(10).nullish(),
+        score: z.number().int().min(1).max(5).nullish(),
         description: z.string().min(1).max(400).nullish(),
         filmId: z.coerce.number().int().positive(),
       })
@@ -461,7 +463,7 @@ export const collectionRoute = new Hono()
       "json",
       z.object({
         name: z.string().min(1).max(32),
-        hslColor: z.string().min(1).max(32),
+        hslColor: hslColorSchema,
       })
     ),
     async (c) => {
@@ -528,5 +530,51 @@ export const collectionRoute = new Hono()
       }
 
       return c.json({ ok: true });
+    }
+  )
+  .patch(
+    "/:collectionId/tags/:tagId",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({
+        collectionId: z.coerce.number().int().positive(),
+        tagId: z.coerce.number().int().positive(),
+      })
+    ),
+    validator(
+      "json",
+      z.object({
+        name: z.string().min(1).max(32).optional(),
+        hslColor: hslColorSchema.optional(),
+      })
+    ),
+    async (c) => {
+      const { tagId } = c.req.valid("param");
+      const { hslColor, name } = c.req.valid("json");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.editTag({
+        tagId: new Id(tagId),
+        by: session.user.id,
+        dto: { hslColor, name },
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw error;
+      }
+
+      const tag = result.unwrap();
+      return c.json(makeDto({ tag }));
     }
   );

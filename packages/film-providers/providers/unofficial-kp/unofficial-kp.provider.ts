@@ -60,7 +60,7 @@ export class UnofficialKpProvider implements IFilmProvider {
 
     return new Film({
       id: String(parsedData.kinopoiskId),
-      filmLength: String(parsedData.filmLength),
+      filmLength: String(parsedData.filmLength ?? 0),
       genres: parsedData.genres.map((g) => g.genre),
       name: (parsedData.nameRu ?? parsedData.nameEn) as string,
       posterPreviewUrl: parsedData.posterUrlPreview,

@@ -1,4 +1,11 @@
-import { Collection, Film, Review, Session, User } from "@repo/core/entities";
+import {
+  Collection,
+  Film,
+  Review,
+  Session,
+  Tag,
+  User,
+} from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 
 export type PickableFields<T> = {
@@ -37,6 +44,13 @@ export const dtoRules = getRules(
     imageUrl: true,
   }),
 
+  registerFields(Tag, {
+    id: true,
+    name: true,
+    hslColor: true,
+    createdAt: true,
+  }),
+
   registerFields(Collection, {
     id: true,
     name: true,
@@ -62,6 +76,7 @@ export const dtoRules = getRules(
     description: true,
     film: true,
     score: true,
+    tags: true,
   }),
 
   registerFields(Film, {

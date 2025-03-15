@@ -16,6 +16,7 @@ import {
   SessionSelects,
   UserSelects,
 } from "./selects";
+import type { TagData } from "../review.repository";
 
 export const makeUser = (rawData: UserSelects.UserSelectResult): User => {
   return new User({
@@ -59,7 +60,8 @@ export const makeFilm = (rawData: FilmSelects.FilmSelectResult): Film => {
 };
 
 export const makeReview = (
-  rawData: ReviewSelects.ReviewSelectResult & FilmSelects.FilmSelectResult
+  rawData: ReviewSelects.ReviewSelectResult &
+    FilmSelects.FilmSelectResult & { tags: TagData[] | null }
 ): Review => {
   return new Review({
     collectionId: new Id(rawData["r-collectionId"]),
@@ -70,6 +72,17 @@ export const makeReview = (
     score: rawData["r-score"],
     updatedAt: rawData["r-updatedAt"],
     userId: new Id(rawData["r-userId"]),
+
+    tags: rawData["tags"]?.map(
+      (t) =>
+        new Tag({
+          collectionId: new Id(t.collectionId),
+          createdAt: new Date(t.createdAt),
+          hslColor: t.hslColor,
+          id: new Id(t.id),
+          name: t.name,
+        })
+    ),
   });
 };
 

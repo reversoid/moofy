@@ -96,7 +96,7 @@ export const reviewRoute = new Hono()
     validator(
       "json",
       z.object({
-        score: z.number().int().min(1).max(10).nullish(),
+        score: z.number().int().min(1).max(5).nullish(),
         description: z.string().min(1).max(400).nullish(),
       })
     ),

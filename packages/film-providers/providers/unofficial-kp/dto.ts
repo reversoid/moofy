@@ -40,7 +40,7 @@ export const getFilmDtoSchema = z
     year: z.coerce.number(),
     posterUrl: z.string().url(),
     posterUrlPreview: z.string().url(),
-    filmLength: z.number(),
+    filmLength: z.number().nullable(),
     genres: z.array(
       z.object({
         genre: z.string(),

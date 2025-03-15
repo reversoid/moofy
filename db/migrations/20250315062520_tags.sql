@@ -1,7 +1,7 @@
 -- migrate:up
 
 CREATE TABLE collection_tags (
-    id integer PRIMARY KEY,
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     collection_id integer NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
     name VARCHAR(32) NOT NULL,
     hsl_color VARCHAR(32) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE collection_tags (
 );
 
 CREATE TABLE review_tags (
-    id integer PRIMARY KEY,
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     review_id integer NOT NULL REFERENCES reviews(id) ON DELETE CASCADE,
     collection_tag_id integer NOT NULL REFERENCES collection_tags(id) ON DELETE CASCADE,
 
