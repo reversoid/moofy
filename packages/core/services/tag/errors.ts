@@ -1,7 +1,7 @@
 import { CoreError } from "../../utils";
 
-export class CollectionTagNotFoundError extends CoreError {
+export class TagNotFoundError extends CoreError {
   constructor() {
-    super("Collection Tag Not Found");
+    super("Tag Not Found");
   }
 }

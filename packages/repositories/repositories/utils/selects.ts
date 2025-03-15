@@ -171,21 +171,3 @@ export namespace CollectionTagSelects {
     typeof collectionTagFields
   >;
 }
-
-export namespace ReviewTagSelects {
-  const reviewTagFields = ["id", "reviewId", "collectionTagId"] as const;
-
-  const reviewTagPrefix = "rt";
-
-  export const reviewTagSelects = getSelects(
-    "reviewTags",
-    reviewTagPrefix,
-    reviewTagFields
-  );
-
-  export type ReviewTagSelectResult = ColumnAliasResult<
-    "reviewTags",
-    typeof reviewTagPrefix,
-    typeof reviewTagFields
-  >;
-}

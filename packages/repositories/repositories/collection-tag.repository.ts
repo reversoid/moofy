@@ -1,22 +1,22 @@
 import { ICollectionTagRepository } from "@repo/core/repositories";
-import { CollectionTag } from "../../core/entities/collection-tag";
 import { db } from "../db";
 import { Id } from "@repo/core/utils";
 import { CollectionTagSelects } from "./utils/selects";
-import { makeCollectionTag } from "./utils/make-entity";
+import { makeTag } from "./utils/make-entity";
+import { Tag } from "@repo/core/entities";
 
 export class CollectionTagRepository extends ICollectionTagRepository {
-  async getTagsByCollectionId(collectionId: Id): Promise<CollectionTag[]> {
+  async getTagsByCollectionId(collectionId: Id): Promise<Tag[]> {
     const tags = await db
       .selectFrom("collectionTags")
       .select(CollectionTagSelects.collectionTagSelects)
       .where("collectionId", "=", collectionId.value)
       .execute();
 
-    return tags.map(makeCollectionTag);
+    return tags.map(makeTag);
   }
 
-  async create(tag: CollectionTag): Promise<CollectionTag> {
+  async create(tag: Tag): Promise<Tag> {
     const newTag = await db
       .insertInto("collectionTags")
       .values({
@@ -27,7 +27,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return new CollectionTag({
+    return new Tag({
       id: new Id(newTag.id),
       collectionId: new Id(newTag.collectionId),
       name: newTag.name,
@@ -36,7 +36,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
     });
   }
 
-  async get(id: Id): Promise<CollectionTag | null> {
+  async get(id: Id): Promise<Tag | null> {
     const tag = await db
       .selectFrom("collectionTags")
       .select(CollectionTagSelects.collectionTagSelects)
@@ -47,10 +47,10 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       return null;
     }
 
-    return makeCollectionTag(tag);
+    return makeTag(tag);
   }
 
-  async update(id: Id, tag: Partial<CollectionTag>): Promise<CollectionTag> {
+  async update(id: Id, tag: Partial<Tag>): Promise<Tag> {
     const updatedTag = await db
       .updateTable("collectionTags")
       .set({
@@ -61,7 +61,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return new CollectionTag({
+    return new Tag({
       id: new Id(updatedTag.id),
       collectionId: new Id(updatedTag.collectionId),
       name: updatedTag.name,

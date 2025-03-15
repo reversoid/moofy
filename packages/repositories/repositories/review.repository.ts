@@ -13,6 +13,7 @@ import { makeReview } from "./utils/make-entity";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
 
+// TODO implement joining with tags
 export class ReviewRepository extends IReviewRepository {
   async searchReviews(
     collectionId: Collection["id"],

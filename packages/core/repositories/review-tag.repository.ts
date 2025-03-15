@@ -1,7 +1,6 @@
-import { ReviewTag } from "../entities/review-tag";
 import { Id } from "../utils";
-import { IBaseRepository } from "./base.repository";
 
-export abstract class IReviewTagRepository extends IBaseRepository<ReviewTag> {
-  abstract getReviewTags(reviewsId: Id[]): Promise<ReviewTag[]>;
+export abstract class IReviewTagRepository {
+  abstract linkTagToReview(tagId: Id, reviewId: Id): Promise<void>;
+  abstract unlinkTagFromReview(tagId: Id, reviewId: Id): Promise<void>;
 }

@@ -6,7 +6,6 @@ import {
   EditCollectionTagDto,
   ITagService,
 } from "./interface";
-import { CollectionTag } from "../../entities/collection-tag";
 import {
   ICollectionService,
   NoAccessToPrivateCollectionError,
@@ -14,9 +13,8 @@ import {
 } from "../collection";
 import { CollectionNotFoundError } from "../collection";
 import { Id } from "../../utils";
-import { User } from "../../entities";
-import { CollectionTagNotFoundError } from "./errors";
-import { ReviewTag } from "../../entities/review-tag";
+import { Tag, User } from "../../entities";
+import { TagNotFoundError } from "./errors";
 
 export class TagService implements ITagService {
   constructor(
@@ -29,10 +27,7 @@ export class TagService implements ITagService {
     collectionId: Id;
     by?: User["id"];
   }): Promise<
-    Result<
-      CollectionTag[],
-      CollectionNotFoundError | NoAccessToPrivateCollectionError
-    >
+    Result<Tag[], CollectionNotFoundError | NoAccessToPrivateCollectionError>
   > {
     const collectionResult = await this.collectionService.getCollection({
       id: props.collectionId,
@@ -61,7 +56,7 @@ export class TagService implements ITagService {
     dto: CreateCollectionTagDto;
     by: User["id"];
   }): Promise<
-    Result<CollectionTag, CollectionNotFoundError | NotOwnerOfCollectionError>
+    Result<Tag, CollectionNotFoundError | NotOwnerOfCollectionError>
   > {
     const collectionResult = await this.collectionService.getCollection({
       id: props.collectionId,
@@ -83,7 +78,7 @@ export class TagService implements ITagService {
     }
 
     const newTag = await this.collectionTagRepository.create(
-      new CollectionTag({
+      new Tag({
         collectionId: props.collectionId,
         hslColor: props.dto.hslColor,
         name: props.dto.name,
@@ -96,13 +91,11 @@ export class TagService implements ITagService {
   async deleteCollectionTag(props: {
     tagId: Id;
     by: User["id"];
-  }): Promise<
-    Result<null, CollectionTagNotFoundError | NotOwnerOfCollectionError>
-  > {
+  }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>> {
     const tag = await this.collectionTagRepository.get(props.tagId);
 
     if (!tag) {
-      return err(new CollectionTagNotFoundError());
+      return err(new TagNotFoundError());
     }
 
     const collectionResult = await this.collectionService.getCollection({
@@ -135,13 +128,11 @@ export class TagService implements ITagService {
     tagId: Id;
     reviewId: Id;
     by: User["id"];
-  }): Promise<
-    Result<ReviewTag, CollectionTagNotFoundError | NotOwnerOfCollectionError>
-  > {
+  }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>> {
     const tag = await this.collectionTagRepository.get(props.tagId);
 
     if (!tag) {
-      return err(new CollectionTagNotFoundError());
+      return err(new TagNotFoundError());
     }
 
     const collectionResult = await this.collectionService.getCollection({
@@ -165,27 +156,20 @@ export class TagService implements ITagService {
       return err(new NotOwnerOfCollectionError());
     }
 
-    const newReviewTag = await this.reviewTagRepository.create(
-      new ReviewTag({
-        reviewId: props.reviewId,
-        collectionTagId: props.tagId,
-      })
-    );
+    await this.reviewTagRepository.linkTagToReview(props.tagId, props.reviewId);
 
-    return ok(newReviewTag);
+    return ok(null);
   }
 
   async unlinkTagFromReview(props: {
     tagId: Id;
     reviewId: Id;
     by: User["id"];
-  }): Promise<
-    Result<null, CollectionTagNotFoundError | NotOwnerOfCollectionError>
-  > {
+  }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>> {
     const tag = await this.collectionTagRepository.get(props.tagId);
 
     if (!tag) {
-      return err(new CollectionTagNotFoundError());
+      return err(new TagNotFoundError());
     }
 
     const collectionResult = await this.collectionService.getCollection({
@@ -210,25 +194,23 @@ export class TagService implements ITagService {
       return err(new NotOwnerOfCollectionError());
     }
 
-    await this.reviewTagRepository.remove(props.tagId);
+    await this.reviewTagRepository.unlinkTagFromReview(
+      props.tagId,
+      props.reviewId
+    );
 
     return ok(null);
   }
 
-  async editCollectionTag(props: {
+  async editTag(props: {
     tagId: Id;
     dto: EditCollectionTagDto;
     by: User["id"];
-  }): Promise<
-    Result<
-      CollectionTag,
-      CollectionTagNotFoundError | NotOwnerOfCollectionError
-    >
-  > {
+  }): Promise<Result<Tag, TagNotFoundError | NotOwnerOfCollectionError>> {
     const tag = await this.collectionTagRepository.get(props.tagId);
 
     if (!tag) {
-      return err(new CollectionTagNotFoundError());
+      return err(new TagNotFoundError());
     }
 
     const collectionResult = await this.collectionService.getCollection({
@@ -263,56 +245,5 @@ export class TagService implements ITagService {
     await this.collectionTagRepository.update(tag.id, tag);
 
     return ok(tag);
-  }
-
-  async getReviewTags(props: {
-    collectionId: Id;
-    reviewIds: Id[];
-    by?: User["id"];
-  }): Promise<
-    Result<
-      { reviewId: Id; tag: ReviewTag[] }[],
-      NoAccessToPrivateCollectionError | CollectionNotFoundError
-    >
-  > {
-    const collectionResult = await this.collectionService.getCollection({
-      id: props.collectionId,
-      by: props.by,
-    });
-
-    if (collectionResult.isErr()) {
-      return err(new NotOwnerOfCollectionError());
-    }
-
-    const collection = collectionResult.value;
-
-    if (!collection) {
-      return err(new CollectionNotFoundError());
-    }
-
-    if (collection.creator.id.value !== props.by?.value) {
-      return err(new NotOwnerOfCollectionError());
-    }
-
-    const reviewTags = await this.reviewTagRepository.getReviewTags(
-      props.reviewIds
-    );
-
-    const reviewTagsMap = reviewTags.reduce((acc, tag) => {
-      if (!acc.has(tag.reviewId.value)) {
-        acc.set(tag.reviewId.value, [tag]);
-      }
-
-      acc.get(tag.reviewId.value)?.push(tag);
-
-      return acc;
-    }, new Map<number, ReviewTag[]>());
-
-    return ok(
-      props.reviewIds.map((reviewId) => ({
-        reviewId,
-        tag: reviewTagsMap.get(reviewId.value) || [],
-      }))
-    );
   }
 }

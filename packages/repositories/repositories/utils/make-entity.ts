@@ -4,9 +4,8 @@ import {
   FilmType,
   Review,
   Session,
+  Tag,
   User,
-  CollectionTag,
-  ReviewTag,
 } from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 import {
@@ -14,7 +13,6 @@ import {
   CollectionTagSelects,
   FilmSelects,
   ReviewSelects,
-  ReviewTagSelects,
   SessionSelects,
   UserSelects,
 } from "./selects";
@@ -85,24 +83,14 @@ export const makeSession = (
   });
 };
 
-export const makeCollectionTag = (
+export const makeTag = (
   rawData: CollectionTagSelects.CollectionTagSelectResult
-): CollectionTag => {
-  return new CollectionTag({
+): Tag => {
+  return new Tag({
     id: new Id(rawData["ct-id"]),
     collectionId: new Id(rawData["ct-collectionId"]),
     name: rawData["ct-name"],
     hslColor: rawData["ct-hslColor"],
     createdAt: rawData["ct-createdAt"],
-  });
-};
-
-export const makeReviewTag = (
-  rawData: ReviewTagSelects.ReviewTagSelectResult
-): ReviewTag => {
-  return new ReviewTag({
-    id: new Id(rawData["rt-id"]),
-    reviewId: new Id(rawData["rt-reviewId"]),
-    collectionTagId: new Id(rawData["rt-collectionTagId"]),
   });
 };
