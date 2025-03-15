@@ -5,12 +5,16 @@ import {
   Review,
   Session,
   User,
+  CollectionTag,
+  ReviewTag,
 } from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 import {
   CollectionSelects,
+  CollectionTagSelects,
   FilmSelects,
   ReviewSelects,
+  ReviewTagSelects,
   SessionSelects,
   UserSelects,
 } from "./selects";
@@ -78,5 +82,27 @@ export const makeSession = (
     id: rawData["s-id"],
     expiresAt: rawData["s-expiresAt"],
     user: makeUser(rawData),
+  });
+};
+
+export const makeCollectionTag = (
+  rawData: CollectionTagSelects.CollectionTagSelectResult
+): CollectionTag => {
+  return new CollectionTag({
+    id: new Id(rawData["ct-id"]),
+    collectionId: new Id(rawData["ct-collectionId"]),
+    name: rawData["ct-name"],
+    hslColor: rawData["ct-hslColor"],
+    createdAt: rawData["ct-createdAt"],
+  });
+};
+
+export const makeReviewTag = (
+  rawData: ReviewTagSelects.ReviewTagSelectResult
+): ReviewTag => {
+  return new ReviewTag({
+    id: new Id(rawData["rt-id"]),
+    reviewId: new Id(rawData["rt-reviewId"]),
+    collectionTagId: new Id(rawData["rt-collectionTagId"]),
   });
 };

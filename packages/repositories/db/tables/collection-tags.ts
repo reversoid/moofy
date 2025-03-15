@@ -5,4 +5,5 @@ export interface CollectionTagsTable {
   collectionId: number;
   name: string;
   hslColor: string;
+  createdAt: Generated<Date>;
 }

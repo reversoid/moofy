@@ -147,3 +147,45 @@ export namespace SessionSelects {
     typeof sessionFields
   >;
 }
+
+export namespace CollectionTagSelects {
+  const collectionTagFields = [
+    "id",
+    "collectionId",
+    "name",
+    "hslColor",
+    "createdAt",
+  ] as const;
+
+  const collectionTagPrefix = "ct";
+
+  export const collectionTagSelects = getSelects(
+    "collectionTags",
+    collectionTagPrefix,
+    collectionTagFields
+  );
+
+  export type CollectionTagSelectResult = ColumnAliasResult<
+    "collectionTags",
+    typeof collectionTagPrefix,
+    typeof collectionTagFields
+  >;
+}
+
+export namespace ReviewTagSelects {
+  const reviewTagFields = ["id", "reviewId", "collectionTagId"] as const;
+
+  const reviewTagPrefix = "rt";
+
+  export const reviewTagSelects = getSelects(
+    "reviewTags",
+    reviewTagPrefix,
+    reviewTagFields
+  );
+
+  export type ReviewTagSelectResult = ColumnAliasResult<
+    "reviewTags",
+    typeof reviewTagPrefix,
+    typeof reviewTagFields
+  >;
+}
