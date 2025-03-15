@@ -14,13 +14,19 @@ import {
 import { CollectionNotFoundError } from "../collection";
 import { Id } from "../../utils";
 import { Tag, User } from "../../entities";
-import { TagNotFoundError } from "./errors";
+import {
+  TagAlreadyLinkedToReviewError,
+  TagNotFoundError,
+  TagNotLinkedToReviewError,
+} from "./errors";
+import { IReviewService, ReviewNotFoundError } from "../review";
 
 export class TagService implements ITagService {
   constructor(
     private readonly collectionTagRepository: ICollectionTagRepository,
     private readonly reviewTagRepository: IReviewTagRepository,
-    private readonly collectionService: ICollectionService
+    private readonly collectionService: ICollectionService,
+    private readonly reviewService: IReviewService
   ) {}
 
   async getTagsByCollectionId(props: {
@@ -88,7 +94,7 @@ export class TagService implements ITagService {
     return ok(newTag);
   }
 
-  async deleteCollectionTag(props: {
+  async deleteTag(props: {
     tagId: Id;
     by: User["id"];
   }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>> {
@@ -129,31 +135,37 @@ export class TagService implements ITagService {
     reviewId: Id;
     by: User["id"];
   }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>> {
+    const reviewResult = await this.reviewService.getReview({
+      id: props.reviewId,
+      by: props.by,
+    });
+
+    if (reviewResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const review = reviewResult.value;
+
+    if (!review) {
+      return err(new ReviewNotFoundError());
+    }
+
+    if (review.collectionId.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    if (review.tags.find((tag) => tag.id.value === props.tagId.value)) {
+      return err(new TagAlreadyLinkedToReviewError());
+    }
+
     const tag = await this.collectionTagRepository.get(props.tagId);
 
     if (!tag) {
       return err(new TagNotFoundError());
     }
 
-    const collectionResult = await this.collectionService.getCollection({
-      id: props.reviewId,
-      by: props.by,
-    });
-
-    if (collectionResult.isErr()) {
-      return err(new NotOwnerOfCollectionError());
-    }
-
-    const collection = collectionResult.value;
-
-    if (!collection) {
-      throw new Error(
-        "Collection not found, however tag was found, it is weird."
-      );
-    }
-
-    if (collection.creator.id.value !== props.by.value) {
-      return err(new NotOwnerOfCollectionError());
+    if (tag.collectionId.value !== review.collectionId.value) {
+      return err(new TagNotFoundError());
     }
 
     await this.reviewTagRepository.linkTagToReview(props.tagId, props.reviewId);
@@ -166,32 +178,37 @@ export class TagService implements ITagService {
     reviewId: Id;
     by: User["id"];
   }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>> {
+    const reviewResult = await this.reviewService.getReview({
+      id: props.reviewId,
+      by: props.by,
+    });
+
+    if (reviewResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const review = reviewResult.value;
+
+    if (!review) {
+      return err(new ReviewNotFoundError());
+    }
+
+    if (review.collectionId.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    if (!review.tags.find((tag) => tag.id.value === props.tagId.value)) {
+      return err(new TagNotLinkedToReviewError());
+    }
+
     const tag = await this.collectionTagRepository.get(props.tagId);
 
     if (!tag) {
       return err(new TagNotFoundError());
     }
 
-    const collectionResult = await this.collectionService.getCollection({
-      id: props.reviewId,
-      by: props.by,
-    });
-
-    if (collectionResult.isErr()) {
-      return err(new NotOwnerOfCollectionError());
-    }
-
-    const collection = collectionResult.value;
-
-    if (!collection) {
-      throw new Error(
-        "Collection not found, however tag was found, it is weird."
-      );
-    }
-
-    // TODO make compare shared function
-    if (collection.creator.id.value !== props.by.value) {
-      return err(new NotOwnerOfCollectionError());
+    if (tag.collectionId.value !== review.collectionId.value) {
+      return err(new TagNotFoundError());
     }
 
     await this.reviewTagRepository.unlinkTagFromReview(

@@ -4,6 +4,10 @@ import {
   ReviewNotFoundError,
   NotOwnerOfReviewError,
   NoAccessToPrivateCollectionError,
+  TagNotFoundError,
+  NotOwnerOfCollectionError,
+  TagAlreadyLinkedToReviewError,
+  TagNotLinkedToReviewError,
 } from "@repo/core/services";
 import { validator } from "../utils/validator";
 import { Id } from "@repo/core/utils";
@@ -124,5 +128,98 @@ export const reviewRoute = new Hono()
 
       const updatedReview = result.unwrap();
       return c.json(makeDto({ review: updatedReview }));
+    }
+  )
+  .put(
+    "/:reviewId/tags/:tagId",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({
+        reviewId: z.coerce.number().int().positive(),
+        tagId: z.coerce.number().int().positive(),
+      })
+    ),
+    async (c) => {
+      const { reviewId, tagId } = c.req.valid("param");
+      const tagService = c.get("tagService");
+      const session = c.get("session")!;
+
+      const result = await tagService.linkTagToReview({
+        reviewId: new Id(reviewId),
+        tagId: new Id(tagId),
+        by: session.user.id,
+      });
+
+      if (result.isErr()) {
+        const error = result.error;
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagAlreadyLinkedToReviewError) {
+          return c.json(
+            { error: "TAG_ALREADY_LINKED_TO_REVIEW" as const },
+            409
+          );
+        }
+
+        if (error instanceof ReviewNotFoundError) {
+          return c.json({ error: "REVIEW_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
+      }
+
+      return c.json({ ok: true });
+    }
+  )
+  .delete(
+    "/:reviewId/tags/:tagId",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({
+        reviewId: z.coerce.number().int().positive(),
+        tagId: z.coerce.number().int().positive(),
+      })
+    ),
+    async (c) => {
+      const { reviewId, tagId } = c.req.valid("param");
+      const tagService = c.get("tagService");
+      const session = c.get("session")!;
+
+      const result = await tagService.unlinkTagFromReview({
+        reviewId: new Id(reviewId),
+        tagId: new Id(tagId),
+        by: session.user.id,
+      });
+
+      if (result.isErr()) {
+        const error = result.error;
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagNotLinkedToReviewError) {
+          return c.json({ error: "TAG_NOT_LINKED_TO_REVIEW" as const }, 400);
+        }
+
+        if (error instanceof ReviewNotFoundError) {
+          return c.json({ error: "REVIEW_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
+      }
+
+      return c.json({ ok: true });
     }
   );

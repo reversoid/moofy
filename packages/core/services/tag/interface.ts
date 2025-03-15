@@ -6,7 +6,11 @@ import {
   NotOwnerOfCollectionError,
 } from "../collection";
 import { NotOwnerOfReviewError, ReviewNotFoundError } from "../review";
-import { TagNotFoundError } from "./errors";
+import {
+  TagAlreadyLinkedToReviewError,
+  TagNotFoundError,
+  TagNotLinkedToReviewError,
+} from "./errors";
 import { Tag, User } from "../../entities";
 
 export type CreateCollectionTagDto = {
@@ -37,15 +41,31 @@ export interface ITagService {
     reviewId: Id;
     tagId: Id;
     by: User["id"];
-  }): Promise<Result<null, ReviewNotFoundError | NotOwnerOfReviewError>>;
+  }): Promise<
+    Result<
+      null,
+      | TagNotFoundError
+      | NotOwnerOfCollectionError
+      | ReviewNotFoundError
+      | TagAlreadyLinkedToReviewError
+    >
+  >;
 
   unlinkTagFromReview(props: {
     reviewId: Id;
     tagId: Id;
     by: User["id"];
-  }): Promise<Result<null, ReviewNotFoundError | NotOwnerOfReviewError>>;
+  }): Promise<
+    Result<
+      null,
+      | TagNotFoundError
+      | NotOwnerOfCollectionError
+      | ReviewNotFoundError
+      | TagNotLinkedToReviewError
+    >
+  >;
 
-  deleteCollectionTag(props: {
+  deleteTag(props: {
     tagId: Id;
     by: User["id"];
   }): Promise<Result<null, TagNotFoundError | NotOwnerOfCollectionError>>;

@@ -7,6 +7,7 @@ import {
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
   ReviewOnFilmExistsError,
+  TagNotFoundError,
   UserNotFoundError,
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
@@ -414,5 +415,118 @@ export const collectionRoute = new Hono()
       const socials = socialsResult.unwrap();
 
       return c.json(socials);
+    }
+  )
+  .get(
+    "/:collectionId/tags",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
+    async (c) => {
+      const { collectionId } = c.req.valid("param");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.getTagsByCollectionId({
+        collectionId: new Id(collectionId),
+        by: session.user.id,
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw error;
+      }
+
+      const tags = result.unwrap();
+      return c.json(makeDto({ tags }));
+    }
+  )
+  .put(
+    "/:collectionId/tags",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
+    validator(
+      "json",
+      z.object({
+        name: z.string().min(1).max(32),
+        hslColor: z.string().min(1).max(32),
+      })
+    ),
+    async (c) => {
+      const { collectionId } = c.req.valid("param");
+      const { hslColor, name } = c.req.valid("json");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.createCollectionTag({
+        collectionId: new Id(collectionId),
+        by: session.user.id,
+        dto: { hslColor, name },
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw error;
+      }
+
+      const tag = result.unwrap();
+      return c.json(makeDto({ tag }), 201);
+    }
+  )
+  .delete(
+    "/:collectionId/tags/:tagId",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({
+        collectionId: z.coerce.number().int().positive(),
+        tagId: z.coerce.number().int().positive(),
+      })
+    ),
+    async (c) => {
+      const { tagId } = c.req.valid("param");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.deleteTag({
+        tagId: new Id(tagId),
+        by: session.user.id,
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
+      }
+
+      return c.json({ ok: true });
     }
   );
