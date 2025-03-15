@@ -1,0 +1,267 @@
+import { err, ok, Result } from "resulto";
+import { ICollectionTagRepository } from "../../repositories/collection-tag.repository";
+import { IReviewTagRepository } from "../../repositories/review-tag.repository";
+import {
+  CreateCollectionTagDto,
+  EditCollectionTagDto,
+  ITagService,
+} from "./interface";
+import { CollectionTag } from "../../entities/collection-tag";
+import {
+  ICollectionService,
+  NoAccessToPrivateCollectionError,
+  NotOwnerOfCollectionError,
+} from "../collection";
+import { CollectionNotFoundError } from "../collection";
+import { Id } from "../../utils";
+import { User } from "../../entities";
+import { CollectionTagNotFoundError } from "./errors";
+import { ReviewTag } from "../../entities/review-tag";
+
+export class TagService implements ITagService {
+  constructor(
+    private readonly collectionTagRepository: ICollectionTagRepository,
+    private readonly reviewTagRepository: IReviewTagRepository,
+    private readonly collectionService: ICollectionService
+  ) {}
+
+  async getTagsByCollectionId(props: {
+    collectionId: Id;
+    by?: User["id"];
+  }): Promise<
+    Result<
+      CollectionTag[],
+      CollectionNotFoundError | NoAccessToPrivateCollectionError
+    >
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const collection = collectionResult.value;
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const tags = await this.collectionTagRepository.getTagsByCollectionId(
+      props.collectionId
+    );
+
+    return ok(tags);
+  }
+
+  async createCollectionTag(props: {
+    collectionId: Id;
+    dto: CreateCollectionTagDto;
+    by: User["id"];
+  }): Promise<
+    Result<CollectionTag, CollectionNotFoundError | NotOwnerOfCollectionError>
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const collection = collectionResult.value;
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    if (collection.creator.id.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const newTag = await this.collectionTagRepository.create(
+      new CollectionTag({
+        collectionId: props.collectionId,
+        hslColor: props.dto.hslColor,
+        name: props.dto.name,
+      })
+    );
+
+    return ok(newTag);
+  }
+
+  async deleteCollectionTag(props: {
+    tagId: Id;
+    by: User["id"];
+  }): Promise<
+    Result<null, CollectionTagNotFoundError | NotOwnerOfCollectionError>
+  > {
+    const tag = await this.collectionTagRepository.get(props.tagId);
+
+    if (!tag) {
+      return err(new CollectionTagNotFoundError());
+    }
+
+    const collectionResult = await this.collectionService.getCollection({
+      id: tag.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    if (!collectionResult.value) {
+      throw new Error(
+        "Collection not found, however tag was found, it is weird."
+      );
+    }
+
+    const collection = collectionResult.value;
+
+    if (collection.creator.id.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    await this.collectionTagRepository.remove(props.tagId);
+
+    return ok(null);
+  }
+
+  async linkTagToReview(props: {
+    tagId: Id;
+    reviewId: Id;
+    by: User["id"];
+  }): Promise<
+    Result<ReviewTag, CollectionTagNotFoundError | NotOwnerOfCollectionError>
+  > {
+    const tag = await this.collectionTagRepository.get(props.tagId);
+
+    if (!tag) {
+      return err(new CollectionTagNotFoundError());
+    }
+
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.reviewId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const collection = collectionResult.value;
+
+    if (!collection) {
+      throw new Error(
+        "Collection not found, however tag was found, it is weird."
+      );
+    }
+
+    if (collection.creator.id.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const newReviewTag = await this.reviewTagRepository.create(
+      new ReviewTag({
+        reviewId: props.reviewId,
+        collectionTagId: props.tagId,
+      })
+    );
+
+    return ok(newReviewTag);
+  }
+
+  async unlinkTagFromReview(props: {
+    tagId: Id;
+    reviewId: Id;
+    by: User["id"];
+  }): Promise<
+    Result<null, CollectionTagNotFoundError | NotOwnerOfCollectionError>
+  > {
+    const tag = await this.collectionTagRepository.get(props.tagId);
+
+    if (!tag) {
+      return err(new CollectionTagNotFoundError());
+    }
+
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.reviewId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const collection = collectionResult.value;
+
+    if (!collection) {
+      throw new Error(
+        "Collection not found, however tag was found, it is weird."
+      );
+    }
+
+    // TODO make compare shared function
+    if (collection.creator.id.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    await this.reviewTagRepository.remove(props.tagId);
+
+    return ok(null);
+  }
+
+  async editCollectionTag(props: {
+    tagId: Id;
+    dto: EditCollectionTagDto;
+    by: User["id"];
+  }): Promise<
+    Result<
+      CollectionTag,
+      CollectionTagNotFoundError | NotOwnerOfCollectionError
+    >
+  > {
+    const tag = await this.collectionTagRepository.get(props.tagId);
+
+    if (!tag) {
+      return err(new CollectionTagNotFoundError());
+    }
+
+    const collectionResult = await this.collectionService.getCollection({
+      id: tag.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    const collection = collectionResult.value;
+
+    if (!collection) {
+      throw new Error(
+        "Collection not found, however tag was found, it is weird."
+      );
+    }
+
+    if (collection.creator.id.value !== props.by.value) {
+      return err(new NotOwnerOfCollectionError());
+    }
+
+    if (props.dto.name) {
+      tag.name = props.dto.name;
+    }
+
+    if (props.dto.hslColor) {
+      tag.hslColor = props.dto.hslColor;
+    }
+
+    await this.collectionTagRepository.update(tag.id, tag);
+
+    return ok(tag);
+  }
+}
