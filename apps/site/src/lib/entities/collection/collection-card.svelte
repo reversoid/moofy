@@ -34,7 +34,7 @@
 			</Card.Description>
 		</Card.Header>
 
-		<Card.Content class="max-md:!pt-0">
+		<Card.Content>
 			{#if collection.imageUrl}
 				<Image
 					class="aspect-[4/3] w-full rounded-md object-cover"
