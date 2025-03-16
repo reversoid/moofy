@@ -4,7 +4,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad } from './$types';
 import { fail, type Actions } from '@sveltejs/kit';
-import { handleResponse, makeClient } from '$lib/utils';
+import { makeClient } from '$lib/utils';
 import { message } from 'sveltekit-superforms';
 
 export const load: PageServerLoad = async ({ parent }) => {
@@ -31,22 +31,20 @@ export const actions = {
 		}
 
 		const api = makeClient(fetch);
-		const response = await api.profile
-			.$patch({
-				json: {
-					username: form.data.username,
-					description: form.data.description,
-					imageUrl: form.data.imageUrl
-				}
-			})
-			.then(handleResponse);
+		const response = await api.profile.$patch({
+			json: {
+				username: form.data.username,
+				description: form.data.description,
+				imageUrl: form.data.imageUrl
+			}
+		});
 
-		if (response.isOk()) {
-			const { user } = response.value;
+		if (response.ok) {
+			const { user } = await response.json();
 			return { form, user };
 		}
 
-		const error = response.unwrapErr();
-		return message(form, error.error);
+		const { error } = await response.json();
+		return message(form, error);
 	}
 } satisfies Actions;

@@ -3,7 +3,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { AuthButton } from '$lib/entities/auth';
 	import { globalState, setCurrentUser } from '$lib/state/state.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import {
 		IconBookmark,
 		IconList,
@@ -52,10 +52,9 @@
 	const api = makeClient(fetch);
 
 	async function logout() {
-		// TODO dont do handleResponse, just check if ok, and get rid of resulto library on site
-		const response = await api.auth.logout.$post().then(handleResponse);
+		const response = await api.auth.logout.$post();
 
-		if (response.isOk()) {
+		if (response.ok) {
 			goto('/');
 			setCurrentUser(null);
 		}

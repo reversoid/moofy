@@ -244,12 +244,15 @@ export const userRoute = new Hono()
           subscriptionService.getSocialStats({ userId: user.id }),
         ]);
 
-      return c.json({
-        user: makeUserDto(user),
-        isFollowing,
-        followersAmount,
-        followeesAmount,
-      });
+      return c.json(
+        {
+          user: makeUserDto(user),
+          isFollowing,
+          followersAmount,
+          followeesAmount,
+        },
+        200
+      );
     }
   )
   .get(

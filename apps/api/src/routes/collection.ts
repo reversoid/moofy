@@ -147,7 +147,7 @@ export const collectionRoute = new Hono()
         return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
       }
 
-      return c.json({ collection: makeCollectionDto(collection) });
+      return c.json({ collection: makeCollectionDto(collection) }, 200);
     }
   )
   .delete(
@@ -439,7 +439,7 @@ export const collectionRoute = new Hono()
 
       const socials = socialsResult.unwrap();
 
-      return c.json(socials);
+      return c.json({ socials }, 200);
     }
   )
   .get(

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import Label from '$lib/components/ui/label/label.svelte';
-	import { cn, handleResponse, makeClient } from '$lib/utils';
+	import { cn, makeClient } from '$lib/utils';
 	import type { Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -36,22 +36,20 @@
 		formData.append('image', file);
 		const api = makeClient(fetch);
 
-		const result = await api.upload.image[':resource']
-			.$post({
-				form: { image: file },
-				param: { resource }
-			})
-			.then(handleResponse);
+		const result = await api.upload.image[':resource'].$post({
+			form: { image: file },
+			param: { resource }
+		});
 
-		if (result.isErr()) {
+		if (!result.ok) {
 			isLoading = false;
 			toast.error('Не удалось загрузить изображение');
 
-			console.error(result.error.error);
 			return;
 		}
 
-		imageUrl = result.unwrap().imageUrl;
+		const { imageUrl: newImageUrl } = await result.json();
+		imageUrl = newImageUrl;
 
 		isLoading = false;
 	}

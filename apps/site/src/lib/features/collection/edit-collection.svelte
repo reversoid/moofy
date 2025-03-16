@@ -3,7 +3,7 @@
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CollectionModal, { type CollectionForm } from './collection-modal.svelte';
 	import EditCollectionButton from './edit-collection-button.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 
 	interface Props {
 		collection: CollectionDto;
@@ -15,20 +15,18 @@
 
 	async function updateCollection(props: CollectionForm) {
 		const api = makeClient(fetch);
-		const response = await api.collections[':id']
-			.$patch({
-				param: { id: String(collection.id) },
-				json: {
-					name: props.name,
-					description: props.description,
-					isPublic: props.isPublic,
-					imageUrl: props.imageUrl
-				}
-			})
-			.then(handleResponse);
+		const response = await api.collections[':collectionId'].$patch({
+			param: { collectionId: String(collection.id) },
+			json: {
+				name: props.name,
+				description: props.description,
+				isPublic: props.isPublic,
+				imageUrl: props.imageUrl
+			}
+		});
 
-		if (response.isOk()) {
-			const collection = response.unwrap().collection;
+		if (response.ok) {
+			const { collection } = await response.json();
 			onCollectionUpdated?.(collection);
 			isOpen = false;
 		}
@@ -36,11 +34,11 @@
 
 	async function deleteCollection() {
 		const api = makeClient(fetch);
-		const response = await api.collections[':id']
-			.$delete({ param: { id: String(collection.id) } })
-			.then(handleResponse);
+		const response = await api.collections[':collectionId'].$delete({
+			param: { collectionId: String(collection.id) }
+		});
 
-		if (response.isOk()) {
+		if (response.ok) {
 			onCollectionDeleted?.();
 		}
 	}

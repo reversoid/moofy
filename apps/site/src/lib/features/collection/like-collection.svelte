@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import { IconHeart, IconHeartFilled } from '@tabler/icons-svelte';
 

@@ -1,12 +1,17 @@
-import { handleResponse, makeClient } from '$lib/utils';
+import { makeClient } from '$lib/utils';
+import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	const api = makeClient(fetch);
 
-	const response = await api.users.$get({ query: { limit: '12' } }).then(handleResponse);
+	const response = await api.users.$get({ query: { limit: '12' } });
 
-	const users = response.unwrap().users;
+	if (!response.ok) {
+		throw error(500, 'Failed to load users');
+	}
+
+	const { users } = await response.json();
 
 	return {
 		users

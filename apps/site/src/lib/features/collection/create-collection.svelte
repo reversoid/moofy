@@ -3,7 +3,7 @@
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CollectionModal from './collection-modal.svelte';
 	import CreateCollectionButton from './create-collection-button.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 
 	interface Props {
 		onCollectionCreated?: (collection: CollectionDto) => void;
@@ -16,19 +16,17 @@
 		imageUrl: string | null;
 	}) {
 		const api = makeClient(fetch);
-		const response = await api.collections
-			.$post({
-				json: {
-					name: props.name,
-					description: props.description,
-					isPublic: props.isPublic,
-					imageUrl: props.imageUrl
-				}
-			})
-			.then(handleResponse);
+		const response = await api.collections.$post({
+			json: {
+				name: props.name,
+				description: props.description,
+				isPublic: props.isPublic,
+				imageUrl: props.imageUrl
+			}
+		});
 
-		if (response.isOk()) {
-			const collection = response.unwrap().collection;
+		if (response.ok) {
+			const { collection } = await response.json();
 			onCollectionCreated?.(collection);
 			isOpen = false;
 		}

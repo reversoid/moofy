@@ -4,7 +4,7 @@
 
 	import CreateReviewButton from './create-review-button.svelte';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 
 	interface Props {
 		collectionId: CollectionDto['id'];
@@ -17,19 +17,17 @@
 
 	async function createReview(form: ReviewForm) {
 		const api = makeClient(fetch);
-		const reviewResult = await api.collections[':collectionId'].reviews
-			.$post({
-				json: {
-					description: form.description || null,
-					filmId: Number(form.filmId),
-					score: form.score
-				},
-				param: { collectionId: String(collectionId) }
-			})
-			.then(handleResponse);
+		const reviewResult = await api.collections[':collectionId'].reviews.$post({
+			json: {
+				description: form.description || null,
+				filmId: Number(form.filmId),
+				score: form.score
+			},
+			param: { collectionId: String(collectionId) }
+		});
 
-		if (reviewResult.isOk()) {
-			const review = reviewResult.unwrap().review;
+		if (reviewResult.ok) {
+			const { review } = await reviewResult.json();
 			onReviewCreated(review);
 			isOpen = false;
 		}

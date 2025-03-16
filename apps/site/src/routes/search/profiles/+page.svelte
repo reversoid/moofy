@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import { UsersList } from '$lib/widgets/users-list';
 	import type { PageProps } from './$types';
 
@@ -10,12 +10,16 @@
 	async function searchUsers(search: string) {
 		const api = makeClient(fetch);
 
-		const response = await api.users.$get({ query: { search } }).then(handleResponse);
+		const response = await api.users.$get({ query: { search } });
 
-		const { users: newUsers } = response.unwrap();
+		if (!response.ok) {
+			return;
+		}
+
+		const { users: newUsers } = await response.json();
 
 		users = newUsers;
 	}
 </script>
 
-<UsersList {users} onSearch={searchUsers} defaultEmptyDescription="Нет пользователей..." />
+<UsersList {users} onSearch={searchUsers} defaultEmptyDescription="Пользователей не найдено" />

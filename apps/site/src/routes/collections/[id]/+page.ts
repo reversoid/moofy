@@ -1,4 +1,4 @@
-import { handleResponse, makeClient } from '$lib/utils';
+import { makeClient } from '$lib/utils';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
@@ -10,39 +10,41 @@ export const load: PageLoad = async ({ fetch, params: { id } }) => {
 	const api = makeClient(fetch);
 
 	const [collectionResponse, reviewsResponse, socialsResponse, tagsResponse] = await Promise.all([
-		api.collections[':collectionId'].$get({ param: { collectionId: id } }).then(handleResponse),
+		api.collections[':collectionId'].$get({ param: { collectionId: id } }),
 
-		api.collections[':collectionId'].reviews
-			.$get({
-				param: { collectionId: id },
-				query: { limit: '20' }
-			})
-			.then(handleResponse),
+		api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: id },
+			query: { limit: '20' }
+		}),
 
-		api.collections[':collectionId'].socials
-			.$get({ param: { collectionId: id } })
-			.then(handleResponse),
+		api.collections[':collectionId'].socials.$get({ param: { collectionId: id } }),
 
-		api.collections[':collectionId'].tags.$get({ param: { collectionId: id } }).then(handleResponse)
+		api.collections[':collectionId'].tags.$get({ param: { collectionId: id } })
 	]);
 
-	if (collectionResponse.isErr()) {
-		const err = collectionResponse.unwrapErr();
-		if (err.error === 'COLLECTION_NOT_FOUND') {
+	if (!collectionResponse.ok) {
+		const { error: collectionError } = await collectionResponse.json();
+
+		if (collectionError === 'COLLECTION_NOT_FOUND') {
 			throw error(404, 'Коллекция не найдена');
 		}
 
-		if (err.error === 'FORBIDDEN') {
+		if (collectionError === 'FORBIDDEN') {
 			throw error(403, 'У вас нет доступа к этой коллекции');
 		}
 
-		throw err.error;
+		throw new Error(collectionError);
 	}
 
-	const collection = collectionResponse.unwrap().collection;
-	const reviews = reviewsResponse.unwrap().reviews;
-	const socials = socialsResponse.unwrap();
-	const tags = tagsResponse.unwrap().tags;
+	if (!reviewsResponse.ok || !socialsResponse.ok || !tagsResponse.ok) {
+		throw new Error('Reviews, socials or tags returned error');
+	}
+
+	const { collection } = await collectionResponse.json();
+
+	const { reviews } = await reviewsResponse.json();
+	const { socials } = await socialsResponse.json();
+	const { tags } = await tagsResponse.json();
 
 	return {
 		collection,

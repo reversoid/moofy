@@ -87,6 +87,6 @@ export const profileRoute = new Hono()
         throw error;
       }
 
-      return c.json({ user: makeUserDto(updatedUserResult.unwrap()) });
+      return c.json({ user: makeUserDto(updatedUserResult.unwrap()) }, 200);
     }
   );

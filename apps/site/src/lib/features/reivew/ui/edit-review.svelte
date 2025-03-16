@@ -4,7 +4,7 @@
 
 	import EditReviewButton from './edit-review-button.svelte';
 	import type { ReviewDto } from '@repo/api/dtos';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 
 	interface Props {
 		existingReview: ReviewDto;
@@ -18,15 +18,13 @@
 
 	async function editReview(form: ReviewForm) {
 		const api = makeClient(fetch);
-		const reviewResult = await api.reviews[':reviewId']
-			.$patch({
-				json: { description: form.description || null, score: form.score },
-				param: { reviewId: String(existingReview.id) }
-			})
-			.then(handleResponse);
+		const reviewResult = await api.reviews[':reviewId'].$patch({
+			json: { description: form.description || null, score: form.score },
+			param: { reviewId: String(existingReview.id) }
+		});
 
-		if (reviewResult.isOk()) {
-			const updatedReview = reviewResult.unwrap().review;
+		if (reviewResult.ok) {
+			const { review: updatedReview } = await reviewResult.json();
 			onReviewUpdated(updatedReview);
 			isOpen = false;
 		}
@@ -34,11 +32,9 @@
 
 	async function deleteReview(id: ReviewDto['id']) {
 		const api = makeClient(fetch);
-		const result = await api.reviews[':reviewId']
-			.$delete({ param: { reviewId: String(id) } })
-			.then(handleResponse);
+		const result = await api.reviews[':reviewId'].$delete({ param: { reviewId: String(id) } });
 
-		if (result.isOk()) {
+		if (result.ok) {
 			onReviewDeleted(id);
 			isOpen = false;
 		}

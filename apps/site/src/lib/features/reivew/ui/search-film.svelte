@@ -5,7 +5,7 @@
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn, handleResponse, makeClient } from '$lib/utils';
+	import { cn, makeClient } from '$lib/utils';
 	import type { FilmDto } from '@repo/api/dtos';
 	import uniqBy from 'lodash.uniqby';
 	import debounce from 'lodash.debounce';
@@ -55,12 +55,10 @@
 
 	async function searchFilm(search: string) {
 		const api = makeClient(fetch);
-		const response = await api.search.films
-			.$get({ query: { limit: '5', search } })
-			.then(handleResponse);
+		const response = await api.search.films.$get({ query: { limit: '5', search } });
 
-		if (response.isOk()) {
-			const newFilms = response.unwrap().films;
+		if (response.ok) {
+			const { films: newFilms } = await response.json();
 			films = newFilms;
 		}
 	}

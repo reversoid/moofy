@@ -43,7 +43,7 @@ export const authRoute = new Hono()
         expires: session.expiresAt,
       });
 
-      return c.json({ user: makeUserDto(session.user) });
+      return c.json({ user: makeUserDto(session.user) }, 200);
     }
   )
   .post(
@@ -88,7 +88,7 @@ export const authRoute = new Hono()
         expires: session.expiresAt,
       });
 
-      return c.json({ user: makeUserDto(session.user) });
+      return c.json({ user: makeUserDto(session.user) }, 200);
     }
   )
   .post("/logout", async (c) => {

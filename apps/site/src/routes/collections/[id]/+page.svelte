@@ -5,7 +5,7 @@
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import { dayjs } from '@repo/core/sdk';
 	import type { PageProps } from './$types';
@@ -31,14 +31,16 @@
 	// and we will update the state in the widget
 	async function loadMoreReviews(cursor?: string) {
 		const api = makeClient(fetch);
-		const response = await api.collections[':collectionId'].reviews
-			.$get({
-				param: { collectionId: String(data.collection.id) },
-				query: { cursor, limit: '20' }
-			})
-			.then(handleResponse);
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: String(data.collection.id) },
+			query: { cursor, limit: '20' }
+		});
 
-		const { reviews: newReviews } = response.unwrap();
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: newReviews } = await response.json();
 		reviews.items = [...reviews.items, ...newReviews.items];
 		reviews.cursor = newReviews.cursor;
 	}
@@ -49,14 +51,16 @@
 		}
 
 		const api = makeClient(fetch);
-		const response = await api.collections[':collectionId'].reviews
-			.$get({
-				param: { collectionId: String(data.collection.id) },
-				query: { search, limit: '20' }
-			})
-			.then(handleResponse);
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: String(data.collection.id) },
+			query: { search, limit: '20' }
+		});
 
-		const { reviews: newReviews } = response.unwrap();
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: newReviews } = await response.json();
 		reviews = newReviews;
 	}
 
