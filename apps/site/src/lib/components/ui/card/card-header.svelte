@@ -13,7 +13,7 @@
 
 <div
 	bind:this={ref}
-	class={cn('flex flex-col p-5 pb-0 max-md:p-4 max-sm:pb-0', className)}
+	class={cn('flex flex-col p-5 pb-0 max-md:p-4 max-md:pb-0', className)}
 	{...restProps}
 >
 	{@render children?.()}
