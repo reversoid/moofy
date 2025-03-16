@@ -153,7 +153,7 @@ export namespace CollectionTagSelects {
     "id",
     "collectionId",
     "name",
-    "hslColor",
+    "hexColor",
     "createdAt",
   ] as const;
 

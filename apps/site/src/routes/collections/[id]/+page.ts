@@ -9,15 +9,21 @@ export const load: PageLoad = async ({ fetch, params: { id } }) => {
 
 	const api = makeClient(fetch);
 
-	const [collectionResponse, reviewsResponse, socialsResponse] = await Promise.all([
-		api.collections[':id'].$get({ param: { id } }).then(handleResponse),
+	const [collectionResponse, reviewsResponse, socialsResponse, tagsResponse] = await Promise.all([
+		api.collections[':collectionId'].$get({ param: { collectionId: id } }).then(handleResponse),
+
 		api.collections[':collectionId'].reviews
 			.$get({
 				param: { collectionId: id },
 				query: { limit: '20' }
 			})
 			.then(handleResponse),
-		api.collections[':id'].socials.$get({ param: { id } }).then(handleResponse)
+
+		api.collections[':collectionId'].socials
+			.$get({ param: { collectionId: id } })
+			.then(handleResponse),
+
+		api.collections[':collectionId'].tags.$get({ param: { collectionId: id } }).then(handleResponse)
 	]);
 
 	if (collectionResponse.isErr()) {
@@ -36,10 +42,12 @@ export const load: PageLoad = async ({ fetch, params: { id } }) => {
 	const collection = collectionResponse.unwrap().collection;
 	const reviews = reviewsResponse.unwrap().reviews;
 	const socials = socialsResponse.unwrap();
+	const tags = tagsResponse.unwrap().tags;
 
 	return {
 		collection,
 		reviews,
-		socials
+		socials,
+		tags
 	};
 };

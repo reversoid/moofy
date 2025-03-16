@@ -43,14 +43,14 @@ export class Review extends Entity {
 export class Tag extends Entity {
   id: Id;
   name: string;
-  hslColor: string;
+  hexColor: string;
   createdAt: Date;
   collectionId: Id;
 
   constructor(props: {
     id?: Id;
     name: string;
-    hslColor: string;
+    hexColor: string;
     createdAt?: Date;
     collectionId: Id;
   }) {
@@ -58,7 +58,7 @@ export class Tag extends Entity {
 
     this.id = props.id ?? new Id();
     this.name = props.name;
-    this.hslColor = props.hslColor;
+    this.hexColor = props.hexColor;
     this.createdAt = props.createdAt ?? new Date();
     this.collectionId = props.collectionId;
   }

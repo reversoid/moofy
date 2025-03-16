@@ -22,7 +22,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       .values({
         collectionId: tag.collectionId.value,
         name: tag.name,
-        hslColor: tag.hslColor,
+        hexColor: tag.hexColor,
       })
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -31,7 +31,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       id: new Id(newTag.id),
       collectionId: new Id(newTag.collectionId),
       name: newTag.name,
-      hslColor: newTag.hslColor,
+      hexColor: newTag.hexColor,
       createdAt: newTag.createdAt,
     });
   }
@@ -55,7 +55,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       .updateTable("collectionTags")
       .set({
         name: tag.name,
-        hslColor: tag.hslColor,
+        hexColor: tag.hexColor,
       })
       .where("id", "=", id.value)
       .returningAll()
@@ -65,7 +65,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       id: new Id(updatedTag.id),
       collectionId: new Id(updatedTag.collectionId),
       name: updatedTag.name,
-      hslColor: updatedTag.hslColor,
+      hexColor: updatedTag.hexColor,
       createdAt: updatedTag.createdAt,
     });
   }

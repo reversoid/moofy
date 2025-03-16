@@ -15,6 +15,7 @@ import { CollectionNotFoundError } from "../collection";
 import { Id } from "../../utils";
 import { Tag, User } from "../../entities";
 import {
+  TagAlreadyExistsError,
   TagAlreadyLinkedToReviewError,
   TagNotFoundError,
   TagNotLinkedToReviewError,
@@ -62,7 +63,12 @@ export class TagService implements ITagService {
     dto: CreateCollectionTagDto;
     by: User["id"];
   }): Promise<
-    Result<Tag, CollectionNotFoundError | NotOwnerOfCollectionError>
+    Result<
+      Tag,
+      | CollectionNotFoundError
+      | NotOwnerOfCollectionError
+      | TagAlreadyExistsError
+    >
   > {
     const collectionResult = await this.collectionService.getCollection({
       id: props.collectionId,
@@ -83,15 +89,24 @@ export class TagService implements ITagService {
       return err(new NotOwnerOfCollectionError());
     }
 
-    const newTag = await this.collectionTagRepository.create(
-      new Tag({
-        collectionId: props.collectionId,
-        hslColor: props.dto.hslColor,
-        name: props.dto.name,
-      })
-    );
+    try {
+      const newTag = await this.collectionTagRepository.create(
+        new Tag({
+          collectionId: props.collectionId,
+          hexColor: props.dto.hexColor,
+          name: props.dto.name,
+        })
+      );
 
-    return ok(newTag);
+      return ok(newTag);
+    } catch (error) {
+      // TODO can we make it better?
+      if (error instanceof Error && "code" in error && error.code === "23505") {
+        return err(new TagAlreadyExistsError());
+      }
+
+      throw error;
+    }
   }
 
   async deleteTag(props: {
@@ -255,11 +270,20 @@ export class TagService implements ITagService {
       tag.name = props.dto.name;
     }
 
-    if (props.dto.hslColor) {
-      tag.hslColor = props.dto.hslColor;
+    if (props.dto.hexColor) {
+      tag.hexColor = props.dto.hexColor;
     }
 
-    await this.collectionTagRepository.update(tag.id, tag);
+    try {
+      await this.collectionTagRepository.update(tag.id, tag);
+    } catch (error) {
+      // TODO can we make it better?
+      if (error instanceof Error && "code" in error && error.code === "23505") {
+        return err(new TagAlreadyExistsError());
+      }
+
+      throw error;
+    }
 
     return ok(tag);
   }

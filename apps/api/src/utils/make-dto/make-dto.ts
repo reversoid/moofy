@@ -43,7 +43,7 @@ export const makeFilmDto = (film: Film) => ({
 export const makeTagDto = (tag: Tag) => ({
   id: tag.id.value,
   name: tag.name,
-  hslColor: tag.hslColor,
+  hexColor: tag.hexColor,
   createdAt: makeDateDto(tag.createdAt),
 });
 

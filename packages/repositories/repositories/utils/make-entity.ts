@@ -78,7 +78,7 @@ export const makeReview = (
         new Tag({
           collectionId: new Id(t.collectionId),
           createdAt: new Date(t.createdAt),
-          hslColor: t.hslColor,
+          hexColor: t.hexColor,
           id: new Id(t.id),
           name: t.name,
         })
@@ -103,7 +103,7 @@ export const makeTag = (
     id: new Id(rawData["ct-id"]),
     collectionId: new Id(rawData["ct-collectionId"]),
     name: rawData["ct-name"],
-    hslColor: rawData["ct-hslColor"],
+    hexColor: rawData["ct-hexColor"],
     createdAt: rawData["ct-createdAt"],
   });
 };

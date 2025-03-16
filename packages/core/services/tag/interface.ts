@@ -5,8 +5,9 @@ import {
   NoAccessToPrivateCollectionError,
   NotOwnerOfCollectionError,
 } from "../collection";
-import { NotOwnerOfReviewError, ReviewNotFoundError } from "../review";
+import { ReviewNotFoundError } from "../review";
 import {
+  TagAlreadyExistsError,
   TagAlreadyLinkedToReviewError,
   TagNotFoundError,
   TagNotLinkedToReviewError,
@@ -15,12 +16,12 @@ import { Tag, User } from "../../entities";
 
 export type CreateCollectionTagDto = {
   name: string;
-  hslColor: string;
+  hexColor: string;
 };
 
 export type EditCollectionTagDto = {
   name?: string;
-  hslColor?: string;
+  hexColor?: string;
 };
 
 export interface ITagService {
@@ -35,7 +36,14 @@ export interface ITagService {
     collectionId: Id;
     dto: CreateCollectionTagDto;
     by: User["id"];
-  }): Promise<Result<Tag, CollectionNotFoundError | NotOwnerOfCollectionError>>;
+  }): Promise<
+    Result<
+      Tag,
+      | CollectionNotFoundError
+      | NotOwnerOfCollectionError
+      | TagAlreadyExistsError
+    >
+  >;
 
   linkTagToReview(props: {
     reviewId: Id;
@@ -74,5 +82,10 @@ export interface ITagService {
     tagId: Id;
     dto: EditCollectionTagDto;
     by: User["id"];
-  }): Promise<Result<Tag, TagNotFoundError | NotOwnerOfCollectionError>>;
+  }): Promise<
+    Result<
+      Tag,
+      TagNotFoundError | NotOwnerOfCollectionError | TagAlreadyExistsError
+    >
+  >;
 }

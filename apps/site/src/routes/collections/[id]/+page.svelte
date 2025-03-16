@@ -12,7 +12,9 @@
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import { goto } from '$app/navigation';
 	import { globalState } from '$lib/state/state.svelte';
-	import type { CollectionDto, ReviewDto } from '@repo/api/types';
+	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
+	import { onMount } from 'svelte';
+	import Tag from '$lib/entities/Tag/tag.svelte';
 
 	const { data }: PageProps = $props();
 
@@ -72,9 +74,11 @@
 
 	const currentUser = globalState.currentUser;
 
-	$effect(() => {
+	onMount(() => {
 		const api = makeClient(fetch);
-		void api.collections[':id'].views.$post({ param: { id: String(collection.id) } });
+		void api.collections[':collectionId'].views.$post({
+			param: { collectionId: String(collection.id) }
+		});
 	});
 </script>
 
@@ -93,8 +97,14 @@
 				<Card.Title>Описание</Card.Title>
 			</Card.Header>
 
-			<Card.Content>
+			<Card.Content class="flex grow flex-col justify-between gap-4">
 				<p>{collection.description || 'Описание отсутствует'}</p>
+
+				<div class="flex flex-row gap-2">
+					{#each data.tags as tag}
+						<Tag {tag} />
+					{/each}
+				</div>
 			</Card.Content>
 		</Card.Root>
 

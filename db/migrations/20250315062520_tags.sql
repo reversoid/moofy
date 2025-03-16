@@ -4,7 +4,7 @@ CREATE TABLE collection_tags (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     collection_id integer NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
     name VARCHAR(32) NOT NULL,
-    hsl_color VARCHAR(32) NOT NULL,
+    hex_color VARCHAR(7) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
 
     UNIQUE (collection_id, name)

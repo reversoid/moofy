@@ -17,3 +17,9 @@ export class TagNotLinkedToReviewError extends CoreError {
     super("Tag Not Linked To Review");
   }
 }
+
+export class TagAlreadyExistsError extends CoreError {
+  constructor() {
+    super("Tag Already Exists");
+  }
+}

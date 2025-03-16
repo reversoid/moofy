@@ -5,6 +5,7 @@
 	import type { ReviewDto } from '@repo/api/dtos';
 	import type { Snippet } from 'svelte';
 	import Image from '$lib/ui/image.svelte';
+	import { Tag } from '../Tag';
 
 	interface Props {
 		review: ReviewDto;
@@ -43,6 +44,12 @@
 			<Badge class="w-fit text-sm" variant="outline">
 				{review.film.year}
 			</Badge>
+
+			<div class="ml-auto flex gap-2">
+				{#each review.tags as tag}
+					<Tag ball {tag} />
+				{/each}
+			</div>
 		</div>
 
 		<div class="flex h-full flex-1 flex-col justify-between gap-4">

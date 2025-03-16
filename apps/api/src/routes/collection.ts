@@ -7,6 +7,7 @@ import {
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
   ReviewOnFilmExistsError,
+  TagAlreadyExistsError,
   TagNotFoundError,
   UserNotFoundError,
 } from "@repo/core/services";
@@ -22,7 +23,9 @@ import {
   withPaginatedData,
 } from "../utils/make-dto";
 
-const hslColorSchema = z.string().regex(/^hsl\(\d{1,3}, \d{1,3}%, \d{1,3}%\)$/);
+const hexColorSchema = z
+  .string()
+  .regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Invalid hex color format.");
 
 export const collectionRoute = new Hono()
   .get(
@@ -77,16 +80,19 @@ export const collectionRoute = new Hono()
     }
   )
   .post(
-    "/:id/views",
+    "/:collectionId/views",
     authMiddleware,
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.viewCollection({
-        collectionId: new Id(id),
+        collectionId: new Id(collectionId),
         userId: session.user.id,
       });
 
@@ -110,15 +116,18 @@ export const collectionRoute = new Hono()
     }
   )
   .get(
-    "/:id",
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    "/:collectionId",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session");
       const collectionService = c.get("collectionService");
 
       const collectionResult = await collectionService.getCollection({
-        id: new Id(id),
+        id: new Id(collectionId),
         by: session?.user?.id,
       });
 
@@ -142,16 +151,19 @@ export const collectionRoute = new Hono()
     }
   )
   .delete(
-    "/:id",
+    "/:collectionId",
     authMiddleware,
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.removeCollection({
-        id: new Id(id),
+        id: new Id(collectionId),
         by: session.user.id,
       });
 
@@ -172,9 +184,12 @@ export const collectionRoute = new Hono()
     }
   )
   .patch(
-    "/:id",
+    "/:collectionId",
     authMiddleware,
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     validator(
       "json",
       z.object({
@@ -185,13 +200,13 @@ export const collectionRoute = new Hono()
       })
     ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const updateData = c.req.valid("json");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.editCollection({
-        id: new Id(id),
+        id: new Id(collectionId),
         by: session.user.id,
         dto: updateData,
       });
@@ -394,15 +409,18 @@ export const collectionRoute = new Hono()
     }
   )
   .get(
-    "/:id/socials",
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    "/:collectionId/socials",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session");
       const collectionService = c.get("collectionService");
 
       const socialsResult = await collectionService.getSocials({
-        collectionId: new Id(id),
+        collectionId: new Id(collectionId),
         by: session?.user?.id,
       });
 
@@ -468,19 +486,19 @@ export const collectionRoute = new Hono()
       "json",
       z.object({
         name: z.string().min(1).max(32),
-        hslColor: hslColorSchema,
+        hexColor: hexColorSchema,
       })
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const { hslColor, name } = c.req.valid("json");
+      const { hexColor, name } = c.req.valid("json");
       const session = c.get("session")!;
       const tagService = c.get("tagService");
 
       const result = await tagService.createCollectionTag({
         collectionId: new Id(collectionId),
         by: session.user.id,
-        dto: { hslColor, name },
+        dto: { hexColor, name },
       });
 
       if (result.isErr()) {
@@ -491,6 +509,10 @@ export const collectionRoute = new Hono()
 
         if (error instanceof NotOwnerOfCollectionError) {
           return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagAlreadyExistsError) {
+          return c.json({ error: "TAG_ALREADY_EXISTS" as const }, 409);
         }
 
         throw error;
@@ -551,19 +573,19 @@ export const collectionRoute = new Hono()
       "json",
       z.object({
         name: z.string().min(1).max(32).optional(),
-        hslColor: hslColorSchema.optional(),
+        hexColor: hexColorSchema.optional(),
       })
     ),
     async (c) => {
       const { tagId } = c.req.valid("param");
-      const { hslColor, name } = c.req.valid("json");
+      const { hexColor, name } = c.req.valid("json");
       const session = c.get("session")!;
       const tagService = c.get("tagService");
 
       const result = await tagService.editTag({
         tagId: new Id(tagId),
         by: session.user.id,
-        dto: { hslColor, name },
+        dto: { hexColor, name },
       });
 
       if (result.isErr()) {
@@ -574,6 +596,10 @@ export const collectionRoute = new Hono()
 
         if (error instanceof NotOwnerOfCollectionError) {
           return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagAlreadyExistsError) {
+          return c.json({ error: "TAG_ALREADY_EXISTS" as const }, 409);
         }
 
         throw error;

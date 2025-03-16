@@ -16,7 +16,7 @@ import { sql } from "kysely";
 export interface TagData {
   id: number;
   name: string;
-  hslColor: string;
+  hexColor: string;
   collectionId: number;
   createdAt: string;
 }
@@ -160,7 +160,7 @@ export class ReviewRepository extends IReviewRepository {
               json_build_object(
                 'id', collection_tags.id,
                 'name', collection_tags.name,
-                'hsl_color', collection_tags.hsl_color,
+                'hex_color', collection_tags.hex_color,
                 'collection_id', collection_tags.collection_id,
                 'created_at', collection_tags.created_at
               )
