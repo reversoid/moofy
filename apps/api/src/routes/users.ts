@@ -8,8 +8,12 @@ import {
   NotFollowingError,
 } from "@repo/core/services";
 import { UserNotFoundError } from "@repo/core/services";
-import { makeDto } from "../utils/make-dto";
 import { authMiddleware } from "../utils/auth-middleware";
+import {
+  makeCollectionDto,
+  makeUserDto,
+  withPaginatedData,
+} from "../utils/make-dto";
 
 export const userRoute = new Hono()
   .put(
@@ -42,7 +46,7 @@ export const userRoute = new Hono()
         }
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .get(
@@ -86,17 +90,15 @@ export const userRoute = new Hono()
         toUserIds: users.items.map((user) => user.id),
       });
 
-      return c.json(
-        makeDto({
-          users: {
-            ...users,
-            items: users.items.map((user, index) => ({
-              user,
-              isFollowing: isFollowingMany[index].isFollowing,
-            })),
-          },
-        })
-      );
+      return c.json({
+        users: {
+          cursor: users.cursor,
+          items: users.items.map((u, index) => ({
+            user: makeUserDto(u),
+            isFollowing: isFollowingMany[index].isFollowing,
+          })),
+        },
+      });
     }
   )
   .get(
@@ -139,17 +141,15 @@ export const userRoute = new Hono()
         toUserIds: users.items.map((user) => user.id),
       });
 
-      return c.json(
-        makeDto({
-          users: {
-            ...users,
-            items: users.items.map((user, index) => ({
-              user,
-              isFollowing: isFollowingMany[index].isFollowing,
-            })),
-          },
-        })
-      );
+      return c.json({
+        users: {
+          cursor: users.cursor,
+          items: users.items.map((u, index) => ({
+            user: makeUserDto(u),
+            isFollowing: isFollowingMany[index].isFollowing,
+          })),
+        },
+      });
     }
   )
   .delete(
@@ -178,7 +178,7 @@ export const userRoute = new Hono()
         }
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .get("/existence/:username", async (c) => {
@@ -211,14 +211,12 @@ export const userRoute = new Hono()
         toUserIds: users.map((user) => user.id),
       });
 
-      return c.json(
-        makeDto({
-          users: users.map((u, index) => ({
-            user: u,
-            isFollowing: isFollowingMany[index].isFollowing,
-          })),
-        })
-      );
+      return c.json({
+        users: users.map((u, index) => ({
+          user: makeUserDto(u),
+          isFollowing: isFollowingMany[index].isFollowing,
+        })),
+      });
     }
   )
   .get(
@@ -246,9 +244,12 @@ export const userRoute = new Hono()
           subscriptionService.getSocialStats({ userId: user.id }),
         ]);
 
-      return c.json(
-        makeDto({ user, isFollowing, followersAmount, followeesAmount })
-      );
+      return c.json({
+        user: makeUserDto(user),
+        isFollowing,
+        followersAmount,
+        followeesAmount,
+      });
     }
   )
   .get(
@@ -287,6 +288,8 @@ export const userRoute = new Hono()
         throw error;
       }
 
-      return c.json(makeDto({ collections: collections.unwrap() }));
+      return c.json({
+        collections: withPaginatedData(makeCollectionDto)(collections.unwrap()),
+      });
     }
   );

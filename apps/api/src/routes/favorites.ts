@@ -8,8 +8,8 @@ import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { makeDto } from "../utils/make-dto";
 import { validator } from "../utils/validator";
+import { makeCollectionDto, withPaginatedData } from "../utils/make-dto";
 
 export const favoritesRoute = new Hono()
   .use(authMiddleware)
@@ -37,7 +37,9 @@ export const favoritesRoute = new Hono()
         }
       );
 
-      return c.json(makeDto({ collections: result.unwrap() }));
+      return c.json({
+        collections: withPaginatedData(makeCollectionDto)(result.unwrap()),
+      });
     }
   )
   .put(
@@ -77,7 +79,7 @@ export const favoritesRoute = new Hono()
         throw error;
       }
 
-      return c.json(makeDto({ collection: result.unwrap() }));
+      return c.body(null, 204);
     }
   )
   .delete(
@@ -114,6 +116,6 @@ export const favoritesRoute = new Hono()
         throw error;
       }
 
-      return c.json(makeDto({ collection: result.unwrap() }));
+      return c.body(null, 204);
     }
   );

@@ -11,8 +11,8 @@ import {
 } from "@repo/core/services";
 import { validator } from "../utils/validator";
 import { Id } from "@repo/core/utils";
-import { makeDto } from "../utils/make-dto";
 import { authMiddleware } from "../utils/auth-middleware";
+import { makeReviewDto } from "../utils/make-dto";
 
 export const reviewRoute = new Hono()
   .get(
@@ -48,7 +48,7 @@ export const reviewRoute = new Hono()
         return c.json({ error: "REVIEW_NOT_FOUND" as const }, 404);
       }
 
-      return c.json(makeDto({ review }));
+      return c.json({ review: makeReviewDto(review) });
     }
   )
   .delete(
@@ -81,7 +81,7 @@ export const reviewRoute = new Hono()
         }
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .patch(
@@ -127,7 +127,7 @@ export const reviewRoute = new Hono()
       }
 
       const updatedReview = result.unwrap();
-      return c.json(makeDto({ review: updatedReview }));
+      return c.json({ review: makeReviewDto(updatedReview) });
     }
   )
   .put(
@@ -175,7 +175,7 @@ export const reviewRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .delete(
@@ -220,6 +220,6 @@ export const reviewRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   );

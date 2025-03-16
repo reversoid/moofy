@@ -9,10 +9,10 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import { dayjs } from '@repo/core/sdk';
 	import type { PageProps } from './$types';
-	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import { goto } from '$app/navigation';
 	import { globalState } from '$lib/state/state.svelte';
+	import type { CollectionDto, ReviewDto } from '@repo/api/types';
 
 	const { data }: PageProps = $props();
 

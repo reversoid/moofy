@@ -14,8 +14,13 @@ import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { makeDto } from "../utils/make-dto";
 import { validator } from "../utils/validator";
+import {
+  makeCollectionDto,
+  makeReviewDto,
+  makeTagDto,
+  withPaginatedData,
+} from "../utils/make-dto";
 
 const hslColorSchema = z.string().regex(/^hsl\(\d{1,3}, \d{1,3}%, \d{1,3}%\)$/);
 
@@ -38,7 +43,7 @@ export const collectionRoute = new Hono()
         limit,
       });
 
-      return c.json(makeDto({ collections }));
+      return c.json({ collections: collections.map(makeCollectionDto) });
     }
   )
   .post(
@@ -68,7 +73,7 @@ export const collectionRoute = new Hono()
         },
       });
 
-      return c.json(makeDto({ collection: result.unwrap() }), 201);
+      return c.json({ collection: makeCollectionDto(result.unwrap()) }, 201);
     }
   )
   .post(
@@ -101,7 +106,7 @@ export const collectionRoute = new Hono()
         throw result.error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .get(
@@ -133,7 +138,7 @@ export const collectionRoute = new Hono()
         return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
       }
 
-      return c.json(makeDto({ collection }));
+      return c.json({ collection: makeCollectionDto(collection) });
     }
   )
   .delete(
@@ -163,7 +168,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({}, 200);
+      return c.body(null, 204);
     }
   )
   .patch(
@@ -204,7 +209,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json(makeDto({ collection: result.unwrap() }));
+      return c.json({ collection: makeCollectionDto(result.unwrap()) });
     }
   )
   .get(
@@ -251,7 +256,7 @@ export const collectionRoute = new Hono()
       }
 
       const reviews = result.unwrap();
-      return c.json(makeDto({ reviews }));
+      return c.json({ reviews: withPaginatedData(makeReviewDto)(reviews) });
     }
   )
   .post(
@@ -309,7 +314,7 @@ export const collectionRoute = new Hono()
       }
 
       const review = result.unwrap();
-      return c.json(makeDto({ review }), 201);
+      return c.json({ review: makeReviewDto(review) }, 201);
     }
   )
   .put(
@@ -347,7 +352,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .delete(
@@ -385,7 +390,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .get(
@@ -449,7 +454,7 @@ export const collectionRoute = new Hono()
       }
 
       const tags = result.unwrap();
-      return c.json(makeDto({ tags }));
+      return c.json({ tags: tags.map(makeTagDto) });
     }
   )
   .put(
@@ -492,7 +497,7 @@ export const collectionRoute = new Hono()
       }
 
       const tag = result.unwrap();
-      return c.json(makeDto({ tag }), 201);
+      return c.json({ tag: makeTagDto(tag) }, 201);
     }
   )
   .delete(
@@ -529,7 +534,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .patch(
@@ -575,6 +580,6 @@ export const collectionRoute = new Hono()
       }
 
       const tag = result.unwrap();
-      return c.json(makeDto({ tag }));
+      return c.json({ tag: makeTagDto(tag) });
     }
   );

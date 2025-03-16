@@ -1,16 +1,15 @@
 import {
-  Collection,
-  Film,
-  Review,
-  Session,
-  Tag,
-  User,
-} from "@repo/core/entities";
-import { DtoType } from "./make-dto";
+  makeReviewDto,
+  makeFilmDto,
+  makeSessionDto,
+  makeCollectionDto,
+  makeTagDto,
+  makeUserDto,
+} from "./make-dto";
 
-export type UserDto = DtoType<User>;
-export type CollectionDto = DtoType<Collection>;
-export type ReviewDto = DtoType<Review>;
-export type SessionDto = DtoType<Session>;
-export type FilmDto = DtoType<Film>;
-export type TagDto = DtoType<Tag>;
+export type TagDto = ReturnType<typeof makeTagDto>;
+export type UserDto = ReturnType<typeof makeUserDto>;
+export type CollectionDto = ReturnType<typeof makeCollectionDto>;
+export type ReviewDto = ReturnType<typeof makeReviewDto>;
+export type SessionDto = ReturnType<typeof makeSessionDto>;
+export type FilmDto = ReturnType<typeof makeFilmDto>;

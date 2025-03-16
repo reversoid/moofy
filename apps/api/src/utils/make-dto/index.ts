@@ -1,1 +1,2 @@
-export { makeDto } from "./make-dto";
+export * from "./make-dto";
+export * from "./dtos";

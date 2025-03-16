@@ -1,4 +1,3 @@
-import { dtoRules, type PickableFields, type Transformer } from "./rules";
 import {
   User,
   Collection,
@@ -7,122 +6,66 @@ import {
   Film,
   Tag,
 } from "@repo/core/entities";
-import { Id } from "@repo/core/utils";
+import { Id, PaginatedData } from "@repo/core/utils";
 
-/** Utility type to map a type T to a new type K */
-type TypeMap<T, K extends keyof T> = [T, { [P in K]: TransformedType<T[P]> }];
+export const makeIdDto = (id: Id) => id.value;
 
-/** Defines the mappings for the types */
-type SimpleMappings = [
-  [Id, number],
-  [Date, string],
-  TypeMap<User, "id" | "username" | "createdAt" | "description" | "imageUrl">,
-  TypeMap<
-    Collection,
-    | "id"
-    | "name"
-    | "creator"
-    | "createdAt"
-    | "updatedAt"
-    | "description"
-    | "imageUrl"
-    | "isPublic"
-  >,
-  TypeMap<
-    Review,
-    | "id"
-    | "description"
-    | "userId"
-    | "collectionId"
-    | "film"
-    | "score"
-    | "createdAt"
-    | "updatedAt"
-    | "tags"
-  >,
-  TypeMap<Session, "id" | "user" | "expiresAt">,
-  TypeMap<
-    Film,
-    | "id"
-    | "filmLength"
-    | "genres"
-    | "name"
-    | "posterPreviewUrl"
-    | "posterUrl"
-    | "type"
-    | "year"
-  >,
-  TypeMap<Tag, "id" | "name" | "hslColor" | "createdAt">,
-];
+export const makeDateDto = (date: Date) => date.toISOString();
 
-/** Transforms the type T using the mappings M */
-type TransformedType<T, M = SimpleMappings> = M extends [
-  infer First,
-  ...infer Rest,
-]
-  ? First extends [infer From, infer To]
-    ? T extends From
-      ? To
-      : TransformedType<T, Rest>
-    : never
-  : T;
+export const makeUserDto = (user: User) => ({
+  id: user.id.value,
+  username: user.username,
+  description: user.description,
+  imageUrl: user.imageUrl,
+  createdAt: makeDateDto(user.createdAt),
+});
 
-/** Handles nested objects and arrays */
-type DtoTypeInternal<T> =
-  T extends Array<infer U>
-    ? DtoTypeInternal<U>[]
-    : T extends object
-      ? T extends SimpleMappings[number][0]
-        ? TransformedType<T>
-        : { [K in keyof T]: DtoTypeInternal<T[K]> }
-      : T;
+export const makeCollectionDto = (collection: Collection) => ({
+  id: collection.id.value,
+  name: collection.name,
+  description: collection.description,
+  imageUrl: collection.imageUrl,
+  isPublic: collection.isPublic,
+  createdAt: makeDateDto(collection.createdAt),
+  updatedAt: makeDateDto(collection.updatedAt),
+  creator: makeUserDto(collection.creator),
+});
 
-/** The type of the DTO based on entity */
-export type DtoType<T> = DtoTypeInternal<T>;
+export const makeFilmDto = (film: Film) => ({
+  id: film.id,
+  name: film.name,
+  posterPreviewUrl: film.posterPreviewUrl,
+  posterUrl: film.posterUrl,
+  type: film.type,
+  year: film.year,
+});
 
-const isTransformer = (
-  rule: PickableFields<unknown> | Transformer<unknown>
-): rule is Transformer<unknown> => typeof rule === "function";
+export const makeTagDto = (tag: Tag) => ({
+  id: tag.id.value,
+  name: tag.name,
+  hslColor: tag.hslColor,
+  createdAt: makeDateDto(tag.createdAt),
+});
 
-export function makeDto<T>(data: T): DtoType<T> {
-  if (!data || typeof data !== "object") {
-    return data as DtoType<T>;
-  }
+export const makeReviewDto = (review: Review) => ({
+  id: review.id.value,
+  description: review.description,
+  score: review.score,
+  tags: review.tags.map(makeTagDto),
+  film: makeFilmDto(review.film),
+  createdAt: makeDateDto(review.createdAt),
+  updatedAt: makeDateDto(review.updatedAt),
+});
 
-  if (Array.isArray(data)) {
-    console.log("is array", data);
+export const makeSessionDto = (session: Session) => ({
+  id: session.id,
+  user: makeUserDto(session.user),
+  expiresAt: makeDateDto(session.expiresAt),
+});
 
-    return data.map((item) => makeDto(item)) as DtoType<T>;
-  }
-
-  const constructor = data.constructor;
-  const rule = dtoRules.get(constructor);
-
-  if (!rule) {
-    const result: Record<string, unknown> = {};
-
-    for (const key in data) {
-      const value = data[key];
-      result[key] = makeDto(value);
-    }
-
-    return result as DtoType<T>;
-  }
-
-  if (isTransformer(rule)) {
-    return rule(data) as DtoType<T>;
-  }
-
-  const result: Record<string, unknown> = {};
-
-  for (const [key, include] of Object.entries(rule)) {
-    if (!include) continue;
-
-    const value = data[key as keyof T];
-    result[key] = makeDto(value);
-  }
-
-  return result as DtoType<T>;
-}
-
-// TODO define types based on rules. There should not be two sources of truth.
+export const withPaginatedData =
+  <I, O>(transformer: (entity: I) => O) =>
+  (data: PaginatedData<I>) => ({
+    cursor: data.cursor,
+    items: data.items.map(transformer),
+  });
