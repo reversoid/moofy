@@ -21,6 +21,7 @@
 	let collection = $state(data.collection);
 	let reviews = $state(data.reviews);
 	let socials = $state(data.socials);
+	let tags = $state(data.tags);
 
 	const isOwner = $derived(collection.creator.id === data.user?.id);
 
@@ -155,6 +156,7 @@
 
 					{#if isOwner}
 						<EditCollection
+							{tags}
 							{collection}
 							onCollectionUpdated={handleCollectionUpdated}
 							onCollectionDeleted={handleCollectionDeleted}
@@ -175,6 +177,7 @@
 
 	<div class="mt-4">
 		<ReviewsList
+			{tags}
 			bind:reviews={reviews.items}
 			canEdit={isOwner}
 			cursor={reviews.cursor}

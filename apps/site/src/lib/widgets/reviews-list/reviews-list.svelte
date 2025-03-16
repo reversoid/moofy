@@ -3,13 +3,14 @@
 	import { EditReview } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
 	import Search from '$lib/ui/search.svelte';
-	import type { ReviewDto } from '@repo/api/dtos';
+	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import * as Alert from '$lib/components/ui/alert';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
 
 	interface Props {
 		reviews: ReviewDto[];
+		tags: TagDto[];
 		cursor?: string | null;
 		onSearch?: (search: string) => Promise<void>;
 		onLoadMore?: (cursor: string) => Promise<void>;
@@ -23,7 +24,8 @@
 		onLoadMore,
 		onSearch,
 		defaultEmptyDescription,
-		canEdit
+		canEdit,
+		tags
 	}: Props = $props();
 
 	let isLoading = $state(false);
@@ -73,6 +75,7 @@
 					{#snippet actions()}
 						{#if canEdit}
 							<EditReview
+								{tags}
 								existingReview={review}
 								onReviewUpdated={handleReviewUpdated}
 								onReviewDeleted={handleReviewDeleted}

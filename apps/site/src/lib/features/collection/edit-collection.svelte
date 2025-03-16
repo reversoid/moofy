@@ -1,17 +1,18 @@
 <script lang="ts">
 	import * as Dialog from '$lib/components/ui/dialog';
-	import type { CollectionDto } from '@repo/api/dtos';
+	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import CollectionModal, { type CollectionForm } from './collection-modal.svelte';
 	import EditCollectionButton from './edit-collection-button.svelte';
 	import { makeClient } from '$lib/utils';
 
 	interface Props {
 		collection: CollectionDto;
+		tags: TagDto[];
 		onCollectionUpdated?: (collection: CollectionDto) => void;
 		onCollectionDeleted?: () => void;
 	}
 
-	const { onCollectionUpdated, onCollectionDeleted, collection }: Props = $props();
+	const { onCollectionUpdated, onCollectionDeleted, collection, tags }: Props = $props();
 
 	async function updateCollection(props: CollectionForm) {
 		const api = makeClient(fetch);
@@ -51,6 +52,6 @@
 		<EditCollectionButton class="w-full" />
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<CollectionModal {collection} onSubmit={updateCollection} onDelete={deleteCollection} />
+		<CollectionModal {tags} {collection} onSubmit={updateCollection} onDelete={deleteCollection} />
 	</Dialog.Content>
 </Dialog.Root>

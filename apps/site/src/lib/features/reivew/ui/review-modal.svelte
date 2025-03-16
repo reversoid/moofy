@@ -8,11 +8,13 @@
 	import Film from './film.svelte';
 	import RatingSelect from './rating-select.svelte';
 	import SearchFilm from './search-film.svelte';
-	import type { FilmDto, ReviewDto } from '@repo/api/dtos';
+	import type { FilmDto, ReviewDto, TagDto } from '@repo/api/dtos';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { reviewFormSchema } from './review-form-schema';
 	import * as Form from '$lib/components/ui/form';
+	import * as Select from '$lib/components/ui/select';
+	import { Tag } from '$lib/entities/Tag';
 
 	export type ReviewForm = {
 		filmId: FilmDto['id'];
@@ -22,11 +24,12 @@
 
 	type ReviewModalProps = {
 		existingReview?: ReviewDto;
+		tags?: TagDto[];
 		onSubmit: (form: ReviewForm) => Promise<void>;
 		onSubmitDelete?: (id: ReviewDto['id']) => Promise<void>;
 	};
 
-	const { existingReview, onSubmit, onSubmitDelete }: ReviewModalProps = $props();
+	const { existingReview, onSubmit, onSubmitDelete, tags }: ReviewModalProps = $props();
 
 	let visibleFilm = $state<FilmDto | null>(existingReview?.film ?? null);
 
@@ -102,6 +105,35 @@
 		<Label for="rating">Оценка</Label>
 		<RatingSelect bind:rating={$formData.score} />
 	</div>
+
+	{#if tags}
+		<div class="mt-2 flex flex-col gap-3">
+			<Label>Тэги</Label>
+
+			<Select.Root type="multiple">
+				<Select.Trigger class="gap-2">
+					<div class="flex grow flex-row items-center justify-between gap-2">
+						{existingReview?.tags?.map((tag) => tag.name).join(', ') ?? 'Выберите тэги'}
+
+						<div class="flex flex-row gap-1">
+							{#each existingReview?.tags ?? [] as tag}
+								<Tag {tag} ball />
+							{/each}
+						</div>
+					</div>
+				</Select.Trigger>
+
+				<Select.Content>
+					{#each tags as tag}
+						<Select.Item class="flex justify-between" value={String(tag.id)}>
+							<span>{tag.name}</span>
+							<Tag {tag} ball />
+						</Select.Item>
+					{/each}
+				</Select.Content>
+			</Select.Root>
+		</div>
+	{/if}
 </form>
 
 <Dialog.Footer class="flex flex-row gap-3 max-sm:flex-col">

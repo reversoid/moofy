@@ -4,6 +4,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import * as Form from '$lib/components/ui/form';
+	import * as Table from '$lib/components/ui/table';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -12,15 +13,17 @@
 		IconDeviceFloppy,
 		IconPencil,
 		IconPhoto,
+		IconPlus,
 		IconTrash,
 		IconUpload
 	} from '@tabler/icons-svelte';
-	import type { CollectionDto } from '@repo/api/dtos';
+	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import Image from '$lib/ui/image.svelte';
 	import UploadImage from '$lib/ui/upload-image.svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { collectionSchema } from './collection-schema';
+	import { Tag } from '$lib/entities/Tag';
 
 	export type CollectionForm = {
 		name: string;
@@ -31,11 +34,12 @@
 
 	type CollectionModalProps = {
 		collection?: CollectionDto;
+		tags?: TagDto[];
 		onSubmit: (props: CollectionForm) => Promise<void>;
 		onDelete?: () => Promise<void>;
 	};
 
-	const { collection, onSubmit, onDelete }: CollectionModalProps = $props();
+	const { collection, tags, onSubmit, onDelete }: CollectionModalProps = $props();
 
 	const type = $derived(collection ? 'edit' : 'create');
 
@@ -78,7 +82,7 @@
 </Dialog.Header>
 
 <div class="mt-2">
-	<form id="collection-form" class="flex flex-col gap-5" use:enhance>
+	<form id="collection-form" class="flex flex-col gap-2 pb-4" use:enhance>
 		<Form.Field {form} name="name">
 			<Form.Control>
 				{#snippet children({ attrs }: { attrs: any })}
@@ -101,7 +105,7 @@
 			<Form.FieldErrors />
 		</Form.Field>
 
-		<div class="flex flex-col gap-3.5">
+		<div class="mt-2 flex flex-col gap-3.5">
 			<Label>Обложка коллекции</Label>
 			<div class="flex gap-4 max-sm:flex-col">
 				<div class="shrink-0 max-sm:mx-auto">
@@ -149,7 +153,78 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row items-center gap-2">
+		<div class="mt-2 flex flex-col gap-2.5">
+			<Label>Тэги</Label>
+
+			{#if tags}
+				<div class="flex flex-row gap-1">
+					<Button variant="outline">
+						<span>Настроить</span>
+						<div class="flex flex-row gap-1">
+							{#each tags as tag}
+								<Tag {tag} ball />
+							{/each}
+						</div>
+					</Button>
+				</div>
+			{/if}
+
+			{#if tags}
+				<!-- TODO separate component -->
+				<Dialog.Root open={true}>
+					<Dialog.Content>
+						<Dialog.Header>
+							<Dialog.Title>Настроить тэги</Dialog.Title>
+							<Dialog.Description>Здесь Вы можете настроить тэги для коллекции</Dialog.Description>
+						</Dialog.Header>
+
+						<div class="flex flex-col gap-2 py-2">
+							<Table.Root>
+								<Table.Body>
+									{#each tags as tag (tag.id)}
+										<Table.Row>
+											<Table.Cell>
+												<Tag {tag} />
+											</Table.Cell>
+											<Table.Cell class="flex justify-end gap-2">
+												<Button size="icon" variant="outline">
+													<IconPencil />
+												</Button>
+												<Button size="icon" variant="destructive">
+													<IconTrash />
+												</Button>
+											</Table.Cell>
+										</Table.Row>
+									{/each}
+									<Table.Row>
+										<Table.Cell>
+											<Input type="text" placeholder="Название тэга" />
+										</Table.Cell>
+
+										<Table.Cell class="flex justify-end gap-2">
+											<Button disabled size="icon" variant="outline">
+												<IconPencil />
+											</Button>
+
+											<Button size="icon" variant="outline">
+												<IconDeviceFloppy />
+											</Button>
+										</Table.Cell>
+									</Table.Row>
+								</Table.Body>
+							</Table.Root>
+						</div>
+
+						<Dialog.Footer>
+							<Button variant="outline">Отменить</Button>
+							<Button>Сохранить</Button>
+						</Dialog.Footer>
+					</Dialog.Content>
+				</Dialog.Root>
+			{/if}
+		</div>
+
+		<div class="mt-2 flex flex-row items-center gap-2">
 			<Checkbox id="private" aria-labelledby="private-label" bind:checked={$formData.isPrivate} />
 
 			<Label id="private-label" for="private" class="text-sm font-medium leading-none">

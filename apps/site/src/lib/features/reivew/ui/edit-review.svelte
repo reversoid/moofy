@@ -3,16 +3,17 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	import EditReviewButton from './edit-review-button.svelte';
-	import type { ReviewDto } from '@repo/api/dtos';
+	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import { makeClient } from '$lib/utils';
 
 	interface Props {
 		existingReview: ReviewDto;
+		tags: TagDto[];
 		onReviewUpdated: (review: ReviewDto) => void;
 		onReviewDeleted: (reviewId: ReviewDto['id']) => void;
 	}
 
-	const { existingReview, onReviewUpdated, onReviewDeleted }: Props = $props();
+	const { existingReview, onReviewUpdated, onReviewDeleted, tags }: Props = $props();
 
 	let isOpen = $state(false);
 
@@ -46,6 +47,6 @@
 		<EditReviewButton />
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<ReviewModal {existingReview} onSubmit={editReview} onSubmitDelete={deleteReview} />
+		<ReviewModal {tags} {existingReview} onSubmit={editReview} onSubmitDelete={deleteReview} />
 	</Dialog.Content>
 </Dialog.Root>

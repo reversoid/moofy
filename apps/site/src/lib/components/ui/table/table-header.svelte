@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { WithElementRef } from 'bits-ui';
 	import { cn } from '$lib/utils';
 
 	let {
@@ -8,9 +8,9 @@
 		class: className,
 		children,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
+	}: WithElementRef<HTMLAttributes<HTMLTableSectionElement>> = $props();
 </script>
 
-<div bind:this={ref} class={cn('text-muted-foreground !mt-2 text-sm', className)} {...restProps}>
+<thead bind:this={ref} class={cn('[&_tr]:border-b', className)} {...restProps}>
 	{@render children?.()}
-</div>
+</thead>
