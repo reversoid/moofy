@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import { IconBookmark, IconBookmarkFilled } from '@tabler/icons-svelte';
 
@@ -17,15 +17,13 @@
 	const api = makeClient(fetch);
 
 	async function bookmarkCollection() {
-		const result = await api.favorites[':collectionId']
-			.$put({
-				param: { collectionId: String(collectionId) }
-			})
-			.then(handleResponse);
+		const result = await api.favorites[':collectionId'].$put({
+			param: { collectionId: String(collectionId) }
+		});
 
-		if (result.isErr()) {
-			const err = result.unwrapErr();
-			if (err.error === 'COLLECTION_ALREADY_FAVORITED') {
+		if (!result.ok) {
+			const { error } = await result.json();
+			if (error === 'COLLECTION_ALREADY_FAVORITED') {
 				isBookmarked = true;
 			}
 			return;
@@ -35,15 +33,13 @@
 	}
 
 	async function unbookmarkCollection() {
-		const result = await api.favorites[':collectionId']
-			.$delete({
-				param: { collectionId: String(collectionId) }
-			})
-			.then(handleResponse);
+		const result = await api.favorites[':collectionId'].$delete({
+			param: { collectionId: String(collectionId) }
+		});
 
-		if (result.isErr()) {
-			const err = result.unwrapErr();
-			if (err.error === 'COLLECTION_NOT_FAVORITED') {
+		if (!result.ok) {
+			const { error } = await result.json();
+			if (error === 'COLLECTION_NOT_FAVORITED') {
 				isBookmarked = false;
 			}
 			return;

@@ -26,7 +26,11 @@
 				{/if}
 			</div>
 			<Card.Description class="line-clamp-1">
-				{collection.description?.trim() || 'Описание отсутствует'}
+				{#if collection.description}
+					<p>{collection.description.trim()}</p>
+				{:else}
+					<p class="text-muted-foreground">Описание отсутствует</p>
+				{/if}
 			</Card.Description>
 		</Card.Header>
 

@@ -24,9 +24,13 @@
 		<div class="flex flex-row justify-between gap-4 max-sm:flex-col-reverse max-sm:items-center">
 			<Card.Header class="pr-0 max-sm:px-4 max-sm:pt-0">
 				<Card.Title class="max-sm:text-center">{username}</Card.Title>
-				<Card.Description class="max-sm:text-center"
-					>{description ?? 'Нет описания'}</Card.Description
-				>
+				<Card.Description class="max-sm:text-center">
+					{#if description}
+						<p>{description.trim()}</p>
+					{:else}
+						<p class="text-muted-foreground">Описание отсутствует</p>
+					{/if}
+				</Card.Description>
 			</Card.Header>
 
 			<Card.Content class="shrink-0 pl-0 max-sm:px-0 max-sm:pb-0">

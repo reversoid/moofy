@@ -98,7 +98,11 @@
 			</Card.Header>
 
 			<Card.Content class="flex grow flex-col justify-between gap-4">
-				<p>{collection.description || 'Описание отсутствует'}</p>
+				{#if collection.description}
+					<p>{collection.description.trim()}</p>
+				{:else}
+					<p class="text-muted-foreground">Описание отсутствует</p>
+				{/if}
 
 				<div class="flex flex-row gap-2">
 					{#each data.tags as tag}
