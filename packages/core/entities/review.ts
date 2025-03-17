@@ -1,6 +1,7 @@
 import { Id } from "../utils/id";
 import { Entity } from "./entity";
 import { Film } from "./film";
+import { Tag } from "./tag";
 
 export class Review extends Entity {
   id: Id;
@@ -37,29 +38,5 @@ export class Review extends Entity {
     this.collectionId = props.collectionId;
     this.userId = props.userId;
     this.tags = props.tags ?? [];
-  }
-}
-
-export class Tag extends Entity {
-  id: Id;
-  name: string;
-  hexColor: string;
-  createdAt: Date;
-  collectionId: Id;
-
-  constructor(props: {
-    id?: Id;
-    name: string;
-    hexColor: string;
-    createdAt?: Date;
-    collectionId: Id;
-  }) {
-    super();
-
-    this.id = props.id ?? new Id();
-    this.name = props.name;
-    this.hexColor = props.hexColor;
-    this.createdAt = props.createdAt ?? new Date();
-    this.collectionId = props.collectionId;
   }
 }

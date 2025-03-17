@@ -95,6 +95,7 @@ export class TagService implements ITagService {
           collectionId: props.collectionId,
           hexColor: props.dto.hexColor,
           name: props.dto.name,
+          description: props.dto.description,
         })
       );
 
@@ -272,6 +273,10 @@ export class TagService implements ITagService {
 
     if (props.dto.hexColor) {
       tag.hexColor = props.dto.hexColor;
+    }
+
+    if (props.dto.description !== undefined) {
+      tag.description = props.dto.description;
     }
 
     try {

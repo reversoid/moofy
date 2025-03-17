@@ -487,18 +487,19 @@ export const collectionRoute = new Hono()
       z.object({
         name: z.string().min(1).max(32),
         hexColor: hexColorSchema,
+        description: z.string().nullable().optional(),
       })
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const { hexColor, name } = c.req.valid("json");
+      const { hexColor, name, description } = c.req.valid("json");
       const session = c.get("session")!;
       const tagService = c.get("tagService");
 
       const result = await tagService.createCollectionTag({
         collectionId: new Id(collectionId),
         by: session.user.id,
-        dto: { hexColor, name },
+        dto: { hexColor, name, description: description ?? null },
       });
 
       if (result.isErr()) {
@@ -574,18 +575,19 @@ export const collectionRoute = new Hono()
       z.object({
         name: z.string().min(1).max(32).optional(),
         hexColor: hexColorSchema.optional(),
+        description: z.string().nullable().optional(),
       })
     ),
     async (c) => {
       const { tagId } = c.req.valid("param");
-      const { hexColor, name } = c.req.valid("json");
+      const { hexColor, name, description } = c.req.valid("json");
       const session = c.get("session")!;
       const tagService = c.get("tagService");
 
       const result = await tagService.editTag({
         tagId: new Id(tagId),
         by: session.user.id,
-        dto: { hexColor, name },
+        dto: { hexColor, name, description },
       });
 
       if (result.isErr()) {

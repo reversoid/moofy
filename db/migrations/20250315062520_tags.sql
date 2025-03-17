@@ -5,6 +5,7 @@ CREATE TABLE collection_tags (
     collection_id integer NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
     name VARCHAR(32) NOT NULL,
     hex_color VARCHAR(7) NOT NULL,
+    description VARCHAR(255),
     created_at timestamp with time zone DEFAULT now() NOT NULL,
 
     UNIQUE (collection_id, name)

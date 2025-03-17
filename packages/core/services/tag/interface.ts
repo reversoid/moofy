@@ -12,16 +12,18 @@ import {
   TagNotFoundError,
   TagNotLinkedToReviewError,
 } from "./errors";
-import { Tag, User } from "../../entities";
+import { User, Tag } from "../../entities";
 
 export type CreateCollectionTagDto = {
   name: string;
   hexColor: string;
+  description: string | null;
 };
 
 export type EditCollectionTagDto = {
   name?: string;
   hexColor?: string;
+  description?: string | null;
 };
 
 export interface ITagService {
