@@ -15,6 +15,9 @@
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { onMount } from 'svelte';
 	import Tag from '$lib/entities/Tag/tag.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { IconPlus, IconTag } from '@tabler/icons-svelte';
+	import { Badge } from '$lib/components/ui/badge';
 
 	const { data }: PageProps = $props();
 
@@ -109,10 +112,12 @@
 					<p class="text-muted-foreground">Описание отсутствует</p>
 				{/if}
 
-				<div class="flex flex-row gap-2">
-					{#each data.tags as tag}
-						<Tag {tag} />
-					{/each}
+				<div class="flex items-center gap-4">
+					<div class="flex flex-row gap-2">
+						{#each data.tags as tag}
+							<Tag {tag} />
+						{/each}
+					</div>
 				</div>
 			</Card.Content>
 		</Card.Root>
