@@ -73,17 +73,16 @@
 
 	<div class="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
 		{#each reviews as review, index (review.id)}
-			<div animate:flip={{ duration: 350 }}>
+			<div>
 				<ReviewCard {review}>
 					{#snippet actions()}
 						{#if canEdit}
-							{#key reviews[index].id}
-								<EditReview
-									{tags}
-									bind:existingReview={reviews[index]}
-									onReviewUpdated={handleReviewUpdated}
-									onReviewDeleted={handleReviewDeleted}
-								/>{/key}
+							<EditReview
+								{tags}
+								bind:existingReview={reviews[index]}
+								onReviewUpdated={handleReviewUpdated}
+								onReviewDeleted={handleReviewDeleted}
+							/>
 						{/if}
 					{/snippet}
 				</ReviewCard>

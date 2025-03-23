@@ -24,12 +24,6 @@
 			param: { reviewId: String(existingReview.id) }
 		});
 
-		if (reviewResult.ok) {
-			const { review: updatedReview } = await reviewResult.json();
-			onReviewUpdated(updatedReview);
-			isOpen = false;
-		}
-
 		const existingIds = existingReview.tags.map((r) => r.id);
 		const givenIds = form.tags ?? [];
 
@@ -53,10 +47,11 @@
 			return;
 		}
 
-		existingReview = {
-			...existingReview,
-			tags: tags.filter((t) => givenIds.includes(t.id))
-		};
+		if (reviewResult.ok) {
+			const { review: updatedReview } = await reviewResult.json();
+			onReviewUpdated({ ...updatedReview, tags: tags.filter((t) => givenIds.includes(t.id)) });
+			isOpen = false;
+		}
 	}
 
 	async function deleteReview(id: ReviewDto['id']) {
