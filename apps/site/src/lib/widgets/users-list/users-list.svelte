@@ -29,9 +29,12 @@
 	let isLoading = $state(false);
 
 	async function onLoadMoreWithLoading(cursor: string) {
-		isLoading = true;
-		await onLoadMore?.(cursor);
-		isLoading = false;
+		try {
+			isLoading = true;
+			await onLoadMore?.(cursor);
+		} catch (error) {
+			isLoading = false;
+		}
 	}
 
 	let isSearch = $state(false);
