@@ -45,6 +45,7 @@ export const makeTagDto = (tag: Tag) => ({
   name: tag.name,
   hexColor: tag.hexColor,
   createdAt: makeDateDto(tag.createdAt),
+  description: tag.description,
 });
 
 export const makeReviewDto = (review: Review) => ({

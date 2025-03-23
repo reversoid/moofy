@@ -1,29 +1,27 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox';
+	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import * as Form from '$lib/components/ui/form';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import DeleteButton from '$lib/ui/delete-button.svelte';
+	import Image from '$lib/ui/image.svelte';
+	import UploadImage from '$lib/ui/upload-image.svelte';
+	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import {
 		IconDeviceFloppy,
 		IconPencil,
 		IconPhoto,
-		IconPlus,
 		IconTrash,
 		IconUpload
 	} from '@tabler/icons-svelte';
-	import type { CollectionDto, TagDto } from '@repo/api/dtos';
-	import Image from '$lib/ui/image.svelte';
-	import UploadImage from '$lib/ui/upload-image.svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import { ListTags } from '../tag';
 	import { collectionSchema } from './collection-schema';
-	import { Tag } from '$lib/entities/Tag';
-	import EditTags from './edit-tags.svelte';
 
 	export type CollectionForm = {
 		name: string;
@@ -153,10 +151,10 @@
 			</div>
 		</div>
 
-		{#if tags}
+		{#if tags && collection?.id}
 			<div class="mt-2 flex flex-col gap-2.5">
 				<Label>Тэги</Label>
-				<EditTags {tags} />
+				<ListTags {tags} collectionId={collection.id} />
 			</div>
 		{/if}
 

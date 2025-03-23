@@ -69,6 +69,7 @@
 		"hono": "^4.7.2",
 		"lodash.debounce": "^4.0.8",
 		"lodash.uniqby": "^4.7.0",
-		"lucide-react": "^0.482.0"
+		"lucide-react": "^0.482.0",
+		"maska": "^3.1.1"
 	}
 }

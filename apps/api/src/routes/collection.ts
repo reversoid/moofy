@@ -608,6 +608,6 @@ export const collectionRoute = new Hono()
       }
 
       const tag = result.unwrap();
-      return c.json({ tag: makeTagDto(tag) });
+      return c.json({ tag: makeTagDto(tag) }, 200);
     }
   );

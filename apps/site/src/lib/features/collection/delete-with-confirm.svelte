@@ -12,7 +12,7 @@
 	let confirmedDelete = $state(false);
 	let timeoutId = $state<NodeJS.Timeout | null>(null);
 
-	function handleDeleteClick() {
+	const handleDeleteClick = () => {
 		if (confirmedDelete) {
 			onConfirmedDelete?.();
 			return;
@@ -24,7 +24,7 @@
 		timeoutId = setTimeout(() => {
 			confirmedDelete = false;
 		}, 3000);
-	}
+	};
 
 	const removeTimeout = () => {
 		if (timeoutId) {
