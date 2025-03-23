@@ -37,7 +37,7 @@
 		onDelete?: () => Promise<void>;
 	};
 
-	let { collection, tags = $bindable([]), onSubmit, onDelete }: CollectionModalProps = $props();
+	let { collection, tags = $bindable(), onSubmit, onDelete }: CollectionModalProps = $props();
 
 	const type = $derived(collection ? 'edit' : 'create');
 

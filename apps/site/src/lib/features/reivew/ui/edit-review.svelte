@@ -13,7 +13,7 @@
 		onReviewDeleted: (reviewId: ReviewDto['id']) => void;
 	}
 
-	const { existingReview, onReviewUpdated, onReviewDeleted, tags }: Props = $props();
+	let { existingReview = $bindable(), onReviewUpdated, onReviewDeleted, tags }: Props = $props();
 
 	let isOpen = $state(false);
 
@@ -29,6 +29,30 @@
 			onReviewUpdated(updatedReview);
 			isOpen = false;
 		}
+
+		const existingIds = existingReview.tags.map((r) => r.id);
+		const givenIds = form.tags ?? [];
+
+		const addedTags = givenIds.filter((id) => !existingIds.includes(id));
+		const deletedTags = existingIds?.filter((id) => !givenIds!.includes(id));
+
+		const addTag = (tId: number) =>
+			api.reviews[':reviewId'].tags[':tagId'].$put({
+				param: { reviewId: existingReview.id.toString(), tagId: tId.toString() }
+			});
+
+		const deleteTag = (tId: number) =>
+			api.reviews[':reviewId'].tags[':tagId'].$delete({
+				param: { reviewId: existingReview.id.toString(), tagId: tId.toString() }
+			});
+
+		// TODO make method for batch tags set
+		await Promise.all([...addedTags.map(addTag), ...deletedTags.map(deleteTag)]);
+
+		existingReview = {
+			...existingReview,
+			tags: tags.filter((t) => givenIds.includes(t.id))
+		};
 	}
 
 	async function deleteReview(id: ReviewDto['id']) {

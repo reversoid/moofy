@@ -20,6 +20,7 @@
 		filmId: FilmDto['id'];
 		description: string | null;
 		score: number | null;
+		tags?: number[];
 	};
 
 	type ReviewModalProps = {
@@ -43,7 +44,8 @@
 	const initialData = {
 		filmId: existingReview?.film.id ?? null,
 		description: existingReview?.description ?? null,
-		score: existingReview?.score ?? null
+		score: existingReview?.score ?? null,
+		tags: existingReview?.tags.map((t) => t.id.toString())
 	};
 
 	const form = superForm(defaults(initialData, zod(reviewFormSchema)), {
@@ -54,7 +56,12 @@
 				return;
 			}
 
-			await onSubmit(form.data as ReviewForm);
+			await onSubmit({
+				...form.data,
+				tags: form.data.tags?.map(Number),
+				description: form.data.description ?? '',
+				filmId: form.data.filmId ?? ''
+			});
 		}
 	});
 
@@ -72,7 +79,9 @@
 		isDeleting = false;
 	}
 
-	let selectedTags = $state(existingReview?.tags ?? []);
+	let tagsIds = $derived(new Set($formData.tags ?? []));
+
+	let selectedTags = $derived(tags?.filter((t) => tagsIds.has(t.id.toString())) ?? []);
 </script>
 
 <Dialog.Header>
@@ -117,15 +126,7 @@
 		<div class="mt-2 flex flex-col gap-3">
 			<Label>Тэги</Label>
 
-			<Select.Root
-				bind:value={
-					() => selectedTags.map((t) => t.id.toString()),
-					(tagsIds) => {
-						selectedTags = tags.filter((t) => tagsIds.includes(t.id.toString()));
-					}
-				}
-				type="multiple"
-			>
+			<Select.Root bind:value={$formData.tags} type="multiple">
 				<Select.Trigger class="gap-2">
 					<div class="flex grow flex-row items-center justify-between gap-2">
 						<span>Выберите тэги</span>
