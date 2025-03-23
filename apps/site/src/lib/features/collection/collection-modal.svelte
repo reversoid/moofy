@@ -68,9 +68,12 @@
 	let isDeleting = $state(false);
 
 	async function onDeleteWithLoading() {
-		isDeleting = true;
-		await onDelete?.();
-		isDeleting = false;
+		try {
+			isDeleting = true;
+			await onDelete?.();
+		} finally {
+			isDeleting = false;
+		}
 	}
 </script>
 
