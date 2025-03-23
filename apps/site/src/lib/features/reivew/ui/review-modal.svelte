@@ -40,7 +40,7 @@
 		filmId: existingReview?.film.id ?? null,
 		description: existingReview?.description ?? null,
 		score: existingReview?.score ?? null,
-		tags: existingReview?.tags.map((t) => t.id.toString())
+		tags: (existingReview?.tags.map((t) => t.id.toString()) ?? []) as string[]
 	};
 
 	const form = superForm(defaults(initialData, zod(reviewFormSchema)), {
