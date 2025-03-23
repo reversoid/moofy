@@ -67,12 +67,11 @@
 	let isDeleting = $state(false);
 
 	async function onSubmitDeleteWithLoading(id: ReviewDto['id']) {
-		try {
-			isDeleting = true;
-			await onSubmitDelete?.(id);
-		} finally {
-			isDeleting = false;
-		}
+		isDeleting = true;
+
+		await onSubmitDelete?.(id);
+
+		isDeleting = false;
 	}
 
 	let tagsIds = $derived(new Set($formData.tags ?? []));
