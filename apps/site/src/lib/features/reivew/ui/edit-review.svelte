@@ -47,7 +47,11 @@
 			});
 
 		// TODO make method for batch tags set
-		await Promise.all([...addedTags.map(addTag), ...deletedTags.map(deleteTag)]);
+		const responses = await Promise.all([...addedTags.map(addTag), ...deletedTags.map(deleteTag)]);
+
+		if (!responses.every((r) => r.ok)) {
+			return;
+		}
 
 		existingReview = {
 			...existingReview,
