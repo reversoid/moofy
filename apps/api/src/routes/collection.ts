@@ -7,14 +7,25 @@ import {
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
   ReviewOnFilmExistsError,
+  TagAlreadyExistsError,
+  TagNotFoundError,
   UserNotFoundError,
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { makeDto } from "../utils/make-dto";
 import { validator } from "../utils/validator";
+import {
+  makeCollectionDto,
+  makeReviewDto,
+  makeTagDto,
+  withPaginatedData,
+} from "../utils/make-dto";
+
+const hexColorSchema = z
+  .string()
+  .regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Invalid hex color format.");
 
 export const collectionRoute = new Hono()
   .get(
@@ -35,7 +46,7 @@ export const collectionRoute = new Hono()
         limit,
       });
 
-      return c.json(makeDto({ collections }));
+      return c.json({ collections: collections.map(makeCollectionDto) });
     }
   )
   .post(
@@ -65,20 +76,23 @@ export const collectionRoute = new Hono()
         },
       });
 
-      return c.json(makeDto({ collection: result.unwrap() }), 201);
+      return c.json({ collection: makeCollectionDto(result.unwrap()) }, 201);
     }
   )
   .post(
-    "/:id/views",
+    "/:collectionId/views",
     authMiddleware,
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.viewCollection({
-        collectionId: new Id(id),
+        collectionId: new Id(collectionId),
         userId: session.user.id,
       });
 
@@ -98,19 +112,22 @@ export const collectionRoute = new Hono()
         throw result.error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .get(
-    "/:id",
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    "/:collectionId",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session");
       const collectionService = c.get("collectionService");
 
       const collectionResult = await collectionService.getCollection({
-        id: new Id(id),
+        id: new Id(collectionId),
         by: session?.user?.id,
       });
 
@@ -130,20 +147,23 @@ export const collectionRoute = new Hono()
         return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
       }
 
-      return c.json(makeDto({ collection }));
+      return c.json({ collection: makeCollectionDto(collection) }, 200);
     }
   )
   .delete(
-    "/:id",
+    "/:collectionId",
     authMiddleware,
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.removeCollection({
-        id: new Id(id),
+        id: new Id(collectionId),
         by: session.user.id,
       });
 
@@ -160,13 +180,16 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({}, 200);
+      return c.body(null, 204);
     }
   )
   .patch(
-    "/:id",
+    "/:collectionId",
     authMiddleware,
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     validator(
       "json",
       z.object({
@@ -177,13 +200,13 @@ export const collectionRoute = new Hono()
       })
     ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const updateData = c.req.valid("json");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
       const result = await collectionService.editCollection({
-        id: new Id(id),
+        id: new Id(collectionId),
         by: session.user.id,
         dto: updateData,
       });
@@ -201,7 +224,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json(makeDto({ collection: result.unwrap() }));
+      return c.json({ collection: makeCollectionDto(result.unwrap()) });
     }
   )
   .get(
@@ -248,7 +271,7 @@ export const collectionRoute = new Hono()
       }
 
       const reviews = result.unwrap();
-      return c.json(makeDto({ reviews }));
+      return c.json({ reviews: withPaginatedData(makeReviewDto)(reviews) });
     }
   )
   .post(
@@ -257,7 +280,7 @@ export const collectionRoute = new Hono()
     validator(
       "json",
       z.object({
-        score: z.number().int().min(1).max(10).nullish(),
+        score: z.number().int().min(1).max(5).nullish(),
         description: z.string().min(1).max(400).nullish(),
         filmId: z.coerce.number().int().positive(),
       })
@@ -306,7 +329,7 @@ export const collectionRoute = new Hono()
       }
 
       const review = result.unwrap();
-      return c.json(makeDto({ review }), 201);
+      return c.json({ review: makeReviewDto(review) }, 201);
     }
   )
   .put(
@@ -344,7 +367,7 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .delete(
@@ -382,19 +405,22 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      return c.json({ ok: true });
+      return c.body(null, 204);
     }
   )
   .get(
-    "/:id/socials",
-    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    "/:collectionId/socials",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
     async (c) => {
-      const { id } = c.req.valid("param");
+      const { collectionId } = c.req.valid("param");
       const session = c.get("session");
       const collectionService = c.get("collectionService");
 
       const socialsResult = await collectionService.getSocials({
-        collectionId: new Id(id),
+        collectionId: new Id(collectionId),
         by: session?.user?.id,
       });
 
@@ -413,6 +439,175 @@ export const collectionRoute = new Hono()
 
       const socials = socialsResult.unwrap();
 
-      return c.json(socials);
+      return c.json({ socials }, 200);
+    }
+  )
+  .get(
+    "/:collectionId/tags",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
+    async (c) => {
+      const { collectionId } = c.req.valid("param");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.getTagsByCollectionId({
+        collectionId: new Id(collectionId),
+        by: session.user.id,
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        throw error;
+      }
+
+      const tags = result.unwrap();
+      return c.json({ tags: tags.map(makeTagDto) });
+    }
+  )
+  .put(
+    "/:collectionId/tags",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
+    validator(
+      "json",
+      z.object({
+        name: z.string().min(1).max(32),
+        hexColor: hexColorSchema,
+        description: z.string().nullable().optional(),
+      })
+    ),
+    async (c) => {
+      const { collectionId } = c.req.valid("param");
+      const { hexColor, name, description } = c.req.valid("json");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.createCollectionTag({
+        collectionId: new Id(collectionId),
+        by: session.user.id,
+        dto: { hexColor, name, description: description ?? null },
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagAlreadyExistsError) {
+          return c.json({ error: "TAG_ALREADY_EXISTS" as const }, 409);
+        }
+
+        throw error;
+      }
+
+      const tag = result.unwrap();
+      return c.json({ tag: makeTagDto(tag) }, 201);
+    }
+  )
+  .delete(
+    "/:collectionId/tags/:tagId",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({
+        collectionId: z.coerce.number().int().positive(),
+        tagId: z.coerce.number().int().positive(),
+      })
+    ),
+    async (c) => {
+      const { tagId } = c.req.valid("param");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.deleteTag({
+        tagId: new Id(tagId),
+        by: session.user.id,
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
+      }
+
+      return c.body(null, 204);
+    }
+  )
+  .patch(
+    "/:collectionId/tags/:tagId",
+    authMiddleware,
+    validator(
+      "param",
+      z.object({
+        collectionId: z.coerce.number().int().positive(),
+        tagId: z.coerce.number().int().positive(),
+      })
+    ),
+    validator(
+      "json",
+      z.object({
+        name: z.string().min(1).max(32).optional(),
+        hexColor: hexColorSchema.optional(),
+        description: z.string().nullable().optional(),
+      })
+    ),
+    async (c) => {
+      const { tagId } = c.req.valid("param");
+      const { hexColor, name, description } = c.req.valid("json");
+      const session = c.get("session")!;
+      const tagService = c.get("tagService");
+
+      const result = await tagService.editTag({
+        tagId: new Id(tagId),
+        by: session.user.id,
+        dto: { hexColor, name, description },
+      });
+
+      if (result.isErr()) {
+        const error = result.unwrapErr();
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof TagAlreadyExistsError) {
+          return c.json({ error: "TAG_ALREADY_EXISTS" as const }, 409);
+        }
+
+        throw error;
+      }
+
+      const tag = result.unwrap();
+      return c.json({ tag: makeTagDto(tag) }, 200);
     }
   );

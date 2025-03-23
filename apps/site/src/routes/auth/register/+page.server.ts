@@ -1,5 +1,5 @@
 import { registerSchema } from '$lib/entities/auth/schema.js';
-import { handleResponse, makeClient } from '$lib/utils';
+import { makeClient } from '$lib/utils';
 import { type Actions } from '@sveltejs/kit';
 import { superValidate, fail, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -21,18 +21,16 @@ export const actions = {
 
 		const api = makeClient(event.fetch);
 
-		const response = await api.auth.register
-			.$post({ json: { username, password } })
-			.then(handleResponse);
+		const response = await api.auth.register.$post({ json: { username, password } });
 
-		if (response.isOk()) {
-			const { user } = response.value;
+		if (response.ok) {
+			const { user } = await response.json();
 
 			return { form, user };
 		}
 
-		const error = response.unwrapErr();
+		const { error } = await response.json();
 
-		return message(form, error.error);
+		return message(form, error);
 	}
 } satisfies Actions;

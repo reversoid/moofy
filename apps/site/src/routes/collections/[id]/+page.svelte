@@ -1,24 +1,27 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/ui/card';
+	import { PrivateTooltip } from '$lib/entities/collection';
+	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
 	import { CreateReview } from '$lib/features/reivew';
+	import { globalState } from '$lib/state/state.svelte';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
-	import { dayjs } from '@repo/core/sdk';
-	import type { PageProps } from './$types';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
-	import { PrivateTooltip } from '$lib/entities/collection';
-	import { goto } from '$app/navigation';
-	import { globalState } from '$lib/state/state.svelte';
+	import { dayjs } from '@repo/core/sdk';
+	import { onMount } from 'svelte';
+	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();
 
 	let collection = $state(data.collection);
 	let reviews = $state(data.reviews);
 	let socials = $state(data.socials);
+	let tags = $state(data.tags);
 
 	const isOwner = $derived(collection.creator.id === data.user?.id);
 
@@ -29,14 +32,16 @@
 	// and we will update the state in the widget
 	async function loadMoreReviews(cursor?: string) {
 		const api = makeClient(fetch);
-		const response = await api.collections[':collectionId'].reviews
-			.$get({
-				param: { collectionId: String(data.collection.id) },
-				query: { cursor, limit: '20' }
-			})
-			.then(handleResponse);
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: String(data.collection.id) },
+			query: { cursor, limit: '20' }
+		});
 
-		const { reviews: newReviews } = response.unwrap();
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: newReviews } = await response.json();
 		reviews.items = [...reviews.items, ...newReviews.items];
 		reviews.cursor = newReviews.cursor;
 	}
@@ -47,14 +52,16 @@
 		}
 
 		const api = makeClient(fetch);
-		const response = await api.collections[':collectionId'].reviews
-			.$get({
-				param: { collectionId: String(data.collection.id) },
-				query: { search, limit: '20' }
-			})
-			.then(handleResponse);
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: String(data.collection.id) },
+			query: { search, limit: '20' }
+		});
 
-		const { reviews: newReviews } = response.unwrap();
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: newReviews } = await response.json();
 		reviews = newReviews;
 	}
 
@@ -72,9 +79,11 @@
 
 	const currentUser = globalState.currentUser;
 
-	$effect(() => {
+	onMount(() => {
 		const api = makeClient(fetch);
-		void api.collections[':id'].views.$post({ param: { id: String(collection.id) } });
+		void api.collections[':collectionId'].views.$post({
+			param: { collectionId: String(collection.id) }
+		});
 	});
 </script>
 
@@ -93,8 +102,20 @@
 				<Card.Title>Описание</Card.Title>
 			</Card.Header>
 
-			<Card.Content>
-				<p>{collection.description || 'Описание отсутствует'}</p>
+			<Card.Content class="flex grow flex-col justify-between gap-4">
+				{#if collection.description}
+					<p>{collection.description.trim()}</p>
+				{:else}
+					<p class="text-muted-foreground">Описание отсутствует</p>
+				{/if}
+
+				<div class="flex items-center gap-4">
+					<div class="flex flex-row gap-2">
+						{#each tags as tag}
+							<Tag {tag} />
+						{/each}
+					</div>
+				</div>
 			</Card.Content>
 		</Card.Root>
 
@@ -137,6 +158,7 @@
 
 					{#if isOwner}
 						<EditCollection
+							bind:tags
 							{collection}
 							onCollectionUpdated={handleCollectionUpdated}
 							onCollectionDeleted={handleCollectionDeleted}
@@ -157,6 +179,7 @@
 
 	<div class="mt-4">
 		<ReviewsList
+			{tags}
 			bind:reviews={reviews.items}
 			canEdit={isOwner}
 			cursor={reviews.cursor}

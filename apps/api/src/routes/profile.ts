@@ -2,14 +2,18 @@ import { UsernameExistsError, WrongPasswordError } from "@repo/core/services";
 import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { makeDto } from "../utils/make-dto";
 import { validator } from "../utils/validator";
+import {
+  makeCollectionDto,
+  makeUserDto,
+  withPaginatedData,
+} from "../utils/make-dto";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
   .get("", async (c) => {
     const session = c.get("session")!;
-    return c.json(makeDto({ user: session.user }));
+    return c.json({ user: makeUserDto(session.user) });
   })
   .get(
     "/collections",
@@ -34,7 +38,9 @@ export const profileRoute = new Hono()
         by: session.user.id,
       });
 
-      return c.json(makeDto({ collections: result.unwrap() }));
+      return c.json({
+        collections: withPaginatedData(makeCollectionDto)(result.unwrap()),
+      });
     }
   )
   .patch(
@@ -81,6 +87,6 @@ export const profileRoute = new Hono()
         throw error;
       }
 
-      return c.json(makeDto({ user: updatedUserResult.unwrap() }));
+      return c.json({ user: makeUserDto(updatedUserResult.unwrap()) }, 200);
     }
   );

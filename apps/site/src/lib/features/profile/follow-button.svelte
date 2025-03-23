@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import type { UserDto } from '@repo/api/dtos';
 	import { IconUserMinus, IconUserPlus } from '@tabler/icons-svelte';
 
@@ -23,16 +23,16 @@
 
 		isLoading = true;
 
-		const response = await api.users[':id'].followers
-			.$put({
-				param: { id: String(userId) }
-			})
-			.then(handleResponse);
+		const response = await api.users[':id'].followers.$put({
+			param: { id: String(userId) }
+		});
 
-		if (response.isOk()) {
+		if (response.ok) {
 			isFollowing = true;
 		} else {
-			if (response.error.error === 'ALREADY_FOLLOWING') {
+			const { error } = await response.json();
+
+			if (error === 'ALREADY_FOLLOWING') {
 				isFollowing = true;
 			}
 		}
@@ -45,16 +45,16 @@
 
 		isLoading = true;
 
-		const response = await api.users[':id'].followers
-			.$delete({
-				param: { id: String(userId) }
-			})
-			.then(handleResponse);
+		const response = await api.users[':id'].followers.$delete({
+			param: { id: String(userId) }
+		});
 
-		if (response.isOk()) {
+		if (response.ok) {
 			isFollowing = false;
 		} else {
-			if (response.error.error === 'NOT_FOLLOWING') {
+			const { error } = await response.json();
+
+			if (error === 'NOT_FOLLOWING') {
 				isFollowing = false;
 			}
 		}

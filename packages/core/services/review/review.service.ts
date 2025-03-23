@@ -20,7 +20,7 @@ import {
   CollectionNotFoundError,
 } from "../collection";
 import { User } from "../../entities";
-import { IUserService, UserNotFoundError } from "../user";
+import { UserNotFoundError } from "../user";
 import { IUserRepository } from "../../repositories";
 
 export class ReviewService implements IReviewService {

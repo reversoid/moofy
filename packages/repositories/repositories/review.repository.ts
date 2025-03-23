@@ -13,6 +13,15 @@ import { makeReview } from "./utils/make-entity";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
 
+export interface TagData {
+  id: number;
+  name: string;
+  hexColor: string;
+  collectionId: number;
+  createdAt: string;
+}
+
+// TODO implement joining with tags
 export class ReviewRepository extends IReviewRepository {
   async searchReviews(
     collectionId: Collection["id"],
@@ -72,7 +81,7 @@ export class ReviewRepository extends IReviewRepository {
     const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = this.getSelectQuery()
-      .where("collectionId", "=", collectionId.value)
+      .where("reviews.collectionId", "=", collectionId.value)
       .orderBy("reviews.updatedAt", "desc")
       .limit(limit + 1);
 
@@ -97,7 +106,7 @@ export class ReviewRepository extends IReviewRepository {
     filmId: Film["id"]
   ): Promise<Review | null> {
     const rawData = await this.getSelectQuery()
-      .where("collectionId", "=", collectionId.value)
+      .where("reviews.collectionId", "=", collectionId.value)
       .where("reviews.filmId", "=", filmId)
       .executeTakeFirst();
 
@@ -143,7 +152,31 @@ export class ReviewRepository extends IReviewRepository {
       .selectFrom("reviews")
       .select(ReviewSelects.reviewSelects)
       .innerJoin("films", "films.id", "reviews.filmId")
-      .select(FilmSelects.filmSelects);
+      .select(FilmSelects.filmSelects)
+      .select([
+        sql<TagData[]>`
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'id', collection_tags.id,
+                'name', collection_tags.name,
+                'hex_color', collection_tags.hex_color,
+                'collection_id', collection_tags.collection_id,
+                'created_at', collection_tags.created_at
+              )
+            ) FILTER (WHERE collection_tags.id IS NOT NULL),
+            '[]'::json
+          )
+        `.as("tags"),
+      ])
+      .leftJoin("reviewTags", "reviewTags.reviewId", "reviews.id")
+      .leftJoin(
+        "collectionTags",
+        "collectionTags.id",
+        "reviewTags.collectionTagId"
+      )
+      .groupBy("reviews.id")
+      .groupBy("films.id");
   }
 
   async update(id: Id, value: Partial<Review>): Promise<Review> {

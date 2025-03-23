@@ -1,18 +1,21 @@
 import type { PageLoad } from './$types';
-import { handleResponse, makeClient } from '$lib/utils';
+import { makeClient } from '$lib/utils';
+import { error } from '@sveltejs/kit';
 
 export const load: PageLoad = async ({ fetch, parent }) => {
 	const { profile } = await parent();
 	const api = makeClient(fetch);
 
-	const followersResult = await api.users[':id'].followers
-		.$get({
-			param: { id: String(profile.id) },
-			query: { limit: String(12) }
-		})
-		.then(handleResponse);
+	const followersResult = await api.users[':id'].followers.$get({
+		param: { id: String(profile.id) },
+		query: { limit: String(12) }
+	});
 
-	const followers = followersResult.unwrap().users;
+	if (!followersResult.ok) {
+		throw error(500, 'Failed to load followers');
+	}
+
+	const { users: followers } = await followersResult.json();
 
 	return {
 		profile,

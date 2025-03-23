@@ -26,11 +26,15 @@
 				{/if}
 			</div>
 			<Card.Description class="line-clamp-1">
-				{collection.description?.trim() || 'Описание отсутствует'}
+				{#if collection.description}
+					<p>{collection.description.trim()}</p>
+				{:else}
+					<p class="text-muted-foreground">Описание отсутствует</p>
+				{/if}
 			</Card.Description>
 		</Card.Header>
 
-		<Card.Content class="max-md:!pt-0">
+		<Card.Content>
 			{#if collection.imageUrl}
 				<Image
 					class="aspect-[4/3] w-full rounded-md object-cover"

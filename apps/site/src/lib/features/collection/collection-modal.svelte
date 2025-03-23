@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox';
+	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import * as Form from '$lib/components/ui/form';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import DeleteButton from '$lib/ui/delete-button.svelte';
+	import Image from '$lib/ui/image.svelte';
+	import UploadImage from '$lib/ui/upload-image.svelte';
+	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import {
 		IconDeviceFloppy,
 		IconPencil,
@@ -15,11 +18,9 @@
 		IconTrash,
 		IconUpload
 	} from '@tabler/icons-svelte';
-	import type { CollectionDto } from '@repo/api/dtos';
-	import Image from '$lib/ui/image.svelte';
-	import UploadImage from '$lib/ui/upload-image.svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import { ListTags } from '../tag';
 	import { collectionSchema } from './collection-schema';
 
 	export type CollectionForm = {
@@ -31,11 +32,12 @@
 
 	type CollectionModalProps = {
 		collection?: CollectionDto;
+		tags?: TagDto[];
 		onSubmit: (props: CollectionForm) => Promise<void>;
 		onDelete?: () => Promise<void>;
 	};
 
-	const { collection, onSubmit, onDelete }: CollectionModalProps = $props();
+	let { collection, tags = $bindable(), onSubmit, onDelete }: CollectionModalProps = $props();
 
 	const type = $derived(collection ? 'edit' : 'create');
 
@@ -66,9 +68,12 @@
 	let isDeleting = $state(false);
 
 	async function onDeleteWithLoading() {
-		isDeleting = true;
-		await onDelete?.();
-		isDeleting = false;
+		try {
+			isDeleting = true;
+			await onDelete?.();
+		} finally {
+			isDeleting = false;
+		}
 	}
 </script>
 
@@ -78,7 +83,7 @@
 </Dialog.Header>
 
 <div class="mt-2">
-	<form id="collection-form" class="flex flex-col gap-5" use:enhance>
+	<form id="collection-form" class="flex flex-col gap-2 pb-4" use:enhance>
 		<Form.Field {form} name="name">
 			<Form.Control>
 				{#snippet children({ attrs }: { attrs: any })}
@@ -101,7 +106,7 @@
 			<Form.FieldErrors />
 		</Form.Field>
 
-		<div class="flex flex-col gap-3.5">
+		<div class="mt-2 flex flex-col gap-3.5">
 			<Label>Обложка коллекции</Label>
 			<div class="flex gap-4 max-sm:flex-col">
 				<div class="shrink-0 max-sm:mx-auto">
@@ -149,7 +154,14 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row items-center gap-2">
+		{#if tags && collection?.id}
+			<div class="mt-2 flex flex-col gap-2.5">
+				<Label>Теги</Label>
+				<ListTags bind:tags collectionId={collection.id} />
+			</div>
+		{/if}
+
+		<div class="mt-2 flex flex-row items-center gap-2">
 			<Checkbox id="private" aria-labelledby="private-label" bind:checked={$formData.isPrivate} />
 
 			<Label id="private-label" for="private" class="text-sm font-medium leading-none">

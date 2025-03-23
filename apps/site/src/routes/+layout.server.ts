@@ -1,19 +1,17 @@
-import { handleResponse, makeClient } from '$lib/utils';
+import { makeClient } from '$lib/utils';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ fetch }) => {
 	const api = makeClient(fetch);
 
 	return {
-		user: await api.profile
-			.$get()
-			.then(handleResponse)
-			.then((res) => {
-				if (res.isErr()) {
-					return null;
-				}
+		user: await api.profile.$get().then(async (res) => {
+			if (!res.ok) {
+				return null;
+			}
 
-				return res.value.user;
-			})
+			const { user } = await res.json();
+			return user;
+		})
 	};
 };

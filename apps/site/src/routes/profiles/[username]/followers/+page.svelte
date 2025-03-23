@@ -2,7 +2,7 @@
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import UsersList from '$lib/widgets/users-list/users-list.svelte';
 	import type { PageProps } from './$types';
 
@@ -18,28 +18,32 @@
 	const api = makeClient(fetch);
 
 	async function searchFollowers(search: string) {
-		const result = await api.users[':id'].followers
-			.$get({
-				param: { id: String(profile.id) },
-				query: { limit: String(12), search }
-			})
-			.then(handleResponse);
+		const result = await api.users[':id'].followers.$get({
+			param: { id: String(profile.id) },
+			query: { limit: String(12), search }
+		});
 
-		const foundFollowers = result.unwrap().users;
+		if (!result.ok) {
+			return;
+		}
+
+		const { users: foundFollowers } = await result.json();
 
 		followers.items = foundFollowers.items;
 		followers.cursor = foundFollowers.cursor;
 	}
 
 	async function loadMoreFollowers(cursor: string) {
-		const result = await api.users[':id'].followers
-			.$get({
-				param: { id: String(profile.id) },
-				query: { limit: String(12), cursor }
-			})
-			.then(handleResponse);
+		const result = await api.users[':id'].followers.$get({
+			param: { id: String(profile.id) },
+			query: { limit: String(12), cursor }
+		});
 
-		const moreFollowers = result.unwrap().users;
+		if (!result.ok) {
+			return;
+		}
+
+		const { users: moreFollowers } = await result.json();
 
 		followers.items.push(...moreFollowers.items);
 		followers.cursor = moreFollowers.cursor;

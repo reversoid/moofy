@@ -1,6 +1,7 @@
 import { Id } from "../utils/id";
 import { Entity } from "./entity";
 import { Film } from "./film";
+import { Tag } from "./tag";
 
 export class Review extends Entity {
   id: Id;
@@ -11,6 +12,7 @@ export class Review extends Entity {
   film: Film;
   collectionId: Id;
   userId: Id;
+  tags: Tag[];
 
   constructor(props: {
     id?: Id;
@@ -21,6 +23,7 @@ export class Review extends Entity {
     film: Film;
     collectionId: Id;
     userId: Id;
+    tags?: Tag[];
   }) {
     super();
 
@@ -34,5 +37,6 @@ export class Review extends Entity {
     this.film = props.film;
     this.collectionId = props.collectionId;
     this.userId = props.userId;
+    this.tags = props.tags ?? [];
   }
 }

@@ -147,3 +147,27 @@ export namespace SessionSelects {
     typeof sessionFields
   >;
 }
+
+export namespace CollectionTagSelects {
+  const collectionTagFields = [
+    "id",
+    "collectionId",
+    "name",
+    "hexColor",
+    "createdAt",
+  ] as const;
+
+  const collectionTagPrefix = "ct";
+
+  export const collectionTagSelects = getSelects(
+    "collectionTags",
+    collectionTagPrefix,
+    collectionTagFields
+  );
+
+  export type CollectionTagSelectResult = ColumnAliasResult<
+    "collectionTags",
+    typeof collectionTagPrefix,
+    typeof collectionTagFields
+  >;
+}

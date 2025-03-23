@@ -5,6 +5,7 @@
 	import type { ReviewDto } from '@repo/api/dtos';
 	import type { Snippet } from 'svelte';
 	import Image from '$lib/ui/image.svelte';
+	import { Tag } from '../Tag';
 
 	interface Props {
 		review: ReviewDto;
@@ -45,12 +46,22 @@
 			</Badge>
 		</div>
 
-		<div class="flex h-full flex-1 flex-col justify-between gap-4">
-			<p>
-				{review.description}
-			</p>
+		<div class="mt-0 flex h-full flex-1 flex-col justify-between gap-6">
+			{#if review.description}
+				<p>{review.description}</p>
+			{:else}
+				<p class="text-muted-foreground">Описание отсутствует</p>
+			{/if}
 
-			{@render actions?.()}
+			<div class="flex flex-col gap-4">
+				<div class="flex gap-2">
+					{#each review.tags as tag}
+						<Tag {tag} />
+					{/each}
+				</div>
+
+				{@render actions?.()}
+			</div>
 		</div>
 	</Card.Header>
 </Card.Root>

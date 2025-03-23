@@ -6,7 +6,7 @@
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
 	import { IconSettings, IconUser } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import { FollowButton } from '$lib/features/profile';
@@ -35,32 +35,33 @@
 	async function searchCollections(search: string) {
 		const api = makeClient(fetch);
 
-		const collectionsResult = await api.users[':id'].collections
-			.$get({
-				param: { id: String(profile.id) },
-				query: { search }
-			})
-			.then(handleResponse);
+		const collectionsResult = await api.users[':id'].collections.$get({
+			param: { id: String(profile.id) },
+			query: { search }
+		});
 
-		collections = collectionsResult.unwrap().collections;
+		if (collectionsResult.ok) {
+			const { collections: newCollections } = await collectionsResult.json();
+			collections = newCollections;
+		}
 	}
 
 	async function loadCollections(cursor?: string) {
 		const api = makeClient(fetch);
 
-		const collectionsResult = await api.users[':id'].collections
-			.$get({
-				param: { id: String(profile.id) },
-				query: { cursor, limit: '8' }
-			})
-			.then(handleResponse);
+		const collectionsResult = await api.users[':id'].collections.$get({
+			param: { id: String(profile.id) },
+			query: { cursor, limit: '8' }
+		});
 
-		const newCollections = collectionsResult.unwrap().collections;
+		if (collectionsResult.ok) {
+			const { collections: newCollections } = await collectionsResult.json();
 
-		collections = {
-			items: [...collections.items, ...newCollections.items],
-			cursor: newCollections.cursor
-		};
+			collections = {
+				items: [...collections.items, ...newCollections.items],
+				cursor: newCollections.cursor
+			};
+		}
 	}
 
 	async function handleCollectionCreated(collection: CollectionDto) {
@@ -70,13 +71,14 @@
 	async function searchFavoriteCollections(search: string) {
 		const api = makeClient(fetch);
 
-		const collectionsResult = await api.favorites
-			.$get({
-				query: { search }
-			})
-			.then(handleResponse);
+		const collectionsResult = await api.favorites.$get({
+			query: { search }
+		});
 
-		favoriteCollections = collectionsResult.unwrap().collections;
+		if (collectionsResult.ok) {
+			const { collections: newCollections } = await collectionsResult.json();
+			favoriteCollections = newCollections;
+		}
 	}
 
 	async function loadFavoriteCollections(cursor?: string) {
@@ -84,16 +86,16 @@
 
 		const api = makeClient(fetch);
 
-		const collectionsResult = await api.favorites
-			.$get({ query: { cursor, limit: '8' } })
-			.then(handleResponse);
+		const collectionsResult = await api.favorites.$get({ query: { cursor, limit: '8' } });
 
-		const newCollections = collectionsResult.unwrap().collections;
+		if (collectionsResult.ok) {
+			const { collections: newCollections } = await collectionsResult.json();
 
-		favoriteCollections = {
-			items: [...favoriteCollections.items, ...newCollections.items],
-			cursor: newCollections.cursor
-		};
+			favoriteCollections = {
+				items: [...favoriteCollections.items, ...newCollections.items],
+				cursor: newCollections.cursor
+			};
+		}
 	}
 
 	const isOwner = $derived(profile.id === currentUser?.id);

@@ -8,9 +8,9 @@
 		class: className,
 		children,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLParagraphElement>> = $props();
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<p bind:this={ref} class={cn('text-muted-foreground !mt-2 text-sm', className)} {...restProps}>
+<div bind:this={ref} class={cn('text-muted-foreground !mt-2 text-sm', className)} {...restProps}>
 	{@render children?.()}
-</p>
+</div>

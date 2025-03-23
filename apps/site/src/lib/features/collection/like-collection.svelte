@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import { IconHeart, IconHeartFilled } from '@tabler/icons-svelte';
 
@@ -25,15 +25,13 @@
 	const api = makeClient(fetch);
 
 	async function likeCollection() {
-		const result = await api.collections[':collectionId'].likes
-			.$put({
-				param: { collectionId: String(collectionId) }
-			})
-			.then(handleResponse);
+		const result = await api.collections[':collectionId'].likes.$put({
+			param: { collectionId: String(collectionId) }
+		});
 
-		if (result.isErr()) {
-			const err = result.unwrapErr();
-			if (err.error === 'ALREADY_LIKED') {
+		if (!result.ok) {
+			const { error } = await result.json();
+			if (error === 'ALREADY_LIKED') {
 				isLiked = true;
 			}
 			return;
@@ -44,15 +42,13 @@
 	}
 
 	async function unlikeCollection() {
-		const result = await api.collections[':collectionId'].likes
-			.$delete({
-				param: { collectionId: String(collectionId) }
-			})
-			.then(handleResponse);
+		const result = await api.collections[':collectionId'].likes.$delete({
+			param: { collectionId: String(collectionId) }
+		});
 
-		if (result.isErr()) {
-			const err = result.unwrapErr();
-			if (err.error === 'NOT_LIKED') {
+		if (!result.ok) {
+			const { error } = await result.json();
+			if (error === 'NOT_LIKED') {
 				isLiked = false;
 			}
 			return;

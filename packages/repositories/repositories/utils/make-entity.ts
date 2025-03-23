@@ -4,16 +4,19 @@ import {
   FilmType,
   Review,
   Session,
+  Tag,
   User,
 } from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 import {
   CollectionSelects,
+  CollectionTagSelects,
   FilmSelects,
   ReviewSelects,
   SessionSelects,
   UserSelects,
 } from "./selects";
+import type { TagData } from "../review.repository";
 
 export const makeUser = (rawData: UserSelects.UserSelectResult): User => {
   return new User({
@@ -57,7 +60,8 @@ export const makeFilm = (rawData: FilmSelects.FilmSelectResult): Film => {
 };
 
 export const makeReview = (
-  rawData: ReviewSelects.ReviewSelectResult & FilmSelects.FilmSelectResult
+  rawData: ReviewSelects.ReviewSelectResult &
+    FilmSelects.FilmSelectResult & { tags: TagData[] | null }
 ): Review => {
   return new Review({
     collectionId: new Id(rawData["r-collectionId"]),
@@ -68,6 +72,17 @@ export const makeReview = (
     score: rawData["r-score"],
     updatedAt: rawData["r-updatedAt"],
     userId: new Id(rawData["r-userId"]),
+
+    tags: rawData["tags"]?.map(
+      (t) =>
+        new Tag({
+          collectionId: new Id(t.collectionId),
+          createdAt: new Date(t.createdAt),
+          hexColor: t.hexColor,
+          id: new Id(t.id),
+          name: t.name,
+        })
+    ),
   });
 };
 
@@ -78,5 +93,17 @@ export const makeSession = (
     id: rawData["s-id"],
     expiresAt: rawData["s-expiresAt"],
     user: makeUser(rawData),
+  });
+};
+
+export const makeTag = (
+  rawData: CollectionTagSelects.CollectionTagSelectResult
+): Tag => {
+  return new Tag({
+    id: new Id(rawData["ct-id"]),
+    collectionId: new Id(rawData["ct-collectionId"]),
+    name: rawData["ct-name"],
+    hexColor: rawData["ct-hexColor"],
+    createdAt: rawData["ct-createdAt"],
   });
 };

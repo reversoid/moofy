@@ -3,8 +3,8 @@ import { validator } from "../utils/validator";
 import z from "zod";
 import { deleteCookie, getCookie, setSignedCookie } from "hono/cookie";
 import config from "@repo/config";
-import { makeDto } from "../utils/make-dto";
 import { UsernameExistsError } from "@repo/core/services";
+import { makeUserDto } from "../utils/make-dto";
 
 export const authRoute = new Hono()
   .post(
@@ -43,7 +43,7 @@ export const authRoute = new Hono()
         expires: session.expiresAt,
       });
 
-      return c.json(makeDto({ user: session.user }));
+      return c.json({ user: makeUserDto(session.user) }, 200);
     }
   )
   .post(
@@ -88,7 +88,7 @@ export const authRoute = new Hono()
         expires: session.expiresAt,
       });
 
-      return c.json(makeDto({ user: session.user }));
+      return c.json({ user: makeUserDto(session.user) }, 200);
     }
   )
   .post("/logout", async (c) => {
@@ -101,5 +101,5 @@ export const authRoute = new Hono()
       deleteCookie(c, "session");
     }
 
-    return c.json({ ok: true });
+    return c.body(null, 204);
   });

@@ -3,7 +3,7 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { setCurrentUser } from '$lib/state/state.svelte';
-	import { handleResponse, makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/utils';
 	import { IconLogout2, IconSettings, IconUser } from '@tabler/icons-svelte';
 
 	interface Props {
@@ -16,9 +16,9 @@
 	const api = makeClient(fetch);
 
 	async function logout() {
-		const response = await api.auth.logout.$post().then(handleResponse);
+		const response = await api.auth.logout.$post();
 
-		if (response.isOk()) {
+		if (response.ok) {
 			goto('/');
 			setCurrentUser(null);
 		}
