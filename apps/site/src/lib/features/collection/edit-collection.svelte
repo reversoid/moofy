@@ -12,7 +12,12 @@
 		onCollectionDeleted?: () => void;
 	}
 
-	const { onCollectionUpdated, onCollectionDeleted, collection, tags }: Props = $props();
+	let {
+		onCollectionUpdated,
+		onCollectionDeleted,
+		collection,
+		tags = $bindable()
+	}: Props = $props();
 
 	async function updateCollection(props: CollectionForm) {
 		const api = makeClient(fetch);
@@ -52,6 +57,11 @@
 		<EditCollectionButton class="w-full" />
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<CollectionModal {tags} {collection} onSubmit={updateCollection} onDelete={deleteCollection} />
+		<CollectionModal
+			bind:tags
+			{collection}
+			onSubmit={updateCollection}
+			onDelete={deleteCollection}
+		/>
 	</Dialog.Content>
 </Dialog.Root>

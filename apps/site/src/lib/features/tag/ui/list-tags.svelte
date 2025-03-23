@@ -11,7 +11,7 @@
 		collectionId: CollectionDto['id'];
 	};
 
-	const { tags, collectionId }: Props = $props();
+	let { tags = $bindable(), collectionId }: Props = $props();
 </script>
 
 <Button class="w-fit" onclick={() => (isOpen = true)} variant="outline">
@@ -26,4 +26,4 @@
 	{/if}
 </Button>
 
-<ListTagsModal {collectionId} bind:isOpen {tags} />
+<ListTagsModal {collectionId} bind:isOpen bind:tags />

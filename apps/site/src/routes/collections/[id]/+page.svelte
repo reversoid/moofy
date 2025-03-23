@@ -1,23 +1,20 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/ui/card';
+	import { PrivateTooltip } from '$lib/entities/collection';
+	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
 	import { CreateReview } from '$lib/features/reivew';
+	import { globalState } from '$lib/state/state.svelte';
 	import Heading from '$lib/ui/heading.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import Wrapper from '$lib/ui/wrapper.svelte';
 	import { makeClient } from '$lib/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
-	import { dayjs } from '@repo/core/sdk';
-	import type { PageProps } from './$types';
-	import { PrivateTooltip } from '$lib/entities/collection';
-	import { goto } from '$app/navigation';
-	import { globalState } from '$lib/state/state.svelte';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
+	import { dayjs } from '@repo/core/sdk';
 	import { onMount } from 'svelte';
-	import Tag from '$lib/entities/Tag/tag.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { IconPlus, IconTag } from '@tabler/icons-svelte';
-	import { Badge } from '$lib/components/ui/badge';
+	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();
 
@@ -161,7 +158,7 @@
 
 					{#if isOwner}
 						<EditCollection
-							{tags}
+							bind:tags
 							{collection}
 							onCollectionUpdated={handleCollectionUpdated}
 							onCollectionDeleted={handleCollectionDeleted}

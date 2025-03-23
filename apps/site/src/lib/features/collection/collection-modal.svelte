@@ -37,7 +37,7 @@
 		onDelete?: () => Promise<void>;
 	};
 
-	const { collection, tags, onSubmit, onDelete }: CollectionModalProps = $props();
+	let { collection, tags = $bindable([]), onSubmit, onDelete }: CollectionModalProps = $props();
 
 	const type = $derived(collection ? 'edit' : 'create');
 
@@ -154,7 +154,7 @@
 		{#if tags && collection?.id}
 			<div class="mt-2 flex flex-col gap-2.5">
 				<Label>Тэги</Label>
-				<ListTags {tags} collectionId={collection.id} />
+				<ListTags bind:tags collectionId={collection.id} />
 			</div>
 		{/if}
 

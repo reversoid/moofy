@@ -15,9 +15,7 @@
 		collectionId: CollectionDto['id'];
 	};
 
-	let { tags: _tags, isOpen = $bindable(), collectionId }: Props = $props();
-
-	let tags = $state([..._tags]);
+	let { tags = $bindable(), isOpen = $bindable(), collectionId }: Props = $props();
 
 	async function deleteTag(id: number) {
 		const result = await makeClient(fetch).collections[':collectionId'].tags[':tagId'].$delete({
@@ -49,7 +47,7 @@
 
 		const { tag } = await result.json();
 
-		tags.push(tag);
+		tags = [...tags, tag];
 	}
 
 	async function editTag(
