@@ -164,6 +164,7 @@ export class ReviewRepository extends IReviewRepository {
                 'collection_id', collection_tags.collection_id,
                 'created_at', collection_tags.created_at
               )
+              ORDER BY collection_tags.id asc
             ) FILTER (WHERE collection_tags.id IS NOT NULL),
             '[]'::json
           )

@@ -11,6 +11,7 @@ export class CollectionTagRepository extends ICollectionTagRepository {
       .selectFrom("collectionTags")
       .select(CollectionTagSelects.collectionTagSelects)
       .where("collectionId", "=", collectionId.value)
+      .orderBy("collectionTags.id asc")
       .execute();
 
     return tags.map(makeTag);
