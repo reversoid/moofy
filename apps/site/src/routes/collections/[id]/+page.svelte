@@ -110,7 +110,7 @@
 				{/if}
 
 				<div class="flex items-center gap-4">
-					<div class="flex flex-row gap-2">
+					<div class="flex flex-row gap-2 overflow-auto">
 						{#each tags as tag}
 							<Tag {tag} />
 						{/each}

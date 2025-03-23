@@ -35,7 +35,7 @@
 </script>
 
 <Badge
-	class={cn('border-2 py-1', ball && 'rounded-full px-1 py-1', className)}
+	class={cn('shrink-0 border-2 py-1', ball && 'rounded-full px-1 py-1', className)}
 	variant="outline"
 	style="background-color: {bgColor}; color: {textColor}; border-color: {borderColor};"
 >
