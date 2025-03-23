@@ -54,7 +54,7 @@
 			{/if}
 
 			<div class="flex flex-col gap-4">
-				<div class="flex gap-2">
+				<div class="flex gap-2 overflow-auto">
 					{#each review.tags as tag}
 						<Tag {tag} />
 					{/each}

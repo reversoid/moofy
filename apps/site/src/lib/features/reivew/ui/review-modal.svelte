@@ -128,7 +128,7 @@
 						<span>Выберите теги</span>
 
 						<div class="flex flex-row gap-1">
-							{#each selectedTags as tag}
+							{#each selectedTags.slice(0, 3) as tag}
 								<Tag {tag} ball />
 							{/each}
 						</div>
