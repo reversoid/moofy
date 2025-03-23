@@ -30,12 +30,7 @@
 		onSubmitDelete?: (id: ReviewDto['id']) => Promise<void>;
 	};
 
-	const {
-		existingReview,
-		onSubmit,
-		onSubmitDelete,
-		tags = $bindable()
-	}: ReviewModalProps = $props();
+	let { existingReview, onSubmit, onSubmitDelete, tags = $bindable() }: ReviewModalProps = $props();
 
 	let visibleFilm = $state<FilmDto | null>(existingReview?.film ?? null);
 

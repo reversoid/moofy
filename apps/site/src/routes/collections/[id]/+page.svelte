@@ -111,7 +111,7 @@
 
 				<div class="flex items-center gap-4">
 					<div class="flex flex-row gap-2">
-						{#each data.tags as tag}
+						{#each tags as tag}
 							<Tag {tag} />
 						{/each}
 					</div>
