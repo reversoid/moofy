@@ -8,6 +8,7 @@
 	import ColorHash from 'color-hash';
 	import { maska } from 'maska/svelte';
 	import { Mask } from 'maska';
+	import { Textarea } from '$lib/components/ui/textarea';
 
 	const mask = new Mask({ tokens: { F: { pattern: /[0-9A-Fa-f]/ } }, mask: '!#FFFFFF' });
 
@@ -72,12 +73,12 @@
 <Dialog.Root bind:open={isOpen}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>Тэг</Dialog.Title>
-			<!-- <Dialog.Description>Здесь Вы можете настроить тэги для коллекции</Dialog.Description> -->
+			<Dialog.Title>Тег</Dialog.Title>
 		</Dialog.Header>
 
 		<div class="flex flex-col gap-2 py-2">
 			<Input bind:value={name} placeholder="Название" />
+			<Textarea bind:value={description} placeholder="Описание" />
 			<div class="flex flex-row gap-2">
 				<Input
 					use={(node) => maska(node, mask.opts)}

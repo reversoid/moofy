@@ -120,12 +120,12 @@
 
 	{#if tags?.length}
 		<div class="mt-2 flex flex-col gap-3">
-			<Label>Тэги</Label>
+			<Label>Теги</Label>
 
 			<Select.Root bind:value={$formData.tags} type="multiple">
 				<Select.Trigger class="gap-2">
 					<div class="flex grow flex-row items-center justify-between gap-2">
-						<span>Выберите тэги</span>
+						<span>Выберите теги</span>
 
 						<div class="flex flex-row gap-1">
 							{#each selectedTags as tag}

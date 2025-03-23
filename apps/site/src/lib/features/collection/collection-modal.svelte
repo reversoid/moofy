@@ -156,7 +156,7 @@
 
 		{#if tags && collection?.id}
 			<div class="mt-2 flex flex-col gap-2.5">
-				<Label>Тэги</Label>
+				<Label>Теги</Label>
 				<ListTags bind:tags collectionId={collection.id} />
 			</div>
 		{/if}

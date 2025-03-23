@@ -23,7 +23,7 @@
 		});
 
 		if (!result.ok) {
-			toast.error('Не удалось удалить тэг');
+			toast.error('Не удалось удалить тег');
 			throw new Error();
 		}
 
@@ -39,7 +39,7 @@
 		if (!result.ok) {
 			const err = await result.json();
 			if (err.error === 'TAG_ALREADY_EXISTS') {
-				toast.error('Тэг с таким именем уже существует');
+				toast.error('Тег с таким именем уже существует');
 			}
 
 			throw new Error();
@@ -62,7 +62,7 @@
 		if (!result.ok) {
 			const err = await result.json();
 			if (err.error === 'TAG_ALREADY_EXISTS') {
-				toast.error('Тэг с таким именем уже существует');
+				toast.error('Тег с таким именем уже существует');
 			}
 
 			throw new Error();
@@ -88,17 +88,33 @@
 <Dialog.Root bind:open={isOpen}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>Настроить тэги</Dialog.Title>
-			<Dialog.Description>Здесь Вы можете настроить тэги для коллекции</Dialog.Description>
+			<Dialog.Title>Настроить теги</Dialog.Title>
+			<Dialog.Description>Здесь Вы можете настроить теги для коллекции</Dialog.Description>
 		</Dialog.Header>
 
 		<div class="flex flex-col gap-2 py-2">
 			<Table.Root>
+				<Table.Header>
+					<Table.Row>
+						<Table.Head>Тег</Table.Head>
+						<Table.Head>Описание</Table.Head>
+						<Table.Head></Table.Head>
+					</Table.Row>
+				</Table.Header>
+
 				<Table.Body>
 					{#each tags as tag (tag.id)}
 						<Table.Row>
 							<Table.Cell>
 								<Tag {tag} />
+							</Table.Cell>
+
+							<Table.Cell>
+								{#if tag.description}
+									<p>{tag.description}</p>
+								{:else}
+									<p class="text-muted-foreground">Нет описания</p>
+								{/if}
 							</Table.Cell>
 
 							<Table.Cell class="flex justify-end gap-2">
@@ -115,6 +131,7 @@
 
 					<Table.Row>
 						<Table.Cell>Новый тег</Table.Cell>
+						<Table.Cell></Table.Cell>
 						<Table.Cell>
 							<div class="flex justify-end">
 								{#key tags.length}
