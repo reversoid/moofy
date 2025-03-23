@@ -77,12 +77,13 @@
 				<ReviewCard {review}>
 					{#snippet actions()}
 						{#if canEdit}
-							<EditReview
-								{tags}
-								bind:existingReview={reviews[index]}
-								onReviewUpdated={handleReviewUpdated}
-								onReviewDeleted={handleReviewDeleted}
-							/>
+							{#key reviews[index]}
+								<EditReview
+									{tags}
+									bind:existingReview={reviews[index]}
+									onReviewUpdated={handleReviewUpdated}
+									onReviewDeleted={handleReviewDeleted}
+								/>{/key}
 						{/if}
 					{/snippet}
 				</ReviewCard>
