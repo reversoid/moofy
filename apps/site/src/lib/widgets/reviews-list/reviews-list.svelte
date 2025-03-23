@@ -77,7 +77,7 @@
 				<ReviewCard {review}>
 					{#snippet actions()}
 						{#if canEdit}
-							{#key reviews[index]}
+							{#key reviews[index].id}
 								<EditReview
 									{tags}
 									bind:existingReview={reviews[index]}
