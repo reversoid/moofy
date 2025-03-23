@@ -166,7 +166,23 @@ export class TagService implements ITagService {
       return err(new ReviewNotFoundError());
     }
 
-    if (review.collectionId.value !== props.by.value) {
+    const collectionResult = await this.collectionService.getCollection({
+      id: review.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.error;
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(new NotOwnerOfCollectionError());
+      }
+
+      throw error;
+    }
+
+    const collection = collectionResult.value;
+
+    if (collection?.creator.id.value !== props.by.value) {
       return err(new NotOwnerOfCollectionError());
     }
 
