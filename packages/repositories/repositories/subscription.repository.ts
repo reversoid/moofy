@@ -6,7 +6,7 @@ import {
   makeDateFromCursor,
   PaginatedData,
 } from "@repo/core/utils";
-import { db } from "../db";
+import { db } from "../db/pg";
 import { UserSelects } from "./utils/selects";
 import { makeUser } from "./utils/make-entity";
 

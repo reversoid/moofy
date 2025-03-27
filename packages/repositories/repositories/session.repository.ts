@@ -1,6 +1,6 @@
 import { Session } from "@repo/core/entities";
 import { ISessionRepository } from "@repo/core/repositories";
-import { db } from "../db";
+import { db } from "../db/pg";
 import { SessionSelects, UserSelects } from "./utils/selects";
 import { makeSession } from "./utils/make-entity";
 

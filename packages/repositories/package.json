@@ -11,11 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/config": "workspace:*",
+    "@repo/core": "workspace:*",
     "@types/pg": "^8.11.10",
     "kysely": "^0.27.4",
     "pg": "^8.13.1",
-    "@repo/config": "workspace:*",
-    "@repo/core": "workspace:*"
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*"

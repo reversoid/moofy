@@ -1,6 +1,6 @@
 import { IReviewTagRepository } from "@repo/core/repositories";
 import { Id } from "@repo/core/utils";
-import { db } from "../db";
+import { db } from "../db/pg";
 
 export class ReviewTagRepository extends IReviewTagRepository {
   async linkTagToReview(tagId: Id, reviewId: Id): Promise<void> {

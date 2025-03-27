@@ -35,12 +35,8 @@ export interface Database {
 
 const dialect = new PostgresDialect({
   pool: new Pool({
-    database: config.PG_DATABASE,
-    host: config.PG_HOST,
-    user: config.PG_USER,
-    port: config.PG_PORT,
+    connectionString: config.PG_CONNECTION_STRING,
     max: config.PG_MAX_CONNECTIONS,
-    password: config.PG_PASSWORD,
   }),
 });
 

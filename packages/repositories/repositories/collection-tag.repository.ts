@@ -1,5 +1,5 @@
 import { ICollectionTagRepository } from "@repo/core/repositories";
-import { db } from "../db";
+import { db } from "../db/pg";
 import { Id } from "@repo/core/utils";
 import { CollectionTagSelects } from "./utils/selects";
 import { makeTag } from "./utils/make-entity";

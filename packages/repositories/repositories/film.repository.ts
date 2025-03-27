@@ -1,6 +1,6 @@
 import { Film, FilmType } from "@repo/core/entities";
 import { IFilmRepository } from "@repo/core/repositories";
-import { db } from "../db";
+import { db } from "../db/pg";
 import { makeFilm } from "./utils/make-entity";
 import { FilmSelects } from "./utils/selects";
 
