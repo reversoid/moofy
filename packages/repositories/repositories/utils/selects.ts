@@ -1,5 +1,5 @@
 import { Selectable } from "kysely";
-import { Database } from "../../db";
+import { Database } from "../../db/pg";
 
 type ColumnAliasResult<
   TB extends keyof Database,

@@ -1,4 +1,4 @@
-import { db } from "@repo/repositories/db";
+import { db } from "@repo/repositories/db/pg";
 
 const removeLikesDuplicates = async () => {
   const likes = await db

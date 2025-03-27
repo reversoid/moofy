@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres-db:
@@ -11,6 +11,16 @@ services:
     ports:
       - 5432:5432
 
+  redis-db:
+    image: redis:latest
+    restart: no
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWOR: "${REDIS_PASSWORD}"
+      REDIS_USER: "${REDIS_USER}"
+      REDIS_PORT: "${REDIS_PORT}"
+
   adminer:
     image: adminer
     depends_on:
@@ -21,4 +31,6 @@ services:
 
 volumes:
   postgres-db:
+    driver: local
+  redis-db:
     driver: local

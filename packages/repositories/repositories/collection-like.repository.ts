@@ -1,6 +1,6 @@
 import { Collection, User } from "@repo/core/entities";
 import { ICollectionLikeRepository } from "@repo/core/repositories";
-import { db } from "../db";
+import { db } from "../db/pg";
 
 export class CollectionLikeRepository extends ICollectionLikeRepository {
   async isUserLiked(

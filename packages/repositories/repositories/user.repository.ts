@@ -2,7 +2,7 @@ import { User } from "@repo/core/entities";
 import { IUserRepository } from "@repo/core/repositories";
 import { CreatableEntity, Id } from "@repo/core/utils";
 import { sql } from "kysely";
-import { db } from "../db";
+import { db } from "../db/pg";
 import { getTsQueryFromString } from "./utils/fulltext-search";
 import { UserSelects } from "./utils/selects";
 import { makeUser } from "./utils/make-entity";

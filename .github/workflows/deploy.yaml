@@ -37,24 +37,37 @@ jobs:
         run: |
           touch .env
 
-          echo ENV=staging >> .env
+          ####### Infrastructure #######
 
-          echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
-
-          echo UNOFFICIAL_KP_API_KEYS=${{ secrets.UNOFFICIAL_KP_API_KEYS }} >> .env
+          echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
           echo PG_USER=${{ secrets.POSTGRES_USER }} >> .env
           echo PG_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo PG_HOST=${{ secrets.POSTGRES_HOST }} >> .env
           echo PG_PORT=${{ secrets.POSTGRES_PORT }} >> .env
           echo PG_DATABASE=${{ secrets.POSTGRES_DB_NAME }} >> .env
-          echo DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB_NAME }} >> .env
+
+          # TODO pass redis credentials
+          echo REDIS_USER=${{ secrets.REDIS_USER }} >> .env
+          echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
+          echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
+          echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
+
+
+          ####### Application #######
+
+          echo ENV=production >> .env
+
+          echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
+
+          echo UNOFFICIAL_KP_API_KEYS=${{ secrets.UNOFFICIAL_KP_API_KEYS }} >> .env
+
+          echo PG_CONNECTION_STRING=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB_NAME }} >> .env
+          echo REDIS_CONNECTION_STRING=redis://${{ secrets.REDIS_USER }}:${{ secrets.REDIS_PASSWORD }}@${{ secrets.REDIS_HOST }}:${{ secrets.REDIS_PORT }} >> .env
 
           echo S3_ACCESS_KEY_ID="${{ secrets.S3_KEY_ID }}" >> .env
           echo S3_SECRET_ACCESS_KEY="${{ secrets.S3_KEY_SECRET }}" >> .env
           echo S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}" >> .env
-
-          echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
       - name: Configure SSH
         run: |

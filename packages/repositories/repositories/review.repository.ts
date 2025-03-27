@@ -7,7 +7,7 @@ import {
   makeDateFromCursor,
   makeCursorFromDate,
 } from "@repo/core/utils";
-import { db } from "../db";
+import { db } from "../db/pg";
 import { FilmSelects, ReviewSelects } from "./utils/selects";
 import { makeReview } from "./utils/make-entity";
 import { getTsQueryFromString } from "./utils/fulltext-search";

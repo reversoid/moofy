@@ -1,9 +1,9 @@
-version: '3.8'
+version: "3.8"
 
 services:
   ######################### Proxy #########################
   root-proxy:
-    build: 
+    build:
       context: ./nginx-proxy
       dockerfile: Dockerfile
     container_name: root-proxy
@@ -61,6 +61,18 @@ services:
       context: ../
       dockerfile: deploy/Dockerfile
       target: api
+    networks:
+      - moofy-network-v2
+
+  # TODO
+  ######################### Other services ########################
+  redis-db:
+    image: redis:latest
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWOR: "${REDIS_PASSWORD}"
+      REDIS_USER: "${REDIS_USER}"
+      REDIS_PORT: "${REDIS_PORT}"
     networks:
       - moofy-network-v2
 
