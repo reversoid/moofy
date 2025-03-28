@@ -8,7 +8,5 @@ export abstract class IChangelogRepository {
 
   abstract getChangelogs(): Promise<Changelog[]>;
 
-  abstract getByVersion(version: string): Promise<Changelog | null>;
-
   abstract getLatest(): Promise<Changelog | null>;
 }
