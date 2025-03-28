@@ -14,6 +14,9 @@ import { CollectionLikesTable } from "./tables/collection-likes";
 import { CollectionViewsTable } from "./tables/collection-view";
 import { CollectionTagsTable } from "./tables/collection-tags";
 import { ReviewTagsTable } from "./tables/review-tags";
+import { UserPreferencesTable } from "./tables/user-preferences";
+import { ChangelogsTable } from "./tables/changelogs";
+import { UserChangelogViewsTable } from "./tables/user-changelog-views";
 
 const { Pool } = (pg as any).default as typeof pg;
 
@@ -31,6 +34,9 @@ export interface Database {
   collectionViews: CollectionViewsTable;
   collectionTags: CollectionTagsTable;
   reviewTags: ReviewTagsTable;
+  userPreferences: UserPreferencesTable;
+  changelogs: ChangelogsTable;
+  userChangelogViews: UserChangelogViewsTable;
 }
 
 const dialect = new PostgresDialect({
