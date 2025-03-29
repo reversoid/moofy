@@ -49,6 +49,8 @@
 					</div>
 				</Card.Content>
 			</Card.Root>
+		{:else}
+			<p class="text-muted-foreground">Список пока пуст</p>
 		{/each}
 	</div>
 </Wrapper>
