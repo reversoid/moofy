@@ -4,10 +4,12 @@ export interface ChangelogsTable {
   id: Generated<number>;
 
   description: string;
-  release_date: Date;
+  releaseDate: Date;
   version: string;
 
-  has_bugfix: boolean;
-  has_feature: boolean;
-  has_improvement: boolean;
+  hasBugfix: boolean;
+  hasFeature: boolean;
+  hasImprovement: boolean;
+
+  createdAt: Date;
 }

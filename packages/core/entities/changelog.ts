@@ -4,29 +4,33 @@ import { Entity } from "./entity";
 export class Changelog extends Entity {
   id: Id;
   description: string;
-  release_date: Date;
+  releaseDate: Date;
+  createdAt: Date;
   version: string;
-  has_bugfix: boolean;
-  has_feature: boolean;
-  has_improvement: boolean;
+  hasBugfix: boolean;
+  hasFeature: boolean;
+  hasImprovement: boolean;
 
   constructor(props: {
     id?: Id;
     description: string;
-    release_date: Date;
+    releaseDate: Date;
     version: string;
-    has_bugfix: boolean;
-    has_feature: boolean;
-    has_improvement: boolean;
+    hasBugfix: boolean;
+    hasFeature: boolean;
+    hasImprovement: boolean;
+    createdAt?: Date;
   }) {
     super();
 
     this.id = props.id ?? new Id();
+    this.createdAt = props.createdAt ?? new Date();
+
     this.description = props.description;
-    this.release_date = props.release_date;
+    this.releaseDate = props.releaseDate;
     this.version = props.version;
-    this.has_bugfix = props.has_bugfix;
-    this.has_feature = props.has_feature;
-    this.has_improvement = props.has_improvement;
+    this.hasBugfix = props.hasBugfix;
+    this.hasFeature = props.hasFeature;
+    this.hasImprovement = props.hasImprovement;
   }
 }

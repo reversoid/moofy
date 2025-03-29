@@ -21,6 +21,8 @@ import {
   ImageService,
   TagService,
   ITagService,
+  IChangelogService,
+  ChangelogService,
 } from "@repo/core/services";
 import {
   UserRepository,
@@ -34,6 +36,8 @@ import {
   CollectionViewRepository,
   CollectionTagRepository,
   ReviewTagRepository,
+  ChangelogViewRepository,
+  ChangelogRepository,
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -43,6 +47,7 @@ import { searchRoute } from "./routes/search";
 import { sessionMiddleware } from "./utils/session-middleware";
 import { uploadRoute } from "./routes/upload";
 import { sessionCookieMiddleware } from "./utils/session-cookie-middleware";
+import { changelogRoute } from "./routes/changelog";
 
 declare module "hono" {
   interface ContextVariableMap {
@@ -54,6 +59,7 @@ declare module "hono" {
     subscriptionService: ISubscriptionService;
     imageService: IImageService;
     tagService: ITagService;
+    changelogService: IChangelogService;
 
     session?: Session;
   }
@@ -74,6 +80,8 @@ const collectionLikeRepository = new CollectionLikeRepository();
 const collectionViewRepository = new CollectionViewRepository();
 const collectionTagRepository = new CollectionTagRepository();
 const reviewTagRepository = new ReviewTagRepository();
+const changelogRepository = new ChangelogRepository();
+const changelogViewRepository = new ChangelogViewRepository();
 
 // Services
 const userService = new UserService(userRepository);
@@ -110,6 +118,11 @@ const tagService = new TagService(
   collectionService,
   reviewService
 );
+const changelogService = new ChangelogService(
+  changelogRepository,
+  changelogViewRepository,
+  userRepository
+);
 
 const api = new Hono()
   .use(async (c, next) => {
@@ -121,6 +134,7 @@ const api = new Hono()
     c.set("subscriptionService", subscriptionService);
     c.set("imageService", imageService);
     c.set("tagService", tagService);
+    c.set("changelogService", changelogService);
     await next();
   })
   .use(withEntityCheck())
@@ -133,7 +147,8 @@ const api = new Hono()
   .route("users", userRoute)
   .route("search", searchRoute)
   .route("favorites", favoritesRoute)
-  .route("upload", uploadRoute);
+  .route("upload", uploadRoute)
+  .route("changelog", changelogRoute);
 
 Deno.serve({ port: 8080 }, api.fetch);
 

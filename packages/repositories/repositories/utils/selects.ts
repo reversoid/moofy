@@ -1,6 +1,8 @@
 import { Selectable } from "kysely";
 import { Database } from "../../db";
 
+// TODO can be done better without namecspaces? just using functions?
+
 type ColumnAliasResult<
   TB extends keyof Database,
   Prefix extends string,
@@ -169,5 +171,32 @@ export namespace CollectionTagSelects {
     "collectionTags",
     typeof collectionTagPrefix,
     typeof collectionTagFields
+  >;
+}
+
+export namespace ChangelogSelects {
+  const changelogFields = [
+    "id",
+    "description",
+    "releaseDate",
+    "hasBugfix",
+    "hasFeature",
+    "hasImprovement",
+    "version",
+    "createdAt",
+  ] as const;
+
+  const changelogPrefix = "cl";
+
+  export const changelogSelects = getSelects(
+    "changelogs",
+    changelogPrefix,
+    changelogFields
+  );
+
+  export type ChangelogSelectResult = ColumnAliasResult<
+    "changelogs",
+    typeof changelogPrefix,
+    typeof changelogFields
   >;
 }

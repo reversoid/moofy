@@ -9,3 +9,5 @@ export * from "./collection-like.repository";
 export * from "./collection-view.repository";
 export * from "./collection-tag.repository";
 export * from "./review-tag.repository";
+export * from "./changelog.repository";
+export * from "./changelog-view.repository";
