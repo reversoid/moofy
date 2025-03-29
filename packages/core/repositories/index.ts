@@ -12,3 +12,4 @@ export * from "./review-tag.repository";
 export * from "./changelog-view.repository";
 export * from "./changelog.repository";
 export * from "./changelog-view.repository";
+export * from "./user-preferences.repository";

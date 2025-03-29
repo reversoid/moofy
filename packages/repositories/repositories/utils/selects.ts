@@ -1,7 +1,7 @@
 import { Selectable } from "kysely";
 import { Database } from "../../db";
 
-// TODO can be done better without namecspaces? just using functions?
+// TODO can be done better without namespaces? just using functions? or classes?
 
 type ColumnAliasResult<
   TB extends keyof Database,
@@ -198,5 +198,23 @@ export namespace ChangelogSelects {
     "changelogs",
     typeof changelogPrefix,
     typeof changelogFields
+  >;
+}
+
+export namespace UserPreferencesSelects {
+  const userPreferencesFields = ["id", "userId", "notifyUpdateTypes"] as const;
+
+  const userPreferencesPrefix = "up";
+
+  export const userPreferencesSelects = getSelects(
+    "userPreferences",
+    userPreferencesPrefix,
+    userPreferencesFields
+  );
+
+  export type UserPreferencesSelectResult = ColumnAliasResult<
+    "userPreferences",
+    typeof userPreferencesPrefix,
+    typeof userPreferencesFields
   >;
 }

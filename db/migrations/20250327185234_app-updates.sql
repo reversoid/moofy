@@ -2,9 +2,11 @@
 
 
 CREATE TABLE user_changelog_views (
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     last_viewed_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (user_id)
+    UNIQUE (user_id)
 );
 
 CREATE TABLE changelogs (

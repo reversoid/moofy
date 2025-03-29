@@ -1,12 +1,12 @@
 import { IBaseRepository } from "./base.repository";
-import { UserPreference } from "../entities";
+import { UserPreferences } from "../entities";
 import { CreatableEntity } from "../utils";
 import { Id } from "../utils";
 
-export abstract class IPreferenceRepository extends IBaseRepository<UserPreference> {
+export abstract class IPreferenceRepository extends IBaseRepository<UserPreferences> {
   abstract create(
-    item: UserPreference | CreatableEntity<UserPreference>
-  ): Promise<UserPreference>;
+    item: UserPreferences | CreatableEntity<UserPreferences>
+  ): Promise<UserPreferences>;
 
-  abstract getByUserId(userId: Id): Promise<UserPreference | null>;
+  abstract getByUserId(userId: Id): Promise<UserPreferences | null>;
 }

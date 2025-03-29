@@ -8,7 +8,7 @@ export enum NotifyUpdateType {
   improvement = "improvement",
 }
 
-export class UserPreference extends Entity {
+export class UserPreferences extends Entity {
   id: Id;
   userId: Id;
   notifyUpdateTypes: NotifyUpdateType[];
