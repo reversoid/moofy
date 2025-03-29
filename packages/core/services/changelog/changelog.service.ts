@@ -60,7 +60,7 @@ export class ChangelogService implements IChangelogService {
       (cl) =>
         new Changelog({
           description: cl.body.trim(),
-          release_date: new Date(cl.date ?? raise("No release date found")),
+          releaseDate: new Date(cl.date ?? raise("No release date found")),
           version: cl.version?.trim() ?? raise("No version found"),
 
           hasFeature: Boolean(cl.parsed["New"]),

@@ -4,7 +4,7 @@ import {
 } from "../../repositories";
 import { Id } from "../../utils";
 import { NotifyUpdateType, UserPreferences } from "../../entities";
-import { IPreferencesService } from "./interface";
+import { IPreferencesService, UpdatePreferencesDto } from "./interface";
 import { UserNotFoundError } from "../user";
 import { err, ok, Result } from "resulto";
 
@@ -40,17 +40,16 @@ export class PreferencesService implements IPreferencesService {
 
   async updateUserPreferences(
     userId: Id,
-    preferences: Partial<UserPreferences>
+    dto: UpdatePreferencesDto
   ): Promise<Result<UserPreferences, UserNotFoundError>> {
     const user = await this.userRepository.get(userId);
     if (!user) {
       return err(new UserNotFoundError());
     }
 
-    const updatedPreferences = await this.repository.update(
-      userId,
-      preferences
-    );
+    const updatedPreferences = await this.repository.update(userId, {
+      notifyUpdateTypes: dto.notifyUpdateType,
+    });
 
     return ok(updatedPreferences);
   }

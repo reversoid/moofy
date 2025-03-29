@@ -6,6 +6,7 @@ import {
   Film,
   Tag,
   Changelog,
+  UserPreferences,
 } from "@repo/core/entities";
 import { Id, PaginatedData } from "@repo/core/utils";
 
@@ -81,4 +82,9 @@ export const makeChangelogDto = (changelog: Changelog) => ({
   hasBugfix: changelog.hasBugfix,
   hasImprovement: changelog.hasImprovement,
   hasFeature: changelog.hasFeature,
+});
+
+export const makePreferencesDto = (preferences: UserPreferences) => ({
+  id: preferences.id.value,
+  notifyUpdateType: preferences.notifyUpdateTypes.map((v) => `${v}` as const),
 });

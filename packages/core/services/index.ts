@@ -8,3 +8,4 @@ export * from "./subscription";
 export * from "./image";
 export * from "./tag";
 export * from "./changelog";
+export * from "./preferences";
