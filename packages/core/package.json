@@ -14,12 +14,14 @@
     "@repo/config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/bcrypt": "^5.0.2",
+    "@types/changelog-parser": "^2.8.4",
     "@types/heic-convert": "^2.1.0",
     "mock-aws-s3": "^4.0.2",
     "nock": "^14.0.1"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "changelog-parser": "^3.0.1",
     "dayjs": "^1.11.13",
     "easy-yandex-s3": "^2.0.0",
     "sharp": "^0.33.5",
