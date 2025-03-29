@@ -94,9 +94,15 @@ importers:
       lucide-react:
         specifier: ^0.482.0
         version: 0.482.0(react@18.3.1)
+      marked:
+        specifier: ^15.0.7
+        version: 15.0.7
       maska:
         specifier: ^3.1.1
         version: 3.1.1
+      snarkdown:
+        specifier: 1.0.2
+        version: 1.0.2
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -6852,6 +6858,12 @@ packages:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
     dev: true
 
+  /marked@15.0.7:
+    resolution: {integrity: sha512-dgLIeKGLx5FwziAnsk4ONoGwHwGPJzselimvlVskE9XLN4Orv9u2VA3GWw/lYUqjfA0rUT/6fqKwfZJapP9BEg==}
+    engines: {node: '>= 18'}
+    hasBin: true
+    dev: false
+
   /maska@3.1.1:
     resolution: {integrity: sha512-68ZJfZ6/YANwv7CufbQmcCNoHdJnIRxuQgZtSFZe5ltlmZ15ZdA01siUGLh9EfaUX65DN0l/A7g+o2xjTICeGQ==}
     dev: false
@@ -8346,6 +8358,10 @@ packages:
     dependencies:
       no-case: 2.3.2
     dev: true
+
+  /snarkdown@1.0.2:
+    resolution: {integrity: sha512-D6qvXH0mokvm2WImesnbABIETwJEcZ82vcJwbfnPavEFg94Mk3vI18WBCbBoqYt043N3jzPt16qHlkAxwtkgLQ==}
+    dev: false
 
   /socks-proxy-agent@8.0.4:
     resolution: {integrity: sha512-GNAq/eg8Udq2x0eNiFkr9gRg5bA7PXEWagQdeRX4cPSG+X/8V38v637gim9bjFptMk1QWsCTr0ttrJEiXbNnRw==}
