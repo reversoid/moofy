@@ -56,6 +56,7 @@ export class ChangelogService implements IChangelogService {
 
   async parseChangelogs(text: string): Promise<Changelog[]> {
     const changelogs = await parseChangelog({ removeMarkdown: false, text });
+
     return changelogs.versions.map(
       (cl) =>
         new Changelog({

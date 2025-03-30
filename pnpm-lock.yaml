@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@pnpm/find-workspace-dir':
+        specifier: ^7.0.2
+        version: 7.0.2
       resulto:
         specifier: ^1.4.2
         version: 1.4.2
@@ -230,9 +233,6 @@ importers:
 
   packages/config:
     dependencies:
-      '@pnpm/find-workspace-dir':
-        specifier: ^7.0.2
-        version: 7.0.2
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5

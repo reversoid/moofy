@@ -20,7 +20,9 @@ CREATE TABLE changelogs (
     has_feature BOOLEAN NOT NULL,
     has_improvement BOOLEAN NOT NULL,
 
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    UNIQUE (version)
 );
 
 
