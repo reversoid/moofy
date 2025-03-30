@@ -11,4 +11,9 @@ export interface IChangelogService {
   viewChangelog(userId: Id): Promise<Result<null, UserNotFoundError>>;
 
   hasUserSeenLatestUpdate(userId: Id): Promise<boolean>;
+
+  parseChangelogs(
+    content: string,
+    keys: { feature: string; bugfix: string; improvement: string }
+  ): Promise<Changelog[]>;
 }

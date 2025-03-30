@@ -1,4 +1,5 @@
 {
+  "version": "2.2.0",
   "name": "v2",
   "private": true,
   "scripts": {

@@ -54,7 +54,10 @@ export class ChangelogService implements IChangelogService {
     return this.repository.create(item);
   }
 
-  async parseChangelogs(text: string): Promise<Changelog[]> {
+  async parseChangelogs(
+    text: string,
+    keys: { feature: string; bugfix: string; improvement: string }
+  ): Promise<Changelog[]> {
     const changelogs = await parseChangelog({ removeMarkdown: false, text });
 
     return changelogs.versions.map(
@@ -64,9 +67,9 @@ export class ChangelogService implements IChangelogService {
           releaseDate: new Date(cl.date ?? raise("No release date found")),
           version: cl.version?.trim() ?? raise("No version found"),
 
-          hasFeature: Boolean(cl.parsed["New"]),
-          hasBugfix: Boolean(cl.parsed["Bugfix"]),
-          hasImprovement: Boolean(cl.parsed["Improvement"]),
+          hasFeature: Boolean(cl.parsed[keys.feature]),
+          hasBugfix: Boolean(cl.parsed[keys.bugfix]),
+          hasImprovement: Boolean(cl.parsed[keys.improvement]),
         })
     );
   }

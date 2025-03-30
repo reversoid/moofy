@@ -1,4 +1,3 @@
-import { db } from "@repo/repositories/db";
 import {
   ChangelogRepository,
   ChangelogViewRepository,
@@ -27,8 +26,15 @@ const syncChangelog = async () => {
 
   const [savedChangelogs, allChangelogs] = await Promise.all([
     changelogService.getChangelogs(),
-    changelogService.parseChangelogs(changelogContent),
+    changelogService.parseChangelogs(changelogContent, {
+      feature: "Новое",
+      bugfix: "Исправления",
+      improvement: "Улучшения",
+    }),
   ]);
+
+  // Reverse, so we save them in order they appeared in the file
+  allChangelogs.reverse();
 
   const latestSavedChangelog = savedChangelogs.at(0);
 

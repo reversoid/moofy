@@ -30,7 +30,7 @@ export class ChangelogRepository implements IChangelogRepository {
     const raw = await db
       .selectFrom("changelogs")
       .select(ChangelogSelects.changelogSelects)
-      .orderBy("id desc")
+      .orderBy("version desc")
       .execute();
 
     return raw.map(makeChangelog);

@@ -1,17 +1,27 @@
-# Changelog
-All notable changes to this project will be documented in this file.
+# Список изменений
+Все заметные изменения в этом проекте будут документированы в этом файле.
+Доступные типы изменений: Новое, Исправления, Улучшения
 
-## [2.0.0] - 01-03-2025
+## [2.2.0] - 2025-03-30
 
-### New
-- Initial release with core features
-- User authentication system
-- Collection management functionality
+### Улучшения
+- Добавлен раздел на сайте – список изменений
 
-### Improvement
-- Enhanced UI/UX for better user experience
-- Optimized database queries for faster performance
 
-### Bugfix
-- Fixed issue with user preferences not saving correctly
-- Resolved authentication token validation problems
+## [2.1.0] - 2025-03-24
+
+### Новое
+- Добавлены тэги для коллекции и обзоров. Тэги можно создать и изменить в настройках коллекции, а привязать – в настройках обзора.
+
+
+## [2.0.0] - 2025-03-09
+
+### Новое
+- Новый дизайн сайта
+
+### Улучшения
+- Теперь используются 5-бальные оценки вместо 10-бальных
+- Удалены комментарии и лайки к комментариям
+- Удалена возможность видеть обновленные коллекции от своих подписок
+- Теперь обзор будет перемещаться наверх коллекции при обновлении
+- Теперь обложки коллекции преобразовываются к соотношению 4:3, а фото профиля – 1:1
