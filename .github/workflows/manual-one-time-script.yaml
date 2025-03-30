@@ -7,10 +7,16 @@ on:
         type: string
         required: true
         description: "Script name. For example: 123-do-something"
-
+  workflow_run:
+    workflows: ["Deploy"]
+    types:
+      - completed
+    branches:
+      - main
 jobs:
   script:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -46,4 +52,4 @@ jobs:
           echo LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }} >> .env
 
       - name: Run script
-        run: pnpm run:one-time ${{ github.event.inputs.script }}
+        run: pnpm run:one-time ${{ github.event.inputs.script || 'sync-changelog' }}
