@@ -1,7 +1,14 @@
 {
   "extends": ["@repo/typescript-config/base.json"],
   "compilerOptions": {
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
     "module": "ESNext",
-    "target": "ESNext",
+    "esModuleInterop": true,
+    "rootDir": "./src",
+    "outDir": "./build",
+    "composite": true
   }
 }

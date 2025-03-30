@@ -5,3 +5,5 @@ export * from "./user";
 export * from "./session";
 export * from "./entity";
 export * from "./tag";
+export * from "./changelog";
+export * from "./user-preferences";

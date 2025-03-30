@@ -1,19 +1,24 @@
 import {
+  Changelog,
   Collection,
   Film,
   FilmType,
+  NotifyUpdateType,
   Review,
   Session,
   Tag,
   User,
+  UserPreferences,
 } from "@repo/core/entities";
 import { Id } from "@repo/core/utils";
 import {
+  ChangelogSelects,
   CollectionSelects,
   CollectionTagSelects,
   FilmSelects,
   ReviewSelects,
   SessionSelects,
+  UserPreferencesSelects,
   UserSelects,
 } from "./selects";
 import type { TagData } from "../review.repository";
@@ -105,5 +110,32 @@ export const makeTag = (
     name: rawData["ct-name"],
     hexColor: rawData["ct-hexColor"],
     createdAt: rawData["ct-createdAt"],
+  });
+};
+
+export const makeChangelog = (
+  rawData: ChangelogSelects.ChangelogSelectResult
+): Changelog => {
+  return new Changelog({
+    id: new Id(rawData["cl-id"]),
+    description: rawData["cl-description"],
+    hasBugfix: rawData["cl-hasBugfix"],
+    hasFeature: rawData["cl-hasFeature"],
+    hasImprovement: rawData["cl-hasImprovement"],
+    releaseDate: rawData["cl-releaseDate"],
+    version: rawData["cl-version"],
+    createdAt: rawData["cl-createdAt"],
+  });
+};
+
+export const makeUserPreferences = (
+  rawData: UserPreferencesSelects.UserPreferencesSelectResult
+): UserPreferences => {
+  return new UserPreferences({
+    id: new Id(rawData["up-id"]),
+    userId: new Id(rawData["up-userId"]),
+    notifyUpdateTypes: rawData["up-notifyUpdateTypes"].map(
+      (v) => NotifyUpdateType[v]
+    ),
   });
 };

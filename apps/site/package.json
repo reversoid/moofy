@@ -70,6 +70,8 @@
 		"lodash.debounce": "^4.0.8",
 		"lodash.uniqby": "^4.7.0",
 		"lucide-react": "^0.482.0",
-		"maska": "^3.1.1"
+		"marked": "^15.0.7",
+		"maska": "^3.1.1",
+		"snarkdown": "1.0.2"
 	}
 }

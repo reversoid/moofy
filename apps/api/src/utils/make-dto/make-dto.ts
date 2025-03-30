@@ -5,8 +5,17 @@ import {
   Session,
   Film,
   Tag,
+  Changelog,
+  UserPreferences,
 } from "@repo/core/entities";
 import { Id, PaginatedData } from "@repo/core/utils";
+
+export const withPaginatedData =
+  <I, O>(transformer: (entity: I) => O) =>
+  (data: PaginatedData<I>) => ({
+    cursor: data.cursor,
+    items: data.items.map(transformer),
+  });
 
 export const makeIdDto = (id: Id) => id.value;
 
@@ -64,9 +73,18 @@ export const makeSessionDto = (session: Session) => ({
   expiresAt: makeDateDto(session.expiresAt),
 });
 
-export const withPaginatedData =
-  <I, O>(transformer: (entity: I) => O) =>
-  (data: PaginatedData<I>) => ({
-    cursor: data.cursor,
-    items: data.items.map(transformer),
-  });
+export const makeChangelogDto = (changelog: Changelog) => ({
+  id: changelog.id.value,
+  description: changelog.description,
+  createdAt: changelog.createdAt,
+  releaseDate: changelog.releaseDate,
+  version: changelog.version,
+  hasBugfix: changelog.hasBugfix,
+  hasImprovement: changelog.hasImprovement,
+  hasFeature: changelog.hasFeature,
+});
+
+export const makePreferencesDto = (preferences: UserPreferences) => ({
+  id: preferences.id.value,
+  notifyUpdateType: preferences.notifyUpdateTypes.map((v) => `${v}` as const),
+});
