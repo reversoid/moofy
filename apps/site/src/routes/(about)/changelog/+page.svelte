@@ -32,9 +32,11 @@
 				</Card.Header>
 
 				<Card.Content>
-					{@html changelog.description}
+					<div class="changelog-content">
+						{@html changelog.description}
+					</div>
 
-					<div class="mt-3 flex flex-row gap-2">
+					<div class="mt-6 flex flex-row gap-2">
 						{#if changelog.hasFeature}
 							<Badge class="bg-violet-500" variant="secondary">Новое</Badge>
 						{/if}
@@ -54,3 +56,15 @@
 		{/each}
 	</div>
 </Wrapper>
+
+<style>
+	.changelog-content :global {
+		h3 {
+			@apply mb-0.5 font-semibold md:text-lg;
+		}
+
+		ul {
+			@apply mb-2 list-inside list-disc;
+		}
+	}
+</style>
