@@ -123,10 +123,50 @@ const removeFavCollectionsDuplicates = async () => {
     .execute();
 };
 
+const removeReviewsDuplicates = async () => {
+  const reviews = await db
+    .selectFrom("reviews")
+    .select(["collectionId", "filmKinopoiskId", "id"])
+    .orderBy("createdAt", "asc")
+    .execute();
+
+  type Key = `${string}-${string}`;
+  type Id = number;
+
+  const reviewsMap = new Map<Key, Id[]>();
+
+  for (const review of reviews) {
+    const key = `${review.collectionId}-${review.filmKinopoiskId}` as Key;
+
+    if (!reviewsMap.has(key)) {
+      reviewsMap.set(key, [review.id]);
+    } else {
+      reviewsMap.get(key)!.push(review.id);
+    }
+  }
+
+  const idsToRemove = [];
+
+  for (const ids of reviewsMap.values()) {
+    if (ids.length === 1) {
+      continue;
+    }
+
+    idsToRemove.push(...ids.slice(0, -1));
+  }
+
+  if (idsToRemove.length === 0) {
+    return;
+  }
+
+  await db.deleteFrom("reviews").where("id", "in", idsToRemove).execute();
+};
+
 await Promise.all([
   removeLikesDuplicates(),
   removeFollowersDuplicates(),
   removeFavCollectionsDuplicates(),
+  removeReviewsDuplicates(),
 ]);
 
 await db.destroy();
