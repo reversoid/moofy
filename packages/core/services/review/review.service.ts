@@ -133,8 +133,12 @@ export class ReviewService implements IReviewService {
         return err(new FilmNotFoundError());
       }
 
-      await this.filmService.saveFilm(providedFilm);
-      film = providedFilm;
+      const savedFilmResult = await this.filmService.saveFilm(providedFilm);
+      if (savedFilmResult.isErr()) {
+        throw savedFilmResult.error;
+      }
+
+      film = savedFilmResult.unwrap();
     }
 
     const newReview = new Review({
