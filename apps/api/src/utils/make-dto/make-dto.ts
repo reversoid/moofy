@@ -41,7 +41,7 @@ export const makeCollectionDto = (collection: Collection) => ({
 });
 
 export const makeFilmDto = (film: Film) => ({
-  id: film.id,
+  id: film.kinopoiskId, // TODO replace by id
   name: film.name,
   posterPreviewUrl: film.posterPreviewUrl,
   posterUrl: film.posterUrl,

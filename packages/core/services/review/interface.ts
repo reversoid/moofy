@@ -19,7 +19,7 @@ import { User } from "../../entities";
 import { UserNotFoundError } from "../user";
 
 export type CreateReviewDto = {
-  filmId: Film["id"];
+  filmId: Film["kinopoiskId"];
   description?: string | null;
   score?: number | null;
 };

@@ -3,6 +3,7 @@ import { IFilmRepository } from "@repo/core/repositories";
 import { db } from "../db";
 import { makeFilm } from "./utils/make-entity";
 import { FilmSelects } from "./utils/selects";
+import { Id } from "@repo/core/utils";
 
 export class FilmRepository extends IFilmRepository {
   async create(item: Film): Promise<Film> {
@@ -12,13 +13,13 @@ export class FilmRepository extends IFilmRepository {
         filmLength: item.filmLength,
         genres: item.genres,
         name: item.name,
-        id: item.id,
         posterPreviewUrl: item.posterPreviewUrl,
         posterUrl: item.posterUrl,
         type: item.type,
         year: item.year,
         createdAt: new Date(),
         updatedAt: new Date(),
+        kinopoiskId: item.kinopoiskId,
       })
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -26,20 +27,21 @@ export class FilmRepository extends IFilmRepository {
     return new Film({
       filmLength: rawData.filmLength,
       genres: rawData.genres,
-      id: rawData.id,
+      id: new Id(rawData.id),
       name: rawData.name,
       posterPreviewUrl: rawData.posterPreviewUrl,
       posterUrl: rawData.posterUrl,
       type: FilmType[rawData.type],
       year: rawData.year,
+      kinopoiskId: rawData.kinopoiskId,
     });
   }
 
-  async get(id: string): Promise<Film | null> {
+  async getByKpId(id: Film["kinopoiskId"]): Promise<Film | null> {
     const rawData = await db
       .selectFrom("films")
       .select(FilmSelects.filmSelects)
-      .where("films.id", "=", id)
+      .where("films.kinopoiskId", "=", id)
       .executeTakeFirst();
 
     if (!rawData) {
@@ -47,42 +49,5 @@ export class FilmRepository extends IFilmRepository {
     }
 
     return makeFilm(rawData);
-  }
-
-  async update(id: string, value: Partial<Film>): Promise<Film> {
-    if (Object.values(value).every((v) => v === undefined)) {
-      return this.getOrThrow(id);
-    }
-
-    const rawData = await db
-      .updateTable("films")
-      .set({
-        filmLength: value.filmLength,
-        genres: value.genres,
-        name: value.name,
-        posterPreviewUrl: value.posterPreviewUrl,
-        posterUrl: value.posterUrl,
-        updatedAt: new Date(),
-        type: value.type,
-        year: value.year,
-      })
-      .where("id", "=", id)
-      .returningAll()
-      .executeTakeFirstOrThrow();
-
-    return new Film({
-      filmLength: rawData.filmLength,
-      genres: rawData.genres,
-      id: rawData.id,
-      name: rawData.name,
-      posterPreviewUrl: rawData.posterPreviewUrl,
-      posterUrl: rawData.posterUrl,
-      type: FilmType[rawData.type],
-      year: rawData.year,
-    });
-  }
-
-  async remove(id: string): Promise<void> {
-    await db.deleteFrom("films").where("id", "=", id).execute();
   }
 }
