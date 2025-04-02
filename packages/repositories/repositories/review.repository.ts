@@ -2,7 +2,7 @@ import { Review, Collection, Film } from "@repo/core/entities";
 import { IReviewRepository } from "@repo/core/repositories";
 import {
   PaginatedData,
-  CreatableEntity,
+  Creatable,
   Id,
   makeDateFromCursor,
   makeCursorFromDate,
@@ -117,7 +117,7 @@ export class ReviewRepository extends IReviewRepository {
     return makeReview(rawData);
   }
 
-  async create(item: Review | CreatableEntity<Review>): Promise<Review> {
+  async create(item: Review | Creatable<Review>): Promise<Review> {
     const { id } = await db
       .insertInto("reviews")
       .values({

@@ -1,14 +1,12 @@
 import { Changelog } from "@repo/core/entities";
 import { IChangelogRepository } from "@repo/core/repositories";
-import { CreatableEntity } from "@repo/core/utils";
+import { Creatable } from "@repo/core/utils";
 import { db } from "../db";
 import { makeChangelog } from "./utils/make-entity";
 import { ChangelogSelects } from "./utils/selects";
 
 export class ChangelogRepository implements IChangelogRepository {
-  async create(
-    item: Changelog | CreatableEntity<Changelog>
-  ): Promise<Changelog> {
+  async create(item: Changelog | Creatable<Changelog>): Promise<Changelog> {
     const raw = await db
       .insertInto("changelogs")
       .values({

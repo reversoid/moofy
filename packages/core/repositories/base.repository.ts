@@ -1,4 +1,4 @@
-import { CreatableEntity } from "../utils";
+import { Creatable, Id } from "../utils";
 
 export class EntityNotFoundError extends Error {
   constructor() {
@@ -6,8 +6,8 @@ export class EntityNotFoundError extends Error {
   }
 }
 
-export abstract class IBaseRepository<T extends { id: unknown }> {
-  abstract create(item: T | CreatableEntity<T>): Promise<T>;
+export abstract class IBaseRepository<T extends { id: Id }> {
+  abstract create(item: T | Creatable<T>): Promise<T>;
   abstract get(id: T["id"]): Promise<T | null>;
   abstract update(id: T["id"], value: Partial<T>): Promise<T>;
   abstract remove(id: T["id"]): Promise<void>;
