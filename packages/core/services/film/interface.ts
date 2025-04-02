@@ -4,5 +4,5 @@ import { FilmAlreadyExistsError } from "./errors";
 
 export interface IFilmService {
   saveFilm(film: Film): Promise<Result<Film, FilmAlreadyExistsError>>;
-  getFilm(id: Film["id"]): Promise<Film | null>;
+  getFilmByKpId(id: Film["kinopoiskId"]): Promise<Film | null>;
 }

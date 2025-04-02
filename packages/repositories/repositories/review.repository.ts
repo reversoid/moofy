@@ -103,11 +103,11 @@ export class ReviewRepository extends IReviewRepository {
 
   async getReviewOnFilm(
     collectionId: Collection["id"],
-    filmId: Film["id"]
+    filmId: Film["kinopoiskId"]
   ): Promise<Review | null> {
     const rawData = await this.getSelectQuery()
       .where("reviews.collectionId", "=", collectionId.value)
-      .where("reviews.filmId", "=", filmId)
+      .where("reviews.filmKinopoiskId", "=", filmId)
       .executeTakeFirst();
 
     if (!rawData) {
@@ -122,7 +122,8 @@ export class ReviewRepository extends IReviewRepository {
       .insertInto("reviews")
       .values({
         collectionId: item.collectionId.value,
-        filmId: item.film.id,
+        filmId: item.film.id.value,
+        filmKinopoiskId: item.film.kinopoiskId,
         updatedAt: new Date(),
         createdAt: new Date(),
         description: item.description,
@@ -177,7 +178,7 @@ export class ReviewRepository extends IReviewRepository {
         "reviewTags.collectionTagId"
       )
       .groupBy("reviews.id")
-      .groupBy("films.id");
+      .groupBy("films.kinopoiskId");
   }
 
   async update(id: Id, value: Partial<Review>): Promise<Review> {

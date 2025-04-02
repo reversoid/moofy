@@ -4,7 +4,8 @@ export interface ReviewsTable {
   id: Generated<number>;
   score: number | null;
   description: string | null;
-  filmId: string;
+  filmKinopoiskId: string;
+  filmId: number;
   userId: number;
   collectionId: number;
   createdAt: Generated<Date>;

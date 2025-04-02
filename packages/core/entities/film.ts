@@ -1,3 +1,4 @@
+import { Id } from "../utils";
 import { Entity } from "./entity";
 
 export enum FilmType {
@@ -9,7 +10,8 @@ export enum FilmType {
 }
 
 export class Film extends Entity {
-  id: string;
+  id: Id;
+  kinopoiskId: string;
   name: string;
   year: number;
   type: FilmType;
@@ -19,7 +21,8 @@ export class Film extends Entity {
   genres: string[];
 
   constructor(props: {
-    id: string;
+    id?: Id;
+    kinopoiskId: string;
     name: string;
     year: number;
     type: FilmType;
@@ -30,7 +33,8 @@ export class Film extends Entity {
   }) {
     super();
 
-    this.id = props.id;
+    this.id = props.id ?? new Id();
+    this.kinopoiskId = props.kinopoiskId;
     this.name = props.name;
     this.year = props.year;
     this.type = props.type;

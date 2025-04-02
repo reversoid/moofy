@@ -123,7 +123,7 @@ export class ReviewService implements IReviewService {
       return err(new ReviewOnFilmExistsError());
     }
 
-    let film = await this.filmService.getFilm(props.dto.filmId);
+    let film = await this.filmService.getFilmByKpId(props.dto.filmId);
 
     if (!film) {
       const providedFilm = await this.filmProvider.getFilmByKpId(

@@ -53,13 +53,14 @@ export const makeCollection = (
 
 export const makeFilm = (rawData: FilmSelects.FilmSelectResult): Film => {
   return new Film({
-    id: rawData["f-id"],
+    id: new Id(rawData["f-id"]),
     name: rawData["f-name"],
     filmLength: rawData["f-filmLength"],
     genres: rawData["f-genres"],
     posterPreviewUrl: rawData["f-posterPreviewUrl"],
     posterUrl: rawData["f-posterUrl"],
     year: rawData["f-year"],
+    kinopoiskId: rawData["f-kinopoiskId"],
     type: FilmType[rawData["f-type"]],
   });
 };

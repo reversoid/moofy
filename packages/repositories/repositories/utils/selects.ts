@@ -92,6 +92,7 @@ export namespace FilmSelects {
     "type",
     "updatedAt",
     "year",
+    "kinopoiskId",
   ] as const;
 
   const filmPrefix = "f";

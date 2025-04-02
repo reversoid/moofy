@@ -19,6 +19,6 @@ export abstract class IReviewRepository extends IBaseRepository<Review> {
 
   abstract getReviewOnFilm(
     collectionId: Collection["id"],
-    filmId: Film["id"]
+    filmId: Film["kinopoiskId"]
   ): Promise<Review | null>;
 }

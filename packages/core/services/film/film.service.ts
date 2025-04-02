@@ -8,7 +8,7 @@ export class FilmService implements IFilmService {
   constructor(private readonly filmRepository: IFilmRepository) {}
 
   async saveFilm(film: Film): Promise<Result<Film, FilmAlreadyExistsError>> {
-    const existingFilm = await this.getFilm(film.id);
+    const existingFilm = await this.getFilmByKpId(film.kinopoiskId);
     if (existingFilm) {
       return err(new FilmAlreadyExistsError());
     }
@@ -17,8 +17,8 @@ export class FilmService implements IFilmService {
     return ok(savedFilm);
   }
 
-  async getFilm(id: Film["id"]): Promise<Film | null> {
-    const existingFilm = await this.filmRepository.get(id);
+  async getFilmByKpId(id: Film["kinopoiskId"]): Promise<Film | null> {
+    const existingFilm = await this.filmRepository.getByKpId(id);
     return existingFilm;
   }
 }
