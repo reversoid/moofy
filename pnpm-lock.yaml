@@ -19,8 +19,8 @@ importers:
         version: 3.24.2
     devDependencies:
       dbmate:
-        specifier: ^2.25.0
-        version: 2.25.0
+        specifier: ^2.26.0
+        version: 2.26.0
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -631,56 +631,56 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@dbmate/darwin-arm64@2.25.0:
-    resolution: {integrity: sha512-nXx9yniTuYFewva6P/kilsMXUD8+hQTDit8KMG+3okxrMTfB70lo2Qe5mLjsJcXaBeyq1cFlkRDSpmGR+0UOig==}
+  /@dbmate/darwin-arm64@2.26.0:
+    resolution: {integrity: sha512-gcFzfK3woPs5cRqE7WhLIAppaXXPJeXtXDZsG7Dx9KjKmQrT1b+dzD3CgLTMynRCki6c2sXMlj0dw+GpOeiU7w==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/darwin-x64@2.25.0:
-    resolution: {integrity: sha512-zhk+oQwL31bHJDfyss++lLbjsm0Rxe13YX79uOxxsPmfipRay5d01Hdner7PjGiKKEQZ1/VL2D2j2qclCVJIUw==}
+  /@dbmate/darwin-x64@2.26.0:
+    resolution: {integrity: sha512-sDvpo/lmmdpHk72hfrxeNxofVA0VkjzT6iAl1Va9XlsysXryHkfy2kOMKrNTaklGiY1FuiAAaEWHblQbnSIm+A==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-arm64@2.25.0:
-    resolution: {integrity: sha512-x/f+d51Hqpg9o8LygbNp4Qg//4t5gC3SIfsTYGwUZFzkCa8C06R2rwjqIyNmgNIRKCz4vXj5vZnXjJw3qbC95w==}
+  /@dbmate/linux-arm64@2.26.0:
+    resolution: {integrity: sha512-ug8YWgGaxKW6IGHTI+CRJREVOZSd+dK16O6mLCKLeJ7NGXlajtyjTPEZOrUdJdX95/erYbIN5T2V/jKjVtH1SA==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-arm@2.25.0:
-    resolution: {integrity: sha512-ATRKjqB0sDYYSshQOBoQ7ryr/fPSiWrW/DYS/Z8aq2mp6zKBuqlxAv2VrQkFZezTqVe8Ph7PpAJKa4Hcg/XyOw==}
+  /@dbmate/linux-arm@2.26.0:
+    resolution: {integrity: sha512-XomBeCo8A+hByyAuUa7sjA2e6kenFGODi3rEgNfm8Kr/pkjykRK/59djAiuJNVQRT6y/i9wy4/ZqPzWVmaEolQ==}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-ia32@2.25.0:
-    resolution: {integrity: sha512-B1Hs0sdFeSlC9ZEmue67WdgPPh8lStcPV2f+nZUhDU/pdttGi/aJDbqOu/nWhuDAB3bHzMZkkfVjKB8n2jpiGA==}
+  /@dbmate/linux-ia32@2.26.0:
+    resolution: {integrity: sha512-er87GxCyiJAfwBTDaQBkVg3cnwbBiU3tpbx9bME9W+4AxAqiMfSEAnL2P6kN0zHd2BG6VpYkFEnKe66/SlGZrQ==}
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/linux-x64@2.25.0:
-    resolution: {integrity: sha512-l+Abtc2pzNVGIeodw72Gq4NNtVGm9T7/UTkwW2wzxUYT8fs5iO/AYY0O6Zd3K8MQPvJDCpwnwCJ8lOPAlPBwGQ==}
+  /@dbmate/linux-x64@2.26.0:
+    resolution: {integrity: sha512-VSjWBdu7zEJ8LN8yXGAexyfmdPqVsdL7AkS7MAXhOE0zHZfXZcF+H2Wlwxoas1wg1p9tx7KxjljqJzqQlEE7Fw==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /@dbmate/win32-x64@2.25.0:
-    resolution: {integrity: sha512-5ouAh77t2ybjQFEZFpFhhW7cgxe7YcF9ic/GbOdY3LuXgl6bTac6bBKxO+kfAsXpZS6Tm2B1I3WhKBr8wRN2gw==}
+  /@dbmate/win32-x64@2.26.0:
+    resolution: {integrity: sha512-fMu2nimNX487f1jzES/YjWYZByKJ1vgnLDkDsn8vi1JJahPrVlU8axQ4OY7bUj9uT1hXnWwKsV/YyE+V1IMPvw==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
@@ -4451,17 +4451,17 @@ packages:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
     requiresBuild: true
 
-  /dbmate@2.25.0:
-    resolution: {integrity: sha512-xTl+1DOeMi5UJ2VjZZQVRVqIqMRtXnMXfpsrc2+8QhC5In9D2engq98fmpY7EgKzyTWYWeN3gIzWszf8fxUTrw==}
+  /dbmate@2.26.0:
+    resolution: {integrity: sha512-PZwU/dDm3s3bMN0Ra1SSF3i0sKUy9Ms9QnokrUZHYoKvaJyLFw2XnlTl21ivLJLbOZ/rUPzbpPddGJMzmPNt1Q==}
     hasBin: true
     optionalDependencies:
-      '@dbmate/darwin-arm64': 2.25.0
-      '@dbmate/darwin-x64': 2.25.0
-      '@dbmate/linux-arm': 2.25.0
-      '@dbmate/linux-arm64': 2.25.0
-      '@dbmate/linux-ia32': 2.25.0
-      '@dbmate/linux-x64': 2.25.0
-      '@dbmate/win32-x64': 2.25.0
+      '@dbmate/darwin-arm64': 2.26.0
+      '@dbmate/darwin-x64': 2.26.0
+      '@dbmate/linux-arm': 2.26.0
+      '@dbmate/linux-arm64': 2.26.0
+      '@dbmate/linux-ia32': 2.26.0
+      '@dbmate/linux-x64': 2.26.0
+      '@dbmate/win32-x64': 2.26.0
     dev: true
 
   /debug@3.2.7:

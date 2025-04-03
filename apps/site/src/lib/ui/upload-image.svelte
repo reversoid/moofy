@@ -23,8 +23,7 @@
 		class: className
 	}: Props = $props();
 
-	// TODO props id
-	const id = 'upload-image';
+	const id = $props.id();
 
 	async function uploadImage(e: Event) {
 		const file = (e.target as HTMLInputElement).files?.[0];
