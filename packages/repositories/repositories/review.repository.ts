@@ -21,7 +21,6 @@ export interface TagData {
   createdAt: string;
 }
 
-// TODO implement joining with tags
 export class ReviewRepository extends IReviewRepository {
   async searchReviews(
     collectionId: Collection["id"],
@@ -103,11 +102,11 @@ export class ReviewRepository extends IReviewRepository {
 
   async getReviewOnFilm(
     collectionId: Collection["id"],
-    filmId: Film["kinopoiskId"]
+    filmKpId: Film["kinopoiskId"]
   ): Promise<Review | null> {
     const rawData = await this.getSelectQuery()
       .where("reviews.collectionId", "=", collectionId.value)
-      .where("reviews.filmKinopoiskId", "=", filmId)
+      .where("films.kinopoiskId", "=", filmKpId)
       .executeTakeFirst();
 
     if (!rawData) {
@@ -123,7 +122,6 @@ export class ReviewRepository extends IReviewRepository {
       .values({
         collectionId: item.collectionId.value,
         filmId: item.film.id.value,
-        filmKinopoiskId: item.film.kinopoiskId,
         updatedAt: new Date(),
         createdAt: new Date(),
         description: item.description,
@@ -178,7 +176,7 @@ export class ReviewRepository extends IReviewRepository {
         "reviewTags.collectionTagId"
       )
       .groupBy("reviews.id")
-      .groupBy("films.kinopoiskId");
+      .groupBy("films.id");
   }
 
   async update(id: Id, value: Partial<Review>): Promise<Review> {

@@ -8,6 +8,7 @@ import {
   Changelog,
   UserPreferences,
 } from "@repo/core/entities";
+import { ProviderFilmDto } from "@repo/core/film-providers";
 import { Id, PaginatedData } from "@repo/core/utils";
 
 export const withPaginatedData =
@@ -41,7 +42,16 @@ export const makeCollectionDto = (collection: Collection) => ({
 });
 
 export const makeFilmDto = (film: Film) => ({
-  id: film.kinopoiskId, // TODO replace by id
+  id: film.id.value,
+  name: film.name,
+  posterPreviewUrl: film.posterPreviewUrl,
+  posterUrl: film.posterUrl,
+  type: film.type,
+  year: film.year,
+});
+
+export const makeProviderFilmDto = (film: ProviderFilmDto) => ({
+  id: film.kinopoiskId,
   name: film.name,
   posterPreviewUrl: film.posterPreviewUrl,
   posterUrl: film.posterUrl,

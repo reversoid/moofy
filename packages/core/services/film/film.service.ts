@@ -21,7 +21,7 @@ export class FilmService implements IFilmService {
         filmLength: film.filmLength,
         genres: film.genres,
         kinopoiskId: film.kinopoiskId,
-        name: film.kinopoiskId,
+        name: film.name,
         posterPreviewUrl: film.posterPreviewUrl,
         posterUrl: film.posterUrl,
         type: FilmType[film.type],
