@@ -1,5 +1,6 @@
 import { Id } from "../utils";
 import { Entity } from "./entity";
+import { buildCreate } from "../utils/create-entity";
 
 export enum FilmType {
   FILM = "FILM",
@@ -10,6 +11,8 @@ export enum FilmType {
 }
 
 export class Film extends Entity {
+  static create = buildCreate(Film);
+
   id: Id;
   kinopoiskId: string;
   name: string;

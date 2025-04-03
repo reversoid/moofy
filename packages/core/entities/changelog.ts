@@ -1,7 +1,10 @@
 import { Id } from "../utils";
 import { Entity } from "./entity";
+import { buildCreate } from "../utils/create-entity";
 
 export class Changelog extends Entity {
+  static create = buildCreate(Changelog);
+
   id: Id;
   description: string;
   releaseDate: Date;

@@ -2,8 +2,11 @@ import { Id } from "../utils/id";
 import { Entity } from "./entity";
 import { Film } from "./film";
 import { Tag } from "./tag";
+import { buildCreate } from "../utils/create-entity";
 
 export class Review extends Entity {
+  static create = buildCreate(Review);
+
   id: Id;
   score: number | null;
   description: string | null;

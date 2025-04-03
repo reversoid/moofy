@@ -1,7 +1,7 @@
 import { Collection, User } from "@repo/core/entities";
 import { ICollectionRepository } from "@repo/core/repositories";
 import {
-  CreatableEntity,
+  Creatable,
   Id,
   makeCursorFromDate,
   makeDateFromCursor,
@@ -114,9 +114,7 @@ export class CollectionRepository extends ICollectionRepository {
     };
   }
 
-  async create(
-    item: Collection | CreatableEntity<Collection>
-  ): Promise<Collection> {
+  async create(item: Collection | Creatable<Collection>): Promise<Collection> {
     const { id } = await db
       .insertInto("collections")
       .values({

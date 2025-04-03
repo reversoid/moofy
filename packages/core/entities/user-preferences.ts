@@ -1,4 +1,5 @@
 import { Entity } from "./entity";
+import { buildCreate } from "../utils/create-entity";
 
 import { Id } from "../utils";
 
@@ -9,6 +10,8 @@ export enum NotifyUpdateType {
 }
 
 export class UserPreferences extends Entity {
+  static create = buildCreate(UserPreferences);
+
   id: Id;
   userId: Id;
   notifyUpdateTypes: NotifyUpdateType[];

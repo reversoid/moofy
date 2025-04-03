@@ -1,10 +1,8 @@
 import { Changelog } from "../entities";
-import { CreatableEntity } from "../utils";
+import { Creatable } from "../utils";
 
 export abstract class IChangelogRepository {
-  abstract create(
-    item: Changelog | CreatableEntity<Changelog>
-  ): Promise<Changelog>;
+  abstract create(item: Changelog | Creatable<Changelog>): Promise<Changelog>;
 
   abstract getChangelogs(): Promise<Changelog[]>;
 

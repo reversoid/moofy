@@ -1,8 +1,11 @@
 import { Id } from "../utils/id";
 import { Entity } from "./entity";
 import { User } from "./user";
+import { buildCreate } from "../utils/create-entity";
 
 export class Collection extends Entity {
+  static create = buildCreate(Collection);
+
   id: Id;
   name: string;
   description: string | null;

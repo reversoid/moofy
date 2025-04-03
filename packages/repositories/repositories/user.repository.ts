@@ -1,6 +1,6 @@
 import { User } from "@repo/core/entities";
 import { IUserRepository } from "@repo/core/repositories";
-import { CreatableEntity, Id } from "@repo/core/utils";
+import { Creatable, Id } from "@repo/core/utils";
 import { sql } from "kysely";
 import { db } from "../db";
 import { getTsQueryFromString } from "./utils/fulltext-search";
@@ -19,7 +19,7 @@ export class UserRepository extends IUserRepository {
     return result.map(makeUser);
   }
 
-  async create(value: CreatableEntity<User>): Promise<User> {
+  async create(value: Creatable<User>): Promise<User> {
     const result = await db
       .insertInto("users")
       .values({

@@ -91,7 +91,7 @@ export class TagService implements ITagService {
 
     try {
       const newTag = await this.collectionTagRepository.create(
-        new Tag({
+        Tag.create({
           collectionId: props.collectionId,
           hexColor: props.dto.hexColor,
           name: props.dto.name,

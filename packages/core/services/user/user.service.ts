@@ -25,7 +25,7 @@ export class UserService implements IUserService {
     password: string;
   }): Promise<Result<User, UsernameExistsError>> {
     const passwordHash = await hashPassword(props.password);
-    const newUser = new User({
+    const newUser = User.create({
       username: props.username.toLowerCase(),
       passwordHash,
     });
