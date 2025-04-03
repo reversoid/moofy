@@ -141,7 +141,7 @@ export class ReviewService implements IReviewService {
       film = savedFilmResult.unwrap();
     }
 
-    const newReview = new Review({
+    const newReview = Review.create({
       score: props.dto.score ?? null,
       description: props.dto.description ?? null,
       film,

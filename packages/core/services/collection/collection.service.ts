@@ -221,7 +221,7 @@ export class CollectionService implements ICollectionService {
       return err(new UserNotFoundError());
     }
 
-    const newCollection = new Collection({
+    const newCollection = Collection.create({
       creator: user,
       isPublic: props.dto.isPublic ?? false,
       name: props.dto.name,
