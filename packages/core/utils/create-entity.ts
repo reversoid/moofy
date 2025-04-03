@@ -15,6 +15,9 @@ type CreateProps<T extends new (...args: any) => any> = Omit<
  */
 export type Creatable<T extends { id: Id }> = Omit<T, "id">;
 
+// TODO make build create to have in props optional ID {id?: Id}
+// On required ID it should get typescript error
+
 /**
  * Function that returns a function to create a new instance of a class.
  */
