@@ -55,7 +55,7 @@
 				...form.data,
 				tags: form.data.tags?.map(Number),
 				description: form.data.description ?? '',
-				filmId: form.data.filmId ?? ''
+				filmId: form.data.filmId ?? -1
 			});
 		}
 	});
