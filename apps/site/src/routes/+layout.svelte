@@ -3,10 +3,11 @@
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
 	import '../fonts.css';
+	import '../app.css';
 
 	import { setCurrentUser } from '$lib/state/state.svelte';
-	import '../app.css';
-	import { AppSidebar, Footer, Header } from '../app/ui';
+	import { AppSidebar, Footer, Header, UpdatesNotification } from '../app/ui';
+
 	let { children, data } = $props();
 
 	setCurrentUser(data.user);
@@ -37,6 +38,7 @@
 	<div class="flex h-full flex-grow flex-col">
 		<Header />
 		<AppSidebar />
+		<UpdatesNotification />
 
 		<main class="min-h-[calc(100svh-100px-60px)] flex-grow max-sm:min-h-[calc(100svh-100px-96px)]">
 			{@render children()}

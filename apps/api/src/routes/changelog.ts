@@ -4,15 +4,15 @@ import { authMiddleware } from "../utils/auth-middleware";
 import { makeChangelogDto } from "../utils/make-dto";
 
 export const changelogRoute = new Hono()
-  .get("/check-updates", authMiddleware, async (c) => {
+  .get("/new", authMiddleware, async (c) => {
     const session = c.get("session")!;
     const changelogService = c.get("changelogService");
 
-    const hasNewUpdates = changelogService.hasUserSeenLatestUpdate(
+    const hasSeenLatestUpdates = await changelogService.hasUserSeenLatestUpdate(
       session.user.id
     );
 
-    return c.json({ hasNewUpdates }, 200);
+    return c.json({ hasNewUpdates: !hasSeenLatestUpdates }, 200);
   })
   .post("/views", authMiddleware, async (c) => {
     const session = c.get("session")!;

@@ -16,6 +16,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Changelog | Moofy</title>
+</svelte:head>
+
 <Wrapper>
 	<Heading>Список изменений</Heading>
 
