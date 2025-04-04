@@ -71,8 +71,8 @@ jobs:
       - name: Compose test docker
         run: docker --context moofy-server compose --env-file .env -f deploy/docker-compose.yml up --build -d
 
-      - name: Prune images
-        run: docker image prune --force
+      - name: Prune system
+        run: docker system prune --force
 
   # TODO what if no migrations were run?
   # we can check for status code? Is this real?
