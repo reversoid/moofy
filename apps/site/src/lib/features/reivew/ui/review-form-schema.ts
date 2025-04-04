@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const reviewFormSchema = z.object({
-	filmId: z.coerce.number(),
+	filmId: z.string(),
 	description: z
 		.string()
 		.max(400, { message: 'Описание не может быть длиннее 400 символов' })

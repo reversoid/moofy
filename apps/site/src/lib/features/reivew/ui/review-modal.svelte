@@ -37,7 +37,7 @@
 	const type = existingReview ? 'edit' : 'create';
 
 	const initialData = {
-		filmId: existingReview?.film.id ?? null,
+		filmId: existingReview?.film.id ? String(existingReview?.film.id) : null,
 		description: existingReview?.description ?? null,
 		score: existingReview?.score ?? null,
 		tags: (existingReview?.tags.map((t) => t.id.toString()) ?? []) as string[]
@@ -55,12 +55,12 @@
 				...form.data,
 				tags: form.data.tags?.map(Number),
 				description: form.data.description ?? '',
-				filmId: form.data.filmId ?? -1
+				filmId: Number(form.data.filmId ?? -1)
 			});
 		}
 	});
 
-	const { form: formData, enhance, submitting, errors, isTainted } = form;
+	const { form: formData, enhance, submitting, errors } = form;
 
 	const isInvalid = $derived(Object.values($errors).filter(Boolean).length > 0);
 
@@ -95,7 +95,11 @@
 			<div class="flex flex-col gap-2">
 				<p class="text-muted-foreground text-sm">Выбранный фильм</p>
 
-				<Film name={visibleFilm.name} year={visibleFilm.year} posterUrl={visibleFilm.posterUrl} />
+				<Film
+					name={visibleFilm.name}
+					year={visibleFilm.year}
+					posterUrl={visibleFilm.posterPreviewUrl}
+				/>
 			</div>
 		{/if}
 	</div>

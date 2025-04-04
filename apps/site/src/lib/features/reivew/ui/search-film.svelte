@@ -6,14 +6,26 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { cn, makeClient } from '$lib/utils';
-	import type { FilmDto } from '@repo/api/dtos';
+	import type { FilmDto, ProviderFilmDto } from '@repo/api/dtos';
 	import uniqBy from 'lodash.uniqby';
 	import debounce from 'lodash.debounce';
 	import type { FormEventHandler } from 'svelte/elements';
 	import Image from '$lib/ui/image.svelte';
+	import { FilmType } from '@repo/core/entities';
+	import { ProviderFilmType } from '@repo/core/film-providers';
+
+	// TODO make better flow with working with provider and entity films
+
+	const providerFilmToFilm = (f: ProviderFilmDto): FilmDto => {
+		return { ...f, id: Number(f.id), type: FilmType[f.type] };
+	};
+
+	const filmToProviderFilm = (f: FilmDto): ProviderFilmDto => {
+		return { ...f, id: String(f.id), type: ProviderFilmType[f.type] };
+	};
 
 	interface Props {
-		filmId?: FilmDto['id'] | null;
+		filmId?: ProviderFilmDto['id'] | null;
 		film?: FilmDto | null;
 	}
 
@@ -47,11 +59,16 @@
 		}
 	});
 
-	let films = $state<FilmDto[]>([]);
+	let films = $state<ProviderFilmDto[]>([]);
 
 	let isLoading = $state(false);
 
-	const visibleFilms = $derived(uniqBy([film, ...films].filter(Boolean) as FilmDto[], 'id'));
+	const visibleFilms = $derived(
+		uniqBy(
+			[film ? filmToProviderFilm(film) : null, ...films].filter((v) => !!v),
+			'id'
+		)
+	);
 
 	async function searchFilm(search: string) {
 		const api = makeClient(fetch);
@@ -100,16 +117,16 @@
 						{#each visibleFilms as f (f.id)}
 							<Command.Item
 								class="flex items-start gap-2"
-								value={f.id}
+								value={String(f.id)}
 								onSelect={() => {
 									closeAndFocusTrigger();
-									film = f;
+									film = providerFilmToFilm(f);
 									filmId = f.id;
 								}}
 							>
 								<div class="border-primary-foreground rounded border">
 									<Image
-										src={f.posterUrl}
+										src={f.posterPreviewUrl}
 										alt={`${f.name} poster`}
 										class="aspect-[2/3] h-20 rounded object-cover"
 									/>
@@ -120,7 +137,7 @@
 										<div class="flex items-center gap-2">
 											{f.name}
 
-											<Check class={cn(film?.id !== f.id && 'text-transparent')} />
+											<Check class={cn(String(film?.id) !== f.id && 'text-transparent')} />
 										</div>
 									</h6>
 									<span class="text-muted-foreground">{f.year}</span>
