@@ -129,14 +129,18 @@ export const makeChangelog = (
   });
 };
 
+const postgresArrayPattern = /\{([^}]+)\}/;
+const parseArray = (v: string) =>
+  v.match(postgresArrayPattern)?.at(1)?.split(",") ?? [];
+
 export const makeUserPreferences = (
   rawData: UserPreferencesSelects.UserPreferencesSelectResult
 ): UserPreferences => {
   return new UserPreferences({
     id: new Id(rawData["up-id"]),
     userId: new Id(rawData["up-userId"]),
-    notifyUpdateTypes: rawData["up-notifyUpdateTypes"].map(
-      (v) => NotifyUpdateType[v]
+    notifyUpdateTypes: parseArray(rawData["up-notifyUpdateTypes"]).map(
+      (v) => v as NotifyUpdateType
     ),
   });
 };

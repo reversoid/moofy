@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
@@ -146,6 +147,21 @@
 								{/snippet}
 							</Form.Control>
 							<Form.FieldErrors />
+						</Form.Field>
+
+						<Form.Field {form} name="notifyUpdateType">
+							<Form.Control>
+								{#snippet children({ attrs }: { attrs: any })}
+									<Select.Root bind:value={$formData.notifyUpdateType} {...attrs} type="multiple">
+										<Select.Trigger>Уведомлять об обновлениях</Select.Trigger>
+										<Select.Content>
+											<Select.Item value="feature">Новое</Select.Item>
+											<Select.Item value="improvement">Улучшения</Select.Item>
+											<Select.Item value="bugfix">Исправления</Select.Item>
+										</Select.Content>
+									</Select.Root>
+								{/snippet}
+							</Form.Control>
 						</Form.Field>
 					</div>
 				</div>

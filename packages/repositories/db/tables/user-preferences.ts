@@ -6,5 +6,6 @@ export interface UserPreferencesTable {
   id: Generated<number>;
   userId: number;
 
-  notifyUpdateTypes: UpdateType[];
+  /** Represents string like "{feature,bugfix,improvement}" */
+  notifyUpdateTypes: string;
 }
