@@ -1,38 +1,83 @@
 import {
   IChangelogRepository,
   IChangelogViewRepository,
+  IUserPreferencesRepository,
   IUserRepository,
 } from "../../repositories";
 import { IChangelogService } from "./interface";
-import { Changelog } from "../../entities";
+import { Changelog, NotifyUpdateType } from "../../entities";
 import parseChangelog from "changelog-parser";
-import { raise } from "../../sdk";
+import { dayjs, raise } from "../../sdk";
 import { Id } from "../../utils";
 import { err, ok, Result } from "resulto";
 import { UserNotFoundError } from "../user";
+import { PreferencesService } from "../preferences";
 
 export class ChangelogService implements IChangelogService {
   constructor(
     private readonly repository: IChangelogRepository,
     private readonly viewRepository: IChangelogViewRepository,
-    private readonly userRepository: IUserRepository
+    private readonly userRepository: IUserRepository,
+    private readonly preferencesService: PreferencesService
   ) {}
 
-  async hasUserSeenLatestUpdate(userId: Id): Promise<boolean> {
-    const [lastUpdate, { lastViewedAt: lastSeenAt }] = await Promise.all([
-      this.repository.getLatest(),
-      this.viewRepository.get(userId),
-    ]);
+  async shouldUserSeeUpdate(userId: Id): Promise<boolean> {
+    const [allChangelogs, { lastViewedAt: lastSeenAt }, preferencesResult] =
+      await Promise.all([
+        this.repository.getChangelogs(),
+        this.viewRepository.get(userId),
+        this.preferencesService.getUserPreferences(userId),
+      ]);
 
-    if (!lastUpdate) {
-      return true;
-    }
+    const { notifyUpdateTypes } = preferencesResult.unwrap();
 
-    if (!lastSeenAt) {
+    if (notifyUpdateTypes.length === 0) {
       return false;
     }
 
-    return lastSeenAt > lastUpdate.createdAt;
+    if (allChangelogs.length === 0) {
+      return false;
+    }
+
+    const notifyFeature = notifyUpdateTypes.reduce(
+      (acc, v) => {
+        const newBugfix = v === NotifyUpdateType.bugfix;
+        const newFeature = v === NotifyUpdateType.feature;
+        const newImprovement = v === NotifyUpdateType.improvement;
+
+        return {
+          ...acc,
+          bugfix: newBugfix || acc.bugfix,
+          feature: newFeature || acc.feature,
+          improvement: newImprovement || acc.improvement,
+        };
+      },
+      {
+        bugfix: false,
+        improvement: false,
+        feature: false,
+      }
+    );
+
+    const unseenChangelogs = allChangelogs.filter((cl) => {
+      if (!lastSeenAt) {
+        return true;
+      }
+
+      cl.releaseDate > lastSeenAt;
+    });
+
+    for (const changelog of unseenChangelogs) {
+      if (
+        (changelog.hasBugfix && notifyFeature.bugfix) ||
+        (changelog.hasFeature && notifyFeature.feature) ||
+        (changelog.hasImprovement && notifyFeature.improvement)
+      ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   getChangelogs(): Promise<Changelog[]> {

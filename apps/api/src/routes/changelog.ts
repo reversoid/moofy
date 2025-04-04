@@ -8,11 +8,11 @@ export const changelogRoute = new Hono()
     const session = c.get("session")!;
     const changelogService = c.get("changelogService");
 
-    const hasSeenLatestUpdates = await changelogService.hasUserSeenLatestUpdate(
+    const shouldSeeUpdates = await changelogService.shouldUserSeeUpdate(
       session.user.id
     );
 
-    return c.json({ hasNewUpdates: !hasSeenLatestUpdates }, 200);
+    return c.json({ hasNewUpdates: shouldSeeUpdates }, 200);
   })
   .post("/views", authMiddleware, async (c) => {
     const session = c.get("session")!;
