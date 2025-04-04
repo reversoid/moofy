@@ -24,6 +24,9 @@
 						onClick() {
 							goto('/changelog');
 						}
+					},
+					onAutoClose() {
+						void makeClient(fetch).changelog.views.$post();
 					}
 				});
 			});
