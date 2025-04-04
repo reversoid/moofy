@@ -10,7 +10,7 @@
 </svelte:head>
 
 <Wrapper>
-	<Heading>О нас</Heading>
+	<Heading>О проекте</Heading>
 
 	<p class="text-muted-foreground mt-4">
 		Moofy - это платформа, где пользователи могут создавать, редактировать и делиться своими

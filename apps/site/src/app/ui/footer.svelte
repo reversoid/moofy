@@ -14,7 +14,7 @@
 		<div class="flex items-center justify-center gap-2">
 			<Link target="_blank" href="https://github.com/reversoid/moofy">Github</Link>
 			<Link href="/support">Поддержка</Link>
-			<Link href="/about">О нас</Link>
+			<Link href="/about">О проекте</Link>
 		</div>
 	</Wrapper>
 </footer>
