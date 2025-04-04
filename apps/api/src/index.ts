@@ -124,14 +124,17 @@ const tagService = new TagService(
   collectionService,
   reviewService
 );
-const changelogService = new ChangelogService(
-  changelogRepository,
-  changelogViewRepository,
-  userRepository
-);
+
 const preferencesService = new PreferencesService(
   preferencesRepository,
   userRepository
+);
+
+const changelogService = new ChangelogService(
+  changelogRepository,
+  changelogViewRepository,
+  userRepository,
+  preferencesService
 );
 
 const api = new Hono()

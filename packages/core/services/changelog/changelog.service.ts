@@ -22,12 +22,21 @@ export class ChangelogService implements IChangelogService {
   ) {}
 
   async shouldUserSeeUpdate(userId: Id): Promise<boolean> {
-    const [allChangelogs, { lastViewedAt: lastSeenAt }, preferencesResult] =
-      await Promise.all([
-        this.repository.getChangelogs(),
-        this.viewRepository.get(userId),
-        this.preferencesService.getUserPreferences(userId),
-      ]);
+    const [
+      allChangelogs,
+      { lastViewedAt: lastSeenAt },
+      preferencesResult,
+      user,
+    ] = await Promise.all([
+      this.repository.getChangelogs(),
+      this.viewRepository.get(userId),
+      this.preferencesService.getUserPreferences(userId),
+      this.userRepository.get(userId),
+    ]);
+
+    if (!user) {
+      throw new UserNotFoundError();
+    }
 
     const { notifyUpdateTypes } = preferencesResult.unwrap();
 
@@ -36,6 +45,10 @@ export class ChangelogService implements IChangelogService {
     }
 
     if (allChangelogs.length === 0) {
+      return false;
+    }
+
+    if (user.createdAt > allChangelogs.at(0)!.releaseDate) {
       return false;
     }
 
