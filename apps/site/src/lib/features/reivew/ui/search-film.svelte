@@ -17,7 +17,7 @@
 	// TODO make better flow with working with provider and entity films
 
 	const providerFilmToFilm = (f: ProviderFilmDto): FilmDto => {
-		return { ...f, id: Number(f.id), type: FilmType[f.type] };
+		return { ...f, id: Number(f.id), type: FilmType[f.type], kinopoiskId: f.id };
 	};
 
 	const filmToProviderFilm = (f: FilmDto): ProviderFilmDto => {
