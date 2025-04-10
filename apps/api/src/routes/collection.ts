@@ -450,12 +450,12 @@ export const collectionRoute = new Hono()
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const session = c.get("session")!;
+      const session = c.get("session");
       const tagService = c.get("tagService");
 
       const result = await tagService.getTagsByCollectionId({
         collectionId: new Id(collectionId),
-        by: session.user.id,
+        by: session?.user.id,
       });
 
       if (result.isErr()) {
