@@ -135,7 +135,9 @@ export interface ICollectionService {
     Result<Collection, UserNotFoundError | PersonalCollectionExistsError>
   >;
 
-  getPersonalCollection(props: { userId: Id }): Promise<Collection | null>;
+  getPersonalCollection(props: {
+    userId: Id;
+  }): Promise<Result<Collection | null, UserNotFoundError>>;
 
   fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;

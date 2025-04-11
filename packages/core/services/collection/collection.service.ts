@@ -13,7 +13,7 @@ import {
   IUserRepository,
 } from "../../repositories";
 import { PaginatedData } from "../../utils/pagination";
-import { UserNotFoundError } from "../user/errors";
+import { UsernameExistsError, UserNotFoundError } from "../user/errors";
 import {
   AlreadyLikedCollectionError,
   CannotMakePersonalCollectionPrivateError,
@@ -50,8 +50,17 @@ export class CollectionService implements ICollectionService {
 
   async getPersonalCollection(props: {
     userId: Id;
-  }): Promise<Collection | null> {
-    return this.personalCollectionRepository.getByUserId(props.userId);
+  }): Promise<Result<Collection | null, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
+    if (!user) {
+      return err(new UsernameExistsError());
+    }
+
+    const collection = await this.personalCollectionRepository.getByUserId(
+      props.userId
+    );
+
+    return ok(collection);
   }
 
   async createPersonalCollection(props: {

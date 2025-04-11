@@ -295,4 +295,84 @@ export const userRoute = new Hono()
         collections: withPaginatedData(makeCollectionDto)(collections.unwrap()),
       });
     }
+  )
+  .get(
+    "/:id/personal-collection",
+    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    async (c) => {
+      const { id: userId } = c.req.valid("param");
+      const collectionService = c.get("collectionService");
+
+      const collectionResult = await collectionService.getPersonalCollection({
+        userId: new Id(userId),
+      });
+
+      if (collectionResult.isErr()) {
+        const error = collectionResult.error;
+        if (error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
+      }
+
+      const collection = collectionResult.value;
+
+      return c.json(
+        { collection: collection && makeCollectionDto(collection) },
+        200
+      );
+    }
+  )
+  .get(
+    "/:id/personal-collection/reviews",
+    validator("param", z.object({ id: z.coerce.number().int().positive() })),
+    validator(
+      "query",
+      z.object({
+        cursor: z.string().optional(),
+        search: z.string().optional(),
+        limit: z.coerce.number().int().min(1).max(100).default(20),
+      })
+    ),
+    async (c) => {
+      const { id: userId } = c.req.valid("param");
+      const { limit, cursor, search } = c.req.valid("query");
+
+      const collectionService = c.get("collectionService");
+      const reviewService = c.get("reviewService");
+
+      const user = c.get("session")?.user;
+
+      const collectionResult = await collectionService.getPersonalCollection({
+        userId: new Id(userId),
+      });
+
+      if (collectionResult.isErr()) {
+        const error = collectionResult.error;
+        if (error instanceof UserNotFoundError) {
+          return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        throw error;
+      }
+
+      const collection = collectionResult.value;
+
+      if (!collection) {
+        return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+      }
+
+      const reviewsResult = await reviewService.getCollectionReviews({
+        collectionId: collection.id,
+        limit,
+        cursor,
+        by: user?.id,
+        search,
+      });
+
+      const reviews = reviewsResult.unwrap();
+
+      return c.json({ reviews }, 200);
+    }
   );
