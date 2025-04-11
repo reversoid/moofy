@@ -115,7 +115,7 @@ export class ReviewService implements IReviewService {
       return err(new NoAccessToCollectionError());
     }
 
-    const reviewOnFilm = await this.reviewRepository.getReviewOnFilm(
+    const reviewOnFilm = await this.reviewRepository.getReviewOnFilmByKpId(
       props.collectionId,
       props.dto.filmId
     );
@@ -171,6 +171,7 @@ export class ReviewService implements IReviewService {
     const updatedReview = await this.reviewRepository.update(props.reviewId, {
       description: props.dto.description,
       score: props.dto.score,
+      isHidden: props.dto.isHidden,
     });
 
     return ok(updatedReview);
@@ -240,7 +241,8 @@ export class ReviewService implements IReviewService {
     const reviews = await this.reviewRepository.getCollectionReviews(
       props.collectionId,
       props.limit,
-      props.cursor
+      props.cursor,
+      props.by?.value === collection.creator.id.value
     );
 
     return ok(reviews);
@@ -274,6 +276,10 @@ export class ReviewService implements IReviewService {
     const collection = collectionResult.unwrap();
 
     if (!collection) {
+      return ok(null);
+    }
+
+    if (review.isHidden && collection.creator.id.value !== props.by?.value) {
       return ok(null);
     }
 

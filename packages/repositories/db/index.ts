@@ -17,6 +17,7 @@ import { ReviewTagsTable } from "./tables/review-tags";
 import { UserPreferencesTable } from "./tables/user-preferences";
 import { ChangelogsTable } from "./tables/changelogs";
 import { UserChangelogViewsTable } from "./tables/user-changelog-views";
+import { PersonalCollectionsTable } from "./tables/personal-collections";
 
 const { Pool } = (pg as any).default as typeof pg;
 
@@ -37,6 +38,7 @@ export interface Database {
   userPreferences: UserPreferencesTable;
   changelogs: ChangelogsTable;
   userChangelogViews: UserChangelogViewsTable;
+  personalCollections: PersonalCollectionsTable;
 }
 
 const dialect = new PostgresDialect({
@@ -58,14 +60,14 @@ export const db = new Kysely<Database>({
     }
 
     if (event.level === "query") {
-      console.log(event.query.sql);
-      console.log(event.query.parameters);
+      console.log("SQL QUERY:", event.query.sql);
+      console.log("SQL PARAMS:", event.query.parameters);
     }
 
     if (event.level === "error") {
-      console.log(event.query.sql);
-      console.log(event.query.parameters);
-      console.log(event.error);
+      console.log("SQL QUERY:", event.query.sql);
+      console.log("SQL PARAMS:", event.query.parameters);
+      console.log("SQL ERROR:", event.error);
     }
   },
   plugins: [new CamelCasePlugin()],

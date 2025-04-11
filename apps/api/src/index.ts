@@ -41,6 +41,7 @@ import {
   ChangelogViewRepository,
   ChangelogRepository,
   UserPreferencesRepository,
+  PersonalCollectionRepository,
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -88,6 +89,7 @@ const reviewTagRepository = new ReviewTagRepository();
 const changelogRepository = new ChangelogRepository();
 const changelogViewRepository = new ChangelogViewRepository();
 const preferencesRepository = new UserPreferencesRepository();
+const personalCollectionRepository = new PersonalCollectionRepository();
 
 // Services
 const userService = new UserService(userRepository);
@@ -97,8 +99,13 @@ const collectionService = new CollectionService(
   userRepository,
   collectionLikeRepository,
   favoriteCollectionRepository,
-  collectionViewRepository
+  collectionViewRepository,
+  personalCollectionRepository,
+  reviewRepository,
+  reviewTagRepository,
+  collectionTagRepository
 );
+
 const filmService = new FilmService(filmRepository);
 const favoriteCollectionService = new FavoriteCollectionService(
   favoriteCollectionRepository,

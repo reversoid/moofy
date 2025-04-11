@@ -4,33 +4,238 @@ import { User } from "../../entities/user";
 import {
   ICollectionLikeRepository,
   ICollectionRepository,
+  ICollectionTagRepository,
   ICollectionViewRepository,
   IFavoriteCollectionRepository,
+  IPersonalCollectionRepository,
+  IReviewRepository,
+  IReviewTagRepository,
   IUserRepository,
 } from "../../repositories";
 import { PaginatedData } from "../../utils/pagination";
-import { UserNotFoundError } from "../user/errors";
+import { UsernameExistsError, UserNotFoundError } from "../user/errors";
 import {
   AlreadyLikedCollectionError,
+  CannotMakePersonalCollectionPrivateError,
   CollectionNotFoundError,
+  DeleteLinkedPersonalCollectionError,
   NoAccessToPrivateCollectionError,
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
+  PersonalCollectionExistsError,
+  PersonalCollectionNotFoundError,
 } from "./errors";
 import {
   CreateCollectionDto,
   EditCollectionDto,
   ICollectionService,
 } from "./interface";
+import { Review } from "../../entities";
+import { Id } from "../../utils";
+import { TagNotFoundError } from "../tag";
 
+// TODO split by CollectionService, PersonalCollectionService
 export class CollectionService implements ICollectionService {
   constructor(
     private readonly collectionRepository: ICollectionRepository,
     private readonly userRepository: IUserRepository,
     private readonly collectionLikeRepository: ICollectionLikeRepository,
     private readonly favoriteCollectionRepository: IFavoriteCollectionRepository,
-    private readonly collectionViewRepository: ICollectionViewRepository
+    private readonly collectionViewRepository: ICollectionViewRepository,
+    private readonly personalCollectionRepository: IPersonalCollectionRepository,
+    private readonly reviewRepository: IReviewRepository,
+    private readonly reviewTagRepository: IReviewTagRepository,
+    private readonly collectionTagRepository: ICollectionTagRepository
   ) {}
+
+  async getPersonalCollection(props: {
+    userId: Id;
+  }): Promise<Result<Collection | null, UserNotFoundError>> {
+    const user = await this.userRepository.get(props.userId);
+    if (!user) {
+      return err(new UsernameExistsError());
+    }
+
+    const collection = await this.personalCollectionRepository.getByUserId(
+      props.userId
+    );
+
+    return ok(collection);
+  }
+
+  async createPersonalCollection(props: {
+    userId: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | PersonalCollectionExistsError>
+  > {
+    const hasPersonalCollection =
+      await this.personalCollectionRepository.getByUserId(props.userId);
+
+    if (hasPersonalCollection) {
+      return err(new PersonalCollectionExistsError());
+    }
+
+    const newCollectionResult = await this.createCollection({
+      userId: props.userId,
+      dto: { name: `${props.userId.value}` },
+    });
+
+    if (newCollectionResult.isErr()) {
+      const error = newCollectionResult.error;
+      if (error instanceof UserNotFoundError) {
+        return err(error);
+      }
+      throw error;
+    }
+
+    const newCollection = newCollectionResult.value;
+
+    await this.personalCollectionRepository.create({
+      collectionId: newCollection.id,
+      userId: props.userId,
+    });
+
+    return ok(newCollection);
+  }
+
+  // TODO optimize
+  async fillPersonalCollectionWithOtherCollection(props: {
+    userId: Id;
+    collectionId: Id;
+    tagId?: Id;
+  }): Promise<
+    Result<
+      { conflictReviews: Review[]; addedReviews: Review[] },
+      | PersonalCollectionNotFoundError
+      | CollectionNotFoundError
+      | UserNotFoundError
+    >
+  > {
+    const [user, personalCollection, collection] = await Promise.all([
+      this.userRepository.get(props.userId),
+      this.personalCollectionRepository.getByUserId(props.userId),
+      this.collectionRepository.get(props.collectionId),
+    ]);
+
+    if (!user) {
+      return err(new UserNotFoundError());
+    }
+
+    if (!personalCollection) {
+      return err(new PersonalCollectionNotFoundError());
+    }
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const getAllReviews = async (collectionId: Id) => {
+      const reviews: Review[] = [];
+
+      let nextCursor: string | null = null;
+
+      do {
+        const { cursor, items } =
+          await this.reviewRepository.getCollectionReviews(
+            collectionId,
+            100,
+            nextCursor ?? undefined
+          );
+
+        nextCursor = cursor;
+
+        for (const item of items) {
+          reviews.push(item);
+        }
+      } while (nextCursor !== null);
+
+      return reviews;
+    };
+
+    const [existingReviews, reviewsToAdd] = await Promise.all([
+      getAllReviews(personalCollection.id),
+      getAllReviews(collection.id),
+    ]);
+
+    const existingFilms = new Set(existingReviews.map((r) => r.id.value));
+    const filmsToAdd = new Set(reviewsToAdd.map((r) => r.id.value));
+
+    const conflictingFilmsIds = existingFilms.intersection(filmsToAdd);
+
+    const filmIdsToCopy = filmsToAdd.difference(existingFilms);
+
+    const cloneReview = async (filmId: number) => {
+      const review = await this.reviewRepository.getReviewOnFilm(
+        collection.id,
+        new Id(filmId)
+      );
+
+      if (!review) {
+        return null;
+      }
+
+      return this.reviewRepository.create(
+        new Review({ ...review, collectionId: personalCollection.id })
+      );
+    };
+
+    const addedReviews: Review[] = [];
+
+    for (const filmId of filmIdsToCopy) {
+      const newReview = await cloneReview(filmId);
+
+      if (newReview) {
+        addedReviews.push(newReview);
+      }
+    }
+
+    if (props.tagId) {
+      const tag = await this.collectionTagRepository.get(props.tagId);
+      if (!tag || tag.collectionId.value !== personalCollection.id.value) {
+        return err(new TagNotFoundError());
+      }
+
+      for (const review of addedReviews) {
+        await this.reviewTagRepository.linkTagToReview(props.tagId, review.id);
+      }
+    }
+
+    const conflictReviews: Review[] = [];
+    for (const filmId of conflictingFilmsIds) {
+      const review = await this.reviewRepository.getReviewOnFilm(
+        collection.id,
+        new Id(filmId)
+      );
+
+      if (!review) {
+        continue;
+      }
+
+      conflictReviews.push(review);
+    }
+
+    return ok({
+      conflictReviews,
+      addedReviews,
+    });
+  }
+
+  async deletePersonalCollection(props: {
+    userId: Id;
+  }): Promise<
+    Result<null, UserNotFoundError | PersonalCollectionNotFoundError>
+  > {
+    const personalCollection =
+      await this.personalCollectionRepository.getByUserId(props.userId);
+
+    if (!personalCollection) {
+      return err(new PersonalCollectionNotFoundError());
+    }
+
+    await this.personalCollectionRepository.deleteByUserId(props.userId);
+
+    return ok(null);
+  }
 
   async viewCollection(props: {
     collectionId: Collection["id"];
@@ -238,8 +443,20 @@ export class CollectionService implements ICollectionService {
     id: Collection["id"];
     by: User["id"];
   }): Promise<
-    Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>
+    Result<
+      null,
+      | CollectionNotFoundError
+      | NotOwnerOfCollectionError
+      | DeleteLinkedPersonalCollectionError
+    >
   > {
+    const isPersonal = await this.personalCollectionRepository.getByUserId(
+      props.by
+    );
+    if (isPersonal) {
+      return err(new DeleteLinkedPersonalCollectionError());
+    }
+
     const collection = await this.collectionRepository.get(props.id);
     if (!collection) {
       return err(new CollectionNotFoundError());
@@ -267,6 +484,16 @@ export class CollectionService implements ICollectionService {
 
     if (collection.creator.id.value !== props.by.value) {
       return err(new NotOwnerOfCollectionError());
+    }
+
+    const personalCollection =
+      await this.personalCollectionRepository.getByUserId(props.by);
+
+    if (
+      props.dto.isPublic === false &&
+      personalCollection?.id.value === collection.id.value
+    ) {
+      return err(new CannotMakePersonalCollectionPrivateError());
     }
 
     const updatedCollection = await this.collectionRepository.update(props.id, {
