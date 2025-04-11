@@ -22,6 +22,22 @@ export interface TagData {
 }
 
 export class ReviewRepository extends IReviewRepository {
+  async getReviewOnFilm(
+    collectionId: Collection["id"],
+    filmId: Film["id"]
+  ): Promise<Review | null> {
+    const rawData = await this.getSelectQuery()
+      .where("reviews.collectionId", "=", collectionId.value)
+      .where("films.id", "=", filmId.value)
+      .executeTakeFirst();
+
+    if (!rawData) {
+      return null;
+    }
+
+    return makeReview(rawData);
+  }
+
   async searchReviews(
     collectionId: Collection["id"],
     search: string,
