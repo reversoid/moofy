@@ -98,11 +98,12 @@ export const reviewRoute = new Hono()
       z.object({
         score: z.number().int().min(1).max(5).nullish(),
         description: z.string().min(1).max(400).nullish(),
+        isHidden: z.boolean().optional(),
       })
     ),
     async (c) => {
       const { reviewId } = c.req.valid("param");
-      const { score, description } = c.req.valid("json");
+      const { score, description, isHidden } = c.req.valid("json");
       const reviewService = c.get("reviewService");
       const session = c.get("session")!;
 
@@ -111,6 +112,7 @@ export const reviewRoute = new Hono()
         dto: {
           score,
           description,
+          isHidden,
         },
         by: session.user.id,
       });

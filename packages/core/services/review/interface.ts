@@ -27,6 +27,7 @@ export type CreateReviewDto = {
 export type EditReviewDto = {
   description?: string | null;
   score?: number | null;
+  isHidden?: boolean;
 };
 
 export interface IReviewService {

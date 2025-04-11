@@ -14,7 +14,8 @@ export abstract class IReviewRepository extends IBaseRepository<Review> {
   abstract getCollectionReviews(
     collectionId: Collection["id"],
     limit: number,
-    cursor?: string
+    cursor?: string,
+    showHidden?: boolean
   ): Promise<PaginatedData<Review>>;
 
   abstract getReviewOnFilmByKpId(
