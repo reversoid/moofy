@@ -81,12 +81,15 @@ export class CollectionService implements ICollectionService {
 
     const newCollection = newCollectionResult.value;
 
-    await this.personalCollectionRepository.create(newCollection);
+    await this.personalCollectionRepository.create({
+      collectionId: newCollection.id,
+      userId: props.userId,
+    });
 
     return ok(newCollection);
   }
 
-  // TODO optimize method
+  // TODO optimize
   async fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
