@@ -8,8 +8,14 @@ import {
   NotOwnerOfCollectionError,
   AlreadyLikedCollectionError,
   NotLikedCollectionError,
+  PersonalCollectionExistsError,
+  CannotMakePersonalCollectionPrivateError,
+  PersonalCollectionNotFoundError,
+  DeleteLinkedPersonalCollectionError,
 } from "./errors";
 import { PaginatedData } from "../../utils/pagination";
+import { Id } from "../../utils";
+import { Review } from "../../entities";
 
 export type CreateCollectionDto = {
   name: string;
@@ -47,7 +53,12 @@ export interface ICollectionService {
     id: Collection["id"];
     by: User["id"];
   }): Promise<
-    Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>
+    Result<
+      null,
+      | CollectionNotFoundError
+      | NotOwnerOfCollectionError
+      | DeleteLinkedPersonalCollectionError
+    >
   >;
 
   editCollection(props: {
@@ -55,7 +66,12 @@ export interface ICollectionService {
     dto: EditCollectionDto;
     by: User["id"];
   }): Promise<
-    Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
+    Result<
+      Collection,
+      | CollectionNotFoundError
+      | NotOwnerOfCollectionError
+      | CannotMakePersonalCollectionPrivateError
+    >
   >;
 
   getUserCollections(props: {
@@ -110,5 +126,31 @@ export interface ICollectionService {
       | UserNotFoundError
       | NotLikedCollectionError
     >
+  >;
+
+  createPersonalCollection(props: {
+    userId: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | PersonalCollectionExistsError>
+  >;
+
+  getPersonalCollection(props: { userId: Id }): Promise<Collection | null>;
+
+  fillPersonalCollectionWithOtherCollection(props: {
+    userId: Id;
+    collectionId: Id;
+  }): Promise<
+    Result<
+      { conflictReviews: Review[]; addedReviews: Review[] },
+      | PersonalCollectionNotFoundError
+      | CollectionNotFoundError
+      | UserNotFoundError
+    >
+  >;
+
+  deletePersonalCollection(props: {
+    userId: Id;
+  }): Promise<
+    Result<null, UserNotFoundError | PersonalCollectionNotFoundError>
   >;
 }

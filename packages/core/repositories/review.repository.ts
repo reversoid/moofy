@@ -17,8 +17,13 @@ export abstract class IReviewRepository extends IBaseRepository<Review> {
     cursor?: string
   ): Promise<PaginatedData<Review>>;
 
-  abstract getReviewOnFilm(
+  abstract getReviewOnFilmByKpId(
     collectionId: Collection["id"],
     filmKpId: Film["kinopoiskId"]
+  ): Promise<Review | null>;
+
+  abstract getReviewOnFilm(
+    collectionId: Collection["id"],
+    filmId: Film["id"]
   ): Promise<Review | null>;
 }

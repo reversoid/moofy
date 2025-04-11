@@ -115,7 +115,7 @@ export class ReviewService implements IReviewService {
       return err(new NoAccessToCollectionError());
     }
 
-    const reviewOnFilm = await this.reviewRepository.getReviewOnFilm(
+    const reviewOnFilm = await this.reviewRepository.getReviewOnFilmByKpId(
       props.collectionId,
       props.dto.filmId
     );

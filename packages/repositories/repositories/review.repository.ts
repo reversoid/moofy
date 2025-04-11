@@ -100,7 +100,7 @@ export class ReviewRepository extends IReviewRepository {
     };
   }
 
-  async getReviewOnFilm(
+  async getReviewOnFilmByKpId(
     collectionId: Collection["id"],
     filmKpId: Film["kinopoiskId"]
   ): Promise<Review | null> {

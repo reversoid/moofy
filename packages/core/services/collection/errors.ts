@@ -29,3 +29,27 @@ export class NotLikedCollectionError extends CoreError {
     super("Collection Not Liked");
   }
 }
+
+export class PersonalCollectionExistsError extends CoreError {
+  constructor() {
+    super("Personal Collection Exists");
+  }
+}
+
+export class PersonalCollectionNotFoundError extends CoreError {
+  constructor() {
+    super("Personal Collection Does Not Exist");
+  }
+}
+
+export class CannotMakePersonalCollectionPrivateError extends CoreError {
+  constructor() {
+    super("Cannot Make Personal Collection Private");
+  }
+}
+
+export class DeleteLinkedPersonalCollectionError extends CoreError {
+  constructor() {
+    super("Cannot Delete Personal Collection That Is Liked To Profile");
+  }
+}
