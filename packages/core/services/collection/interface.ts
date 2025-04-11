@@ -16,6 +16,7 @@ import {
 import { PaginatedData } from "../../utils/pagination";
 import { Id } from "../../utils";
 import { Review } from "../../entities";
+import { TagNotFoundError } from "../tag";
 
 export type CreateCollectionDto = {
   name: string;
@@ -139,12 +140,14 @@ export interface ICollectionService {
   fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
+    tagId?: Id;
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
       | PersonalCollectionNotFoundError
       | CollectionNotFoundError
       | UserNotFoundError
+      | TagNotFoundError
     >
   >;
 

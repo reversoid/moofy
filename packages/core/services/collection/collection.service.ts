@@ -4,10 +4,12 @@ import { User } from "../../entities/user";
 import {
   ICollectionLikeRepository,
   ICollectionRepository,
+  ICollectionTagRepository,
   ICollectionViewRepository,
   IFavoriteCollectionRepository,
   IPersonalCollectionRepository,
   IReviewRepository,
+  IReviewTagRepository,
   IUserRepository,
 } from "../../repositories";
 import { PaginatedData } from "../../utils/pagination";
@@ -30,7 +32,9 @@ import {
 } from "./interface";
 import { Review } from "../../entities";
 import { Id } from "../../utils";
+import { TagNotFoundError } from "../tag";
 
+// TODO split by CollectionService, PersonalCollectionService
 export class CollectionService implements ICollectionService {
   constructor(
     private readonly collectionRepository: ICollectionRepository,
@@ -39,7 +43,9 @@ export class CollectionService implements ICollectionService {
     private readonly favoriteCollectionRepository: IFavoriteCollectionRepository,
     private readonly collectionViewRepository: ICollectionViewRepository,
     private readonly personalCollectionRepository: IPersonalCollectionRepository,
-    private readonly reviewRepository: IReviewRepository
+    private readonly reviewRepository: IReviewRepository,
+    private readonly reviewTagRepository: IReviewTagRepository,
+    private readonly collectionTagRepository: ICollectionTagRepository
   ) {}
 
   async getPersonalCollection(props: {
@@ -80,9 +86,11 @@ export class CollectionService implements ICollectionService {
     return ok(newCollection);
   }
 
+  // TODO optimize method
   async fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
+    tagId?: Id;
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
@@ -166,6 +174,17 @@ export class CollectionService implements ICollectionService {
 
       if (newReview) {
         addedReviews.push(newReview);
+      }
+    }
+
+    if (props.tagId) {
+      const tag = await this.collectionTagRepository.get(props.tagId);
+      if (!tag || tag.collectionId.value !== personalCollection.id.value) {
+        return err(new TagNotFoundError());
+      }
+
+      for (const review of addedReviews) {
+        await this.reviewTagRepository.linkTagToReview(props.tagId, review.id);
       }
     }
 
