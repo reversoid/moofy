@@ -150,6 +150,7 @@ export interface ICollectionService {
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError
+      | NotOwnerOfCollectionError
     >
   >;
 

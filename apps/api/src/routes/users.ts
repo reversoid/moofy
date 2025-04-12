@@ -11,6 +11,7 @@ import { UserNotFoundError } from "@repo/core/services";
 import { authMiddleware } from "../utils/auth-middleware";
 import {
   makeCollectionDto,
+  makeReviewDto,
   makeUserDto,
   withPaginatedData,
 } from "../utils/make-dto";
@@ -318,10 +319,11 @@ export const userRoute = new Hono()
 
       const collection = collectionResult.value;
 
-      return c.json(
-        { collection: collection && makeCollectionDto(collection) },
-        200
-      );
+      if (!collection) {
+        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+      }
+
+      return c.json({ collection: makeCollectionDto(collection) }, 200);
     }
   )
   .get(
@@ -373,6 +375,9 @@ export const userRoute = new Hono()
 
       const reviews = reviewsResult.unwrap();
 
-      return c.json({ reviews }, 200);
+      return c.json(
+        { reviews: withPaginatedData(makeReviewDto)(reviews) },
+        200
+      );
     }
   );

@@ -53,7 +53,7 @@ export class CollectionService implements ICollectionService {
   }): Promise<Result<Collection | null, UserNotFoundError>> {
     const user = await this.userRepository.get(props.userId);
     if (!user) {
-      return err(new UsernameExistsError());
+      return err(new UserNotFoundError());
     }
 
     const collection = await this.personalCollectionRepository.getByUserId(
@@ -109,6 +109,7 @@ export class CollectionService implements ICollectionService {
       | PersonalCollectionNotFoundError
       | CollectionNotFoundError
       | UserNotFoundError
+      | NotOwnerOfCollectionError
     >
   > {
     const [user, personalCollection, collection] = await Promise.all([
@@ -127,6 +128,10 @@ export class CollectionService implements ICollectionService {
 
     if (!collection) {
       return err(new CollectionNotFoundError());
+    }
+
+    if (collection.creator.id.value !== props.userId.value) {
+      return err(new NotOwnerOfCollectionError());
     }
 
     const getAllReviews = async (collectionId: Id) => {
@@ -157,12 +162,19 @@ export class CollectionService implements ICollectionService {
       getAllReviews(collection.id),
     ]);
 
-    const existingFilms = new Set(existingReviews.map((r) => r.id.value));
-    const filmsToAdd = new Set(reviewsToAdd.map((r) => r.id.value));
+    const existingFilms = new Set(existingReviews.map((r) => r.film.id.value));
+    const filmsToAdd = new Set(reviewsToAdd.map((r) => r.film.id.value));
 
     const conflictingFilmsIds = existingFilms.intersection(filmsToAdd);
 
     const filmIdsToCopy = filmsToAdd.difference(existingFilms);
+
+    console.log({
+      conflictingFilmsIds,
+      filmIdsToCopy,
+      existingFilms,
+      filmsToAdd,
+    });
 
     const cloneReview = async (filmId: number) => {
       const review = await this.reviewRepository.getReviewOnFilm(
