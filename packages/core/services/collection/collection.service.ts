@@ -169,13 +169,6 @@ export class CollectionService implements ICollectionService {
 
     const filmIdsToCopy = filmsToAdd.difference(existingFilms);
 
-    console.log({
-      conflictingFilmsIds,
-      filmIdsToCopy,
-      existingFilms,
-      filmsToAdd,
-    });
-
     const cloneReview = async (filmId: number) => {
       const review = await this.reviewRepository.getReviewOnFilm(
         collection.id,
