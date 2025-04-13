@@ -5,7 +5,7 @@
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
-	import { CopyReviews, CreateReview } from '$lib/features/reivew';
+	import { ImportReviews, CreateReview } from '$lib/features/reivew';
 	import { globalState } from '$lib/shared/state/state.svelte';
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
@@ -146,7 +146,7 @@
 							>{collection.creator.username}</Link
 						>
 					</li>
-
+					ImportReviews
 					<li>Обновлено: {formattedUpdatedAt}</li>
 				</ul>
 
@@ -196,7 +196,7 @@
 		{#if isOwner}
 			<div class="flex gap-2">
 				{#if collection.isPersonal}
-					<CopyReviews />
+					<ImportReviews />
 				{/if}
 
 				<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />
