@@ -5,11 +5,11 @@
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
 	import { CreateReview } from '$lib/features/reivew';
-	import { globalState } from '$lib/state/state.svelte';
-	import Heading from '$lib/ui/heading.svelte';
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { makeClient } from '$lib/utils';
+	import { globalState } from '$lib/shared/state/state.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
+	import { makeClient } from '$lib/shared/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';

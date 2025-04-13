@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TabsLinkList, TabsLinkTrigger } from '$lib/components/ui/tabs';
-	import Heading from '$lib/ui/heading.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 
 	let { children } = $props();
 </script>

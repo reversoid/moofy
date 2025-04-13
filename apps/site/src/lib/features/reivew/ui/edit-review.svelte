@@ -4,7 +4,7 @@
 
 	import EditReviewButton from './edit-review-button.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 
 	interface Props {
 		existingReview: ReviewDto;

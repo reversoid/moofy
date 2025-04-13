@@ -6,10 +6,10 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { setCurrentUser } from '$lib/state/state.svelte';
-	import Image from '$lib/ui/image.svelte';
-	import UploadImage from '$lib/ui/upload-image.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import { setCurrentUser } from '$lib/shared/state/state.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
+	import UploadImage from '$lib/shared/ui/upload-image.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { IconTrash, IconUpload, IconUser, IconX } from '@tabler/icons-svelte';
 	import { toast } from 'svelte-sonner';
 	import { superForm, type FormResult } from 'sveltekit-superforms';

@@ -1,5 +1,5 @@
 import type { LayoutLoad } from './$types';
-import { makeClient } from '$lib/utils';
+import { makeClient } from '$lib/shared/utils';
 import { error } from '@sveltejs/kit';
 
 export const load: LayoutLoad = async ({ params, fetch }) => {

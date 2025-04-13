@@ -1,10 +1,10 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
-	import Link from '$lib/ui/link.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import type { ReviewDto } from '@repo/api/dtos';
 	import type { Snippet } from 'svelte';
-	import Image from '$lib/ui/image.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
 	import { Tag } from '../Tag';
 
 	interface Props {

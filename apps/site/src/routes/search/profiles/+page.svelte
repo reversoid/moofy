@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import { UsersList } from '$lib/widgets/users-list';
 	import type { PageProps } from './$types';
 

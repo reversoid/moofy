@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import * as Card from '$lib/components/ui/card';
-	import Heading from '$lib/ui/heading.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
 	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import { Badge } from '$lib/components/ui/badge';
 
 	const { data }: PageProps = $props();

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import { IconBookmark, IconBookmarkFilled } from '@tabler/icons-svelte';
 

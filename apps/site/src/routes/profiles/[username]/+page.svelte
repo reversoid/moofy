@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { Textarea } from '$lib/components/ui/textarea';
-	import Heading from '$lib/ui/heading.svelte';
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
 	import { IconSettings, IconUser } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import { FollowButton } from '$lib/features/profile';
 	import { Button } from '$lib/components/ui/button';
-	import Image from '$lib/ui/image.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
 
 	const { data }: PageProps = $props();
 

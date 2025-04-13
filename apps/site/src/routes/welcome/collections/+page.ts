@@ -1,4 +1,4 @@
-import { makeClient } from '$lib/utils';
+import { makeClient } from '$lib/shared/utils';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {

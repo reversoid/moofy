@@ -1,6 +1,6 @@
 <script>
-	import Heading from '$lib/ui/heading.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 </script>
 
 <svelte:head>

@@ -1,6 +1,6 @@
 <script>
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 </script>
 
 <footer class="flex items-center justify-center">

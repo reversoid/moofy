@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import type { WithElementRef } from 'bits-ui';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/shared/utils';
 	import type { Snippet } from 'svelte';
 	import { IconLoader2 } from '@tabler/icons-svelte';
 	import type { Action } from 'svelte/action';

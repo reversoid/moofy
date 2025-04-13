@@ -1,4 +1,4 @@
-import { makeClient } from '$lib/utils';
+import { makeClient } from '$lib/shared/utils';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 

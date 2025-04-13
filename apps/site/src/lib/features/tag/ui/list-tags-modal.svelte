@@ -2,7 +2,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Table from '$lib/components/ui/table';
 	import { Tag } from '$lib/entities/Tag';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import { IconPencil, IconPlus } from '@tabler/icons-svelte';
 	import { toast } from 'svelte-sonner';

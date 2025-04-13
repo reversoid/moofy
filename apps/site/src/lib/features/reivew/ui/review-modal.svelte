@@ -3,7 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import DeleteButton from '$lib/ui/delete-button.svelte';
+	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
 	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
 	import Film from './film.svelte';
 	import RatingSelect from './rating-select.svelte';

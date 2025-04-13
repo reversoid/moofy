@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Heading from '$lib/ui/heading.svelte';
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { makeClient } from '$lib/utils';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
+	import { makeClient } from '$lib/shared/utils';
 	import UsersList from '$lib/widgets/users-list/users-list.svelte';
 	import type { PageProps } from './$types';
 

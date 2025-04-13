@@ -3,7 +3,7 @@
 	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import CollectionModal, { type CollectionForm } from './collection-modal.svelte';
 	import EditCollectionButton from './edit-collection-button.svelte';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 
 	interface Props {
 		collection: CollectionDto;

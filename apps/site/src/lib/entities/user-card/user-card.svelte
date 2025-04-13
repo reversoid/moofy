@@ -1,8 +1,8 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import { FollowButton } from '$lib/features/profile';
-	import { globalState } from '$lib/state/state.svelte';
-	import Image from '$lib/ui/image.svelte';
+	import { globalState } from '$lib/shared/state/state.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
 	import type { UserDto } from '@repo/api/dtos';
 	import { IconUser } from '@tabler/icons-svelte';
 

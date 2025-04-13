@@ -2,11 +2,11 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { AuthButton } from '$lib/entities/auth';
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { IconMenu } from '@tabler/icons-svelte';
 	import ProfileButton from './profile-button.svelte';
-	import { globalState } from '$lib/state/state.svelte';
+	import { globalState } from '$lib/shared/state/state.svelte';
 
 	const sidebar = useSidebar();
 </script>

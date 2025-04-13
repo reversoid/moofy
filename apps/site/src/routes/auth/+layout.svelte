@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { IconAlertCircle } from '@tabler/icons-svelte';
 	import { setContext, untrack } from 'svelte';
 	import { page } from '$app/state';

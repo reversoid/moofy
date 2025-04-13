@@ -7,9 +7,9 @@
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import DeleteButton from '$lib/ui/delete-button.svelte';
-	import Image from '$lib/ui/image.svelte';
-	import UploadImage from '$lib/ui/upload-image.svelte';
+	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
+	import UploadImage from '$lib/shared/ui/upload-image.svelte';
 	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import {
 		IconDeviceFloppy,

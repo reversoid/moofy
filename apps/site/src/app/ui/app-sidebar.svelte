@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { AuthButton } from '$lib/entities/auth';
-	import { globalState, setCurrentUser } from '$lib/state/state.svelte';
-	import { makeClient } from '$lib/utils';
+	import { globalState, setCurrentUser } from '$lib/shared/state/state.svelte';
+	import { makeClient } from '$lib/shared/utils';
 	import {
 		IconBookmark,
 		IconList,

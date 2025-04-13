@@ -43,7 +43,7 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/shared/utils';
 	import { IconLoader2 } from '@tabler/icons-svelte';
 
 	let {

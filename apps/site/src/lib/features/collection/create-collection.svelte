@@ -3,7 +3,7 @@
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CollectionModal from './collection-modal.svelte';
 	import CreateCollectionButton from './create-collection-button.svelte';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 
 	interface Props {
 		onCollectionCreated?: (collection: CollectionDto) => void;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
 	import type { PageProps } from './$types';
 

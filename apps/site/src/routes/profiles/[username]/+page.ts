@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
-import { makeClient } from '$lib/utils';
-import type { PaginatedData } from '$lib/utils/types';
+import { makeClient } from '$lib/shared/utils';
+import type { PaginatedData } from '$lib/shared/utils/types';
 import type { CollectionDto } from '@repo/api/dtos';
 import { error } from '@sveltejs/kit';
 

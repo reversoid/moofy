@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { ReviewCard } from '$lib/entities/review-card';
 	import { EditReview } from '$lib/features/reivew';
-	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
-	import Search from '$lib/ui/search.svelte';
+	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
+	import Search from '$lib/shared/ui/search.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import * as Alert from '$lib/components/ui/alert';
 	import { IconPercentage0 } from '@tabler/icons-svelte';

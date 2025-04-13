@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import Label from '$lib/components/ui/label/label.svelte';
-	import { cn, makeClient } from '$lib/utils';
+	import { cn, makeClient } from '$lib/shared/utils';
 	import type { Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { HTMLAttributes } from 'svelte/elements';

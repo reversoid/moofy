@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Image from '$lib/ui/image.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
 
 	interface Props {
 		name: string;

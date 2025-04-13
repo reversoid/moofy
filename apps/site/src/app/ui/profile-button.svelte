@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { setCurrentUser } from '$lib/state/state.svelte';
-	import { makeClient } from '$lib/utils';
+	import { setCurrentUser } from '$lib/shared/state/state.svelte';
+	import { makeClient } from '$lib/shared/utils';
 	import { IconLogout2, IconSettings, IconUser } from '@tabler/icons-svelte';
 
 	interface Props {

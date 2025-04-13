@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import type { UserDto } from '@repo/api/dtos';
 	import { IconUserMinus, IconUserPlus } from '@tabler/icons-svelte';
 
