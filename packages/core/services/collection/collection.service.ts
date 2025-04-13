@@ -48,9 +48,9 @@ export class CollectionService implements ICollectionService {
     private readonly collectionTagRepository: ICollectionTagRepository
   ) {}
 
-  async getPersonalCollection(props: {
+  async getOrCreatePersonalCollection(props: {
     userId: Id;
-  }): Promise<Result<Collection | null, UserNotFoundError>> {
+  }): Promise<Result<Collection, UserNotFoundError>> {
     const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
@@ -59,6 +59,14 @@ export class CollectionService implements ICollectionService {
     const collection = await this.personalCollectionRepository.getByUserId(
       props.userId
     );
+
+    if (!collection) {
+      const newPersonalCollectionResult = await this.createPersonalCollection({
+        userId: props.userId,
+      });
+
+      return ok(newPersonalCollectionResult.unwrap());
+    }
 
     return ok(collection);
   }

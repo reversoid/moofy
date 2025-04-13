@@ -304,9 +304,10 @@ export const userRoute = new Hono()
       const { id: userId } = c.req.valid("param");
       const collectionService = c.get("collectionService");
 
-      const collectionResult = await collectionService.getPersonalCollection({
-        userId: new Id(userId),
-      });
+      const collectionResult =
+        await collectionService.getOrCreatePersonalCollection({
+          userId: new Id(userId),
+        });
 
       if (collectionResult.isErr()) {
         const error = collectionResult.error;
@@ -318,10 +319,6 @@ export const userRoute = new Hono()
       }
 
       const collection = collectionResult.value;
-
-      if (!collection) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
-      }
 
       return c.json({ collection: makeCollectionDto(collection) }, 200);
     }
@@ -346,9 +343,10 @@ export const userRoute = new Hono()
 
       const user = c.get("session")?.user;
 
-      const collectionResult = await collectionService.getPersonalCollection({
-        userId: new Id(userId),
-      });
+      const collectionResult =
+        await collectionService.getOrCreatePersonalCollection({
+          userId: new Id(userId),
+        });
 
       if (collectionResult.isErr()) {
         const error = collectionResult.error;
@@ -360,10 +358,6 @@ export const userRoute = new Hono()
       }
 
       const collection = collectionResult.value;
-
-      if (!collection) {
-        return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
-      }
 
       const reviewsResult = await reviewService.getCollectionReviews({
         collectionId: collection.id,

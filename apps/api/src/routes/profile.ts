@@ -101,46 +101,6 @@ export const profileRoute = new Hono()
       return c.json({ user: makeUserDto(updatedUserResult.unwrap()) }, 200);
     }
   )
-  .put("/personal-collection", authMiddleware, async (c) => {
-    const user = c.get("session")!.user;
-    const collectionService = c.get("collectionService");
-
-    const collectionResult = await collectionService.createPersonalCollection({
-      userId: user.id,
-    });
-
-    if (collectionResult.isErr()) {
-      const error = collectionResult.error;
-      if (error instanceof PersonalCollectionExistsError) {
-        return c.json({ error: "PERSONAL_COLLECTION_EXISTS" as const }, 409);
-      }
-
-      throw error;
-    }
-
-    const collection = collectionResult.value;
-
-    return c.json({ collection: makeCollectionDto(collection) }, 200);
-  })
-  .delete("/personal-collection", authMiddleware, async (c) => {
-    const user = c.get("session")!.user;
-    const collectionService = c.get("collectionService");
-
-    const result = await collectionService.deletePersonalCollection({
-      userId: user.id,
-    });
-
-    if (result.isErr()) {
-      const error = result.error;
-      if (error instanceof PersonalCollectionNotFoundError) {
-        return c.json({ error: "PERSONAL_COLLECTION_NOT_FOUND" as const }, 409);
-      }
-
-      throw error;
-    }
-
-    return c.body(null, 204);
-  })
   .post(
     "/personal-collection/merge",
     validator(
