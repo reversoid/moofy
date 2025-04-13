@@ -84,16 +84,18 @@
 
 <div class="mt-2">
 	<form id="collection-form" class="flex flex-col gap-2 pb-4" use:enhance>
-		<Form.Field {form} name="name">
-			<Form.Control>
-				{#snippet children({ attrs }: { attrs: any })}
-					<Form.Label>Название</Form.Label>
-					<Input {...attrs} bind:value={$formData.name} placeholder="Название..." />
-				{/snippet}
-			</Form.Control>
-			<Form.Description />
-			<Form.FieldErrors />
-		</Form.Field>
+		{#if !collection?.isPersonal}
+			<Form.Field {form} name="name">
+				<Form.Control>
+					{#snippet children({ attrs }: { attrs: any })}
+						<Form.Label>Название</Form.Label>
+						<Input {...attrs} bind:value={$formData.name} placeholder="Название..." />
+					{/snippet}
+				</Form.Control>
+				<Form.Description />
+				<Form.FieldErrors />
+			</Form.Field>
+		{/if}
 
 		<Form.Field {form} name="description">
 			<Form.Control>
@@ -161,18 +163,20 @@
 			</div>
 		{/if}
 
-		<div class="mt-2 flex flex-row items-center gap-2">
-			<Checkbox id="private" aria-labelledby="private-label" bind:checked={$formData.isPrivate} />
+		{#if !collection?.isPersonal}
+			<div class="mt-2 flex flex-row items-center gap-2">
+				<Checkbox id="private" aria-labelledby="private-label" bind:checked={$formData.isPrivate} />
 
-			<Label id="private-label" for="private" class="text-sm font-medium leading-none">
-				Сделать коллекцию приватной
-			</Label>
-		</div>
+				<Label id="private-label" for="private" class="text-sm font-medium leading-none">
+					Сделать коллекцию приватной
+				</Label>
+			</div>
+		{/if}
 	</form>
 </div>
 
 <Dialog.Footer class="flex flex-row items-center gap-3 max-sm:flex-col">
-	{#if type === 'edit'}
+	{#if type === 'edit' && !collection?.isPersonal}
 		<DeleteButton
 			onDelete={onDeleteWithLoading}
 			isLoading={isDeleting}
