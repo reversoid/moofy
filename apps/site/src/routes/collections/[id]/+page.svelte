@@ -184,8 +184,7 @@
 			<IconMushroom size={20} />
 			<Alert.Title>О коллекции</Alert.Title>
 			<Alert.Description
-				>Данная коллекция будет отображаться у Вас в профиле <br /> Здесь Вы можете хранить все свои
-				обзоры</Alert.Description
+				>Данная коллекция отображается у Вас в профиле <br /> Здесь Вы можете хранить все свои обзоры</Alert.Description
 			>
 		</Alert.Root>
 	{/if}
