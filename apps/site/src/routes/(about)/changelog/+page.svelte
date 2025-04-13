@@ -42,15 +42,15 @@
 
 					<div class="mt-6 flex flex-row gap-2">
 						{#if changelog.hasFeature}
-							<Badge class="bg-violet-500" variant="secondary">Новое</Badge>
+							<Badge class="bg-green-500" variant="secondary">Новое</Badge>
 						{/if}
 
 						{#if changelog.hasImprovement}
-							<Badge class="bg-green-500" variant="secondary">Улучшения</Badge>
+							<Badge class="bg-blue-500" variant="secondary">Улучшения</Badge>
 						{/if}
 
 						{#if changelog.hasBugfix}
-							<Badge class="bg-slate-500" variant="secondary">Исправления</Badge>
+							<Badge class="bg-gray-500" variant="secondary">Исправления</Badge>
 						{/if}
 					</div>
 				</Card.Content>
