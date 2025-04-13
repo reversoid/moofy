@@ -7,7 +7,13 @@
 
 	let { data }: PageProps = $props();
 
-	const collections = $state(data.collections);
+	const collections = $state({
+		...data.collections,
+		items: [
+			{ ...data.personalCollection, isPersonal: true },
+			...data.collections.items.filter((c) => c.id !== data.personalCollection.id)
+		]
+	});
 
 	async function loadCollections(cursor?: string) {
 		const api = makeClient(fetch);

@@ -49,14 +49,7 @@ export class CollectionRepository extends ICollectionRepository {
       )`.as("rank")
       )
       .limit(limit)
-      .orderBy("rank", "desc")
-      .leftJoin(
-        "personalCollections",
-        "personalCollections.collectionId",
-        "collections.id"
-      )
-      // exclude personal collections
-      .where("personalCollections.collectionId", "is", null);
+      .orderBy("rank", "desc");
 
     const searchCondition = sql<boolean>`(
         (collections.search_document @@ plainto_tsquery('simple', ${search}))
@@ -100,14 +93,7 @@ export class CollectionRepository extends ICollectionRepository {
     let query = this.getSelectQuery()
       .where("collections.userId", "=", userId.value)
       .orderBy("collections.updatedAt", "desc")
-      .limit(limit + 1)
-      .leftJoin(
-        "personalCollections",
-        "personalCollections.collectionId",
-        "collections.id"
-      )
-      // exclude personal collections
-      .where("personalCollections.collectionId", "is", null);
+      .limit(limit + 1);
 
     if (cursorDate) {
       query = query.where("collections.updatedAt", "<=", cursorDate);

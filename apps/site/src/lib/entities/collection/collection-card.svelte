@@ -1,24 +1,37 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
+	import Image from '$lib/ui/image.svelte';
 	import Link from '$lib/ui/link.svelte';
 	import { colorHash } from '$lib/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
+	import { IconFolderStar } from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
-	import Image from '$lib/ui/image.svelte';
 
 	interface Props {
 		collection: CollectionDto;
+		isPersonal?: boolean;
 	}
 
-	const { collection }: Props = $props();
+	const { collection, isPersonal }: Props = $props();
+
+	const href = $derived(
+		isPersonal
+			? `/profiles/${collection.creator.username}/collections/personal`
+			: `/collections/${collection.id}`
+	);
 </script>
 
-<Link href="/collections/{collection.id}" class="block h-full">
+<Link {href} class="block h-full">
 	<Card.Root class="flex h-full flex-col justify-between">
 		<Card.Header>
 			<div class="flex items-center justify-between gap-2">
 				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
-					{collection.name}
+					<div class="flex items-center gap-2">
+						{#if isPersonal}
+							<IconFolderStar size={20} />
+						{/if}
+						{isPersonal ? 'Все обзоры' : collection.name}
+					</div>
 				</Card.Title>
 
 				{#if !collection.isPublic}

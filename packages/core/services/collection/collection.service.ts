@@ -85,7 +85,7 @@ export class CollectionService implements ICollectionService {
 
     const newCollectionResult = await this.createCollection({
       userId: props.userId,
-      dto: { name: `${props.userId.value}` },
+      dto: { name: `${props.userId.value}`, isPublic: true },
     });
 
     if (newCollectionResult.isErr()) {
@@ -463,10 +463,10 @@ export class CollectionService implements ICollectionService {
       | DeleteLinkedPersonalCollectionError
     >
   > {
-    const isPersonal = await this.personalCollectionRepository.getByUserId(
-      props.by
-    );
-    if (isPersonal) {
+    const personalCollection =
+      await this.personalCollectionRepository.getByUserId(props.by);
+
+    if (personalCollection?.id.value === props.id.value) {
       return err(new DeleteLinkedPersonalCollectionError());
     }
 

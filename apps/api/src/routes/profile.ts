@@ -1,24 +1,22 @@
 import {
   CollectionNotFoundError,
   NotOwnerOfCollectionError,
-  PersonalCollectionExistsError,
   PersonalCollectionNotFoundError,
   TagNotFoundError,
   UsernameExistsError,
-  UserNotFoundError,
   WrongPasswordError,
 } from "@repo/core/services";
+import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
 import {
   makeCollectionDto,
   makeReviewDto,
   makeUserDto,
   withPaginatedData,
 } from "../utils/make-dto";
-import { Id } from "@repo/core/utils";
+import { validator } from "../utils/validator";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
@@ -158,4 +156,19 @@ export const profileRoute = new Hono()
         200
       );
     }
-  );
+  )
+  .get("/personal-collection", async (c) => {
+    const {
+      user: { id },
+    } = c.get("session")!;
+    const collectionService = c.get("collectionService");
+
+    const collectionResult =
+      await collectionService.getOrCreatePersonalCollection({
+        userId: id,
+      });
+
+    const collection = collectionResult.unwrap();
+
+    return c.json({ collection: makeCollectionDto(collection) }, 200);
+  });

@@ -1,6 +1,7 @@
 import {
   AlreadyLikedCollectionError,
   CollectionNotFoundError,
+  DeleteLinkedPersonalCollectionError,
   FilmNotFoundError,
   NoAccessToCollectionError,
   NoAccessToPrivateCollectionError,
@@ -175,6 +176,13 @@ export const collectionRoute = new Hono()
 
         if (error instanceof NotOwnerOfCollectionError) {
           return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
+        if (error instanceof DeleteLinkedPersonalCollectionError) {
+          return c.json(
+            { error: "CANNOT_DELETE_LINKED_PERSONAL_COLLECTION" as const },
+            403
+          );
         }
 
         throw error;

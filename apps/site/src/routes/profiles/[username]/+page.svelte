@@ -15,22 +15,18 @@
 
 	const { data }: PageProps = $props();
 
-	const initialCollections = $derived(data.collections);
-	const initialFavoriteCollections = $derived(data.favoriteCollections);
 	const profile = $derived(data.profile);
 	const currentUser = $derived(data.user);
 	const social = $derived(data.social);
 
-	let collections = $state(data.collections);
+	let collections = $state({
+		...data.collections,
+		items: [
+			{ ...data.personalCollection, isPersonal: true },
+			...data.collections.items.filter((c) => c.id !== data.personalCollection.id)
+		]
+	});
 	let favoriteCollections = $state(data.favoriteCollections);
-
-	$effect(() => {
-		collections = initialCollections;
-	});
-
-	$effect(() => {
-		favoriteCollections = initialFavoriteCollections;
-	});
 
 	async function searchCollections(search: string) {
 		const api = makeClient(fetch);
