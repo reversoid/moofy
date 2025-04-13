@@ -34,7 +34,10 @@ export class PersonalCollectionRepository extends IPersonalCollectionRepository 
       return null;
     }
 
-    return makeCollection(collection);
+    return makeCollection({
+      ...collection,
+      personalCollectionId: collection["c-id"],
+    });
   }
 
   async deleteByUserId(userId: User["id"]): Promise<void> {

@@ -22,7 +22,7 @@
 	let collections = $state({
 		...data.collections,
 		items: [
-			{ ...data.personalCollection, isPersonal: true },
+			data.personalCollection,
 			...data.collections.items.filter((c) => c.id !== data.personalCollection.id)
 		]
 	});

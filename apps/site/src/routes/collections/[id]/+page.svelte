@@ -5,7 +5,7 @@
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
-	import { CreateReview } from '$lib/features/reivew';
+	import { CopyReviews, CreateReview } from '$lib/features/reivew';
 	import { globalState } from '$lib/shared/state/state.svelte';
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
@@ -194,7 +194,13 @@
 		<Heading type="h2">Обзоры</Heading>
 
 		{#if isOwner}
-			<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />
+			<div class="flex gap-2">
+				{#if collection.isPersonal}
+					<CopyReviews />
+				{/if}
+
+				<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />
+			</div>
 		{/if}
 	</div>
 
