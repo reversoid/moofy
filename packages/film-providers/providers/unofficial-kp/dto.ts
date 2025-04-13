@@ -22,7 +22,8 @@ export const searchFilmDtoSchema = z
       .transform((time) => {
         const [hours, minutes] = time.split(":").map(Number);
         return String(hours * 60 + minutes);
-      }),
+      })
+      .optional(),
     genres: z.array(
       z.object({
         genre: z.string(),

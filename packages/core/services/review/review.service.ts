@@ -129,6 +129,7 @@ export class ReviewService implements IReviewService {
       const providedFilm = await this.filmProvider.getFilmByKpId(
         props.dto.filmId
       );
+
       if (!providedFilm) {
         return err(new FilmNotFoundError());
       }

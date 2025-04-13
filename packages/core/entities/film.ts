@@ -18,7 +18,7 @@ export class Film extends Entity {
   name: string;
   year: number;
   type: FilmType;
-  filmLength: string;
+  filmLength: string | null;
   posterPreviewUrl: string;
   posterUrl: string;
   genres: string[];
@@ -29,7 +29,7 @@ export class Film extends Entity {
     name: string;
     year: number;
     type: FilmType;
-    filmLength: string;
+    filmLength?: string | null;
     posterPreviewUrl: string;
     posterUrl: string;
     genres: string[];
@@ -41,7 +41,7 @@ export class Film extends Entity {
     this.name = props.name;
     this.year = props.year;
     this.type = props.type;
-    this.filmLength = props.filmLength;
+    this.filmLength = props.filmLength ?? null;
     this.posterPreviewUrl = props.posterPreviewUrl;
     this.posterUrl = props.posterUrl;
     this.genres = props.genres;

@@ -38,7 +38,7 @@ export class UnofficialKpProvider implements IFilmProvider {
       .map((result) => result.data)
       .map((f) => ({
         kinopoiskId: String(f.filmId),
-        filmLength: f.filmLength,
+        filmLength: f.filmLength ?? null,
         genres: f.genres.map((g) => g.genre),
         name: (f.nameRu ?? f.nameEn) as string,
         posterPreviewUrl: f.posterUrlPreview,
@@ -63,7 +63,7 @@ export class UnofficialKpProvider implements IFilmProvider {
 
     return {
       kinopoiskId: String(parsedData.kinopoiskId),
-      filmLength: String(parsedData.filmLength ?? 0),
+      filmLength: parsedData.filmLength ? String(parsedData.filmLength) : null,
       genres: parsedData.genres.map((g) => g.genre),
       name: (parsedData.nameRu ?? parsedData.nameEn) as string,
       posterPreviewUrl: parsedData.posterUrlPreview,
