@@ -4,7 +4,7 @@
 	import Link from '$lib/shared/ui/link.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconFolderStar } from '@tabler/icons-svelte';
+	import { IconFolderStar, IconMushroom } from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
 
 	interface Props {
@@ -14,11 +14,7 @@
 
 	const { collection, isPersonal }: Props = $props();
 
-	const href = $derived(
-		isPersonal
-			? `/profiles/${collection.creator.username}/collections/personal`
-			: `/collections/${collection.id}`
-	);
+	const href = $derived(`/collections/${collection.id}`);
 </script>
 
 <Link {href} class="block h-full">
@@ -26,11 +22,12 @@
 		<Card.Header>
 			<div class="flex items-center justify-between gap-2">
 				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
-					<div class="flex items-center gap-2">
+					<div class="flex w-full items-center gap-2">
 						{#if isPersonal}
-							<IconFolderStar size={20} />
+							<IconMushroom class="flex-shrink-0" size={20} />
 						{/if}
-						{isPersonal ? 'Все обзоры' : collection.name}
+
+						{isPersonal ? `Обзоры ${collection.creator.username}` : collection.name}
 					</div>
 				</Card.Title>
 

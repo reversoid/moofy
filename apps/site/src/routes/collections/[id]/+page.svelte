@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import * as Alert from '$lib/components/ui/alert';
 	import * as Card from '$lib/components/ui/card';
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
@@ -13,6 +14,7 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
+	import { IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 
@@ -92,7 +94,15 @@
 </svelte:head>
 
 <Wrapper>
-	<Heading>{collection.name}</Heading>
+	<Heading>
+		{#if collection.isPersonal}
+			Обзоры <Link href="/profiles/{collection.creator.username}"
+				>{collection.creator.username}</Link
+			>
+		{:else}
+			{collection.name}
+		{/if}
+	</Heading>
 
 	<div
 		class="mt-6 grid grid-cols-[4fr_1fr] gap-2 max-xl:grid-cols-[3fr_1fr] max-lg:grid-cols-[2fr_1fr] max-md:grid-cols-1"
@@ -168,6 +178,17 @@
 			</Card.Content>
 		</Card.Root>
 	</div>
+
+	{#if collection.isPersonal && isOwner}
+		<Alert.Root class="mt-2">
+			<IconMushroom size={20} />
+			<Alert.Title>О коллекции</Alert.Title>
+			<Alert.Description
+				>Данная коллекция будет отображаться у Вас в профиле <br /> Здесь Вы можете хранить все свои
+				обзоры</Alert.Description
+			>
+		</Alert.Root>
+	{/if}
 
 	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>

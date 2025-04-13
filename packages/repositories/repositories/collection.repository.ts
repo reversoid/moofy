@@ -172,6 +172,12 @@ export class CollectionRepository extends ICollectionRepository {
     return db
       .selectFrom("collections")
       .innerJoin("users", "users.id", "collections.userId")
+      .leftJoin(
+        "personalCollections",
+        "personalCollections.collectionId",
+        "collections.id"
+      )
+      .select("personalCollections.id as personalCollectionId")
       .select(CollectionSelects.collectionSelects)
       .select(UserSelects.userSelects);
   }

@@ -6,7 +6,6 @@
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import * as Alert from '$lib/components/ui/alert';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		reviews: ReviewDto[];
