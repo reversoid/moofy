@@ -5,7 +5,7 @@
 
 <Button class="max-sm:hidden">
 	<IconTransferIn size="20" />
-	<span>Создать</span>
+	<span>Импорт</span>
 </Button>
 
 <Button size="icon" class="hidden items-center justify-center max-sm:flex">
