@@ -42,12 +42,6 @@ export class PersonalCollectionNotFoundError extends CoreError {
   }
 }
 
-export class CannotMakePersonalCollectionPrivateError extends CoreError {
-  constructor() {
-    super("Cannot Make Personal Collection Private");
-  }
-}
-
 export class DeleteLinkedPersonalCollectionError extends CoreError {
   constructor() {
     super("Cannot Delete Personal Collection That Is Liked To Profile");

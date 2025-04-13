@@ -25,12 +25,24 @@ export const load: PageLoad = async ({ fetch, parent }) => {
 		})
 	]);
 
-	if (!collectionsResponse.ok || !personalCollectionResponse.ok) {
+	if (!collectionsResponse.ok) {
 		throw new Error();
 	}
 
 	const { collections } = await collectionsResponse.json();
-	const { collection: personalCollection } = await personalCollectionResponse.json();
+
+	let personalCollection: CollectionDto | null = null;
+
+	if (!personalCollectionResponse.ok) {
+		const { error } = await personalCollectionResponse.json();
+		if (error === 'FORBIDDEN') {
+			personalCollection = null;
+		} else {
+			throw new Error();
+		}
+	} else {
+		personalCollection = (await personalCollectionResponse.json()).collection;
+	}
 
 	let favoriteCollections: PaginatedData<CollectionDto> | null = null;
 

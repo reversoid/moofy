@@ -163,15 +163,13 @@
 			</div>
 		{/if}
 
-		{#if !collection?.isPersonal}
-			<div class="mt-2 flex flex-row items-center gap-2">
-				<Checkbox id="private" aria-labelledby="private-label" bind:checked={$formData.isPrivate} />
+		<div class="mt-2 flex flex-row items-center gap-2">
+			<Checkbox id="private" aria-labelledby="private-label" bind:checked={$formData.isPrivate} />
 
-				<Label id="private-label" for="private" class="text-sm font-medium leading-none">
-					Сделать коллекцию приватной
-				</Label>
-			</div>
-		{/if}
+			<Label id="private-label" for="private" class="text-sm font-medium leading-none">
+				Сделать коллекцию приватной
+			</Label>
+		</div>
 	</form>
 </div>
 

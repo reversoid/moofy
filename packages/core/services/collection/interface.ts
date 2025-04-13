@@ -9,7 +9,6 @@ import {
   AlreadyLikedCollectionError,
   NotLikedCollectionError,
   PersonalCollectionExistsError,
-  CannotMakePersonalCollectionPrivateError,
   PersonalCollectionNotFoundError,
   DeleteLinkedPersonalCollectionError,
 } from "./errors";
@@ -67,12 +66,7 @@ export interface ICollectionService {
     dto: EditCollectionDto;
     by: User["id"];
   }): Promise<
-    Result<
-      Collection,
-      | CollectionNotFoundError
-      | NotOwnerOfCollectionError
-      | CannotMakePersonalCollectionPrivateError
-    >
+    Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
   >;
 
   getUserCollections(props: {
@@ -137,7 +131,10 @@ export interface ICollectionService {
 
   getOrCreatePersonalCollection(props: {
     userId: Id;
-  }): Promise<Result<Collection, UserNotFoundError>>;
+    by?: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
+  >;
 
   fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;

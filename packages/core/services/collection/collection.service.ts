@@ -19,7 +19,6 @@ import { TagNotFoundError } from "../tag";
 import { UserNotFoundError } from "../user/errors";
 import {
   AlreadyLikedCollectionError,
-  CannotMakePersonalCollectionPrivateError,
   CollectionNotFoundError,
   DeleteLinkedPersonalCollectionError,
   NoAccessToPrivateCollectionError,
@@ -50,7 +49,10 @@ export class CollectionService implements ICollectionService {
 
   async getOrCreatePersonalCollection(props: {
     userId: Id;
-  }): Promise<Result<Collection, UserNotFoundError>> {
+    by?: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
+  > {
     const user = await this.userRepository.get(props.userId);
     if (!user) {
       return err(new UserNotFoundError());
@@ -66,6 +68,13 @@ export class CollectionService implements ICollectionService {
       });
 
       return ok(newPersonalCollectionResult.unwrap());
+    }
+
+    if (
+      !collection.isPublic &&
+      collection.creator.id.value !== props.by?.value
+    ) {
+      return err(new NoAccessToPrivateCollectionError());
     }
 
     return ok(collection);
@@ -501,13 +510,6 @@ export class CollectionService implements ICollectionService {
 
     const personalCollection =
       await this.personalCollectionRepository.getByUserId(props.by);
-
-    if (
-      props.dto.isPublic === false &&
-      personalCollection?.id.value === collection.id.value
-    ) {
-      return err(new CannotMakePersonalCollectionPrivateError());
-    }
 
     const updatedCollection = await this.collectionRepository.update(props.id, {
       description: props.dto.description,

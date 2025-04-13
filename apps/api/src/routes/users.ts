@@ -5,6 +5,7 @@ import { Id } from "@repo/core/utils";
 import {
   AlreadyFollowingError,
   CannotFollowSelfError,
+  NoAccessToPrivateCollectionError,
   NotFollowingError,
 } from "@repo/core/services";
 import { UserNotFoundError } from "@repo/core/services";
@@ -315,6 +316,10 @@ export const userRoute = new Hono()
           return c.json({ error: "USER_NOT_FOUND" as const }, 404);
         }
 
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
+        }
+
         throw error;
       }
 
@@ -346,12 +351,17 @@ export const userRoute = new Hono()
       const collectionResult =
         await collectionService.getOrCreatePersonalCollection({
           userId: new Id(userId),
+          by: user?.id,
         });
 
       if (collectionResult.isErr()) {
         const error = collectionResult.error;
         if (error instanceof UserNotFoundError) {
           return c.json({ error: "USER_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 403);
         }
 
         throw error;

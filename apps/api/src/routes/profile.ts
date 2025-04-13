@@ -166,6 +166,7 @@ export const profileRoute = new Hono()
     const collectionResult =
       await collectionService.getOrCreatePersonalCollection({
         userId: id,
+        by: id,
       });
 
     const collection = collectionResult.unwrap();

@@ -23,8 +23,8 @@
 		...data.collections,
 		items: [
 			data.personalCollection,
-			...data.collections.items.filter((c) => c.id !== data.personalCollection.id)
-		]
+			...data.collections.items.filter((c) => c.id !== data.personalCollection?.id)
+		].filter((v) => !!v)
 	});
 	let favoriteCollections = $state(data.favoriteCollections);
 
