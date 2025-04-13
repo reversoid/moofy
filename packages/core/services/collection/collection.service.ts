@@ -1,4 +1,5 @@
 import { err, ok, Result } from "resulto";
+import { Review } from "../../entities";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
 import {
@@ -12,8 +13,10 @@ import {
   IReviewTagRepository,
   IUserRepository,
 } from "../../repositories";
+import { Id } from "../../utils";
 import { PaginatedData } from "../../utils/pagination";
-import { UsernameExistsError, UserNotFoundError } from "../user/errors";
+import { TagNotFoundError } from "../tag";
+import { UserNotFoundError } from "../user/errors";
 import {
   AlreadyLikedCollectionError,
   CannotMakePersonalCollectionPrivateError,
@@ -30,9 +33,6 @@ import {
   EditCollectionDto,
   ICollectionService,
 } from "./interface";
-import { Review } from "../../entities";
-import { Id } from "../../utils";
-import { TagNotFoundError } from "../tag";
 
 // TODO split by CollectionService, PersonalCollectionService
 export class CollectionService implements ICollectionService {
