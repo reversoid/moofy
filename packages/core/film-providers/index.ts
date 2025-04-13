@@ -11,7 +11,7 @@ export type ProviderFilmDto = {
   name: string;
   year: number;
   type: ProviderFilmType;
-  filmLength: string;
+  filmLength: string | null;
   posterPreviewUrl: string;
   posterUrl: string;
   genres: string[];
