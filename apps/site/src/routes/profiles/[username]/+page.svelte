@@ -19,12 +19,27 @@
 	const currentUser = $derived(data.user);
 	const social = $derived(data.social);
 
-	let collections = $state({
-		...data.collections,
-		items: [data.personalCollection, ...data.collections.items].filter((v) => !!v)
-	});
+	let collections = $state(data.collections);
 
 	let favoriteCollections = $state(data.favoriteCollections);
+
+	let specialCollectionsSearch = $state('');
+
+	// TODO can the name be better? Is it possible to make a shared name builder for personalCollection?
+	const specialCollections = $derived(
+		(data.personalCollection
+			? [{ ...data.personalCollection, name: `Обзоры ${data.personalCollection.creator.username}` }]
+			: []
+		)
+			.filter((v) => !!v)
+			.filter(
+				(c) =>
+					c.description
+						?.toLocaleLowerCase()
+						?.includes(specialCollectionsSearch.toLocaleLowerCase()) ||
+					c.name.toLocaleLowerCase().includes(specialCollectionsSearch.toLocaleLowerCase())
+			)
+	);
 
 	async function searchCollections(search: string) {
 		const api = makeClient(fetch);
@@ -147,6 +162,19 @@
 		</div>
 
 		<div class="flex flex-col gap-8">
+			{#if data.personalCollection}
+				<div class="flex flex-col gap-4">
+					<Heading type="h2">Специальные коллекции</Heading>
+					<CollectionsGrid
+						onSearch={async (v) => {
+							specialCollectionsSearch = v;
+						}}
+						collections={specialCollections}
+						defaultEmptyDescription=""
+					/>
+				</div>
+			{/if}
+
 			<div class="flex flex-col gap-4">
 				<Heading type="h2">Коллекции</Heading>
 				<CollectionsGrid
