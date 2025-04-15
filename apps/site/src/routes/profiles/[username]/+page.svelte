@@ -162,7 +162,7 @@
 		</div>
 
 		<div class="flex flex-col gap-8">
-			{#if data.personalCollection}
+			{#if specialCollections.length > 0}
 				<div class="flex flex-col gap-4">
 					<Heading type="h2">Специальные коллекции</Heading>
 					<CollectionsGrid

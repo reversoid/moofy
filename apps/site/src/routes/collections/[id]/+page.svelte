@@ -178,11 +178,29 @@
 		</Card.Root>
 	</div>
 
-	{#if collection.isPersonal && isOwner}
+	{#if collection.isPersonal}
 		<Alert.Root class="mt-2">
 			<IconMushroom size={20} />
 			<Alert.Title>О коллекции</Alert.Title>
-			<Alert.Description>Здесь Вы можете хранить все свои обзоры</Alert.Description>
+			<Alert.Description>
+				Это <b>персональная коллекция</b>.
+				{#if isOwner}
+					Здесь Вы можете хранить все свои обзоры.
+
+					<br />
+
+					{#if collection.isPublic}
+						Данная коллекция отображается в профиле.
+					{:else}
+						Чтобы коллекция была видна в профиле, необходимо сделать ее публичной.
+					{/if}
+				{:else}
+					<!-- TODO maybe make link builder? -->
+					Здесь <Link href="/profiles/{collection.creator.username}"
+						>{collection.creator.username}</Link
+					> хранит свои обзоры
+				{/if}
+			</Alert.Description>
 		</Alert.Root>
 	{/if}
 
