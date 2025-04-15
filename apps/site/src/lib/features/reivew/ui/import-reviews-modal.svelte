@@ -61,8 +61,8 @@
 		<Select.Content>
 			{#each allCollections.filter((f) => !f.isPersonal) as c}
 				<Select.Item class="flex justify-between" value={String(c.id)}>
-					<div class="flex items-center gap-4">
-						<div class="w-16">
+					<div class="flex items-center gap-4 overflow-hidden">
+						<div class="w-16 shrink-0">
 							{#if c.imageUrl}
 								<img src={c.imageUrl} class="aspect-[4/3] w-full" alt="Collection" />
 							{:else}
@@ -75,7 +75,7 @@
 
 						<div class="flex flex-col overflow-hidden">
 							<span class="font-bold">{c.name}</span>
-							<p class="text-muted-foreground text-ellipsis">
+							<p class="text-muted-foreground overflow-hidden text-ellipsis whitespace-nowrap">
 								{c.description ?? 'Описание отсутствует'}
 							</p>
 						</div>

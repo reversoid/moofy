@@ -28,9 +28,7 @@
 	>
 		<SelectScrollUpButton />
 		<SelectPrimitive.Viewport
-			class={cn(
-				'h-[var(--bits-select-anchor-height)] w-full min-w-[var(--bits-select-anchor-width)] p-1'
-			)}
+			class={cn('h-[var(--bits-select-anchor-height)] w-[var(--bits-select-anchor-width)] p-1')}
 		>
 			{@render children?.()}
 		</SelectPrimitive.Viewport>
