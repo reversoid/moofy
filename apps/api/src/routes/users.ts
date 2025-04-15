@@ -304,10 +304,12 @@ export const userRoute = new Hono()
     async (c) => {
       const { id: userId } = c.req.valid("param");
       const collectionService = c.get("collectionService");
+      const currentUser = c.get("session")?.user;
 
       const collectionResult =
         await collectionService.getOrCreatePersonalCollection({
           userId: new Id(userId),
+          by: currentUser?.id,
         });
 
       if (collectionResult.isErr()) {

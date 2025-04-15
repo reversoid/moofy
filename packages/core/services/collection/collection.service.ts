@@ -523,9 +523,6 @@ export class CollectionService implements ICollectionService {
       return err(new NotOwnerOfCollectionError());
     }
 
-    const personalCollection =
-      await this.personalCollectionRepository.getByUserId(props.by);
-
     const updatedCollection = await this.collectionRepository.update(props.id, {
       description: props.dto.description,
       imageUrl: props.dto.imageUrl,

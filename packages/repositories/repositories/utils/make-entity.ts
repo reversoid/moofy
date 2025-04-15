@@ -38,7 +38,7 @@ export const makeUser = (rawData: UserSelects.UserSelectResult): User => {
 export const makeCollection = (
   rawData: CollectionSelects.CollectionSelectResult &
     UserSelects.UserSelectResult & {
-      personalCollectionId: number | null | undefined;
+      personalCollectionId: number | null;
     }
 ): Collection => {
   return new Collection({

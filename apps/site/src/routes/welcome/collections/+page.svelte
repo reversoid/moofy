@@ -9,10 +9,7 @@
 
 	const collections = $state({
 		...data.collections,
-		items: [
-			data.personalCollection,
-			...data.collections.items.filter((c) => c.id !== data.personalCollection.id)
-		]
+		items: [data.personalCollection, ...data.collections.items]
 	});
 
 	async function loadCollections(cursor?: string) {

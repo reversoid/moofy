@@ -59,7 +59,7 @@
 		</Select.Trigger>
 
 		<Select.Content>
-			{#each allCollections.filter((f) => !f.isPersonal) as c}
+			{#each allCollections as c}
 				<Select.Item class="flex justify-between" value={String(c.id)}>
 					<div class="flex items-center gap-4 overflow-hidden">
 						<div class="w-16 shrink-0">

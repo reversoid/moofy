@@ -21,11 +21,9 @@
 
 	let collections = $state({
 		...data.collections,
-		items: [
-			data.personalCollection,
-			...data.collections.items.filter((c) => c.id !== data.personalCollection?.id)
-		].filter((v) => !!v)
+		items: [data.personalCollection, ...data.collections.items].filter((v) => !!v)
 	});
+
 	let favoriteCollections = $state(data.favoriteCollections);
 
 	async function searchCollections(search: string) {

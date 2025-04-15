@@ -10,7 +10,7 @@
 
 	interface Props {
 		disableAutoLoad?: boolean;
-		collections: (CollectionDto & { isPersonal?: boolean })[];
+		collections: CollectionDto[];
 		cursor?: string | null;
 		firstCard?: Snippet;
 		onLoadMore?: (cursor: string) => Promise<void>;
@@ -70,7 +70,7 @@
 
 		{#each collections as collection (collection.id)}
 			<div animate:flip={{ duration: 350 }}>
-				<CollectionCard {collection} isPersonal={collection.isPersonal} />
+				<CollectionCard {collection} />
 			</div>
 		{/each}
 	</div>

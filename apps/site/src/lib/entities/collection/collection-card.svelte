@@ -4,15 +4,14 @@
 	import Link from '$lib/shared/ui/link.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconFolderStar, IconMushroom } from '@tabler/icons-svelte';
+	import { IconMushroom } from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
 
 	interface Props {
 		collection: CollectionDto;
-		isPersonal?: boolean;
 	}
 
-	const { collection, isPersonal }: Props = $props();
+	const { collection }: Props = $props();
 
 	const href = $derived(`/collections/${collection.id}`);
 </script>
@@ -23,11 +22,11 @@
 			<div class="flex items-center justify-between gap-2">
 				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
 					<div class="flex w-full items-center gap-2">
-						{#if isPersonal}
+						{#if collection.isPersonal}
 							<IconMushroom class="flex-shrink-0" size={20} />
 						{/if}
 
-						{isPersonal ? `Обзоры ${collection.creator.username}` : collection.name}
+						{collection.isPersonal ? `Обзоры ${collection.creator.username}` : collection.name}
 					</div>
 				</Card.Title>
 
