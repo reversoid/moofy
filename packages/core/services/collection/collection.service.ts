@@ -1,5 +1,5 @@
 import { err, ok, Result } from "resulto";
-import { Review } from "../../entities";
+import { Review, Tag } from "../../entities";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
 import {
@@ -119,7 +119,7 @@ export class CollectionService implements ICollectionService {
   async fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
-    tagId?: Id;
+    tagsIds: Id[];
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
@@ -211,14 +211,29 @@ export class CollectionService implements ICollectionService {
       }
     }
 
-    if (props.tagId) {
-      const tag = await this.collectionTagRepository.get(props.tagId);
-      if (!tag || tag.collectionId.value !== personalCollection.id.value) {
+    if (props.tagsIds) {
+      const tags = await Promise.all(
+        props.tagsIds.map((tId) => this.collectionTagRepository.get(tId))
+      );
+
+      if (
+        tags.some(
+          (tag) => tag?.collectionId.value !== personalCollection.id.value
+        )
+      ) {
         return err(new TagNotFoundError());
       }
 
       for (const review of addedReviews) {
-        await this.reviewTagRepository.linkTagToReview(props.tagId, review.id);
+        for (const tag of tags) {
+          if (!tag) {
+            throw new Error("There should not be null tags");
+          }
+
+          await this.reviewTagRepository.linkTagToReview(tag.id, review.id);
+
+          review.tags.push(tag);
+        }
       }
     }
 

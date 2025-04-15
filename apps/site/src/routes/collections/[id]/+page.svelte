@@ -192,7 +192,15 @@
 		{#if isOwner}
 			<div class="flex gap-2">
 				{#if collection.isPersonal}
-					<ImportReviews />
+					<ImportReviews
+						{tags}
+						onAddedReviews={(newReviews) =>
+							reviews.items.unshift(
+								...newReviews.toSorted(
+									(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+								)
+							)}
+					/>
 				{/if}
 
 				<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />

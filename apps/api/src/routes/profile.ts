@@ -105,20 +105,20 @@ export const profileRoute = new Hono()
       "json",
       z.object({
         collectionId: z.number().int().positive(),
-        assignTagId: z.number().int().positive().optional(),
+        assignTagsIds: z.array(z.number().int().positive()),
       })
     ),
     authMiddleware,
     async (c) => {
       const user = c.get("session")!.user;
       const collectionService = c.get("collectionService");
-      const { collectionId, assignTagId } = c.req.valid("json");
+      const { collectionId, assignTagsIds } = c.req.valid("json");
 
       const fillResult =
         await collectionService.fillPersonalCollectionWithOtherCollection({
           userId: user.id,
           collectionId: new Id(collectionId),
-          tagId: assignTagId ? new Id(assignTagId) : undefined,
+          tagsIds: assignTagsIds.map((tId) => new Id(tId)),
         });
 
       if (fillResult.isErr()) {

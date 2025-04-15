@@ -139,7 +139,7 @@ export interface ICollectionService {
   fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
-    tagId?: Id;
+    tagsIds: Id[];
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
