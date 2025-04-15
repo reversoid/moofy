@@ -7,6 +7,72 @@
 	import { makeClient } from '$lib/shared/utils';
 	import { toast } from 'svelte-sonner';
 
+	// TODO implement i118n
+	function generateResultMessage(props: {
+		addedReviewsAmount: number;
+		conflictReviewsAmount: number;
+	}) {
+		function getReviewWordForm(count: number) {
+			const absCount = Math.abs(count);
+			const lastDigit = absCount % 10;
+			const lastTwoDigits = absCount % 100;
+
+			if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+				return 'обзоров';
+			}
+
+			if (lastDigit === 1) {
+				return 'обзор';
+			} else if (lastDigit >= 2 && lastDigit <= 4) {
+				return 'обзора';
+			} else {
+				return 'обзоров';
+			}
+		}
+
+		function getAddedPrefix(count: number) {
+			const absCount = Math.abs(count);
+			const lastDigit = absCount % 10;
+			const lastTwoDigits = absCount % 100;
+
+			if (lastDigit === 1 && lastTwoDigits !== 11) {
+				return 'добавлен';
+			} else {
+				return 'добавлено';
+			}
+		}
+
+		function getExistsForm(count: number) {
+			const absCount = Math.abs(count);
+			const lastDigit = absCount % 10;
+			const lastTwoDigits = absCount % 100;
+
+			if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+				return 'существует';
+			}
+
+			if (lastDigit === 1) {
+				return 'существует';
+			} else {
+				return 'существуют';
+			}
+		}
+
+		function capitalize(str: string) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+
+		const addedSentence = `${capitalize(getAddedPrefix(props.addedReviewsAmount))} ${props.addedReviewsAmount} ${getReviewWordForm(props.addedReviewsAmount)}.`;
+
+		if (props.conflictReviewsAmount === 0) {
+			return addedSentence;
+		}
+
+		const conflictSentence = `${props.conflictReviewsAmount} ${getReviewWordForm(props.conflictReviewsAmount)} уже ${getExistsForm(props.conflictReviewsAmount)}.`;
+
+		return `${addedSentence} ${conflictSentence}`;
+	}
+
 	let selectedCollectionId = $state<string>();
 	let selectedTagsIds = $state<string[]>([]);
 	let isLoading = $state(false);
@@ -44,13 +110,18 @@
 
 		const { addedReviews, conflictReviews } = await result.json();
 
+		console.log({ addedReviews, conflictReviews });
+
 		onAddedReviews(addedReviews);
 
 		isOpen = false;
 
-		// TODO show modal on conflicts
-
-		console.log({ addedReviews, conflictReviews });
+		toast.info(
+			generateResultMessage({
+				addedReviewsAmount: addedReviews.length,
+				conflictReviewsAmount: conflictReviews.length
+			})
+		);
 	}
 </script>
 
