@@ -5,12 +5,12 @@
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn, makeClient } from '$lib/utils';
+	import { cn, makeClient } from '$lib/shared/utils';
 	import type { FilmDto, ProviderFilmDto } from '@repo/api/dtos';
 	import uniqBy from 'lodash.uniqby';
 	import debounce from 'lodash.debounce';
 	import type { FormEventHandler } from 'svelte/elements';
-	import Image from '$lib/ui/image.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
 	import { FilmType } from '@repo/core/entities';
 	import { ProviderFilmType } from '@repo/core/film-providers';
 

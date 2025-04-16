@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Command as CommandPrimitive } from 'bits-ui';
 	import Search from 'lucide-svelte/icons/search';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/shared/utils';
 	import { IconLoader2 } from '@tabler/icons-svelte';
 
 	let {

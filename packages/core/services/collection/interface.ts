@@ -8,8 +8,14 @@ import {
   NotOwnerOfCollectionError,
   AlreadyLikedCollectionError,
   NotLikedCollectionError,
+  PersonalCollectionExistsError,
+  PersonalCollectionNotFoundError,
+  DeleteLinkedPersonalCollectionError,
 } from "./errors";
 import { PaginatedData } from "../../utils/pagination";
+import { Id } from "../../utils";
+import { Review } from "../../entities";
+import { TagNotFoundError } from "../tag";
 
 export type CreateCollectionDto = {
   name: string;
@@ -47,7 +53,12 @@ export interface ICollectionService {
     id: Collection["id"];
     by: User["id"];
   }): Promise<
-    Result<null, CollectionNotFoundError | NotOwnerOfCollectionError>
+    Result<
+      null,
+      | CollectionNotFoundError
+      | NotOwnerOfCollectionError
+      | DeleteLinkedPersonalCollectionError
+    >
   >;
 
   editCollection(props: {
@@ -110,5 +121,39 @@ export interface ICollectionService {
       | UserNotFoundError
       | NotLikedCollectionError
     >
+  >;
+
+  createPersonalCollection(props: {
+    userId: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | PersonalCollectionExistsError>
+  >;
+
+  getOrCreatePersonalCollection(props: {
+    userId: Id;
+    by?: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
+  >;
+
+  fillPersonalCollectionWithOtherCollection(props: {
+    userId: Id;
+    collectionId: Id;
+    tagsIds: Id[];
+  }): Promise<
+    Result<
+      { conflictReviews: Review[]; addedReviews: Review[] },
+      | PersonalCollectionNotFoundError
+      | CollectionNotFoundError
+      | UserNotFoundError
+      | TagNotFoundError
+      | NotOwnerOfCollectionError
+    >
+  >;
+
+  deletePersonalCollection(props: {
+    userId: Id;
+  }): Promise<
+    Result<null, UserNotFoundError | PersonalCollectionNotFoundError>
   >;
 }

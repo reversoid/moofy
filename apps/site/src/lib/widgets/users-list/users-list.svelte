@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { UserCard } from '$lib/entities/user-card';
-	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
-	import Search from '$lib/ui/search.svelte';
+	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
+	import Search from '$lib/shared/ui/search.svelte';
 	import type { UserDto } from '@repo/api/dtos';
 	import { flip } from 'svelte/animate';
 	import * as Alert from '$lib/components/ui/alert';

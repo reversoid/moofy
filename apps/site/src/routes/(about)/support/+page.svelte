@@ -1,7 +1,7 @@
 <script>
 	import { Button } from '$lib/components/ui/button';
-	import Heading from '$lib/ui/heading.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { IconBrandTelegram, IconMail } from '@tabler/icons-svelte';
 </script>
 

@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import * as Alert from '$lib/components/ui/alert';
 	import * as Card from '$lib/components/ui/card';
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
-	import { CreateReview } from '$lib/features/reivew';
-	import { globalState } from '$lib/state/state.svelte';
-	import Heading from '$lib/ui/heading.svelte';
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
-	import { makeClient } from '$lib/utils';
+	import { ImportReviews, CreateReview } from '$lib/features/reivew';
+	import { globalState } from '$lib/shared/state/state.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
+	import { makeClient } from '$lib/shared/utils';
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
+	import { IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 
@@ -88,11 +90,21 @@
 </script>
 
 <svelte:head>
-	<title>{collection.name} | Moofy</title>
+	<title
+		>{collection.isPersonal ? `Коллекция ${collection.creator.username}` : collection.name} | Moofy</title
+	>
 </svelte:head>
 
 <Wrapper>
-	<Heading>{collection.name}</Heading>
+	<Heading>
+		{#if collection.isPersonal}
+			Обзоры <Link href="/profiles/{collection.creator.username}"
+				>{collection.creator.username}</Link
+			>
+		{:else}
+			{collection.name}
+		{/if}
+	</Heading>
 
 	<div
 		class="mt-6 grid grid-cols-[4fr_1fr] gap-2 max-xl:grid-cols-[3fr_1fr] max-lg:grid-cols-[2fr_1fr] max-md:grid-cols-1"
@@ -136,7 +148,6 @@
 							>{collection.creator.username}</Link
 						>
 					</li>
-
 					<li>Обновлено: {formattedUpdatedAt}</li>
 				</ul>
 
@@ -169,11 +180,51 @@
 		</Card.Root>
 	</div>
 
+	{#if collection.isPersonal}
+		<Alert.Root class="mt-2">
+			<IconMushroom size={20} />
+			<Alert.Title>О коллекции</Alert.Title>
+			<Alert.Description>
+				Это <b>персональная коллекция</b>.
+				{#if isOwner}
+					Здесь Вы можете хранить все свои обзоры.
+
+					<br />
+
+					{#if collection.isPublic}
+						Данная коллекция отображается в профиле.
+					{:else}
+						Чтобы коллекция была видна в профиле, необходимо сделать ее публичной.
+					{/if}
+				{:else}
+					<!-- TODO maybe make link builder? -->
+					Здесь <Link href="/profiles/{collection.creator.username}"
+						>{collection.creator.username}</Link
+					> хранит свои обзоры
+				{/if}
+			</Alert.Description>
+		</Alert.Root>
+	{/if}
+
 	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>
 
 		{#if isOwner}
-			<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />
+			<div class="flex gap-2">
+				{#if collection.isPersonal}
+					<ImportReviews
+						{tags}
+						onAddedReviews={(newReviews) =>
+							reviews.items.unshift(
+								...newReviews.toSorted(
+									(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+								)
+							)}
+					/>
+				{/if}
+
+				<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />
+			</div>
 		{/if}
 	</div>
 

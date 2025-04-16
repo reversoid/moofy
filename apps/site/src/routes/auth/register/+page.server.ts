@@ -1,5 +1,5 @@
 import { registerSchema } from '$lib/entities/auth/schema.js';
-import { makeClient } from '$lib/utils';
+import { makeClient } from '$lib/shared/utils';
 import { type Actions } from '@sveltejs/kit';
 import { superValidate, fail, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';

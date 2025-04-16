@@ -91,7 +91,8 @@ export class CollectionRepository extends ICollectionRepository {
     const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
     let query = this.getSelectQuery()
-      .where("userId", "=", userId.value)
+      .where("collections.userId", "=", userId.value)
+      .where("personalCollections.id", "is", null)
       .orderBy("collections.updatedAt", "desc")
       .limit(limit + 1);
 
@@ -145,10 +146,6 @@ export class CollectionRepository extends ICollectionRepository {
   }
 
   async update(id: Id, value: Partial<Collection>): Promise<Collection> {
-    if (Object.values(value).every((v) => v === undefined)) {
-      return this.getOrThrow(id);
-    }
-
     await db
       .updateTable("collections")
       .set({
@@ -156,6 +153,7 @@ export class CollectionRepository extends ICollectionRepository {
         imageUrl: value.imageUrl,
         isPublic: value.isPublic,
         name: value.name,
+        updatedAt: new Date(),
       })
       .where("id", "=", id.value)
       .returningAll()
@@ -172,6 +170,12 @@ export class CollectionRepository extends ICollectionRepository {
     return db
       .selectFrom("collections")
       .innerJoin("users", "users.id", "collections.userId")
+      .leftJoin(
+        "personalCollections",
+        "personalCollections.collectionId",
+        "collections.id"
+      )
+      .select("personalCollections.id as personalCollectionId")
       .select(CollectionSelects.collectionSelects)
       .select(UserSelects.userSelects);
   }

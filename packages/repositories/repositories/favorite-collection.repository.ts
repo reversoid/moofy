@@ -61,6 +61,12 @@ export class FavoriteCollectionRepository
       .select(CollectionSelects.collectionSelects)
       .select(UserSelects.userSelects)
       .select("favoriteCollections.createdAt as fc-createdAt")
+      .leftJoin(
+        "personalCollections",
+        "personalCollections.collectionId",
+        "collections.id"
+      )
+      .select("personalCollections.id as personalCollectionId")
       .where("favoriteCollections.userId", "=", userId.value)
       .where((eb) =>
         eb.or([

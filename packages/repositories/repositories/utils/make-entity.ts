@@ -37,7 +37,9 @@ export const makeUser = (rawData: UserSelects.UserSelectResult): User => {
 
 export const makeCollection = (
   rawData: CollectionSelects.CollectionSelectResult &
-    UserSelects.UserSelectResult
+    UserSelects.UserSelectResult & {
+      personalCollectionId: number | null;
+    }
 ): Collection => {
   return new Collection({
     id: new Id(rawData["c-id"]),
@@ -48,6 +50,7 @@ export const makeCollection = (
     imageUrl: rawData["c-imageUrl"],
     createdAt: rawData["c-createdAt"],
     updatedAt: rawData["c-updatedAt"],
+    isPersonal: Boolean(rawData.personalCollectionId),
   });
 };
 
@@ -89,6 +92,8 @@ export const makeReview = (
           name: t.name,
         })
     ),
+
+    isHidden: rawData["r-isHidden"],
   });
 };
 

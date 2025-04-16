@@ -14,7 +14,7 @@
 
 <script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/shared/utils';
 	import type { TagDto } from '@repo/api/dtos';
 	import Color from 'color';
 	import type { Snippet } from 'svelte';

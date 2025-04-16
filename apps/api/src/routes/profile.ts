@@ -1,13 +1,22 @@
-import { UsernameExistsError, WrongPasswordError } from "@repo/core/services";
+import {
+  CollectionNotFoundError,
+  NotOwnerOfCollectionError,
+  PersonalCollectionNotFoundError,
+  TagNotFoundError,
+  UsernameExistsError,
+  WrongPasswordError,
+} from "@repo/core/services";
+import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
 import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
 import {
   makeCollectionDto,
+  makeReviewDto,
   makeUserDto,
   withPaginatedData,
 } from "../utils/make-dto";
+import { validator } from "../utils/validator";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
@@ -89,4 +98,78 @@ export const profileRoute = new Hono()
 
       return c.json({ user: makeUserDto(updatedUserResult.unwrap()) }, 200);
     }
-  );
+  )
+  .post(
+    "/personal-collection/merge",
+    validator(
+      "json",
+      z.object({
+        collectionId: z.number().int().positive(),
+        assignTagsIds: z.array(z.number().int().positive()),
+      })
+    ),
+    authMiddleware,
+    async (c) => {
+      const user = c.get("session")!.user;
+      const collectionService = c.get("collectionService");
+      const { collectionId, assignTagsIds } = c.req.valid("json");
+
+      const fillResult =
+        await collectionService.fillPersonalCollectionWithOtherCollection({
+          userId: user.id,
+          collectionId: new Id(collectionId),
+          tagsIds: assignTagsIds.map((tId) => new Id(tId)),
+        });
+
+      if (fillResult.isErr()) {
+        const error = fillResult.error;
+
+        if (error instanceof PersonalCollectionNotFoundError) {
+          return c.json(
+            { error: "PERSONAL_COLLECTION_NOT_FOUND" as const },
+            404
+          );
+        }
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 409);
+        }
+
+        throw error;
+      }
+
+      const { addedReviews, conflictReviews } = fillResult.value;
+
+      return c.json(
+        {
+          addedReviews: addedReviews.map(makeReviewDto),
+          conflictReviews: conflictReviews.map(makeReviewDto),
+        },
+        200
+      );
+    }
+  )
+  .get("/personal-collection", async (c) => {
+    const {
+      user: { id },
+    } = c.get("session")!;
+    const collectionService = c.get("collectionService");
+
+    const collectionResult =
+      await collectionService.getOrCreatePersonalCollection({
+        userId: id,
+        by: id,
+      });
+
+    const collection = collectionResult.unwrap();
+
+    return c.json({ collection: makeCollectionDto(collection) }, 200);
+  });

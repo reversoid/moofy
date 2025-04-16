@@ -16,6 +16,7 @@ export class Review extends Entity {
   collectionId: Id;
   userId: Id;
   tags: Tag[];
+  isHidden: boolean;
 
   constructor(props: {
     id?: Id;
@@ -27,6 +28,7 @@ export class Review extends Entity {
     collectionId: Id;
     userId: Id;
     tags?: Tag[];
+    isHidden?: boolean;
   }) {
     super();
 
@@ -41,5 +43,7 @@ export class Review extends Entity {
     this.collectionId = props.collectionId;
     this.userId = props.userId;
     this.tags = props.tags ?? [];
+
+    this.isHidden = props.isHidden ?? false;
   }
 }

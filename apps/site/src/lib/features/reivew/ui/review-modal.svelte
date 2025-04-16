@@ -3,7 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import DeleteButton from '$lib/ui/delete-button.svelte';
+	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
 	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
 	import Film from './film.svelte';
 	import RatingSelect from './rating-select.svelte';
@@ -15,12 +15,14 @@
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
 	import { Tag } from '$lib/entities/Tag';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 
 	export type ReviewForm = {
 		filmId: FilmDto['id'];
 		description: string | null;
 		score: number | null;
 		tags?: number[];
+		isHidden?: boolean;
 	};
 
 	type ReviewModalProps = {
@@ -40,7 +42,8 @@
 		filmId: existingReview?.film.id ? String(existingReview?.film.id) : null,
 		description: existingReview?.description ?? null,
 		score: existingReview?.score ?? null,
-		tags: (existingReview?.tags.map((t) => t.id.toString()) ?? []) as string[]
+		tags: (existingReview?.tags.map((t) => t.id.toString()) ?? []) as string[],
+		isHidden: existingReview?.isHidden ?? false
 	};
 
 	const form = superForm(defaults(initialData, zod(reviewFormSchema)), {
@@ -150,6 +153,16 @@
 			</Select.Root>
 		</div>
 	{/if}
+
+	<div class="flex flex-col gap-3">
+		<div class="mt-2 flex flex-row items-center gap-2">
+			<Checkbox id="isHidden" aria-labelledby="isHidden-label" bind:checked={$formData.isHidden} />
+
+			<Label id="isHidden-label" for="isHidden" class="text-sm font-medium leading-none">
+				Скрыть обзор
+			</Label>
+		</div>
+	</div>
 </form>
 
 <Dialog.Footer class="flex flex-row gap-3 max-sm:flex-col">

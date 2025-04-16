@@ -22,10 +22,27 @@ export interface TagData {
 }
 
 export class ReviewRepository extends IReviewRepository {
+  async getReviewOnFilm(
+    collectionId: Collection["id"],
+    filmId: Film["id"]
+  ): Promise<Review | null> {
+    const rawData = await this.getSelectQuery()
+      .where("reviews.collectionId", "=", collectionId.value)
+      .where("films.id", "=", filmId.value)
+      .executeTakeFirst();
+
+    if (!rawData) {
+      return null;
+    }
+
+    return makeReview(rawData);
+  }
+
   async searchReviews(
     collectionId: Collection["id"],
     search: string,
-    limit: number
+    limit: number,
+    showHidden: boolean
   ): Promise<Review[]> {
     const words = getTsQueryFromString(search);
 
@@ -64,7 +81,11 @@ export class ReviewRepository extends IReviewRepository {
       .orderBy("rank", "desc");
 
     if (collectionId) {
-      query = query.where("collectionId", "=", collectionId.value);
+      query = query.where("reviews.collectionId", "=", collectionId.value);
+    }
+
+    if (!showHidden) {
+      query = query.where("reviews.isHidden", "=", false);
     }
 
     const results = await query.execute();
@@ -75,7 +96,8 @@ export class ReviewRepository extends IReviewRepository {
   async getCollectionReviews(
     collectionId: Collection["id"],
     limit: number,
-    cursor?: string
+    cursor?: string,
+    showHidden?: boolean
   ): Promise<PaginatedData<Review>> {
     const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
 
@@ -86,6 +108,10 @@ export class ReviewRepository extends IReviewRepository {
 
     if (cursorDate) {
       query = query.where("reviews.updatedAt", "<=", cursorDate);
+    }
+
+    if (!showHidden) {
+      query = query.where("isHidden", "is", false);
     }
 
     const data = await query.execute();
@@ -100,7 +126,7 @@ export class ReviewRepository extends IReviewRepository {
     };
   }
 
-  async getReviewOnFilm(
+  async getReviewOnFilmByKpId(
     collectionId: Collection["id"],
     filmKpId: Film["kinopoiskId"]
   ): Promise<Review | null> {
@@ -127,6 +153,7 @@ export class ReviewRepository extends IReviewRepository {
         description: item.description,
         score: item.score,
         userId: item.userId.value,
+        isHidden: item.isHidden,
       })
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -190,6 +217,7 @@ export class ReviewRepository extends IReviewRepository {
         description: value.description,
         score: value.score,
         updatedAt: new Date(),
+        isHidden: value.isHidden,
       })
       .where("id", "=", id.value)
       .returningAll()

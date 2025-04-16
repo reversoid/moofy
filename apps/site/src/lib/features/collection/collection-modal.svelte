@@ -7,9 +7,9 @@
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import DeleteButton from '$lib/ui/delete-button.svelte';
-	import Image from '$lib/ui/image.svelte';
-	import UploadImage from '$lib/ui/upload-image.svelte';
+	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
+	import UploadImage from '$lib/shared/ui/upload-image.svelte';
 	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import {
 		IconDeviceFloppy,
@@ -84,16 +84,18 @@
 
 <div class="mt-2">
 	<form id="collection-form" class="flex flex-col gap-2 pb-4" use:enhance>
-		<Form.Field {form} name="name">
-			<Form.Control>
-				{#snippet children({ attrs }: { attrs: any })}
-					<Form.Label>Название</Form.Label>
-					<Input {...attrs} bind:value={$formData.name} placeholder="Название..." />
-				{/snippet}
-			</Form.Control>
-			<Form.Description />
-			<Form.FieldErrors />
-		</Form.Field>
+		{#if !collection?.isPersonal}
+			<Form.Field {form} name="name">
+				<Form.Control>
+					{#snippet children({ attrs }: { attrs: any })}
+						<Form.Label>Название</Form.Label>
+						<Input {...attrs} bind:value={$formData.name} placeholder="Название..." />
+					{/snippet}
+				</Form.Control>
+				<Form.Description />
+				<Form.FieldErrors />
+			</Form.Field>
+		{/if}
 
 		<Form.Field {form} name="description">
 			<Form.Control>
@@ -172,7 +174,7 @@
 </div>
 
 <Dialog.Footer class="flex flex-row items-center gap-3 max-sm:flex-col">
-	{#if type === 'edit'}
+	{#if type === 'edit' && !collection?.isPersonal}
 		<DeleteButton
 			onDelete={onDeleteWithLoading}
 			isLoading={isDeleting}

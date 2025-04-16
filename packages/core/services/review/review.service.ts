@@ -61,10 +61,13 @@ export class ReviewService implements IReviewService {
       return err(new CollectionNotFoundError());
     }
 
+    const isOwnerRequest = props.by?.value === collection.creator.id.value;
+
     const reviews = await this.reviewRepository.searchReviews(
       props.collectionId,
       props.search,
-      props.limit
+      props.limit,
+      isOwnerRequest
     );
 
     return ok(reviews);
@@ -115,7 +118,7 @@ export class ReviewService implements IReviewService {
       return err(new NoAccessToCollectionError());
     }
 
-    const reviewOnFilm = await this.reviewRepository.getReviewOnFilm(
+    const reviewOnFilm = await this.reviewRepository.getReviewOnFilmByKpId(
       props.collectionId,
       props.dto.filmId
     );
@@ -148,6 +151,7 @@ export class ReviewService implements IReviewService {
       film,
       collectionId: collection.id,
       userId: collection.creator.id,
+      isHidden: props.dto.isHidden,
     });
 
     const createdReview = await this.reviewRepository.create(newReview);
@@ -172,6 +176,7 @@ export class ReviewService implements IReviewService {
     const updatedReview = await this.reviewRepository.update(props.reviewId, {
       description: props.dto.description,
       score: props.dto.score,
+      isHidden: props.dto.isHidden,
     });
 
     return ok(updatedReview);
@@ -228,11 +233,14 @@ export class ReviewService implements IReviewService {
       return err(new CollectionNotFoundError());
     }
 
+    const isOwnerRequest = props.by?.value === collection.creator.id.value;
+
     if (props.search) {
       const reviews = await this.reviewRepository.searchReviews(
         props.collectionId,
         props.search,
-        props.limit
+        props.limit,
+        isOwnerRequest
       );
 
       return ok({ items: reviews, cursor: null });
@@ -241,7 +249,8 @@ export class ReviewService implements IReviewService {
     const reviews = await this.reviewRepository.getCollectionReviews(
       props.collectionId,
       props.limit,
-      props.cursor
+      props.cursor,
+      isOwnerRequest
     );
 
     return ok(reviews);
@@ -275,6 +284,10 @@ export class ReviewService implements IReviewService {
     const collection = collectionResult.unwrap();
 
     if (!collection) {
+      return ok(null);
+    }
+
+    if (review.isHidden && collection.creator.id.value !== props.by?.value) {
       return ok(null);
     }
 

@@ -7,7 +7,8 @@ export const reviewFormSchema = z.object({
 		.max(400, { message: 'Описание не может быть длиннее 400 символов' })
 		.nullable(),
 	score: z.number().int().max(5).nullable(),
-	tags: z.array(z.string())
+	tags: z.array(z.string()),
+	isHidden: z.boolean()
 });
 
 export type ReviewFormSchema = typeof reviewFormSchema;

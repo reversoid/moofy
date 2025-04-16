@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import { toast } from 'svelte-sonner';
 
 	$effect(() => {

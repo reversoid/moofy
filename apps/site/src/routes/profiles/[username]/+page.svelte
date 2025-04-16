@@ -1,36 +1,45 @@
 <script lang="ts">
 	import { Textarea } from '$lib/components/ui/textarea';
-	import Heading from '$lib/ui/heading.svelte';
-	import Link from '$lib/ui/link.svelte';
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
 	import { IconSettings, IconUser } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import { FollowButton } from '$lib/features/profile';
 	import { Button } from '$lib/components/ui/button';
-	import Image from '$lib/ui/image.svelte';
+	import Image from '$lib/shared/ui/image.svelte';
 
 	const { data }: PageProps = $props();
 
-	const initialCollections = $derived(data.collections);
-	const initialFavoriteCollections = $derived(data.favoriteCollections);
 	const profile = $derived(data.profile);
 	const currentUser = $derived(data.user);
 	const social = $derived(data.social);
 
 	let collections = $state(data.collections);
+
 	let favoriteCollections = $state(data.favoriteCollections);
 
-	$effect(() => {
-		collections = initialCollections;
-	});
+	let specialCollectionsSearch = $state('');
 
-	$effect(() => {
-		favoriteCollections = initialFavoriteCollections;
-	});
+	// TODO can the name be better? Is it possible to make a shared name builder for personalCollection?
+	const specialCollections = $derived(
+		(data.personalCollection
+			? [{ ...data.personalCollection, name: `Обзоры ${data.personalCollection.creator.username}` }]
+			: []
+		)
+			.filter((v) => !!v)
+			.filter(
+				(c) =>
+					c.description
+						?.toLocaleLowerCase()
+						?.includes(specialCollectionsSearch.toLocaleLowerCase()) ||
+					c.name.toLocaleLowerCase().includes(specialCollectionsSearch.toLocaleLowerCase())
+			)
+	);
 
 	async function searchCollections(search: string) {
 		const api = makeClient(fetch);
@@ -153,6 +162,19 @@
 		</div>
 
 		<div class="flex flex-col gap-8">
+			{#if data.personalCollection}
+				<div class="flex flex-col gap-4">
+					<Heading type="h2">Особые коллекции</Heading>
+					<CollectionsGrid
+						onSearch={async (v) => {
+							specialCollectionsSearch = v;
+						}}
+						collections={specialCollections}
+						defaultEmptyDescription=""
+					/>
+				</div>
+			{/if}
+
 			<div class="flex flex-col gap-4">
 				<Heading type="h2">Коллекции</Heading>
 				<CollectionsGrid

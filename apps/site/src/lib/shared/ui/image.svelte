@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/shared/utils';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	interface Props extends HTMLAttributes<HTMLImageElement> {

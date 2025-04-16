@@ -4,7 +4,7 @@
 
 	import CreateReviewButton from './create-review-button.svelte';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 
 	interface Props {
 		collectionId: CollectionDto['id'];
@@ -21,7 +21,8 @@
 			json: {
 				description: form.description || null,
 				filmId: Number(form.filmId),
-				score: form.score
+				score: form.score,
+				isHidden: form.isHidden
 			},
 			param: { collectionId: String(collectionId) }
 		});

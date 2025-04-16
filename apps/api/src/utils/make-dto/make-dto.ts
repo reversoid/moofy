@@ -39,6 +39,7 @@ export const makeCollectionDto = (collection: Collection) => ({
   createdAt: makeDateDto(collection.createdAt),
   updatedAt: makeDateDto(collection.updatedAt),
   creator: makeUserDto(collection.creator),
+  isPersonal: collection.isPersonal,
 });
 
 export const makeFilmDto = (film: Film) => ({
@@ -76,6 +77,7 @@ export const makeReviewDto = (review: Review) => ({
   film: makeFilmDto(review.film),
   createdAt: makeDateDto(review.createdAt),
   updatedAt: makeDateDto(review.updatedAt),
+  isHidden: review.isHidden,
 });
 
 export const makeSessionDto = (session: Session) => ({

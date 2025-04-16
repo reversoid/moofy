@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Wrapper from '$lib/ui/wrapper.svelte';
+	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import * as Card from '$lib/components/ui/card';
-	import Heading from '$lib/ui/heading.svelte';
+	import Heading from '$lib/shared/ui/heading.svelte';
 	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
-	import { makeClient } from '$lib/utils';
+	import { makeClient } from '$lib/shared/utils';
 	import { Badge } from '$lib/components/ui/badge';
 
 	const { data }: PageProps = $props();
@@ -42,15 +42,15 @@
 
 					<div class="mt-6 flex flex-row gap-2">
 						{#if changelog.hasFeature}
-							<Badge class="bg-violet-500" variant="secondary">Новое</Badge>
+							<Badge class="bg-green-500" variant="secondary">Новое</Badge>
 						{/if}
 
 						{#if changelog.hasImprovement}
-							<Badge class="bg-green-500" variant="secondary">Улучшения</Badge>
+							<Badge class="bg-blue-500" variant="secondary">Улучшения</Badge>
 						{/if}
 
 						{#if changelog.hasBugfix}
-							<Badge class="bg-slate-500" variant="secondary">Исправления</Badge>
+							<Badge class="bg-gray-500" variant="secondary">Исправления</Badge>
 						{/if}
 					</div>
 				</Card.Content>

@@ -1,4 +1,4 @@
-import { makeClient } from '$lib/utils';
+import { makeClient } from '$lib/shared/utils';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ fetch }) => {

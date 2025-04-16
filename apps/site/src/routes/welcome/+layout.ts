@@ -1,4 +1,4 @@
-import { authGuard } from '$lib/utils/guards';
+import { authGuard } from '$lib/shared/utils/guards';
 import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = async ({ parent }) => {

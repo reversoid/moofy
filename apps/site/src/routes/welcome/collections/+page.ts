@@ -1,19 +1,23 @@
-import { makeClient } from '$lib/utils';
-import { error } from '@sveltejs/kit';
+import { makeClient } from '$lib/shared/utils';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	const api = makeClient(fetch);
 
-	const response = await api.profile.collections.$get({ query: { limit: '11' } });
+	const [collectionsResponse, personalCollectionResponse] = await Promise.all([
+		api.profile.collections.$get({ query: { limit: '11' } }),
+		api.profile['personal-collection'].$get({ query: { limit: '11' } })
+	]);
 
-	if (!response.ok) {
-		throw error(500, 'Failed to load collections');
+	if (!collectionsResponse.ok || !personalCollectionResponse.ok) {
+		throw new Error();
 	}
 
-	const { collections } = await response.json();
+	const { collections } = await collectionsResponse.json();
+	const { collection: personalCollection } = await personalCollectionResponse.json();
 
 	return {
-		collections
+		collections,
+		personalCollection
 	};
 };

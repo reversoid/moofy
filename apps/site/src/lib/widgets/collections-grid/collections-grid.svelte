@@ -1,8 +1,8 @@
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { CollectionCard } from '$lib/entities/collection';
-	import LoadMoreButton from '$lib/ui/load-more-button.svelte';
-	import Search from '$lib/ui/search.svelte';
+	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
+	import Search from '$lib/shared/ui/search.svelte';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import type { Snippet } from 'svelte';

@@ -22,11 +22,13 @@ export type CreateReviewDto = {
   filmId: Film["kinopoiskId"];
   description?: string | null;
   score?: number | null;
+  isHidden?: boolean;
 };
 
 export type EditReviewDto = {
   description?: string | null;
   score?: number | null;
+  isHidden?: boolean;
 };
 
 export interface IReviewService {

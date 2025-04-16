@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let type: 'h1' | 'h2' = 'h1';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/shared/utils';
 
 	const className = $$props['class'];
 	export { className as class };

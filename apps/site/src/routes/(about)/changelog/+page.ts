@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
-import { makeClient } from '$lib/utils';
+import { makeClient } from '$lib/shared/utils';
 import { parse } from 'marked';
 
 export const load: PageLoad = async ({ fetch }) => {
