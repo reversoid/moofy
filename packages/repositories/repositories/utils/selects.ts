@@ -116,6 +116,7 @@ export namespace ReviewSelects {
     "score",
     "updatedAt",
     "userId",
+    "isHidden",
   ] as const;
 
   const reviewPrefix = "r";

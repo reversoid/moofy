@@ -148,6 +148,7 @@ export class ReviewRepository extends IReviewRepository {
         description: item.description,
         score: item.score,
         userId: item.userId.value,
+        isHidden: item.isHidden,
       })
       .returningAll()
       .executeTakeFirstOrThrow();

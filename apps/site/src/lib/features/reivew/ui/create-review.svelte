@@ -21,7 +21,8 @@
 			json: {
 				description: form.description || null,
 				filmId: Number(form.filmId),
-				score: form.score
+				score: form.score,
+				isHidden: form.isHidden
 			},
 			param: { collectionId: String(collectionId) }
 		});

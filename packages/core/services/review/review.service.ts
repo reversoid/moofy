@@ -148,6 +148,7 @@ export class ReviewService implements IReviewService {
       film,
       collectionId: collection.id,
       userId: collection.creator.id,
+      isHidden: props.dto.isHidden,
     });
 
     const createdReview = await this.reviewRepository.create(newReview);

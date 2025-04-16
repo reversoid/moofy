@@ -92,6 +92,8 @@ export const makeReview = (
           name: t.name,
         })
     ),
+
+    isHidden: rawData["r-isHidden"],
   });
 };
 

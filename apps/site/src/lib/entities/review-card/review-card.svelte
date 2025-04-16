@@ -6,6 +6,7 @@
 	import type { Snippet } from 'svelte';
 	import Image from '$lib/shared/ui/image.svelte';
 	import { Tag } from '../Tag';
+	import { cn } from '$lib/shared/utils';
 
 	interface Props {
 		review: ReviewDto;
@@ -15,7 +16,7 @@
 	const { review, actions }: Props = $props();
 </script>
 
-<Card.Root class="flex h-full flex-row max-sm:flex-col">
+<Card.Root class={cn('flex h-full flex-row max-sm:flex-col', review.isHidden && 'opacity-40')}>
 	<Card.Content class="relative shrink-0 !pr-0 max-sm:mx-auto">
 		<div class="relative">
 			<Image

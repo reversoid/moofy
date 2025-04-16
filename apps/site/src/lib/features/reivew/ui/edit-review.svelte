@@ -20,7 +20,7 @@
 	async function editReview(form: ReviewForm) {
 		const api = makeClient(fetch);
 		const reviewResult = await api.reviews[':reviewId'].$patch({
-			json: { description: form.description || null, score: form.score },
+			json: { description: form.description || null, score: form.score, isHidden: form.isHidden },
 			param: { reviewId: String(existingReview.id) }
 		});
 

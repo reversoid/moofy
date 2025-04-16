@@ -90,7 +90,9 @@
 </script>
 
 <svelte:head>
-	<title>{collection.name} | Moofy</title>
+	<title
+		>{collection.isPersonal ? `Коллекция ${collection.creator.username}` : collection.name} | Moofy</title
+	>
 </svelte:head>
 
 <Wrapper>
