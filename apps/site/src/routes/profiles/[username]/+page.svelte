@@ -162,9 +162,9 @@
 		</div>
 
 		<div class="flex flex-col gap-8">
-			{#if specialCollections.length > 0}
+			{#if data.personalCollection}
 				<div class="flex flex-col gap-4">
-					<Heading type="h2">Специальные коллекции</Heading>
+					<Heading type="h2">Особые коллекции</Heading>
 					<CollectionsGrid
 						onSearch={async (v) => {
 							specialCollectionsSearch = v;
