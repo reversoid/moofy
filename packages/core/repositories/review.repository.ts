@@ -8,7 +8,8 @@ export abstract class IReviewRepository extends IBaseRepository<Review> {
   abstract searchReviews(
     collectionId: Collection["id"],
     search: string,
-    limit: number
+    limit: number,
+    showHidden: boolean
   ): Promise<Review[]>;
 
   abstract getCollectionReviews(

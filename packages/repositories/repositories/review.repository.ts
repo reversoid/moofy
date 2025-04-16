@@ -41,7 +41,8 @@ export class ReviewRepository extends IReviewRepository {
   async searchReviews(
     collectionId: Collection["id"],
     search: string,
-    limit: number
+    limit: number,
+    showHidden: boolean
   ): Promise<Review[]> {
     const words = getTsQueryFromString(search);
 
@@ -81,6 +82,10 @@ export class ReviewRepository extends IReviewRepository {
 
     if (collectionId) {
       query = query.where("collectionId", "=", collectionId.value);
+    }
+
+    if (!showHidden) {
+      query = query.where("isHidden", "=", false);
     }
 
     const results = await query.execute();

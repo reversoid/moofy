@@ -61,10 +61,13 @@ export class ReviewService implements IReviewService {
       return err(new CollectionNotFoundError());
     }
 
+    const isOwnerRequest = props.by?.value === collection.creator.id.value;
+
     const reviews = await this.reviewRepository.searchReviews(
       props.collectionId,
       props.search,
-      props.limit
+      props.limit,
+      isOwnerRequest
     );
 
     return ok(reviews);
@@ -230,11 +233,14 @@ export class ReviewService implements IReviewService {
       return err(new CollectionNotFoundError());
     }
 
+    const isOwnerRequest = props.by?.value === collection.creator.id.value;
+
     if (props.search) {
       const reviews = await this.reviewRepository.searchReviews(
         props.collectionId,
         props.search,
-        props.limit
+        props.limit,
+        isOwnerRequest
       );
 
       return ok({ items: reviews, cursor: null });
@@ -244,7 +250,7 @@ export class ReviewService implements IReviewService {
       props.collectionId,
       props.limit,
       props.cursor,
-      props.by?.value === collection.creator.id.value
+      isOwnerRequest
     );
 
     return ok(reviews);
