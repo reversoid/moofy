@@ -81,11 +81,11 @@ export class ReviewRepository extends IReviewRepository {
       .orderBy("rank", "desc");
 
     if (collectionId) {
-      query = query.where("collectionId", "=", collectionId.value);
+      query = query.where("reviews.collectionId", "=", collectionId.value);
     }
 
     if (!showHidden) {
-      query = query.where("isHidden", "=", false);
+      query = query.where("reviews.isHidden", "=", false);
     }
 
     const results = await query.execute();

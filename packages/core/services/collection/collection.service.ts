@@ -545,13 +545,15 @@ export class CollectionService implements ICollectionService {
       return err(new UserNotFoundError());
     }
 
+    const isOwnerRequest = props.userId.value === props.by?.value;
+
     if (props.search) {
       const collections = await this.collectionRepository.searchCollections(
         props.search,
         props.limit,
         {
           userId: user.id,
-          withPrivate: props.userId.value === props.by?.value,
+          withPrivate: isOwnerRequest,
         }
       );
 
@@ -562,7 +564,7 @@ export class CollectionService implements ICollectionService {
       props.userId,
       props.limit,
       props.cursor ?? undefined,
-      props.userId.value === props.by?.value
+      isOwnerRequest
     );
 
     return ok(collections);
