@@ -70,5 +70,9 @@
 		ul {
 			@apply mb-2 list-inside list-disc;
 		}
+
+		code {
+			@apply bg-gray-700 px-1;
+		}
 	}
 </style>

@@ -5,7 +5,7 @@
 	import '../fonts.css';
 	import '../app.css';
 
-	import { setCurrentUser } from '$lib/shared/state/state.svelte';
+	import { setCurrentUser } from '$lib/shared/state';
 	import { AppSidebar, Footer, Header, UpdatesNotification } from '../app/ui';
 
 	let { children, data } = $props();

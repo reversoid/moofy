@@ -6,7 +6,7 @@
 	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import { IconMenu } from '@tabler/icons-svelte';
 	import ProfileButton from './profile-button.svelte';
-	import { globalState } from '$lib/shared/state/state.svelte';
+	import { globalState } from '$lib/shared/state';
 
 	const sidebar = useSidebar();
 </script>
@@ -23,7 +23,6 @@
 			{#if globalState.currentUser}
 				<div class="flex items-center gap-3 max-sm:hidden">
 					<Link href="/welcome/collections">Мои коллекции</Link>
-					<Link href="/welcome/favorites">Избранное</Link>
 					<Link href="/search/profiles">Поиск</Link>
 				</div>
 

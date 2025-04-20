@@ -2,16 +2,9 @@
 	import { goto } from '$app/navigation';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { AuthButton } from '$lib/entities/auth';
-	import { globalState, setCurrentUser } from '$lib/shared/state/state.svelte';
+	import { globalState, setCurrentUser } from '$lib/shared/state';
 	import { makeClient } from '$lib/shared/utils';
-	import {
-		IconBookmark,
-		IconList,
-		IconLogout2,
-		IconSearch,
-		IconSettings,
-		IconUser
-	} from '@tabler/icons-svelte';
+	import { IconList, IconLogout2, IconSearch, IconSettings, IconUser } from '@tabler/icons-svelte';
 
 	const sidebar = Sidebar.useSidebar();
 
@@ -27,11 +20,6 @@
 			title: 'Мои коллекции',
 			url: '/welcome/collections',
 			icon: IconList
-		},
-		{
-			title: 'Избранное',
-			url: '/welcome/favorites',
-			icon: IconBookmark
 		},
 		{
 			title: 'Поиск',
