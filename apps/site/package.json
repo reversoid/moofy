@@ -13,7 +13,7 @@
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"start": "node ./build/index.js"
+		"start": "node --env-file=variables ./build/index.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
