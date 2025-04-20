@@ -6,7 +6,7 @@
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
 	import { ImportReviews, CreateReview } from '$lib/features/reivew';
-	import { globalState } from '$lib/shared/state/state.svelte';
+	import { globalState } from '$lib/shared/state';
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
 	import Wrapper from '$lib/shared/ui/wrapper.svelte';

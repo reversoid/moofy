@@ -4,20 +4,15 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ fetch }) => {
 	const api = makeClient(fetch);
 
-	const [collectionsResponse, personalCollectionResponse] = await Promise.all([
-		api.profile.collections.$get({ query: { limit: '11' } }),
-		api.profile['personal-collection'].$get({ query: { limit: '11' } })
-	]);
+	const collectionsResponse = await api.profile.collections.$get({ query: { limit: '20' } });
 
-	if (!collectionsResponse.ok || !personalCollectionResponse.ok) {
+	if (!collectionsResponse.ok) {
 		throw new Error();
 	}
 
 	const { collections } = await collectionsResponse.json();
-	const { collection: personalCollection } = await personalCollectionResponse.json();
 
 	return {
-		collections,
-		personalCollection
+		collections
 	};
 };

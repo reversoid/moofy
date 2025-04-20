@@ -6,7 +6,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
-	import { setCurrentUser } from '$lib/shared/state/state.svelte';
+	import { setCurrentUser } from '$lib/shared/state';
 	import Image from '$lib/shared/ui/image.svelte';
 	import UploadImage from '$lib/shared/ui/upload-image.svelte';
 	import Wrapper from '$lib/shared/ui/wrapper.svelte';
