@@ -180,7 +180,9 @@ export class CollectionService implements ICollectionService {
     ]);
 
     // TODO filer using where in db level
-    reviewsToAdd = reviewsToAdd.filter((r) => r.description && !r.isHidden);
+    reviewsToAdd = reviewsToAdd.filter(
+      (r) => r.description && !r.isHidden && r.score
+    );
 
     const existingFilms = new Set(existingReviews.map((r) => r.film.id.value));
     const filmsToAdd = new Set(reviewsToAdd.map((r) => r.film.id.value));

@@ -50,7 +50,9 @@
 	});
 </script>
 
-<p class="text-muted-foreground text-sm">Будут импортированы только видимые обзоры с описанием</p>
+<p class="text-muted-foreground text-sm">
+	Будут импортированы только видимые обзоры с оценкой описанием
+</p>
 
 <div class="mt-3 flex flex-col gap-4">
 	<Select.Root bind:value={selectedCollectionId} type="single">
