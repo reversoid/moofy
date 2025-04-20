@@ -76,6 +76,7 @@ jobs:
 
   # TODO can do without copypaste?
   sync-changelog:
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
