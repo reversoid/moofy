@@ -1,6 +1,11 @@
-<script>
+<script lang="ts">
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Wrapper from '$lib/shared/ui/wrapper.svelte';
+	import type { PageProps } from './$types';
+
+	const { data }: PageProps = $props();
+
+	const roadmap = data.roadmap;
 </script>
 
 <svelte:head>
@@ -16,34 +21,15 @@
 	</p>
 
 	<div class="roadmap-items mt-4 grid grid-cols-2 gap-4 max-sm:grid-cols-1 max-sm:gap-2">
-		<div class="roadmap-item bg-muted rounded-md p-4">
-			<h3 class="text-lg font-medium">Суперколлекции</h3>
-			<p>
-				Суперколлекции – специальные коллекции, которые могут иметь дополнительные функции. Например
-				"персональная коллекция" будет отображаться у вас в профиле, а коллекция "посмотреть"
-				позволит проще и удобнее отслеживать просмотренные фильмы.
-			</p>
-		</div>
-
-		<div class="roadmap-item bg-muted rounded-md p-4">
-			<h3 class="text-lg font-medium">Теги внутри коллекции</h3>
-			<p>
-				Пользователь сможет выбирать теги для фильмов, которые он добавляет в коллекции. Это
-				позволит удобнее и быстрее искать фильмы.
-			</p>
-		</div>
-
-		<div class="roadmap-item bg-muted rounded-md p-4">
-			<h3 class="text-lg font-medium">Групповая рекомендация</h3>
-			<p>
-				Эта функция позволит выбрать фильм для просмотра группе пользователей, исходя из оценок,
-				которые они поставили в нашем сервисе.
-			</p>
-		</div>
-
-		<div class="roadmap-item bg-muted rounded-md p-4">
-			<h3 class="text-lg font-medium">Social credit</h3>
-			<p>[ДАННЫЕ УДАЛЕНЫ]</p>
-		</div>
+		{#each roadmap as item}
+			<div class="bg-muted rounded-md p-4">
+				<h3 class="text-lg font-bold">{item.title}</h3>
+				<p class="text-muted-foreground">
+					{item.description}
+				</p>
+			</div>
+		{:else}
+			<p class="text-muted-foreground">Список пуст...</p>
+		{/each}
 	</div>
 </Wrapper>

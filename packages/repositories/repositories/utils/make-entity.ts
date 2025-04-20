@@ -5,6 +5,7 @@ import {
   FilmType,
   NotifyUpdateType,
   Review,
+  RoadmapItem,
   Session,
   Tag,
   User,
@@ -17,6 +18,7 @@ import {
   CollectionTagSelects,
   FilmSelects,
   ReviewSelects,
+  RoadmapSelects,
   SessionSelects,
   UserPreferencesSelects,
   UserSelects,
@@ -147,5 +149,16 @@ export const makeUserPreferences = (
     notifyUpdateTypes: parseArray(rawData["up-notifyUpdateTypes"]).map(
       (v) => v as NotifyUpdateType
     ),
+  });
+};
+
+export const makeRoadmapItem = (
+  rawData: RoadmapSelects.RoadmapSelectResult
+): RoadmapItem => {
+  return new RoadmapItem({
+    id: new Id(rawData["rm-id"]),
+    description: rawData["rm-description"],
+    title: rawData["rm-title"],
+    orderNumber: rawData["rm-orderNumber"],
   });
 };

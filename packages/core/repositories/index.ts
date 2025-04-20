@@ -14,3 +14,4 @@ export * from "./changelog.repository";
 export * from "./changelog-view.repository";
 export * from "./user-preferences.repository";
 export * from "./personal-collection.repository";
+export * from "./roadmap.repository";

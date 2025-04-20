@@ -25,6 +25,8 @@ import {
   ChangelogService,
   PreferencesService,
   IPreferencesService,
+  RoadmapService,
+  IRoadmapService,
 } from "@repo/core/services";
 import {
   UserRepository,
@@ -42,6 +44,7 @@ import {
   ChangelogRepository,
   UserPreferencesRepository,
   PersonalCollectionRepository,
+  RoadmapItemsRepository,
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -53,6 +56,7 @@ import { uploadRoute } from "./routes/upload";
 import { sessionCookieMiddleware } from "./utils/session-cookie-middleware";
 import { changelogRoute } from "./routes/changelog";
 import { preferencesRoute } from "./routes/preferences";
+import { roadmapRoute } from "./routes/roadmap";
 
 declare module "hono" {
   interface ContextVariableMap {
@@ -66,6 +70,7 @@ declare module "hono" {
     tagService: ITagService;
     changelogService: IChangelogService;
     preferencesService: IPreferencesService;
+    roadmapService: IRoadmapService;
 
     session?: Session;
   }
@@ -90,6 +95,7 @@ const changelogRepository = new ChangelogRepository();
 const changelogViewRepository = new ChangelogViewRepository();
 const preferencesRepository = new UserPreferencesRepository();
 const personalCollectionRepository = new PersonalCollectionRepository();
+const roadmapItemsRepository = new RoadmapItemsRepository();
 
 // Services
 const userService = new UserService(userRepository);
@@ -144,6 +150,8 @@ const changelogService = new ChangelogService(
   preferencesService
 );
 
+const roadmapService = new RoadmapService(roadmapItemsRepository);
+
 const api = new Hono()
   .use(async (c, next) => {
     c.set("userService", userService);
@@ -156,6 +164,7 @@ const api = new Hono()
     c.set("tagService", tagService);
     c.set("changelogService", changelogService);
     c.set("preferencesService", preferencesService);
+    c.set("roadmapService", roadmapService);
 
     await next();
   })
@@ -171,7 +180,8 @@ const api = new Hono()
   .route("favorites", favoritesRoute)
   .route("upload", uploadRoute)
   .route("changelog", changelogRoute)
-  .route("preferences", preferencesRoute);
+  .route("preferences", preferencesRoute)
+  .route("roadmap", roadmapRoute);
 
 Deno.serve({ port: 8080 }, api.fetch);
 

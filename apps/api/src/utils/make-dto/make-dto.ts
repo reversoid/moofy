@@ -7,6 +7,7 @@ import {
   Tag,
   Changelog,
   UserPreferences,
+  RoadmapItem,
 } from "@repo/core/entities";
 import { ProviderFilmDto } from "@repo/core/film-providers";
 import { Id, PaginatedData } from "@repo/core/utils";
@@ -100,4 +101,11 @@ export const makeChangelogDto = (changelog: Changelog) => ({
 export const makePreferencesDto = (preferences: UserPreferences) => ({
   id: preferences.id.value,
   notifyUpdateType: preferences.notifyUpdateTypes.map((v) => `${v}` as const),
+});
+
+export const makeRoadmapItemDto = (roadmap: RoadmapItem) => ({
+  id: roadmap.id.value,
+  orderNumber: roadmap.orderNumber,
+  title: roadmap.title,
+  description: roadmap.description,
 });

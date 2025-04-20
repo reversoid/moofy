@@ -9,3 +9,4 @@ export * from "./image";
 export * from "./tag";
 export * from "./changelog";
 export * from "./preferences";
+export * from "./roadmap";
