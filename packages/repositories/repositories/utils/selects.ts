@@ -220,3 +220,27 @@ export namespace UserPreferencesSelects {
     typeof userPreferencesFields
   >;
 }
+
+export namespace RoadmapSelects {
+  const roadmapFields = [
+    "id",
+    "title",
+    "description",
+    "createdAt",
+    "orderNumber",
+  ] as const;
+
+  const roadmapPrefix = "rm";
+
+  export const roadmapSelects = getSelects(
+    "roadmapItems",
+    roadmapPrefix,
+    roadmapFields
+  );
+
+  export type RoadmapSelectResult = ColumnAliasResult<
+    "roadmapItems",
+    typeof roadmapPrefix,
+    typeof roadmapFields
+  >;
+}

@@ -1,9 +1,10 @@
 import {
   ChangelogRepository,
   ChangelogViewRepository,
+  UserPreferencesRepository,
   UserRepository,
 } from "@repo/repositories";
-import { ChangelogService } from "@repo/core/services";
+import { ChangelogService, PreferencesService } from "@repo/core/services";
 import fs from "node:fs";
 import path from "node:path";
 import { findWorkspaceDir } from "@pnpm/find-workspace-dir";
@@ -17,8 +18,15 @@ if (!workspaceDir) {
 const uRepo = new UserRepository();
 const clvRepo = new ChangelogViewRepository();
 const clRepo = new ChangelogRepository();
+const upRepo = new UserPreferencesRepository();
+const preferencesService = new PreferencesService(upRepo, uRepo);
 
-const changelogService = new ChangelogService(clRepo, clvRepo, uRepo);
+const changelogService = new ChangelogService(
+  clRepo,
+  clvRepo,
+  uRepo,
+  preferencesService
+);
 
 const syncChangelog = async () => {
   const changelogPath = path.resolve(workspaceDir, "CHANGELOG.md");

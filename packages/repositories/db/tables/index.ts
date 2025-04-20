@@ -4,3 +4,4 @@ export * from "./films";
 export * from "./reviews";
 export * from "./users";
 export * from "./subscriptions";
+export * from "./roadmap-items";

@@ -7,3 +7,4 @@ export * from "./entity";
 export * from "./tag";
 export * from "./changelog";
 export * from "./user-preferences";
+export * from "./roadmap-item";

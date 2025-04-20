@@ -6,6 +6,7 @@ import {
   FavoriteCollectionsTable,
   FilmsTable,
   ReviewsTable,
+  RoadmapItemsTable,
   SubscriptionsTable,
   UsersTable,
 } from "./tables";
@@ -39,6 +40,7 @@ export interface Database {
   changelogs: ChangelogsTable;
   userChangelogViews: UserChangelogViewsTable;
   personalCollections: PersonalCollectionsTable;
+  roadmapItems: RoadmapItemsTable;
 }
 
 const dialect = new PostgresDialect({
