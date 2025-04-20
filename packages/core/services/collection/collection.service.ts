@@ -174,16 +174,18 @@ export class CollectionService implements ICollectionService {
       return reviews;
     };
 
-    const [existingReviews, reviewsToAdd] = await Promise.all([
+    let [existingReviews, reviewsToAdd] = await Promise.all([
       getAllReviews(personalCollection.id),
       getAllReviews(collection.id),
     ]);
+
+    // TODO filer using where in db level
+    reviewsToAdd = reviewsToAdd.filter((r) => r.description && !r.isHidden);
 
     const existingFilms = new Set(existingReviews.map((r) => r.film.id.value));
     const filmsToAdd = new Set(reviewsToAdd.map((r) => r.film.id.value));
 
     const conflictingFilmsIds = existingFilms.intersection(filmsToAdd);
-
     const filmIdsToCopy = filmsToAdd.difference(existingFilms);
 
     const cloneReview = async (filmId: number) => {
