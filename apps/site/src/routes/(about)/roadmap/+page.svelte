@@ -22,9 +22,9 @@
 
 	<div class="roadmap-items mt-4 grid grid-cols-2 gap-4 max-sm:grid-cols-1 max-sm:gap-2">
 		{#each roadmap as item}
-			<div class="roadmap-item bg-muted rounded-md p-4">
-				<h3 class="text-lg font-medium">{item.title}</h3>
-				<p>
+			<div class="bg-muted rounded-md p-4">
+				<h3 class="text-lg font-bold">{item.title}</h3>
+				<p class="text-muted-foreground">
 					{item.description}
 				</p>
 			</div>
