@@ -50,7 +50,12 @@
 	);
 
 	function handleReviewUpdated(review: ReviewDto) {
-		reviews = [review, ...reviews.filter((r) => r.id !== review.id)];
+		const index = reviews.findIndex((item) => review.id === item.id);
+		if (index === -1) {
+			return;
+		}
+
+		reviews[index] = review;
 	}
 
 	function handleReviewDeleted(reviewId: ReviewDto['id']) {
