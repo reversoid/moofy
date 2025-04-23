@@ -6,6 +6,7 @@
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import * as Alert from '$lib/components/ui/alert';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
+	import { flip } from 'svelte/animate';
 
 	interface Props {
 		reviews: ReviewDto[];
@@ -84,7 +85,7 @@
 
 	<div class="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
 		{#each reviews as review, index (review.id)}
-			<div>
+			<div animate:flip={{ duration: 350 }}>
 				<ReviewCard {review}>
 					{#snippet actions()}
 						{#if canEdit}
