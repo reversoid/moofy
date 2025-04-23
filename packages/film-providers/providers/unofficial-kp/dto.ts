@@ -21,7 +21,7 @@ export const searchFilmDtoSchema = z
       .regex(/^\d{2}:\d{2}$/)
       .transform((time) => {
         const [hours, minutes] = time.split(":").map(Number);
-        return String(hours * 60 + minutes);
+        return hours * 60 + minutes;
       })
       .optional(),
     genres: z.array(

@@ -63,12 +63,12 @@ export class ReviewService implements IReviewService {
 
     const isOwnerRequest = props.by?.value === collection.creator.id.value;
 
-    const reviews = await this.reviewRepository.searchReviews(
-      props.collectionId,
-      props.search,
-      props.limit,
-      isOwnerRequest
-    );
+    const reviews = await this.reviewRepository.searchReviews({
+      collectionId: props.collectionId,
+      search: props.search,
+      limit: props.limit,
+      showHidden: isOwnerRequest,
+    });
 
     return ok(reviews);
   }
@@ -241,22 +241,22 @@ export class ReviewService implements IReviewService {
     const isOwnerRequest = props.by?.value === collection.creator.id.value;
 
     if (props.search) {
-      const reviews = await this.reviewRepository.searchReviews(
-        props.collectionId,
-        props.search,
-        props.limit,
-        isOwnerRequest
-      );
+      const reviews = await this.reviewRepository.searchReviews({
+        collectionId: props.collectionId,
+        limit: props.limit,
+        search: props.search,
+        showHidden: isOwnerRequest,
+      });
 
       return ok({ items: reviews, cursor: null });
     }
 
-    const reviews = await this.reviewRepository.getCollectionReviews(
-      props.collectionId,
-      props.limit,
-      props.cursor,
-      isOwnerRequest
-    );
+    const reviews = await this.reviewRepository.getCollectionReviews({
+      collectionId: props.collectionId,
+      limit: props.limit,
+      cursor: props.cursor,
+      showHidden: isOwnerRequest,
+    });
 
     return ok(reviews);
   }

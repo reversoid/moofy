@@ -1,5 +1,5 @@
 import { Collection, Film, Review } from "@repo/core/entities";
-import { IReviewRepository } from "@repo/core/repositories";
+import { Filters, IReviewRepository } from "@repo/core/repositories";
 import {
   Creatable,
   Id,
@@ -41,20 +41,21 @@ export class ReviewRepository extends IReviewRepository {
     return makeReview(rawData);
   }
 
-  async searchReviews(
-    collectionId: Collection["id"],
-    search: string,
-    limit: number,
-    showHidden: boolean
-  ): Promise<Review[]> {
-    const words = getTsQueryFromString(search);
+  async searchReviews(props: {
+    collectionId: Collection["id"];
+    search: string;
+    limit: number;
+    showHidden: boolean;
+    filters?: Filters;
+  }): Promise<Review[]> {
+    const words = getTsQueryFromString(props.search);
 
     const searchCondition = sql<boolean>`(
-        (films.search_document @@ plainto_tsquery('simple', ${search}))
+        (films.search_document @@ plainto_tsquery('simple', ${props.search}))
         OR
         (films.search_document @@ to_tsquery('simple', ${words}))
         OR
-        (reviews.search_document @@ plainto_tsquery('simple', ${search}))
+        (reviews.search_document @@ plainto_tsquery('simple', ${props.search}))
         OR
         (reviews.search_document @@ to_tsquery('simple', ${words}))
     )`;
@@ -64,7 +65,7 @@ export class ReviewRepository extends IReviewRepository {
         sql<number>`
       ts_rank(
           films.search_document, 
-          plainto_tsquery('simple', ${search})
+          plainto_tsquery('simple', ${props.search})
       ) +
       ts_rank(
           films.search_document, 
@@ -72,7 +73,7 @@ export class ReviewRepository extends IReviewRepository {
       ) +
       ts_rank(
           reviews.search_document, 
-          plainto_tsquery('simple', ${search})
+          plainto_tsquery('simple', ${props.search})
       ) + 
       ts_rank(
           reviews.search_document, 
@@ -80,14 +81,18 @@ export class ReviewRepository extends IReviewRepository {
       )`.as("rank")
       )
       .where(searchCondition)
-      .limit(limit)
+      .limit(props.limit)
       .orderBy("rank", "desc");
 
-    if (collectionId) {
-      query = query.where("reviews.collectionId", "=", collectionId.value);
+    if (props.collectionId) {
+      query = query.where(
+        "reviews.collectionId",
+        "=",
+        props.collectionId.value
+      );
     }
 
-    if (!showHidden) {
+    if (!props.showHidden) {
       query = query.where("reviews.isHidden", "=", false);
     }
 
@@ -96,30 +101,74 @@ export class ReviewRepository extends IReviewRepository {
     return results.map(makeReview);
   }
 
-  async getCollectionReviews(
-    collectionId: Collection["id"],
-    limit: number,
-    cursor?: string,
-    showHidden?: boolean
-  ): Promise<PaginatedData<Review>> {
-    const position = cursor ? makeNumberFromCursor(cursor) : null;
+  async getCollectionReviews(props: {
+    collectionId: Collection["id"];
+    limit: number;
+    cursor?: string;
+    showHidden?: boolean;
+    filters?: Filters;
+  }): Promise<PaginatedData<Review>> {
+    const position = props.cursor ? makeNumberFromCursor(props.cursor) : null;
 
     let query = this.getSelectQuery()
-      .where("reviews.collectionId", "=", collectionId.value)
+      .where("reviews.collectionId", "=", props.collectionId.value)
       .orderBy("reviews.reversePosition", "desc")
-      .limit(limit + 1);
+      .limit(props.limit + 1);
 
     if (position) {
       query = query.where("reviews.reversePosition", "<=", position);
     }
 
-    if (!showHidden) {
-      query = query.where("isHidden", "is", false);
+    if (!props.showHidden) {
+      query = query.where("reviews.isHidden", "is", false);
+    }
+
+    if (props.filters?.year?.from) {
+      query = query.where("films.year", ">=", props.filters.year.from);
+    }
+
+    if (props.filters?.year?.to) {
+      query = query.where("films.year", "<=", props.filters.year.to);
+    }
+
+    if (props.filters?.filmLength?.from) {
+      query = query.where(
+        "films.filmLength",
+        ">=",
+        props.filters.filmLength.from
+      );
+    }
+
+    if (props.filters?.filmLength?.to) {
+      query = query.where(
+        "films.filmLength",
+        ">=",
+        props.filters.filmLength.to
+      );
+    }
+
+    if (props.filters?.type?.length) {
+      query = query.where("films.type", "in", props.filters.type);
+    }
+
+    if (props.filters?.tags?.length) {
+      query = query
+        .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
+        .where(
+          "reviewTags.id",
+          "in",
+          props.filters.tags.map((t) => t.id.value)
+        );
+    }
+
+    if (props.filters?.genres?.length) {
+      // TODO will it work?
+      query = query.where("films.genres", "&&", props.filters?.genres);
     }
 
     const data = await query.execute();
 
-    const lastItemPosition = data.at(limit)?.["r-reversePosition"];
+    const lastItemPosition = data.at(props.limit)?.["r-reversePosition"];
 
     const newCursor = lastItemPosition
       ? makeCursorFromNumber(lastItemPosition)
@@ -127,7 +176,7 @@ export class ReviewRepository extends IReviewRepository {
 
     return {
       cursor: newCursor,
-      items: data.slice(0, limit).map(makeReview),
+      items: data.slice(0, props.limit).map(makeReview),
     };
   }
 
