@@ -1,17 +1,18 @@
-import { Review, Collection, Film } from "@repo/core/entities";
+import { Collection, Film, Review } from "@repo/core/entities";
 import { IReviewRepository } from "@repo/core/repositories";
 import {
-  PaginatedData,
   Creatable,
   Id,
-  makeDateFromCursor,
-  makeCursorFromDate,
+  makeCursorFromNumber,
+  makeNumberFromCursor,
+  PaginatedData,
 } from "@repo/core/utils";
-import { db } from "../db";
-import { FilmSelects, ReviewSelects } from "./utils/selects";
-import { makeReview } from "./utils/make-entity";
-import { getTsQueryFromString } from "./utils/fulltext-search";
 import { sql } from "kysely";
+import { db } from "../db";
+import { getTsQueryFromString } from "./utils/fulltext-search";
+import { makeReview } from "./utils/make-entity";
+import { makeGetOrThrow } from "./utils/make-get-or-throw";
+import { FilmSelects, ReviewSelects } from "./utils/selects";
 
 export interface TagData {
   id: number;
@@ -22,6 +23,8 @@ export interface TagData {
 }
 
 export class ReviewRepository extends IReviewRepository {
+  getOrThrow = makeGetOrThrow((id: Review["id"]) => this.get(id));
+
   async getReviewOnFilm(
     collectionId: Collection["id"],
     filmId: Film["id"]
@@ -99,15 +102,15 @@ export class ReviewRepository extends IReviewRepository {
     cursor?: string,
     showHidden?: boolean
   ): Promise<PaginatedData<Review>> {
-    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
+    const position = cursor ? makeNumberFromCursor(cursor) : null;
 
     let query = this.getSelectQuery()
       .where("reviews.collectionId", "=", collectionId.value)
-      .orderBy("reviews.updatedAt", "desc")
+      .orderBy("reviews.reversePosition", "desc")
       .limit(limit + 1);
 
-    if (cursorDate) {
-      query = query.where("reviews.updatedAt", "<=", cursorDate);
+    if (position) {
+      query = query.where("reviews.reversePosition", "<=", position);
     }
 
     if (!showHidden) {
@@ -116,9 +119,11 @@ export class ReviewRepository extends IReviewRepository {
 
     const data = await query.execute();
 
-    const lastItemDate = data.at(limit)?.["r-updatedAt"];
+    const lastItemPosition = data.at(limit)?.["r-reversePosition"];
 
-    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
+    const newCursor = lastItemPosition
+      ? makeCursorFromNumber(lastItemPosition)
+      : null;
 
     return {
       cursor: newCursor,
@@ -206,19 +211,29 @@ export class ReviewRepository extends IReviewRepository {
       .groupBy("films.id");
   }
 
-  async update(id: Id, value: Partial<Review>): Promise<Review> {
-    if (Object.values(value).every((v) => v === undefined)) {
+  async update(
+    id: Id,
+    value: Partial<Review>,
+    options?: { updatePosition?: boolean }
+  ): Promise<Review> {
+    if (
+      !options?.updatePosition &&
+      Object.values(value).every((v) => v === undefined)
+    ) {
       return this.getOrThrow(id);
     }
 
     await db
       .updateTable("reviews")
-      .set({
+      .set(() => ({
         description: value.description,
         score: value.score,
         updatedAt: new Date(),
         isHidden: value.isHidden,
-      })
+        reversePosition: options?.updatePosition
+          ? sql`nextval('reviews_reverse_position_seq')`
+          : undefined,
+      }))
       .where("id", "=", id.value)
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -226,7 +241,7 @@ export class ReviewRepository extends IReviewRepository {
     return this.getOrThrow(id);
   }
 
-  async remove(id: Id): Promise<void> {
+  async delete(id: Id): Promise<void> {
     await db.deleteFrom("reviews").where("id", "=", id.value).execute();
   }
 }

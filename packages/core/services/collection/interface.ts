@@ -65,6 +65,7 @@ export interface ICollectionService {
     id: Collection["id"];
     dto: EditCollectionDto;
     by: User["id"];
+    updatePosition?: boolean;
   }): Promise<
     Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
   >;

@@ -4,7 +4,8 @@ import {
   Creatable,
   Id,
   makeCursorFromDate,
-  makeDateFromCursor,
+  makeCursorFromNumber,
+  makeNumberFromCursor,
   PaginatedData,
 } from "@repo/core/utils";
 import { db } from "../db";
@@ -12,8 +13,11 @@ import { CollectionSelects, UserSelects } from "./utils/selects";
 import { makeCollection } from "./utils/make-entity";
 import { sql } from "kysely";
 import { getTsQueryFromString } from "./utils/fulltext-search";
+import { makeGetOrThrow } from "./utils/make-get-or-throw";
 
 export class CollectionRepository extends ICollectionRepository {
+  getOrThrow = makeGetOrThrow((id: Collection["id"]) => this.get(id));
+
   async getOldestPublicCollections(limit: number): Promise<Collection[]> {
     const query = this.getSelectQuery()
       .orderBy("collections.createdAt", "asc")
@@ -88,16 +92,16 @@ export class CollectionRepository extends ICollectionRepository {
     cursor?: string,
     withPrivate?: boolean
   ): Promise<PaginatedData<Collection>> {
-    const cursorDate = cursor ? makeDateFromCursor(cursor) : null;
+    const position = cursor ? makeNumberFromCursor(cursor) : null;
 
     let query = this.getSelectQuery()
       .where("collections.userId", "=", userId.value)
       .where("personalCollections.id", "is", null)
-      .orderBy("collections.updatedAt", "desc")
+      .orderBy("collections.reversePosition", "desc")
       .limit(limit + 1);
 
-    if (cursorDate) {
-      query = query.where("collections.updatedAt", "<=", cursorDate);
+    if (position) {
+      query = query.where("collections.reversePosition", "<=", position);
     }
 
     if (!withPrivate) {
@@ -106,8 +110,10 @@ export class CollectionRepository extends ICollectionRepository {
 
     const data = await query.execute();
 
-    const lastItemDate = data.at(limit)?.["c-updatedAt"];
-    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
+    const lastItemPosition = data.at(limit)?.["c-reversePosition"];
+    const newCursor = lastItemPosition
+      ? makeCursorFromNumber(lastItemPosition)
+      : null;
 
     return {
       cursor: newCursor,
@@ -115,7 +121,7 @@ export class CollectionRepository extends ICollectionRepository {
     };
   }
 
-  async create(item: Collection | Creatable<Collection>): Promise<Collection> {
+  async create(item: Creatable<Collection>): Promise<Collection> {
     const { id } = await db
       .insertInto("collections")
       .values({
@@ -145,16 +151,23 @@ export class CollectionRepository extends ICollectionRepository {
     return makeCollection(rawData);
   }
 
-  async update(id: Id, value: Partial<Collection>): Promise<Collection> {
+  async update(
+    id: Id,
+    value: Partial<Collection>,
+    options?: { updatePosition?: boolean }
+  ): Promise<Collection> {
     await db
       .updateTable("collections")
-      .set({
+      .set(() => ({
         description: value.description,
         imageUrl: value.imageUrl,
         isPublic: value.isPublic,
         name: value.name,
         updatedAt: new Date(),
-      })
+        reversePosition: options?.updatePosition
+          ? sql`nextval('collections_reverse_position_seq')`
+          : undefined,
+      }))
       .where("id", "=", id.value)
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -162,7 +175,7 @@ export class CollectionRepository extends ICollectionRepository {
     return this.getOrThrow(id);
   }
 
-  async remove(id: Id): Promise<void> {
+  async delete(id: Id): Promise<void> {
     await db.deleteFrom("collections").where("id", "=", id.value).execute();
   }
 

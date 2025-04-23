@@ -1,10 +1,10 @@
 import { Collection } from "../entities/collection";
 import { Film } from "../entities/film";
 import { Review } from "../entities/review";
+import { Creatable } from "../utils";
 import { PaginatedData } from "../utils/pagination";
-import { IBaseRepository } from "./base.repository";
 
-export abstract class IReviewRepository extends IBaseRepository<Review> {
+export abstract class IReviewRepository {
   abstract searchReviews(
     collectionId: Collection["id"],
     search: string,
@@ -28,4 +28,14 @@ export abstract class IReviewRepository extends IBaseRepository<Review> {
     collectionId: Collection["id"],
     filmId: Film["id"]
   ): Promise<Review | null>;
+
+  abstract update(
+    id: Review["id"],
+    review: Partial<Review>,
+    options?: { updatePosition?: boolean }
+  ): Promise<Review>;
+
+  abstract get(id: Review["id"]): Promise<Review | null>;
+  abstract create(review: Creatable<Review>): Promise<Review>;
+  abstract delete(id: Review["id"]): Promise<void>;
 }

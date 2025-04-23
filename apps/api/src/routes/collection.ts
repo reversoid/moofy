@@ -205,11 +205,12 @@ export const collectionRoute = new Hono()
         description: z.string().nullable().optional(),
         imageUrl: z.string().nullable().optional(),
         isPublic: z.boolean().optional(),
+        updatePosition: z.boolean().optional(),
       })
     ),
     async (c) => {
       const { collectionId } = c.req.valid("param");
-      const updateData = c.req.valid("json");
+      const { updatePosition, ...updateData } = c.req.valid("json");
       const session = c.get("session")!;
       const collectionService = c.get("collectionService");
 
@@ -217,6 +218,7 @@ export const collectionRoute = new Hono()
         id: new Id(collectionId),
         by: session.user.id,
         dto: updateData,
+        updatePosition,
       });
 
       if (result.isErr()) {

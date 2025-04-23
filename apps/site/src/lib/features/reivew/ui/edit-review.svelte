@@ -5,15 +5,23 @@
 	import EditReviewButton from './edit-review-button.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import { makeClient } from '$lib/shared/utils';
+	import MoveUpReview from './move-up-review.svelte';
 
 	interface Props {
 		existingReview: ReviewDto;
 		tags: TagDto[];
 		onReviewUpdated: (review: ReviewDto) => void;
 		onReviewDeleted: (reviewId: ReviewDto['id']) => void;
+		onMoveTop: (id: ReviewDto['id']) => void;
 	}
 
-	let { existingReview = $bindable(), onReviewUpdated, onReviewDeleted, tags }: Props = $props();
+	let {
+		existingReview = $bindable(),
+		onReviewUpdated,
+		onReviewDeleted,
+		tags,
+		onMoveTop
+	}: Props = $props();
 
 	let isOpen = $state(false);
 
@@ -65,11 +73,15 @@
 	}
 </script>
 
-<Dialog.Root bind:open={isOpen}>
-	<Dialog.Trigger>
-		<EditReviewButton />
-	</Dialog.Trigger>
-	<Dialog.Content>
-		<ReviewModal {tags} {existingReview} onSubmit={editReview} onSubmitDelete={deleteReview} />
-	</Dialog.Content>
-</Dialog.Root>
+<div class="flex gap-2">
+	<Dialog.Root bind:open={isOpen}>
+		<Dialog.Trigger class="grow">
+			<EditReviewButton />
+		</Dialog.Trigger>
+		<Dialog.Content>
+			<ReviewModal {tags} {existingReview} onSubmit={editReview} onSubmitDelete={deleteReview} />
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<MoveUpReview reviewId={existingReview.id} {onMoveTop} />
+</div>

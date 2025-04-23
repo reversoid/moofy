@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as Form from '$lib/components/ui/form';
 	import { Label } from '$lib/components/ui/label';
+	import * as Select from '$lib/components/ui/select';
 	import { Textarea } from '$lib/components/ui/textarea';
+	import { Tag } from '$lib/entities/Tag';
 	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
-	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
-	import Film from './film.svelte';
-	import RatingSelect from './rating-select.svelte';
-	import SearchFilm from './search-film.svelte';
 	import type { FilmDto, ReviewDto, TagDto } from '@repo/api/dtos';
+	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import Film from './film.svelte';
+	import RatingSelect from './rating-select.svelte';
 	import { reviewFormSchema } from './review-form-schema';
-	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select';
-	import { Tag } from '$lib/entities/Tag';
-	import { Checkbox } from '$lib/components/ui/checkbox';
+	import SearchFilm from './search-film.svelte';
 
 	export type ReviewForm = {
 		filmId: FilmDto['id'];
@@ -181,9 +181,9 @@
 	{/if}
 
 	<Button
+		class="!ml-0"
 		disabled={isInvalid}
 		isLoading={$submitting}
-		class="!ml-0"
 		type="submit"
 		form="review-form"
 	>

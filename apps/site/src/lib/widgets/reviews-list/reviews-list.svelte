@@ -6,6 +6,7 @@
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import * as Alert from '$lib/components/ui/alert';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
+	import { flip } from 'svelte/animate';
 
 	interface Props {
 		reviews: ReviewDto[];
@@ -55,6 +56,18 @@
 	function handleReviewDeleted(reviewId: ReviewDto['id']) {
 		reviews = reviews.filter((r) => r.id !== reviewId);
 	}
+
+	function handleReviewMovedTop(id: ReviewDto['id']) {
+		const index = reviews.findIndex((r) => r.id === id);
+
+		if (index === -1) {
+			return;
+		}
+
+		const [movedReview] = reviews.splice(index, 1);
+
+		reviews.unshift(movedReview);
+	}
 </script>
 
 <div class="flex flex-col gap-4">
@@ -72,7 +85,7 @@
 
 	<div class="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
 		{#each reviews as review, index (review.id)}
-			<div>
+			<div animate:flip={{ duration: 350 }}>
 				<ReviewCard {review}>
 					{#snippet actions()}
 						{#if canEdit}
@@ -81,6 +94,7 @@
 								bind:existingReview={reviews[index]}
 								onReviewUpdated={handleReviewUpdated}
 								onReviewDeleted={handleReviewDeleted}
+								onMoveTop={handleReviewMovedTop}
 							/>
 						{/if}
 					{/snippet}

@@ -63,6 +63,7 @@ export namespace CollectionSelects {
     "name",
     "updatedAt",
     "userId",
+    "reversePosition",
   ] as const;
 
   const collectionPrefix = "c";
@@ -117,6 +118,7 @@ export namespace ReviewSelects {
     "updatedAt",
     "userId",
     "isHidden",
+    "reversePosition",
   ] as const;
 
   const reviewPrefix = "r";

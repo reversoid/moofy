@@ -507,7 +507,7 @@ export class CollectionService implements ICollectionService {
       return err(new NotOwnerOfCollectionError());
     }
 
-    await this.collectionRepository.remove(props.id);
+    await this.collectionRepository.delete(props.id);
     return ok(null);
   }
 
@@ -515,6 +515,7 @@ export class CollectionService implements ICollectionService {
     id: Collection["id"];
     dto: EditCollectionDto;
     by: User["id"];
+    updatePosition?: boolean;
   }): Promise<
     Result<Collection, CollectionNotFoundError | NotOwnerOfCollectionError>
   > {
@@ -527,12 +528,16 @@ export class CollectionService implements ICollectionService {
       return err(new NotOwnerOfCollectionError());
     }
 
-    const updatedCollection = await this.collectionRepository.update(props.id, {
-      description: props.dto.description,
-      imageUrl: props.dto.imageUrl,
-      isPublic: props.dto.isPublic,
-      name: props.dto.name,
-    });
+    const updatedCollection = await this.collectionRepository.update(
+      props.id,
+      {
+        description: props.dto.description,
+        imageUrl: props.dto.imageUrl,
+        isPublic: props.dto.isPublic,
+        name: props.dto.name,
+      },
+      { updatePosition: props.updatePosition }
+    );
 
     return ok(updatedCollection);
   }

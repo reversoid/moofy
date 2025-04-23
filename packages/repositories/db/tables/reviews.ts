@@ -10,5 +10,6 @@ export interface ReviewsTable {
   createdAt: Generated<Date>;
   updatedAt: Date;
   searchDocument: unknown;
+  reversePosition: Generated<number>;
   isHidden: Generated<boolean>;
 }

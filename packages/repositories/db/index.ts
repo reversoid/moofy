@@ -76,3 +76,5 @@ export const db = new Kysely<Database>({
 });
 
 export type Db = Kysely<Database>;
+
+export * as kycely from "kysely";
