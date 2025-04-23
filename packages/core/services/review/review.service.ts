@@ -162,6 +162,7 @@ export class ReviewService implements IReviewService {
     reviewId: Review["id"];
     dto: EditReviewDto;
     by: User["id"];
+    updatePosition?: boolean;
   }): Promise<Result<Review, ReviewNotFoundError | NotOwnerOfReviewError>> {
     const existingReview = await this.reviewRepository.get(props.reviewId);
 
@@ -173,11 +174,15 @@ export class ReviewService implements IReviewService {
       return err(new NotOwnerOfReviewError());
     }
 
-    const updatedReview = await this.reviewRepository.update(props.reviewId, {
-      description: props.dto.description,
-      score: props.dto.score,
-      isHidden: props.dto.isHidden,
-    });
+    const updatedReview = await this.reviewRepository.update(
+      props.reviewId,
+      {
+        description: props.dto.description,
+        score: props.dto.score,
+        isHidden: props.dto.isHidden,
+      },
+      { updatePosition: props.updatePosition }
+    );
 
     return ok(updatedReview);
   }
@@ -196,7 +201,7 @@ export class ReviewService implements IReviewService {
       return err(new NotOwnerOfReviewError());
     }
 
-    await this.reviewRepository.remove(props.reviewId);
+    await this.reviewRepository.delete(props.reviewId);
     return ok(null);
   }
 

@@ -9,5 +9,6 @@ export interface CollectionsTable {
   createdAt: Generated<Date>;
   updatedAt: Date;
   userId: number;
+  reversePosition: Generated<number>;
   searchDocument: unknown;
 }

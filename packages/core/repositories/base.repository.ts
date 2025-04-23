@@ -1,3 +1,5 @@
+// TODO remove file. GetOrThrow will be done in realisation level using util function, not abstraction level.
+
 import { Creatable, Id } from "../utils";
 
 export class EntityNotFoundError extends Error {

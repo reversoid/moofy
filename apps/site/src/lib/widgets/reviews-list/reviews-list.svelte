@@ -55,6 +55,18 @@
 	function handleReviewDeleted(reviewId: ReviewDto['id']) {
 		reviews = reviews.filter((r) => r.id !== reviewId);
 	}
+
+	function handleReviewMovedTop(id: ReviewDto['id']) {
+		const index = reviews.findIndex((r) => r.id === id);
+
+		if (index === -1) {
+			return;
+		}
+
+		const [movedReview] = reviews.splice(index, 1);
+
+		reviews.unshift(movedReview);
+	}
 </script>
 
 <div class="flex flex-col gap-4">
@@ -81,6 +93,7 @@
 								bind:existingReview={reviews[index]}
 								onReviewUpdated={handleReviewUpdated}
 								onReviewDeleted={handleReviewDeleted}
+								onMoveTop={handleReviewMovedTop}
 							/>
 						{/if}
 					{/snippet}

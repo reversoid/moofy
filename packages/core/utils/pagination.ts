@@ -34,3 +34,17 @@ export const makeCursorFromDate = (date: Date): string => {
 export const makeDateFromCursor = (cursor: string): Date => {
   return new Date(decodeCursor(cursor) + 1);
 };
+
+/**
+ * Make cursor from number. Used for pagination using numeric sequence fields.
+ */
+export const makeCursorFromNumber = (value: number): string => {
+  return encodeCursor(value);
+};
+
+/**
+ * Make number from cursor. Used for pagination using numeric sequence fields.
+ */
+export const makeNumberFromCursor = (cursor: string): number => {
+  return decodeCursor(cursor);
+};

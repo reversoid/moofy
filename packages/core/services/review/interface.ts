@@ -56,6 +56,7 @@ export interface IReviewService {
     reviewId: Review["id"];
     dto: EditReviewDto;
     by: User["id"];
+    updatePosition?: boolean;
   }): Promise<Result<Review, ReviewNotFoundError | NotOwnerOfReviewError>>;
 
   removeReview(props: {

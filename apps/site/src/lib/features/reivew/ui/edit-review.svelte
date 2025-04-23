@@ -11,9 +11,16 @@
 		tags: TagDto[];
 		onReviewUpdated: (review: ReviewDto) => void;
 		onReviewDeleted: (reviewId: ReviewDto['id']) => void;
+		onMoveTop: (id: ReviewDto['id']) => void;
 	}
 
-	let { existingReview = $bindable(), onReviewUpdated, onReviewDeleted, tags }: Props = $props();
+	let {
+		existingReview = $bindable(),
+		onReviewUpdated,
+		onReviewDeleted,
+		tags,
+		onMoveTop
+	}: Props = $props();
 
 	let isOpen = $state(false);
 
@@ -70,6 +77,12 @@
 		<EditReviewButton />
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<ReviewModal {tags} {existingReview} onSubmit={editReview} onSubmitDelete={deleteReview} />
+		<ReviewModal
+			{tags}
+			{existingReview}
+			onSubmit={editReview}
+			onSubmitDelete={deleteReview}
+			{onMoveTop}
+		/>
 	</Dialog.Content>
 </Dialog.Root>

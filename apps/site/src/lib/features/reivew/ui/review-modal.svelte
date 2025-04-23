@@ -1,21 +1,22 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as Form from '$lib/components/ui/form';
 	import { Label } from '$lib/components/ui/label';
+	import * as Select from '$lib/components/ui/select';
 	import { Textarea } from '$lib/components/ui/textarea';
+	import { Tag } from '$lib/entities/Tag';
 	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
-	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
-	import Film from './film.svelte';
-	import RatingSelect from './rating-select.svelte';
-	import SearchFilm from './search-film.svelte';
 	import type { FilmDto, ReviewDto, TagDto } from '@repo/api/dtos';
+	import { IconDeviceFloppy, IconPencil } from '@tabler/icons-svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import Film from './film.svelte';
+	import MoveUpButton from './move-up-button.svelte';
+	import RatingSelect from './rating-select.svelte';
 	import { reviewFormSchema } from './review-form-schema';
-	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select';
-	import { Tag } from '$lib/entities/Tag';
-	import { Checkbox } from '$lib/components/ui/checkbox';
+	import SearchFilm from './search-film.svelte';
 
 	export type ReviewForm = {
 		filmId: FilmDto['id'];
@@ -30,9 +31,16 @@
 		tags?: TagDto[];
 		onSubmit: (form: ReviewForm) => Promise<void>;
 		onSubmitDelete?: (id: ReviewDto['id']) => Promise<void>;
+		onMoveTop?: (id: ReviewDto['id']) => void;
 	};
 
-	let { existingReview, onSubmit, onSubmitDelete, tags = $bindable() }: ReviewModalProps = $props();
+	let {
+		existingReview,
+		onSubmit,
+		onSubmitDelete,
+		tags = $bindable(),
+		onMoveTop
+	}: ReviewModalProps = $props();
 
 	let visibleFilm = $state<FilmDto | null>(existingReview?.film ?? null);
 
@@ -165,34 +173,41 @@
 	</div>
 </form>
 
-<Dialog.Footer class="flex flex-row gap-3 max-sm:flex-col">
+<Dialog.Footer class="flex flex-row !justify-between gap-3 max-sm:flex-col">
 	{#if type === 'edit'}
-		<DeleteButton
-			isLoading={isDeleting}
-			type="button"
-			onDelete={() => {
-				if (!existingReview) {
-					return;
-				}
-
-				onSubmitDeleteWithLoading(existingReview.id);
-			}}
-		/>
+		<MoveUpButton reviewId={existingReview!.id} {onMoveTop} />
 	{/if}
 
-	<Button
-		disabled={isInvalid}
-		isLoading={$submitting}
-		class="!ml-0"
-		type="submit"
-		form="review-form"
-	>
-		{#if type === 'create'}
-			<IconPencil />
-		{:else}
-			<IconDeviceFloppy />
+	<div class="!ml-0 flex items-center gap-3 max-sm:flex-col">
+		{#if type === 'edit'}
+			<DeleteButton
+				class="w-full"
+				isLoading={isDeleting}
+				type="button"
+				onDelete={() => {
+					if (!existingReview) {
+						return;
+					}
+
+					onSubmitDeleteWithLoading(existingReview.id);
+				}}
+			/>
 		{/if}
 
-		{type === 'create' ? 'Создать' : 'Сохранить'}
-	</Button>
+		<Button
+			class="w-full"
+			disabled={isInvalid}
+			isLoading={$submitting}
+			type="submit"
+			form="review-form"
+		>
+			{#if type === 'create'}
+				<IconPencil />
+			{:else}
+				<IconDeviceFloppy />
+			{/if}
+
+			{type === 'create' ? 'Создать' : 'Сохранить'}
+		</Button>
+	</div>
 </Dialog.Footer>
