@@ -63,6 +63,7 @@ export namespace CollectionSelects {
     "name",
     "updatedAt",
     "userId",
+    "reversePosition",
   ] as const;
 
   const collectionPrefix = "c";

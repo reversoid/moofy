@@ -4,7 +4,7 @@ import {
   Creatable,
   Id,
   makeCursorFromDate,
-  makeDateFromCursor,
+  makeCursorFromNumber,
   makeNumberFromCursor,
   PaginatedData,
 } from "@repo/core/utils";
@@ -110,8 +110,10 @@ export class CollectionRepository extends ICollectionRepository {
 
     const data = await query.execute();
 
-    const lastItemDate = data.at(limit)?.["c-updatedAt"];
-    const newCursor = lastItemDate ? makeCursorFromDate(lastItemDate) : null;
+    const lastItemPosition = data.at(limit)?.["c-reversePosition"];
+    const newCursor = lastItemPosition
+      ? makeCursorFromNumber(lastItemPosition)
+      : null;
 
     return {
       cursor: newCursor,
