@@ -31,16 +31,9 @@
 		tags?: TagDto[];
 		onSubmit: (form: ReviewForm) => Promise<void>;
 		onSubmitDelete?: (id: ReviewDto['id']) => Promise<void>;
-		onMoveTop?: (id: ReviewDto['id']) => void;
 	};
 
-	let {
-		existingReview,
-		onSubmit,
-		onSubmitDelete,
-		tags = $bindable(),
-		onMoveTop
-	}: ReviewModalProps = $props();
+	let { existingReview, onSubmit, onSubmitDelete, tags = $bindable() }: ReviewModalProps = $props();
 
 	let visibleFilm = $state<FilmDto | null>(existingReview?.film ?? null);
 
@@ -173,41 +166,34 @@
 	</div>
 </form>
 
-<Dialog.Footer class="flex flex-row !justify-between gap-3 max-sm:flex-col">
+<Dialog.Footer class="flex flex-row gap-3 max-sm:flex-col">
 	{#if type === 'edit'}
-		<MoveUpButton reviewId={existingReview!.id} {onMoveTop} />
+		<DeleteButton
+			isLoading={isDeleting}
+			type="button"
+			onDelete={() => {
+				if (!existingReview) {
+					return;
+				}
+
+				onSubmitDeleteWithLoading(existingReview.id);
+			}}
+		/>
 	{/if}
 
-	<div class="!ml-0 flex items-center gap-3 max-sm:flex-col">
-		{#if type === 'edit'}
-			<DeleteButton
-				class="w-full"
-				isLoading={isDeleting}
-				type="button"
-				onDelete={() => {
-					if (!existingReview) {
-						return;
-					}
-
-					onSubmitDeleteWithLoading(existingReview.id);
-				}}
-			/>
+	<Button
+		class="!ml-0"
+		disabled={isInvalid}
+		isLoading={$submitting}
+		type="submit"
+		form="review-form"
+	>
+		{#if type === 'create'}
+			<IconPencil />
+		{:else}
+			<IconDeviceFloppy />
 		{/if}
 
-		<Button
-			class="w-full"
-			disabled={isInvalid}
-			isLoading={$submitting}
-			type="submit"
-			form="review-form"
-		>
-			{#if type === 'create'}
-				<IconPencil />
-			{:else}
-				<IconDeviceFloppy />
-			{/if}
-
-			{type === 'create' ? 'Создать' : 'Сохранить'}
-		</Button>
-	</div>
+		{type === 'create' ? 'Создать' : 'Сохранить'}
+	</Button>
 </Dialog.Footer>

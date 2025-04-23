@@ -35,11 +35,11 @@
 	}
 </script>
 
-<Button onclick={moveUp} {isLoading} class="!ml-0 sm:hidden" variant="outline">
+<!-- <Button onclick={moveUp} {isLoading} class="!ml-0 sm:hidden" variant="outline">
 	<IconArrowUp />
 	<span>Наверх</span>
-</Button>
+</Button> -->
 
-<Button onclick={moveUp} {isLoading} size="icon" class="hidden sm:flex" variant="outline">
+<Button onclick={moveUp} {isLoading} size="icon" variant="outline">
 	<IconArrowUp />
 </Button>

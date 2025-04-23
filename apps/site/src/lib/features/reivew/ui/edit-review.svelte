@@ -5,6 +5,7 @@
 	import EditReviewButton from './edit-review-button.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import { makeClient } from '$lib/shared/utils';
+	import MoveUpButton from './move-up-button.svelte';
 
 	interface Props {
 		existingReview: ReviewDto;
@@ -72,17 +73,15 @@
 	}
 </script>
 
-<Dialog.Root bind:open={isOpen}>
-	<Dialog.Trigger>
-		<EditReviewButton />
-	</Dialog.Trigger>
-	<Dialog.Content>
-		<ReviewModal
-			{tags}
-			{existingReview}
-			onSubmit={editReview}
-			onSubmitDelete={deleteReview}
-			{onMoveTop}
-		/>
-	</Dialog.Content>
-</Dialog.Root>
+<div class="flex gap-2">
+	<Dialog.Root bind:open={isOpen}>
+		<Dialog.Trigger class="grow">
+			<EditReviewButton />
+		</Dialog.Trigger>
+		<Dialog.Content>
+			<ReviewModal {tags} {existingReview} onSubmit={editReview} onSubmitDelete={deleteReview} />
+		</Dialog.Content>
+	</Dialog.Root>
+
+	<MoveUpButton reviewId={existingReview.id} {onMoveTop} />
+</div>
