@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { makeClient } from '$lib/shared/utils';
+	import type { ReviewDto } from '@repo/api/dtos';
 	import { IconArrowUp } from '@tabler/icons-svelte';
 
 	type Props = {
-		reviewId: number;
-		onMoveTop?: (id: number) => void;
+		reviewId: ReviewDto['id'];
+		onMoveTop?: (id: ReviewDto['id']) => void;
 	};
 
 	const { reviewId, onMoveTop }: Props = $props();

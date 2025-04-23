@@ -17,7 +17,7 @@
 
 	let { tags = $bindable(), isOpen = $bindable(), collectionId }: Props = $props();
 
-	async function deleteTag(id: number) {
+	async function deleteTag(id: TagDto['id']) {
 		const result = await makeClient(fetch).collections[':collectionId'].tags[':tagId'].$delete({
 			param: { collectionId: collectionId.toString(), tagId: id.toString() }
 		});
