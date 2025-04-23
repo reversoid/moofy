@@ -5,7 +5,7 @@
 	import EditReviewButton from './edit-review-button.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import { makeClient } from '$lib/shared/utils';
-	import MoveUpButton from './move-up-button.svelte';
+	import MoveUpReview from './move-up-review.svelte';
 
 	interface Props {
 		existingReview: ReviewDto;
@@ -83,5 +83,5 @@
 		</Dialog.Content>
 	</Dialog.Root>
 
-	<MoveUpButton reviewId={existingReview.id} {onMoveTop} />
+	<MoveUpReview reviewId={existingReview.id} {onMoveTop} />
 </div>

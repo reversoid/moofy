@@ -13,7 +13,6 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import Film from './film.svelte';
-	import MoveUpButton from './move-up-button.svelte';
 	import RatingSelect from './rating-select.svelte';
 	import { reviewFormSchema } from './review-form-schema';
 	import SearchFilm from './search-film.svelte';

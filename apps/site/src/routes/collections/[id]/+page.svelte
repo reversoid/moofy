@@ -14,9 +14,11 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconMushroom } from '@tabler/icons-svelte';
+	import { IconArrowUp, IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
+	import { Button } from '$lib/components/ui/button';
+	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
 
 	const { data }: PageProps = $props();
 
@@ -168,12 +170,16 @@
 					</div>
 
 					{#if isOwner}
-						<EditCollection
-							bind:tags
-							{collection}
-							onCollectionUpdated={handleCollectionUpdated}
-							onCollectionDeleted={handleCollectionDeleted}
-						/>
+						<div class="flex gap-2">
+							<EditCollection
+								bind:tags
+								{collection}
+								onCollectionUpdated={handleCollectionUpdated}
+								onCollectionDeleted={handleCollectionDeleted}
+							/>
+
+							<MoveUpCollection collectionId={collection.id} />
+						</div>
 					{/if}
 				</div>
 			</Card.Content>

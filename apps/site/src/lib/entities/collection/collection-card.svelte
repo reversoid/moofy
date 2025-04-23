@@ -4,8 +4,9 @@
 	import Link from '$lib/shared/ui/link.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconMushroom } from '@tabler/icons-svelte';
+	import { IconArrowUp, IconMushroom } from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	interface Props {
 		collection: CollectionDto;

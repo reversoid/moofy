@@ -53,7 +53,7 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Trigger>
+	<Dialog.Trigger class="grow">
 		<EditCollectionButton class="w-full" />
 	</Dialog.Trigger>
 	<Dialog.Content>

@@ -2,7 +2,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import { makeClient } from '$lib/shared/utils';
 	import { IconArrowUp } from '@tabler/icons-svelte';
-	import { toast } from 'svelte-sonner';
 
 	type Props = {
 		reviewId: number;
@@ -28,8 +27,6 @@
 		if (!response.ok) {
 			return;
 		}
-
-		toast.info('Обзор перемещен наверх коллекции');
 
 		onMoveTop?.(reviewId);
 	}
