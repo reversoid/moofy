@@ -1,3 +1,4 @@
+import { FilmType } from "@repo/core/entities";
 import {
   AlreadyLikedCollectionError,
   CollectionNotFoundError,
@@ -14,16 +15,15 @@ import {
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
-import { number, z } from "zod";
+import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
 import {
   makeCollectionDto,
   makeReviewDto,
   makeTagDto,
   withPaginatedData,
 } from "../utils/make-dto";
-import { FilmType } from "@repo/core/entities";
+import { validator } from "../utils/validator";
 
 const hexColorSchema = z
   .string()
@@ -257,6 +257,10 @@ export const collectionRoute = new Hono()
         toYear: z.coerce.number().int().optional(),
         genres: z.array(z.string()).optional(),
         tags: z.array(z.coerce.number().int()).optional(),
+        fromCreated: z.coerce.date().optional(),
+        toCreated: z.coerce.date().optional(),
+        fromUpdated: z.coerce.date().optional(),
+        toUpdated: z.coerce.date().optional(),
       })
     ),
     validator(
@@ -278,6 +282,10 @@ export const collectionRoute = new Hono()
         toLength,
         toYear,
         type,
+        fromCreated,
+        fromUpdated,
+        toCreated,
+        toUpdated,
       } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
@@ -296,6 +304,14 @@ export const collectionRoute = new Hono()
           year: {
             from: fromYear,
             to: toYear,
+          },
+          createdAt: {
+            from: fromCreated,
+            to: toCreated,
+          },
+          updatedAt: {
+            from: fromUpdated,
+            to: toUpdated,
           },
         },
       });

@@ -13,6 +13,8 @@ export type ReviewFilters = {
   year?: Range<number>;
   genres?: string[];
   tagsIds?: Tag["id"][];
+  createdAt?: Range<Date>;
+  updatedAt?: Range<Date>;
 };
 
 export abstract class IReviewRepository {

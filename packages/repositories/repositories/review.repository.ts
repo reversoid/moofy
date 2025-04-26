@@ -60,7 +60,7 @@ export class ReviewRepository extends IReviewRepository {
         (reviews.search_document @@ to_tsquery('simple', ${words}))
     )`;
 
-    let query = this.getSelectQuery()
+    let query = this.applyFilters(this.getSelectQuery(), props.filters)
       .select(
         sql<number>`
       ts_rank(
@@ -92,49 +92,6 @@ export class ReviewRepository extends IReviewRepository {
       );
     }
 
-    if (props.filters?.year?.from) {
-      query = query.where("films.year", ">=", props.filters.year.from);
-    }
-
-    if (props.filters?.year?.to) {
-      query = query.where("films.year", "<=", props.filters.year.to);
-    }
-
-    if (props.filters?.filmLength?.from) {
-      query = query.where(
-        "films.filmLength",
-        ">=",
-        props.filters.filmLength.from
-      );
-    }
-
-    if (props.filters?.filmLength?.to) {
-      query = query.where(
-        "films.filmLength",
-        ">=",
-        props.filters.filmLength.to
-      );
-    }
-
-    if (props.filters?.type?.length) {
-      query = query.where("films.type", "in", props.filters.type);
-    }
-
-    if (props.filters?.tagsIds?.length) {
-      query = query
-        .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
-        .where(
-          "reviewTags.id",
-          "in",
-          props.filters.tagsIds.map((t) => t.value)
-        );
-    }
-
-    if (props.filters?.genres?.length) {
-      // TODO will it work?
-      query = query.where("films.genres", "&&", props.filters?.genres);
-    }
-
     if (!props.showHidden) {
       query = query.where("reviews.isHidden", "=", false);
     }
@@ -153,7 +110,7 @@ export class ReviewRepository extends IReviewRepository {
   }): Promise<PaginatedData<Review>> {
     const position = props.cursor ? makeNumberFromCursor(props.cursor) : null;
 
-    let query = this.getSelectQuery()
+    let query = this.applyFilters(this.getSelectQuery(), props.filters)
       .where("reviews.collectionId", "=", props.collectionId.value)
       .orderBy("reviews.reversePosition", "desc")
       .limit(props.limit + 1);
@@ -164,49 +121,6 @@ export class ReviewRepository extends IReviewRepository {
 
     if (!props.showHidden) {
       query = query.where("reviews.isHidden", "is", false);
-    }
-
-    if (props.filters?.year?.from) {
-      query = query.where("films.year", ">=", props.filters.year.from);
-    }
-
-    if (props.filters?.year?.to) {
-      query = query.where("films.year", "<=", props.filters.year.to);
-    }
-
-    if (props.filters?.filmLength?.from) {
-      query = query.where(
-        "films.filmLength",
-        ">=",
-        props.filters.filmLength.from
-      );
-    }
-
-    if (props.filters?.filmLength?.to) {
-      query = query.where(
-        "films.filmLength",
-        ">=",
-        props.filters.filmLength.to
-      );
-    }
-
-    if (props.filters?.type?.length) {
-      query = query.where("films.type", "in", props.filters.type);
-    }
-
-    if (props.filters?.tagsIds?.length) {
-      query = query
-        .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
-        .where(
-          "reviewTags.id",
-          "in",
-          props.filters.tagsIds.map((t) => t.value)
-        );
-    }
-
-    if (props.filters?.genres?.length) {
-      // TODO will it work?
-      query = query.where("films.genres", "&&", props.filters?.genres);
     }
 
     const data = await query.execute();
@@ -268,6 +182,64 @@ export class ReviewRepository extends IReviewRepository {
     }
 
     return makeReview(rawData);
+  }
+
+  private applyFilters(
+    query: ReturnType<typeof this.getSelectQuery>,
+    filters?: ReviewFilters
+  ) {
+    if (filters?.year?.from) {
+      query = query.where("films.year", ">=", filters.year.from);
+    }
+
+    if (filters?.year?.to) {
+      query = query.where("films.year", "<=", filters.year.to);
+    }
+
+    if (filters?.filmLength?.from) {
+      query = query.where("films.filmLength", ">=", filters.filmLength.from);
+    }
+
+    if (filters?.filmLength?.to) {
+      query = query.where("films.filmLength", "<=", filters.filmLength.to);
+    }
+
+    if (filters?.type?.length) {
+      query = query.where("films.type", "in", filters.type);
+    }
+
+    if (filters?.tagsIds?.length) {
+      query = query
+        .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
+        .where(
+          "reviewTags.id",
+          "in",
+          filters.tagsIds.map((t) => t.value)
+        );
+    }
+
+    if (filters?.genres?.length) {
+      // TODO will it work? (overlaping arrays)
+      query = query.where("films.genres", "&&", filters?.genres);
+    }
+
+    if (filters?.createdAt?.from) {
+      query = query.where("reviews.createdAt", ">=", filters?.createdAt?.from);
+    }
+
+    if (filters?.createdAt?.to) {
+      query = query.where("reviews.createdAt", "<=", filters?.createdAt?.to);
+    }
+
+    if (filters?.updatedAt?.from) {
+      query = query.where("reviews.createdAt", ">=", filters?.updatedAt?.from);
+    }
+
+    if (filters?.updatedAt?.to) {
+      query = query.where("reviews.createdAt", "<=", filters?.updatedAt?.to);
+    }
+
+    return query;
   }
 
   private getSelectQuery() {

@@ -275,6 +275,8 @@ export class ReviewService implements IReviewService {
         tagsIds: props.filters?.tagsIds,
         type: props.filters?.type,
         year: props.filters?.year,
+        createdAt: props.filters?.createdAt,
+        updatedAt: props.filters?.updatedAt,
       },
     });
 
