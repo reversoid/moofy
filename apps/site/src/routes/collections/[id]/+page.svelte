@@ -5,7 +5,8 @@
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
-	import { ImportReviews, CreateReview } from '$lib/features/reivew';
+	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
+	import { CreateReview, ImportReviews } from '$lib/features/reivew';
 	import { globalState } from '$lib/shared/state';
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
@@ -14,11 +15,9 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconArrowUp, IconMushroom } from '@tabler/icons-svelte';
+	import { IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
-	import { Button } from '$lib/components/ui/button';
-	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
 
 	const { data }: PageProps = $props();
 

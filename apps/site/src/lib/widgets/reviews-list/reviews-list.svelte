@@ -1,11 +1,12 @@
 <script lang="ts">
+	import * as Alert from '$lib/components/ui/alert';
 	import { ReviewCard } from '$lib/entities/review-card';
+	import { FilterReviews } from '$lib/features/filter-reviews';
 	import { EditReview } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
 	import Search from '$lib/shared/ui/search.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
-	import * as Alert from '$lib/components/ui/alert';
-	import { IconPercentage0 } from '@tabler/icons-svelte';
+	import { IconFilter, IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
 
 	interface Props {
@@ -76,7 +77,10 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<Search onSearch={handleSearch} />
+	<div class="flex gap-2">
+		<Search onSearch={handleSearch} />
+		<FilterReviews />
+	</div>
 
 	{#if reviews.length === 0}
 		<div>
