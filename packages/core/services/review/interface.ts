@@ -1,6 +1,6 @@
 import { Result } from "resulto";
 import { Collection } from "../../entities/collection";
-import { Film } from "../../entities/film";
+import { Film, FilmType } from "../../entities/film";
 import { Review } from "../../entities/review";
 import {
   FilmNotFoundError,
@@ -15,7 +15,7 @@ import {
   NoAccessToPrivateCollectionError,
   CollectionNotFoundError,
 } from "../collection";
-import { User } from "../../entities";
+import { Tag, User } from "../../entities";
 import { UserNotFoundError } from "../user";
 
 export type CreateReviewDto = {
@@ -29,6 +29,16 @@ export type EditReviewDto = {
   description?: string | null;
   score?: number | null;
   isHidden?: boolean;
+};
+
+export type Range<T> = { from?: T; to?: T };
+
+export type ReviewFilters = {
+  type?: FilmType[];
+  filmLength?: Range<number>;
+  year?: Range<number>;
+  genres?: string[];
+  tagsIds?: Tag["id"][];
 };
 
 export interface IReviewService {
@@ -70,6 +80,7 @@ export interface IReviewService {
     limit: number;
     cursor?: string;
     search?: string;
+    filters?: ReviewFilters;
   }): Promise<
     Result<
       PaginatedData<Review>,

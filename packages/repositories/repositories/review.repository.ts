@@ -1,5 +1,5 @@
 import { Collection, Film, Review } from "@repo/core/entities";
-import { Filters, IReviewRepository } from "@repo/core/repositories";
+import { ReviewFilters, IReviewRepository } from "@repo/core/repositories";
 import {
   Creatable,
   Id,
@@ -46,7 +46,7 @@ export class ReviewRepository extends IReviewRepository {
     search: string;
     limit: number;
     showHidden: boolean;
-    filters?: Filters;
+    filters?: ReviewFilters;
   }): Promise<Review[]> {
     const words = getTsQueryFromString(props.search);
 
@@ -92,6 +92,49 @@ export class ReviewRepository extends IReviewRepository {
       );
     }
 
+    if (props.filters?.year?.from) {
+      query = query.where("films.year", ">=", props.filters.year.from);
+    }
+
+    if (props.filters?.year?.to) {
+      query = query.where("films.year", "<=", props.filters.year.to);
+    }
+
+    if (props.filters?.filmLength?.from) {
+      query = query.where(
+        "films.filmLength",
+        ">=",
+        props.filters.filmLength.from
+      );
+    }
+
+    if (props.filters?.filmLength?.to) {
+      query = query.where(
+        "films.filmLength",
+        ">=",
+        props.filters.filmLength.to
+      );
+    }
+
+    if (props.filters?.type?.length) {
+      query = query.where("films.type", "in", props.filters.type);
+    }
+
+    if (props.filters?.tagsIds?.length) {
+      query = query
+        .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
+        .where(
+          "reviewTags.id",
+          "in",
+          props.filters.tagsIds.map((t) => t.value)
+        );
+    }
+
+    if (props.filters?.genres?.length) {
+      // TODO will it work?
+      query = query.where("films.genres", "&&", props.filters?.genres);
+    }
+
     if (!props.showHidden) {
       query = query.where("reviews.isHidden", "=", false);
     }
@@ -106,7 +149,7 @@ export class ReviewRepository extends IReviewRepository {
     limit: number;
     cursor?: string;
     showHidden?: boolean;
-    filters?: Filters;
+    filters?: ReviewFilters;
   }): Promise<PaginatedData<Review>> {
     const position = props.cursor ? makeNumberFromCursor(props.cursor) : null;
 
@@ -151,13 +194,13 @@ export class ReviewRepository extends IReviewRepository {
       query = query.where("films.type", "in", props.filters.type);
     }
 
-    if (props.filters?.tags?.length) {
+    if (props.filters?.tagsIds?.length) {
       query = query
         .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
         .where(
           "reviewTags.id",
           "in",
-          props.filters.tags.map((t) => t.id.value)
+          props.filters.tagsIds.map((t) => t.value)
         );
     }
 

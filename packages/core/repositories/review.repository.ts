@@ -7,12 +7,12 @@ import { PaginatedData } from "../utils/pagination";
 
 export type Range<T> = { from?: T; to?: T };
 
-export type Filters = {
+export type ReviewFilters = {
   type?: FilmType[];
   filmLength?: Range<number>;
   year?: Range<number>;
   genres?: string[];
-  tags?: Tag[];
+  tagsIds?: Tag["id"][];
 };
 
 export abstract class IReviewRepository {
@@ -21,7 +21,7 @@ export abstract class IReviewRepository {
     search: string;
     limit: number;
     showHidden: boolean;
-    filters?: Filters;
+    filters?: ReviewFilters;
   }): Promise<Review[]>;
 
   abstract getCollectionReviews(props: {
@@ -29,7 +29,7 @@ export abstract class IReviewRepository {
     limit: number;
     cursor?: string;
     showHidden?: boolean;
-    filters?: Filters;
+    filters?: ReviewFilters;
   }): Promise<PaginatedData<Review>>;
 
   abstract getReviewOnFilmByKpId(

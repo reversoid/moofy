@@ -10,7 +10,12 @@ import {
   NotOwnerOfReviewError,
   NoAccessToCollectionError,
 } from "./errors";
-import { CreateReviewDto, EditReviewDto, IReviewService } from "./interface";
+import {
+  CreateReviewDto,
+  EditReviewDto,
+  IReviewService,
+  ReviewFilters,
+} from "./interface";
 import { IReviewRepository } from "../../repositories/review.repository";
 import { IFilmService } from "../film/interface";
 import { IFilmProvider } from "../../film-providers";
@@ -211,6 +216,7 @@ export class ReviewService implements IReviewService {
     limit: number;
     cursor?: string;
     search?: string;
+    filters?: ReviewFilters;
   }): Promise<
     Result<
       PaginatedData<Review>,
@@ -246,6 +252,13 @@ export class ReviewService implements IReviewService {
         limit: props.limit,
         search: props.search,
         showHidden: isOwnerRequest,
+        filters: {
+          filmLength: props.filters?.filmLength,
+          genres: props.filters?.genres,
+          tagsIds: props.filters?.tagsIds,
+          type: props.filters?.type,
+          year: props.filters?.year,
+        },
       });
 
       return ok({ items: reviews, cursor: null });
@@ -256,6 +269,13 @@ export class ReviewService implements IReviewService {
       limit: props.limit,
       cursor: props.cursor,
       showHidden: isOwnerRequest,
+      filters: {
+        filmLength: props.filters?.filmLength,
+        genres: props.filters?.genres,
+        tagsIds: props.filters?.tagsIds,
+        type: props.filters?.type,
+        year: props.filters?.year,
+      },
     });
 
     return ok(reviews);

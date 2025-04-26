@@ -14,7 +14,7 @@ import {
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
-import { z } from "zod";
+import { number, z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
 import { validator } from "../utils/validator";
 import {
@@ -23,6 +23,7 @@ import {
   makeTagDto,
   withPaginatedData,
 } from "../utils/make-dto";
+import { FilmType } from "@repo/core/entities";
 
 const hexColorSchema = z
   .string()
@@ -245,6 +246,15 @@ export const collectionRoute = new Hono()
         limit: z.coerce.number().int().min(1).max(100).default(20),
         search: z.string().optional(),
         cursor: z.string().optional(),
+        type: z.array(
+          z.enum(["FILM", "TV_SERIES", "TV_SHOW", "MINI_SERIES", "VIDEO"])
+        ),
+        fromLength: z.coerce.number(),
+        toLength: z.coerce.number(),
+        fromYear: z.coerce.number().int(),
+        toYear: z.coerce.number().int(),
+        genres: z.array(z.string()),
+        tags: z.array(z.coerce.number().int()),
       })
     ),
     validator(
@@ -255,7 +265,18 @@ export const collectionRoute = new Hono()
       const session = c.get("session");
 
       const { collectionId } = c.req.valid("param");
-      const { limit, cursor, search } = c.req.valid("query");
+      const {
+        limit,
+        cursor,
+        search,
+        fromLength,
+        fromYear,
+        genres,
+        tags,
+        toLength,
+        toYear,
+        type,
+      } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
 
@@ -265,6 +286,16 @@ export const collectionRoute = new Hono()
         cursor,
         by: session?.user?.id,
         search,
+        filters: {
+          filmLength: { from: fromLength, to: toLength },
+          genres: genres,
+          tagsIds: tags.map((t) => new Id(t)),
+          type: type.map((t) => FilmType[t]),
+          year: {
+            from: fromYear,
+            to: toYear,
+          },
+        },
       });
 
       if (result.isErr()) {
