@@ -246,15 +246,17 @@ export const collectionRoute = new Hono()
         limit: z.coerce.number().int().min(1).max(100).default(20),
         search: z.string().optional(),
         cursor: z.string().optional(),
-        type: z.array(
-          z.enum(["FILM", "TV_SERIES", "TV_SHOW", "MINI_SERIES", "VIDEO"])
-        ),
-        fromLength: z.coerce.number(),
-        toLength: z.coerce.number(),
-        fromYear: z.coerce.number().int(),
-        toYear: z.coerce.number().int(),
-        genres: z.array(z.string()),
-        tags: z.array(z.coerce.number().int()),
+        type: z
+          .array(
+            z.enum(["FILM", "TV_SERIES", "TV_SHOW", "MINI_SERIES", "VIDEO"])
+          )
+          .optional(),
+        fromLength: z.coerce.number().optional(),
+        toLength: z.coerce.number().optional(),
+        fromYear: z.coerce.number().int().optional(),
+        toYear: z.coerce.number().int().optional(),
+        genres: z.array(z.string()).optional(),
+        tags: z.array(z.coerce.number().int()).optional(),
       })
     ),
     validator(
@@ -289,8 +291,8 @@ export const collectionRoute = new Hono()
         filters: {
           filmLength: { from: fromLength, to: toLength },
           genres: genres,
-          tagsIds: tags.map((t) => new Id(t)),
-          type: type.map((t) => FilmType[t]),
+          tagsIds: tags?.map((t) => new Id(t)),
+          type: type?.map((t) => FilmType[t]),
           year: {
             from: fromYear,
             to: toYear,
