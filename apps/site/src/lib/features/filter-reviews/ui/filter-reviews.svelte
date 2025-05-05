@@ -22,15 +22,17 @@
 
 	const form = superForm(defaults({}, zod(schema)), {
 		SPA: true,
-		validators: zod(schema)
+		validators: zod(schema),
+		onUpdate(event) {
+			console.log(event.form.data);
+		},
+		resetForm: false
 	});
 
-	const { enhance, form: formData } = form;
+	const { enhance, form: formData, formId } = form;
 
 	let areFiltersApplied = $state(true);
 </script>
-
-<!-- TODO -->
 
 <Dialog.Root>
 	<Dialog.Trigger>
@@ -50,11 +52,11 @@
 				Для текстовых полей вы можете использовать следующие форматы:
 				<br /> <b>A</b> для указания точного значения
 				<br /> <b>A-B</b> для указания диапазона
-				<br /> <b>A, B-С, D</b> для указания перечисления
+				<br /> <b>A-B, C, D</b> для указания перечисления
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<form use:enhance class="mt-2 flex flex-col gap-2">
+		<form id={$formId} use:enhance class="mt-2 flex flex-col gap-2">
 			<Form.Field {form} name="year">
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
@@ -140,9 +142,9 @@
 			</Form.Field>
 		</form>
 
-		<Dialog.Footer class="mt-4">
+		<Dialog.Footer class="mt-4 flex-col gap-3 sm:flex">
 			<Button variant="outline">Сбросить</Button>
-			<Button><IconSearch /> Поиск</Button>
+			<Button class="!ml-0" type="submit" form={$formId}><IconSearch /> Поиск</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
