@@ -247,16 +247,30 @@ export const collectionRoute = new Hono()
         search: z.string().optional(),
         cursor: z.string().optional(),
         type: z
-          .array(
-            z.enum(["FILM", "TV_SERIES", "TV_SHOW", "MINI_SERIES", "VIDEO"])
+          .string()
+          .transform((v) => v.split(","))
+          .refine(
+            (types) =>
+              new Set(types).intersection(
+                new Set([
+                  "FILM",
+                  "TV_SERIES",
+                  "TV_SHOW",
+                  "MINI_SERIES",
+                  "VIDEO",
+                ])
+              ).size === types.length
           )
           .optional(),
         fromLength: z.coerce.number().optional(),
         toLength: z.coerce.number().optional(),
         fromYear: z.coerce.number().int().optional(),
         toYear: z.coerce.number().int().optional(),
-        genres: z.array(z.string()).optional(),
-        tags: z.array(z.coerce.number().int()).optional(),
+        genres: z.string().transform((v) => v.split(",")),
+        tags: z
+          .string()
+          .transform((v) => v.split(","))
+          .refine((v) => Number.isInteger(v)),
         fromCreated: z.coerce.date().optional(),
         toCreated: z.coerce.date().optional(),
         fromUpdated: z.coerce.date().optional(),
@@ -299,8 +313,8 @@ export const collectionRoute = new Hono()
         filters: {
           filmLength: { from: fromLength, to: toLength },
           genres: genres,
-          tagsIds: tags?.map((t) => new Id(t)),
-          type: type?.map((t) => FilmType[t]),
+          tagsIds: tags?.map((t) => new Id(Number(t))),
+          type: type?.map((t) => t as FilmType),
           year: {
             from: fromYear,
             to: toYear,
