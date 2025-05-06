@@ -291,9 +291,10 @@ export const collectionRoute = new Hono()
               ).size === types.length
           )
           .optional(),
-        genres: z
-          .string()
-          .transform((v) => v.split(","))
+        genre: z
+          .array(z.string())
+          .or(z.string())
+          .transform((v) => (Array.isArray(v) ? v : [v]))
           .optional(),
         tagId: z
           .array(z.coerce.number().int())
@@ -326,15 +327,16 @@ export const collectionRoute = new Hono()
       const session = c.get("session");
 
       const { collectionId } = c.req.valid("param");
+      // TODO better naming than ending with "s"
       const {
         limit,
         cursor,
         search,
-        genres,
-        tagId,
+        genre: genres,
+        tagId: tagIds,
         type,
         createdAt,
-        length,
+        length: lengths,
         updatedAt,
         year,
       } = c.req.valid("query");
@@ -349,12 +351,12 @@ export const collectionRoute = new Hono()
         search,
         filters: {
           genres: genres,
-          tagsIds: tagId?.map((t) => new Id(Number(t))),
+          tagsIds: tagIds?.map((t) => new Id(Number(t))),
           type: type?.map((t) => t as FilmType),
 
           year: year?.map(([from, to]) => ({ from, to: to ?? from })),
 
-          filmLength: length?.map(([from, to]) => ({ from, to: to ?? from })),
+          filmLength: lengths?.map(([from, to]) => ({ from, to: to ?? from })),
 
           createdAt: createdAt?.map(([from, to]) => ({
             from: dayjs(from).startOf("day").toDate(),

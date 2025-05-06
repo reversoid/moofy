@@ -201,8 +201,11 @@ export class ReviewRepository extends IReviewRepository {
     }
 
     if (filters?.genres?.length) {
-      // TODO will it work? (overlaping arrays)
-      query = query.where("films.genres", "&&", filters?.genres);
+      query = query.where(
+        "films.genres",
+        "&&",
+        sql<string[]>`ARRAY[${sql.join(filters.genres)}] ::varchar[]`
+      );
     }
 
     if (filters?.year?.length) {
