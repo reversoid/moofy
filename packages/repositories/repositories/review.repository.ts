@@ -195,7 +195,7 @@ export class ReviewRepository extends IReviewRepository {
 
     if (filters?.tagsIds?.length) {
       query = query.where(
-        "reviewTags.id",
+        "reviewTags.collectionTagId",
         "in",
         filters.tagsIds.map((t) => t.value)
       );
