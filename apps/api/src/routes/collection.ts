@@ -33,22 +33,19 @@ const hexColorSchema = z
 type Value<T> = [T];
 type Range<T> = [T, T];
 type RangeOrValue<T> = Range<T> | Value<T>;
-type ComparableField<T> = Array<RangeOrValue<T>>;
 
 const parseComarableFieldString = <T>(
   raw: string,
   convertFn: (value: string) => T
-): ComparableField<T> => {
-  return raw.split(",").map<RangeOrValue<T>>((v) => {
-    // v has format value or value1-value2
-    const [v1, v2] = v.split("-") as [string, string | undefined];
+): RangeOrValue<T> => {
+  // v has format value or value1-value2
+  const [v1, v2] = raw.split("-") as [string, string | undefined];
 
-    if (!v2) {
-      return [convertFn(v1)];
-    }
+  if (!v2) {
+    return [convertFn(v1)];
+  }
 
-    return [convertFn(v1), convertFn(v2)];
-  });
+  return [convertFn(v1), convertFn(v2)];
 };
 
 const parseComparableNumberField = (raw: string) => {
@@ -303,11 +300,22 @@ export const collectionRoute = new Hono()
           .or(z.coerce.number().int())
           .transform((v) => (Array.isArray(v) ? v : [v]))
           .optional(),
-        // can be just z.array?
-        length: z.string().transform(parseComparableNumberField).optional(),
-        year: z.string().transform(parseComparableNumberField).optional(),
-        createdAt: z.string().transform(parseComparableDateField).optional(),
-        updatedAt: z.string().transform(parseComparableDateField).optional(),
+        length: z
+          .array(z.string().transform(parseComparableNumberField))
+          .or(z.string().transform((v) => [parseComparableNumberField(v)]))
+          .optional(),
+        year: z
+          .array(z.string().transform(parseComparableNumberField))
+          .or(z.string().transform((v) => [parseComparableNumberField(v)]))
+          .optional(),
+        createdAt: z
+          .array(z.string().transform(parseComparableDateField))
+          .or(z.string().transform((v) => [parseComparableDateField(v)]))
+          .optional(),
+        updatedAt: z
+          .array(z.string().transform(parseComparableDateField))
+          .or(z.string().transform((v) => [parseComparableDateField(v)]))
+          .optional(),
       })
     ),
     validator(

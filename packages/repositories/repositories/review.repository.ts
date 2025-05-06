@@ -13,7 +13,6 @@ import { getTsQueryFromString } from "./utils/fulltext-search";
 import { makeReview } from "./utils/make-entity";
 import { makeGetOrThrow } from "./utils/make-get-or-throw";
 import { FilmSelects, ReviewSelects } from "./utils/selects";
-import { DeduplicateJoinsPlugin } from "kysely";
 
 export interface TagData {
   id: number;
