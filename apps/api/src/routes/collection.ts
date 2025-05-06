@@ -15,7 +15,7 @@ import {
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
-import { z } from "zod";
+import { array, z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
 import {
   makeCollectionDto,
@@ -276,8 +276,9 @@ export const collectionRoute = new Hono()
         search: z.string().optional(),
         cursor: z.string().optional(),
         type: z
-          .string()
-          .transform((v) => v.split(","))
+          .array(z.string())
+          .or(z.string())
+          .transform((v) => (Array.isArray(v) ? v : [v]))
           .refine(
             (types) =>
               new Set(types).intersection(
@@ -327,18 +328,17 @@ export const collectionRoute = new Hono()
       const session = c.get("session");
 
       const { collectionId } = c.req.valid("param");
-      // TODO better naming than ending with "s"
       const {
         limit,
         cursor,
         search,
-        genre: genres,
         tagId: tagIds,
-        type,
-        createdAt,
-        length: lengths,
-        updatedAt,
-        year,
+        type: types,
+        genre: genreRanges,
+        length: lengthRanges,
+        year: yearRanges,
+        createdAt: createdAtRanges,
+        updatedAt: updatedAtRanges,
       } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
@@ -350,22 +350,25 @@ export const collectionRoute = new Hono()
         by: session?.user?.id,
         search,
         filters: {
-          genres: genres,
+          genres: genreRanges,
           tagsIds: tagIds?.map((t) => new Id(Number(t))),
-          type: type?.map((t) => t as FilmType),
+          type: types?.map((t) => t as FilmType),
 
-          year: year?.map(([from, to]) => ({ from, to: to ?? from })),
+          year: yearRanges?.map(([from, to]) => ({ from, to: to ?? from })),
 
-          filmLength: lengths?.map(([from, to]) => ({ from, to: to ?? from })),
+          filmLength: lengthRanges?.map(([from, to]) => ({
+            from,
+            to: to ?? from,
+          })),
 
-          createdAt: createdAt?.map(([from, to]) => ({
+          createdAt: createdAtRanges?.map(([from, to]) => ({
             from: dayjs(from).startOf("day").toDate(),
             to: dayjs(to ?? from)
               .endOf("day")
               .toDate(),
           })),
 
-          updatedAt: updatedAt?.map(([from, to]) => ({
+          updatedAt: updatedAtRanges?.map(([from, to]) => ({
             from: dayjs(from).startOf("day").toDate(),
             to: dayjs(to ?? from)
               .endOf("day")
