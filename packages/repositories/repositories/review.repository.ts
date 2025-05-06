@@ -13,6 +13,7 @@ import { getTsQueryFromString } from "./utils/fulltext-search";
 import { makeReview } from "./utils/make-entity";
 import { makeGetOrThrow } from "./utils/make-get-or-throw";
 import { FilmSelects, ReviewSelects } from "./utils/selects";
+import { DeduplicateJoinsPlugin } from "kysely";
 
 export interface TagData {
   id: number;
@@ -188,34 +189,16 @@ export class ReviewRepository extends IReviewRepository {
     query: ReturnType<typeof this.getSelectQuery>,
     filters?: ReviewFilters
   ) {
-    if (filters?.year?.from) {
-      query = query.where("films.year", ">=", filters.year.from);
-    }
-
-    if (filters?.year?.to) {
-      query = query.where("films.year", "<=", filters.year.to);
-    }
-
-    if (filters?.filmLength?.from) {
-      query = query.where("films.filmLength", ">=", filters.filmLength.from);
-    }
-
-    if (filters?.filmLength?.to) {
-      query = query.where("films.filmLength", "<=", filters.filmLength.to);
-    }
-
     if (filters?.type?.length) {
       query = query.where("films.type", "in", filters.type);
     }
 
     if (filters?.tagsIds?.length) {
-      query = query
-        .innerJoin("reviewTags", "reviewTags.id", "reviews.id")
-        .where(
-          "reviewTags.id",
-          "in",
-          filters.tagsIds.map((t) => t.value)
-        );
+      query = query.where(
+        "reviewTags.id",
+        "in",
+        filters.tagsIds.map((t) => t.value)
+      );
     }
 
     if (filters?.genres?.length) {
@@ -223,20 +206,56 @@ export class ReviewRepository extends IReviewRepository {
       query = query.where("films.genres", "&&", filters?.genres);
     }
 
-    if (filters?.createdAt?.from) {
-      query = query.where("reviews.createdAt", ">=", filters?.createdAt?.from);
+    if (filters?.year?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.year!.map((y) =>
+            eb("films.year", ">=", y.from).and("films.year", "<=", y.to)
+          )
+        )
+      );
     }
 
-    if (filters?.createdAt?.to) {
-      query = query.where("reviews.createdAt", "<=", filters?.createdAt?.to);
+    if (filters?.filmLength?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.filmLength!.map((l) =>
+            eb("films.filmLength", ">=", l.from).and(
+              "films.filmLength",
+              "<=",
+              l.to
+            )
+          )
+        )
+      );
     }
 
-    if (filters?.updatedAt?.from) {
-      query = query.where("reviews.createdAt", ">=", filters?.updatedAt?.from);
+    if (filters?.createdAt?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.createdAt!.map((c) =>
+            eb("reviews.createdAt", ">=", c.from).and(
+              "reviews.createdAt",
+              "<=",
+              c.to
+            )
+          )
+        )
+      );
     }
 
-    if (filters?.updatedAt?.to) {
-      query = query.where("reviews.createdAt", "<=", filters?.updatedAt?.to);
+    if (filters?.updatedAt?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.updatedAt!.map((u) =>
+            eb("reviews.updatedAt", ">=", u.from).and(
+              "reviews.updatedAt",
+              "<=",
+              u.to
+            )
+          )
+        )
+      );
     }
 
     return query;

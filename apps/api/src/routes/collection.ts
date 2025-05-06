@@ -24,10 +24,42 @@ import {
   withPaginatedData,
 } from "../utils/make-dto";
 import { validator } from "../utils/validator";
+import { dayjs } from "@repo/core/sdk";
 
 const hexColorSchema = z
   .string()
   .regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Invalid hex color format.");
+
+type Value<T> = [T];
+type Range<T> = [T, T];
+type RangeOrValue<T> = Range<T> | Value<T>;
+type ComparableField<T> = Array<RangeOrValue<T>>;
+
+const parseComarableFieldString = <T>(
+  raw: string,
+  convertFn: (value: string) => T
+): ComparableField<T> => {
+  return raw.split(",").map<RangeOrValue<T>>((v) => {
+    // v has format value or value1-value2
+    const [v1, v2] = v.split("-") as [string, string | undefined];
+
+    if (!v2) {
+      return [convertFn(v1)];
+    }
+
+    return [convertFn(v1), convertFn(v2)];
+  });
+};
+
+const parseComparableNumberField = (raw: string) => {
+  return parseComarableFieldString(raw, (v) =>
+    z.coerce.number().int().parse(v)
+  );
+};
+
+const parseComparableDateField = (raw: string) => {
+  return parseComarableFieldString(raw, (v) => z.coerce.date().parse(v));
+};
 
 export const collectionRoute = new Hono()
   .get(
@@ -262,19 +294,20 @@ export const collectionRoute = new Hono()
               ).size === types.length
           )
           .optional(),
-        fromLength: z.coerce.number().optional(),
-        toLength: z.coerce.number().optional(),
-        fromYear: z.coerce.number().int().optional(),
-        toYear: z.coerce.number().int().optional(),
-        genres: z.string().transform((v) => v.split(",")),
-        tags: z
+        genres: z
           .string()
           .transform((v) => v.split(","))
-          .refine((v) => Number.isInteger(v)),
-        fromCreated: z.coerce.date().optional(),
-        toCreated: z.coerce.date().optional(),
-        fromUpdated: z.coerce.date().optional(),
-        toUpdated: z.coerce.date().optional(),
+          .optional(),
+        tagId: z
+          .array(z.coerce.number().int())
+          .or(z.coerce.number().int())
+          .transform((v) => (Array.isArray(v) ? v : [v]))
+          .optional(),
+        // can be just z.array?
+        length: z.string().transform(parseComparableNumberField).optional(),
+        year: z.string().transform(parseComparableNumberField).optional(),
+        createdAt: z.string().transform(parseComparableDateField).optional(),
+        updatedAt: z.string().transform(parseComparableDateField).optional(),
       })
     ),
     validator(
@@ -289,17 +322,13 @@ export const collectionRoute = new Hono()
         limit,
         cursor,
         search,
-        fromLength,
-        fromYear,
         genres,
-        tags,
-        toLength,
-        toYear,
+        tagId,
         type,
-        fromCreated,
-        fromUpdated,
-        toCreated,
-        toUpdated,
+        createdAt,
+        length,
+        updatedAt,
+        year,
       } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
@@ -311,22 +340,27 @@ export const collectionRoute = new Hono()
         by: session?.user?.id,
         search,
         filters: {
-          filmLength: { from: fromLength, to: toLength },
           genres: genres,
-          tagsIds: tags?.map((t) => new Id(Number(t))),
+          tagsIds: tagId?.map((t) => new Id(Number(t))),
           type: type?.map((t) => t as FilmType),
-          year: {
-            from: fromYear,
-            to: toYear,
-          },
-          createdAt: {
-            from: fromCreated,
-            to: toCreated,
-          },
-          updatedAt: {
-            from: fromUpdated,
-            to: toUpdated,
-          },
+
+          year: year?.map(([from, to]) => ({ from, to: to ?? from })),
+
+          filmLength: length?.map(([from, to]) => ({ from, to: to ?? from })),
+
+          createdAt: createdAt?.map(([from, to]) => ({
+            from: dayjs(from).startOf("day").toDate(),
+            to: dayjs(to ?? from)
+              .endOf("day")
+              .toDate(),
+          })),
+
+          updatedAt: updatedAt?.map(([from, to]) => ({
+            from: dayjs(from).startOf("day").toDate(),
+            to: dayjs(to ?? from)
+              .endOf("day")
+              .toDate(),
+          })),
         },
       });
 

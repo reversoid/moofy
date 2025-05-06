@@ -5,16 +5,17 @@ import { Review } from "../entities/review";
 import { Creatable } from "../utils";
 import { PaginatedData } from "../utils/pagination";
 
-export type Range<T> = { from?: T; to?: T };
+export type Range<T> = { from: T; to: T };
 
 export type ReviewFilters = {
   type?: FilmType[];
-  filmLength?: Range<number>;
-  year?: Range<number>;
   genres?: string[];
   tagsIds?: Tag["id"][];
-  createdAt?: Range<Date>;
-  updatedAt?: Range<Date>;
+
+  filmLength?: Array<Range<number>>;
+  year?: Array<Range<number>>;
+  createdAt?: Array<Range<Date>>;
+  updatedAt?: Array<Range<Date>>;
 };
 
 export abstract class IReviewRepository {

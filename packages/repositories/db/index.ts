@@ -1,5 +1,10 @@
 import * as pg from "pg";
-import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
+import {
+  CamelCasePlugin,
+  DeduplicateJoinsPlugin,
+  Kysely,
+  PostgresDialect,
+} from "kysely";
 import config from "@repo/config";
 import {
   CollectionsTable,
