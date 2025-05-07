@@ -1,4 +1,4 @@
-import { Collection, Film, Review } from "@repo/core/entities";
+import { Collection, Film, FilmType, Review } from "@repo/core/entities";
 import { ReviewFilters, IReviewRepository } from "@repo/core/repositories";
 import {
   Creatable,
@@ -24,6 +24,37 @@ export interface TagData {
 
 export class ReviewRepository extends IReviewRepository {
   getOrThrow = makeGetOrThrow((id: Review["id"]) => this.get(id));
+
+  async getFilmTypes(props: {
+    collectionId: Collection["id"];
+  }): Promise<FilmType[]> {
+    const data = await db
+      .selectFrom("reviews")
+      .innerJoin("films", "films.id", "reviews.filmId")
+      .select("films.type")
+      .distinct()
+      .where("reviews.collectionId", "=", props.collectionId.value)
+      .execute();
+
+    return data.map(({ type }) => FilmType[type]);
+  }
+
+  // Can have better perfomance if needed, if we
+  // move aggregate logic on db level
+  async getFilmGenres(props: {
+    collectionId: Collection["id"];
+  }): Promise<string[]> {
+    const data = await db
+      .selectFrom("reviews")
+      .innerJoin("films", "films.id", "reviews.filmId")
+      .select("films.genres")
+      .where("reviews.collectionId", "=", props.collectionId.value)
+      .execute();
+
+    const uniqueGenres = new Set(data.map((v) => v.genres).flat());
+
+    return Array.from(uniqueGenres);
+  }
 
   async getReviewOnFilm(
     collectionId: Collection["id"],

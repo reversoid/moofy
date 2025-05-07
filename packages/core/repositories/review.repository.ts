@@ -35,6 +35,14 @@ export abstract class IReviewRepository {
     filters?: ReviewFilters;
   }): Promise<PaginatedData<Review>>;
 
+  abstract getFilmTypes(props: {
+    collectionId: Collection["id"];
+  }): Promise<FilmType[]>;
+
+  abstract getFilmGenres(props: {
+    collectionId: Collection["id"];
+  }): Promise<string[]>;
+
   abstract getReviewOnFilmByKpId(
     collectionId: Collection["id"],
     filmKpId: Film["kinopoiskId"]

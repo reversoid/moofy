@@ -402,6 +402,65 @@ export const collectionRoute = new Hono()
       return c.json({ reviews: withPaginatedData(makeReviewDto)(reviews) });
     }
   )
+  .get(
+    "/:collectionId/filter-details",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
+    async (c) => {
+      const session = c.get("session");
+
+      const { collectionId } = c.req.valid("param");
+      const reviewService = c.get("reviewService");
+
+      const [genresResult, typesResult] = await Promise.all([
+        reviewService.getFilmGenres({
+          collectionId: new Id(collectionId),
+          by: session?.user.id,
+        }),
+
+        reviewService.getFilmTypes({
+          collectionId: new Id(collectionId),
+          by: session?.user.id,
+        }),
+      ]);
+
+      if (genresResult.isErr()) {
+        const error = genresResult.error;
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
+        }
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        throw error;
+      }
+
+      if (typesResult.isErr()) {
+        const error = typesResult.error;
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
+        }
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        throw error;
+      }
+
+      return c.json({
+        genres: genresResult.value,
+        types: typesResult.value,
+      });
+    }
+  )
+
   .post(
     "/:collectionId/reviews",
     authMiddleware,

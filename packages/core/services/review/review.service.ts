@@ -24,7 +24,7 @@ import {
   NoAccessToPrivateCollectionError,
   CollectionNotFoundError,
 } from "../collection";
-import { User } from "../../entities";
+import { FilmType, User } from "../../entities";
 import { UserNotFoundError } from "../user";
 import { IUserRepository } from "../../repositories";
 
@@ -36,6 +36,67 @@ export class ReviewService implements IReviewService {
     private readonly collectionService: ICollectionService,
     private readonly userRepository: IUserRepository
   ) {}
+
+  async getFilmTypes(props: {
+    collectionId: Collection["id"];
+    by?: User["id"];
+  }): Promise<
+    Result<
+      FilmType[],
+      CollectionNotFoundError | NoAccessToPrivateCollectionError
+    >
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.error;
+      return err(error);
+    }
+
+    const collection = collectionResult.unwrap();
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const filmTypes = await this.reviewRepository.getFilmTypes({
+      collectionId: props.collectionId,
+    });
+
+    return ok(filmTypes);
+  }
+
+  async getFilmGenres(props: {
+    collectionId: Collection["id"];
+    by?: User["id"];
+  }): Promise<
+    Result<string[], CollectionNotFoundError | NoAccessToPrivateCollectionError>
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.error;
+      return err(error);
+    }
+
+    const collection = collectionResult.unwrap();
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const filmGenres = await this.reviewRepository.getFilmGenres({
+      collectionId: props.collectionId,
+    });
+
+    return ok(filmGenres);
+  }
 
   async searchReviews(props: {
     search: string;

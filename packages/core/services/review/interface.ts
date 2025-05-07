@@ -91,6 +91,23 @@ export interface IReviewService {
     >
   >;
 
+  getFilmTypes(props: {
+    collectionId: Collection["id"];
+    by?: User["id"];
+  }): Promise<
+    Result<
+      FilmType[],
+      CollectionNotFoundError | NoAccessToPrivateCollectionError
+    >
+  >;
+
+  getFilmGenres(props: {
+    collectionId: Collection["id"];
+    by?: User["id"];
+  }): Promise<
+    Result<string[], CollectionNotFoundError | NoAccessToPrivateCollectionError>
+  >;
+
   searchReviews(props: {
     search: string;
     collectionId: Collection["id"];
