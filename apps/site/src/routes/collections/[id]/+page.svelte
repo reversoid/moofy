@@ -18,6 +18,7 @@
 	import { IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
+	import type { ReviewFilters } from '$lib/features/filter-reviews';
 
 	const { data }: PageProps = $props();
 
@@ -78,6 +79,30 @@
 
 	function handleCollectionDeleted() {
 		goto('/welcome/collections');
+	}
+
+	async function loadFilteredReviews(filters: ReviewFilters | null) {
+		const api = makeClient(fetch);
+
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: collection.id.toString() },
+			query: {
+				genre: filters?.genres,
+				createdAt: filters?.createdAt,
+				updatedAt: filters?.updatedAt,
+				tagId: filters?.tagIds?.map(String),
+				type: filters?.types,
+				year: filters?.years
+			}
+		});
+
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: filteredReviews } = await response.json();
+
+		reviews = filteredReviews;
 	}
 
 	const currentUser = globalState.currentUser;
@@ -239,6 +264,7 @@
 			bind:reviews={reviews.items}
 			canEdit={isOwner}
 			cursor={reviews.cursor}
+			onFilters={loadFilteredReviews}
 			onLoadMore={loadMoreReviews}
 			onSearch={searchReviews}
 			defaultEmptyDescription={isOwner

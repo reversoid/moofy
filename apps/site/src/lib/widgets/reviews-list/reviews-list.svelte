@@ -1,12 +1,12 @@
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert';
 	import { ReviewCard } from '$lib/entities/review-card';
-	import { FilterReviews } from '$lib/features/filter-reviews';
+	import { FilterReviews, type ReviewFilters } from '$lib/features/filter-reviews';
 	import { EditReview } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
 	import Search from '$lib/shared/ui/search.svelte';
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
-	import { IconFilter, IconPercentage0 } from '@tabler/icons-svelte';
+	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
 
 	interface Props {
@@ -14,6 +14,7 @@
 		tags: TagDto[];
 		cursor?: string | null;
 		onSearch?: (search: string) => Promise<void>;
+		onFilters?: (filters: ReviewFilters | null) => Promise<void>;
 		onLoadMore?: (cursor: string) => Promise<void>;
 		defaultEmptyDescription: string;
 		canEdit?: boolean;
@@ -24,6 +25,7 @@
 		cursor,
 		onLoadMore,
 		onSearch,
+		onFilters,
 		defaultEmptyDescription,
 		canEdit,
 		tags
@@ -41,9 +43,16 @@
 	}
 
 	let isSearch = $state(false);
+	let areFiltersApplied = $state(false);
+
 	async function handleSearch(search: string) {
 		await onSearch?.(search);
 		isSearch = Boolean(search);
+	}
+
+	async function handleFiltersApplied(filters: ReviewFilters | null) {
+		await onFilters?.(filters);
+		areFiltersApplied = Boolean(Object.values(filters ?? {}).filter(Boolean).length);
 	}
 
 	let emptyDescription = $derived(
@@ -79,7 +88,7 @@
 <div class="flex flex-col gap-4">
 	<div class="flex gap-2">
 		<Search onSearch={handleSearch} />
-		<FilterReviews />
+		<FilterReviews {areFiltersApplied} onFiltersApplied={handleFiltersApplied} />
 	</div>
 
 	{#if reviews.length === 0}
