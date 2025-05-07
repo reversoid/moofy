@@ -51,6 +51,7 @@ export const makeFilmDto = (film: Film) => ({
   type: film.type,
   year: film.year,
   kinopoiskId: film.kinopoiskId,
+  genres: film.genres,
 });
 
 export const makeProviderFilmDto = (film: ProviderFilmDto) => ({

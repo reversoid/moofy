@@ -140,13 +140,14 @@
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>Импорт обзоров</Dialog.Title>
-			<div class="py-4">
-				<ImportReviewsModal {tags} bind:selectedCollectionId bind:selectedTagsIds />
-			</div>
-
-			<Dialog.Footer>
-				<Button {isLoading} onclick={handleSubmit} disabled={!selectedCollectionId}>Импорт</Button>
-			</Dialog.Footer>
 		</Dialog.Header>
+
+		<div class="py-4">
+			<ImportReviewsModal {tags} bind:selectedCollectionId bind:selectedTagsIds />
+		</div>
+
+		<Dialog.Footer>
+			<Button {isLoading} onclick={handleSubmit} disabled={!selectedCollectionId}>Импорт</Button>
+		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

@@ -5,7 +5,8 @@
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
-	import { ImportReviews, CreateReview } from '$lib/features/reivew';
+	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
+	import { CreateReview, ImportReviews } from '$lib/features/reivew';
 	import { globalState } from '$lib/shared/state';
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
@@ -14,11 +15,10 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconArrowUp, IconMushroom } from '@tabler/icons-svelte';
+	import { IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
-	import { Button } from '$lib/components/ui/button';
-	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
+	import type { ReviewFilters } from '$lib/features/filter-reviews';
 
 	const { data }: PageProps = $props();
 
@@ -79,6 +79,30 @@
 
 	function handleCollectionDeleted() {
 		goto('/welcome/collections');
+	}
+
+	async function loadFilteredReviews(filters: ReviewFilters | null) {
+		const api = makeClient(fetch);
+
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: collection.id.toString() },
+			query: {
+				genre: filters?.genres,
+				createdAt: filters?.createdAt,
+				updatedAt: filters?.updatedAt,
+				tagId: filters?.tagIds?.map(String),
+				type: filters?.types,
+				year: filters?.years
+			}
+		});
+
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: filteredReviews } = await response.json();
+
+		reviews = filteredReviews;
 	}
 
 	const currentUser = globalState.currentUser;
@@ -240,6 +264,7 @@
 			bind:reviews={reviews.items}
 			canEdit={isOwner}
 			cursor={reviews.cursor}
+			onFilters={loadFilteredReviews}
 			onLoadMore={loadMoreReviews}
 			onSearch={searchReviews}
 			defaultEmptyDescription={isOwner

@@ -6,7 +6,7 @@ export interface FilmsTable {
   name: string;
   year: number;
   type: "FILM" | "TV_SERIES" | "TV_SHOW" | "MINI_SERIES" | "VIDEO";
-  filmLength: string;
+  filmLength: number | null;
   genres: string[];
   posterPreviewUrl: string;
   posterUrl: string;
