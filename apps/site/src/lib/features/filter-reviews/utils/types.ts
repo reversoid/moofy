@@ -5,7 +5,7 @@ type YYYY = `${number}${number}${number}${number}`;
 type MM = `${number}${number}`;
 type DD = `${number}${number}`;
 
-export type DateValue = `${YYYY}-${MM}-${DD}`;
+export type DateValue = `${DD}.${MM}.${YYYY}`;
 export type DateRange = `${DateValue}-${DateValue}`;
 
 export type ReviewFilters = {

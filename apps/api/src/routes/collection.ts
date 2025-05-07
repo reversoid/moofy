@@ -55,7 +55,15 @@ const parseComparableNumberField = (raw: string) => {
 };
 
 const parseComparableDateField = (raw: string) => {
-  return parseComarableFieldString(raw, (v) => z.coerce.date().parse(v));
+  return parseComarableFieldString(raw, (v) => {
+    const parsedDate = dayjs(v, "DD.MM.YYYY");
+
+    if (!parsedDate.isValid()) {
+      throw new Error();
+    }
+
+    return parsedDate.toDate();
+  });
 };
 
 export const collectionRoute = new Hono()

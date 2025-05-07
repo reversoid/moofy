@@ -8,15 +8,18 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { z } from 'zod';
-	import type { ReviewFilters } from '../utils/types';
 	import { parseDateField, parseNumericField } from '../utils/parseFieldValues';
+	import type { ReviewFilters } from '../utils/types';
+	import type { TagDto } from '@repo/api/dtos';
+	import TagsSelect from '$lib/features/tags/ui/tags-select.svelte';
 
 	type Props = {
 		onFiltersApplied: (filters: ReviewFilters | null) => Promise<void>;
 		areFiltersApplied?: boolean;
+		tags: TagDto[];
 	};
 
-	const { onFiltersApplied, areFiltersApplied }: Props = $props();
+	const { onFiltersApplied, areFiltersApplied, tags }: Props = $props();
 
 	const schema = z.object({
 		year: z.string().optional(),
@@ -31,16 +34,18 @@
 
 	type FieldNames = keyof z.infer<typeof schema>;
 
-	class TrackFieldError extends Error {
-		fieldName: FieldNames;
+	type FieldNamesWithError = Extract<FieldNames, 'year' | 'duration' | 'createdAt' | 'updatedAt'>;
 
-		constructor(fieldName: FieldNames) {
+	class TrackFieldError extends Error {
+		fieldName: FieldNamesWithError;
+
+		constructor(fieldName: FieldNamesWithError) {
 			super();
 			this.fieldName = fieldName;
 		}
 	}
 
-	const trackErrorField = <O,>(fn: () => O, fieldName: FieldNames): O => {
+	const trackErrorField = <O,>(fn: () => O, fieldName: FieldNamesWithError): O => {
 		try {
 			const result = fn();
 			return result;
@@ -84,7 +89,7 @@
 				isOpen = false;
 			} catch (e) {
 				if (e instanceof TrackFieldError) {
-					event.form.errors[e.fieldName] = ['Неправильный формат'] as any;
+					event.form.errors[e.fieldName] = ['Неправильный формат'];
 
 					return;
 				}
@@ -130,6 +135,7 @@
 						<Input bind:value={$formData.year} placeholder="2024" {...attrs} />
 					{/snippet}
 				</Form.Control>
+
 				<Form.FieldErrors />
 			</Form.Field>
 
@@ -175,21 +181,25 @@
 				</Form.Control>
 			</Form.Field>
 
-			<Form.Field {form} name="tags">
-				<Form.Control>
-					{#snippet children({ attrs }: { attrs: any })}
-						<Form.Label>Теги</Form.Label>
-						<Select.Root type="single">
-							<Select.Trigger>Выбранные теги</Select.Trigger>
-							<Select.Content>
-								<Select.Item value="zipzipzip">Item</Select.Item>
-								<Select.Item value="zipzipzip2">Item3</Select.Item>
-								<Select.Item value="zipzipzip3">Item4</Select.Item>
-							</Select.Content>
-						</Select.Root>
-					{/snippet}
-				</Form.Control>
-			</Form.Field>
+			{#if tags.length}
+				<Form.Field {form} name="tags">
+					<Form.Control>
+						{#snippet children({ attrs }: { attrs: any })}
+							<Form.Label>Теги</Form.Label>
+
+							<TagsSelect
+								{tags}
+								bind:selectedTagsIds={
+									() => ($formData.tags ?? [])?.map(String),
+									(v) => {
+										$formData.tags = v.map(Number);
+									}
+								}
+							/>
+						{/snippet}
+					</Form.Control>
+				</Form.Field>
+			{/if}
 
 			<Form.Field {form} name="createdAt">
 				<Form.Control>
@@ -198,6 +208,7 @@
 						<Input bind:value={$formData.createdAt} placeholder="01.02.2023" {...attrs} />
 					{/snippet}
 				</Form.Control>
+
 				<Form.FieldErrors />
 			</Form.Field>
 

@@ -1,10 +1,10 @@
-import { z } from 'zod';
 import type { DateRange, DateValue, NumericRange, NumericValue } from './types';
+import { dayjs } from '@repo/core/sdk';
 
-const dateStringSchema = z.string().date();
+const parseDateString = (v: string) => dayjs(v, 'DD.MM.YYYY');
 
 const isIntString = (v: string): v is NumericValue => Number.isInteger(Number(v));
-const isDateString = (v: string): v is DateValue => dateStringSchema.safeParse(v).success;
+const isDateString = (v: string): v is DateValue => parseDateString(v).isValid();
 
 const parseNumericToken = (token: string): NumericValue | NumericRange => {
 	const [from, to] = token.split('-') as [string, string | undefined];
@@ -44,8 +44,6 @@ const parseDateToken = (token: string): DateValue | DateRange => {
 
 export const parseNumericField = (value: string): (NumericValue | NumericRange)[] => {
 	const splittedTokens = value.replace(/ /g, '').split(',');
-	console.log(splittedTokens, value);
-
 	return splittedTokens.map(parseNumericToken);
 };
 

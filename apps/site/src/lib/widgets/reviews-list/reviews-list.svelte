@@ -88,7 +88,7 @@
 <div class="flex flex-col gap-4">
 	<div class="flex gap-2">
 		<Search onSearch={handleSearch} />
-		<FilterReviews {areFiltersApplied} onFiltersApplied={handleFiltersApplied} />
+		<FilterReviews {tags} {areFiltersApplied} onFiltersApplied={handleFiltersApplied} />
 	</div>
 
 	{#if reviews.length === 0}
