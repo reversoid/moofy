@@ -5,7 +5,7 @@
 	import { EditReview } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
 	import Search from '$lib/shared/ui/search.svelte';
-	import type { ReviewDto, TagDto } from '@repo/api/dtos';
+	import type { CollectionDto, ReviewDto, TagDto } from '@repo/api/dtos';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
 
@@ -18,6 +18,7 @@
 		onLoadMore?: (cursor: string) => Promise<void>;
 		defaultEmptyDescription: string;
 		canEdit?: boolean;
+		collection: CollectionDto;
 	}
 
 	let {
@@ -28,7 +29,8 @@
 		onFilters,
 		defaultEmptyDescription,
 		canEdit,
-		tags
+		tags,
+		collection
 	}: Props = $props();
 
 	let isLoading = $state(false);
@@ -88,7 +90,12 @@
 <div class="flex flex-col gap-4">
 	<div class="flex gap-2">
 		<Search onSearch={handleSearch} />
-		<FilterReviews {tags} {areFiltersApplied} onFiltersApplied={handleFiltersApplied} />
+		<FilterReviews
+			{tags}
+			{areFiltersApplied}
+			onFiltersApplied={handleFiltersApplied}
+			{collection}
+		/>
 	</div>
 
 	{#if reviews.length === 0}

@@ -10,16 +10,19 @@
 	import { z } from 'zod';
 	import { parseDateField, parseNumericField } from '../utils/parseFieldValues';
 	import type { ReviewFilters } from '../utils/types';
-	import type { TagDto } from '@repo/api/dtos';
+	import type { CollectionDto, FilmTypeDto, TagDto } from '@repo/api/dtos';
 	import TagsSelect from '$lib/features/tags/ui/tags-select.svelte';
+	import { onMount } from 'svelte';
+	import { makeClient } from '$lib/shared/utils';
 
 	type Props = {
 		onFiltersApplied: (filters: ReviewFilters | null) => Promise<void>;
 		areFiltersApplied?: boolean;
 		tags: TagDto[];
+		collection: CollectionDto;
 	};
 
-	const { onFiltersApplied, areFiltersApplied, tags }: Props = $props();
+	const { onFiltersApplied, areFiltersApplied, tags, collection }: Props = $props();
 
 	const schema = z.object({
 		// comparable fields
@@ -30,9 +33,9 @@
 		score: z.string().optional(),
 
 		// other fields
-		type: z.array(z.string()).optional(),
-		genres: z.array(z.string()).optional(),
-		tags: z.array(z.number()).optional()
+		type: z.array(z.string()).optional().default([]),
+		genres: z.array(z.string()).optional().default([]),
+		tags: z.array(z.number()).optional().default([])
 	});
 
 	type FieldNames = keyof z.infer<typeof schema>;
@@ -114,6 +117,34 @@
 	const { enhance, form: formData, formId, submitting } = form;
 
 	let isOpen = $state(false);
+
+	let genres = $state<string[]>();
+	let filmTypes = $state<FilmTypeDto[]>();
+
+	onMount(async () => {
+		const api = makeClient(fetch);
+		const response = await api.collections[':collectionId']['filter-details'].$get({
+			param: { collectionId: collection.id.toString() }
+		});
+
+		if (!response.ok) {
+			console.error('Could not load filter params');
+			return;
+		}
+
+		const filterDetails = await response.json();
+
+		genres = filterDetails.genres;
+		filmTypes = filterDetails.types;
+	});
+
+	const filmTypeTranslation: Record<FilmTypeDto, string> = {
+		FILM: 'Фильм',
+		MINI_SERIES: 'Мини-сериал',
+		TV_SERIES: 'Сериал',
+		TV_SHOW: 'ТВ-шоу',
+		VIDEO: 'Видео'
+	};
 </script>
 
 <Dialog.Root bind:open={isOpen}>
@@ -174,12 +205,16 @@
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
 						<Form.Label>Тип</Form.Label>
-						<Select.Root type="single">
-							<Select.Trigger>Фильм</Select.Trigger>
+						<Select.Root type="multiple" bind:value={$formData.type}>
+							<Select.Trigger>
+								<span>
+									{$formData.type?.length ? `Выбрано: ${$formData.type?.length}` : 'Тип'}
+								</span>
+							</Select.Trigger>
 							<Select.Content>
-								<Select.Item value="zipzipzip">Item</Select.Item>
-								<Select.Item value="zipzipzip2">Item3</Select.Item>
-								<Select.Item value="zipzipzip3">Item4</Select.Item>
+								{#each filmTypes ?? [] as type}
+									<Select.Item value={type}>{filmTypeTranslation[type]}</Select.Item>
+								{/each}
 							</Select.Content>
 						</Select.Root>
 					{/snippet}
@@ -191,12 +226,16 @@
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
 						<Form.Label>Жанры</Form.Label>
-						<Select.Root type="single">
-							<Select.Trigger>Комедия</Select.Trigger>
+						<Select.Root type="multiple" bind:value={$formData.genres}>
+							<Select.Trigger>
+								<span>
+									{$formData.genres?.length ? `Выбрано: ${$formData.genres?.length}` : 'Жанры'}
+								</span>
+							</Select.Trigger>
 							<Select.Content>
-								<Select.Item value="zipzipzip">Item</Select.Item>
-								<Select.Item value="zipzipzip2">Item3</Select.Item>
-								<Select.Item value="zipzipzip3">Item4</Select.Item>
+								{#each genres ?? [] as genre}
+									<Select.Item class="capitalize" value={genre}>{genre}</Select.Item>
+								{/each}
 							</Select.Content>
 						</Select.Root>
 					{/snippet}
@@ -252,7 +291,7 @@
 				disabled={$submitting}
 				onclick={async () => {
 					await onFiltersApplied(null);
-					$formData = {};
+					$formData = { genres: [], tags: [], type: [] };
 					isOpen = false;
 				}}
 				variant="outline">Сбросить</Button

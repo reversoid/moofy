@@ -261,6 +261,7 @@
 
 	<div class="mt-4">
 		<ReviewsList
+			{collection}
 			{tags}
 			bind:reviews={reviews.items}
 			canEdit={isOwner}

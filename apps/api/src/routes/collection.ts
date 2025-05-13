@@ -19,6 +19,7 @@ import { array, z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
 import {
   makeCollectionDto,
+  makeFilmTypeDto,
   makeReviewDto,
   makeTagDto,
   withPaginatedData,
@@ -463,7 +464,7 @@ export const collectionRoute = new Hono()
 
       return c.json({
         genres: genresResult.value,
-        types: typesResult.value,
+        types: typesResult.value.map(makeFilmTypeDto),
       });
     }
   )
