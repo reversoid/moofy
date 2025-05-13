@@ -10,7 +10,12 @@ import {
   NotOwnerOfReviewError,
   NoAccessToCollectionError,
 } from "./errors";
-import { CreateReviewDto, EditReviewDto, IReviewService } from "./interface";
+import {
+  CreateReviewDto,
+  EditReviewDto,
+  IReviewService,
+  ReviewFilters,
+} from "./interface";
 import { IReviewRepository } from "../../repositories/review.repository";
 import { IFilmService } from "../film/interface";
 import { IFilmProvider } from "../../film-providers";
@@ -19,7 +24,7 @@ import {
   NoAccessToPrivateCollectionError,
   CollectionNotFoundError,
 } from "../collection";
-import { User } from "../../entities";
+import { FilmType, User } from "../../entities";
 import { UserNotFoundError } from "../user";
 import { IUserRepository } from "../../repositories";
 
@@ -31,6 +36,67 @@ export class ReviewService implements IReviewService {
     private readonly collectionService: ICollectionService,
     private readonly userRepository: IUserRepository
   ) {}
+
+  async getFilmTypes(props: {
+    collectionId: Collection["id"];
+    by?: User["id"];
+  }): Promise<
+    Result<
+      FilmType[],
+      CollectionNotFoundError | NoAccessToPrivateCollectionError
+    >
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.error;
+      return err(error);
+    }
+
+    const collection = collectionResult.unwrap();
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const filmTypes = await this.reviewRepository.getFilmTypes({
+      collectionId: props.collectionId,
+    });
+
+    return ok(filmTypes);
+  }
+
+  async getFilmGenres(props: {
+    collectionId: Collection["id"];
+    by?: User["id"];
+  }): Promise<
+    Result<string[], CollectionNotFoundError | NoAccessToPrivateCollectionError>
+  > {
+    const collectionResult = await this.collectionService.getCollection({
+      id: props.collectionId,
+      by: props.by,
+    });
+
+    if (collectionResult.isErr()) {
+      const error = collectionResult.error;
+      return err(error);
+    }
+
+    const collection = collectionResult.unwrap();
+
+    if (!collection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    const filmGenres = await this.reviewRepository.getFilmGenres({
+      collectionId: props.collectionId,
+    });
+
+    return ok(filmGenres);
+  }
 
   async searchReviews(props: {
     search: string;
@@ -63,12 +129,12 @@ export class ReviewService implements IReviewService {
 
     const isOwnerRequest = props.by?.value === collection.creator.id.value;
 
-    const reviews = await this.reviewRepository.searchReviews(
-      props.collectionId,
-      props.search,
-      props.limit,
-      isOwnerRequest
-    );
+    const reviews = await this.reviewRepository.searchReviews({
+      collectionId: props.collectionId,
+      search: props.search,
+      limit: props.limit,
+      showHidden: isOwnerRequest,
+    });
 
     return ok(reviews);
   }
@@ -211,6 +277,7 @@ export class ReviewService implements IReviewService {
     limit: number;
     cursor?: string;
     search?: string;
+    filters?: ReviewFilters;
   }): Promise<
     Result<
       PaginatedData<Review>,
@@ -241,22 +308,40 @@ export class ReviewService implements IReviewService {
     const isOwnerRequest = props.by?.value === collection.creator.id.value;
 
     if (props.search) {
-      const reviews = await this.reviewRepository.searchReviews(
-        props.collectionId,
-        props.search,
-        props.limit,
-        isOwnerRequest
-      );
+      const reviews = await this.reviewRepository.searchReviews({
+        collectionId: props.collectionId,
+        limit: props.limit,
+        search: props.search,
+        showHidden: isOwnerRequest,
+        filters: {
+          filmLength: props.filters?.filmLength,
+          genres: props.filters?.genres,
+          tagsIds: props.filters?.tagsIds,
+          type: props.filters?.type,
+          year: props.filters?.year,
+          score: props.filters?.score,
+        },
+      });
 
       return ok({ items: reviews, cursor: null });
     }
 
-    const reviews = await this.reviewRepository.getCollectionReviews(
-      props.collectionId,
-      props.limit,
-      props.cursor,
-      isOwnerRequest
-    );
+    const reviews = await this.reviewRepository.getCollectionReviews({
+      collectionId: props.collectionId,
+      limit: props.limit,
+      cursor: props.cursor,
+      showHidden: isOwnerRequest,
+      filters: {
+        filmLength: props.filters?.filmLength,
+        genres: props.filters?.genres,
+        tagsIds: props.filters?.tagsIds,
+        type: props.filters?.type,
+        year: props.filters?.year,
+        createdAt: props.filters?.createdAt,
+        updatedAt: props.filters?.updatedAt,
+        score: props.filters?.score,
+      },
+    });
 
     return ok(reviews);
   }

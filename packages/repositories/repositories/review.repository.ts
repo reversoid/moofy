@@ -1,5 +1,5 @@
-import { Collection, Film, Review } from "@repo/core/entities";
-import { IReviewRepository } from "@repo/core/repositories";
+import { Collection, Film, FilmType, Review } from "@repo/core/entities";
+import { ReviewFilters, IReviewRepository } from "@repo/core/repositories";
 import {
   Creatable,
   Id,
@@ -25,6 +25,37 @@ export interface TagData {
 export class ReviewRepository extends IReviewRepository {
   getOrThrow = makeGetOrThrow((id: Review["id"]) => this.get(id));
 
+  async getFilmTypes(props: {
+    collectionId: Collection["id"];
+  }): Promise<FilmType[]> {
+    const data = await db
+      .selectFrom("reviews")
+      .innerJoin("films", "films.id", "reviews.filmId")
+      .select("films.type")
+      .distinct()
+      .where("reviews.collectionId", "=", props.collectionId.value)
+      .execute();
+
+    return data.map(({ type }) => FilmType[type]);
+  }
+
+  // Can have better perfomance if needed, if we
+  // move aggregate logic on db level
+  async getFilmGenres(props: {
+    collectionId: Collection["id"];
+  }): Promise<string[]> {
+    const data = await db
+      .selectFrom("reviews")
+      .innerJoin("films", "films.id", "reviews.filmId")
+      .select("films.genres")
+      .where("reviews.collectionId", "=", props.collectionId.value)
+      .execute();
+
+    const uniqueGenres = new Set(data.map((v) => v.genres).flat());
+
+    return Array.from(uniqueGenres);
+  }
+
   async getReviewOnFilm(
     collectionId: Collection["id"],
     filmId: Film["id"]
@@ -41,30 +72,31 @@ export class ReviewRepository extends IReviewRepository {
     return makeReview(rawData);
   }
 
-  async searchReviews(
-    collectionId: Collection["id"],
-    search: string,
-    limit: number,
-    showHidden: boolean
-  ): Promise<Review[]> {
-    const words = getTsQueryFromString(search);
+  async searchReviews(props: {
+    collectionId: Collection["id"];
+    search: string;
+    limit: number;
+    showHidden: boolean;
+    filters?: ReviewFilters;
+  }): Promise<Review[]> {
+    const words = getTsQueryFromString(props.search);
 
     const searchCondition = sql<boolean>`(
-        (films.search_document @@ plainto_tsquery('simple', ${search}))
+        (films.search_document @@ plainto_tsquery('simple', ${props.search}))
         OR
         (films.search_document @@ to_tsquery('simple', ${words}))
         OR
-        (reviews.search_document @@ plainto_tsquery('simple', ${search}))
+        (reviews.search_document @@ plainto_tsquery('simple', ${props.search}))
         OR
         (reviews.search_document @@ to_tsquery('simple', ${words}))
     )`;
 
-    let query = this.getSelectQuery()
+    let query = this.applyFilters(this.getSelectQuery(), props.filters)
       .select(
         sql<number>`
       ts_rank(
           films.search_document, 
-          plainto_tsquery('simple', ${search})
+          plainto_tsquery('simple', ${props.search})
       ) +
       ts_rank(
           films.search_document, 
@@ -72,7 +104,7 @@ export class ReviewRepository extends IReviewRepository {
       ) +
       ts_rank(
           reviews.search_document, 
-          plainto_tsquery('simple', ${search})
+          plainto_tsquery('simple', ${props.search})
       ) + 
       ts_rank(
           reviews.search_document, 
@@ -80,14 +112,18 @@ export class ReviewRepository extends IReviewRepository {
       )`.as("rank")
       )
       .where(searchCondition)
-      .limit(limit)
+      .limit(props.limit)
       .orderBy("rank", "desc");
 
-    if (collectionId) {
-      query = query.where("reviews.collectionId", "=", collectionId.value);
+    if (props.collectionId) {
+      query = query.where(
+        "reviews.collectionId",
+        "=",
+        props.collectionId.value
+      );
     }
 
-    if (!showHidden) {
+    if (!props.showHidden) {
       query = query.where("reviews.isHidden", "=", false);
     }
 
@@ -96,30 +132,31 @@ export class ReviewRepository extends IReviewRepository {
     return results.map(makeReview);
   }
 
-  async getCollectionReviews(
-    collectionId: Collection["id"],
-    limit: number,
-    cursor?: string,
-    showHidden?: boolean
-  ): Promise<PaginatedData<Review>> {
-    const position = cursor ? makeNumberFromCursor(cursor) : null;
+  async getCollectionReviews(props: {
+    collectionId: Collection["id"];
+    limit: number;
+    cursor?: string;
+    showHidden?: boolean;
+    filters?: ReviewFilters;
+  }): Promise<PaginatedData<Review>> {
+    const position = props.cursor ? makeNumberFromCursor(props.cursor) : null;
 
-    let query = this.getSelectQuery()
-      .where("reviews.collectionId", "=", collectionId.value)
+    let query = this.applyFilters(this.getSelectQuery(), props.filters)
+      .where("reviews.collectionId", "=", props.collectionId.value)
       .orderBy("reviews.reversePosition", "desc")
-      .limit(limit + 1);
+      .limit(props.limit + 1);
 
     if (position) {
       query = query.where("reviews.reversePosition", "<=", position);
     }
 
-    if (!showHidden) {
-      query = query.where("isHidden", "is", false);
+    if (!props.showHidden) {
+      query = query.where("reviews.isHidden", "is", false);
     }
 
     const data = await query.execute();
 
-    const lastItemPosition = data.at(limit)?.["r-reversePosition"];
+    const lastItemPosition = data.at(props.limit)?.["r-reversePosition"];
 
     const newCursor = lastItemPosition
       ? makeCursorFromNumber(lastItemPosition)
@@ -127,7 +164,7 @@ export class ReviewRepository extends IReviewRepository {
 
     return {
       cursor: newCursor,
-      items: data.slice(0, limit).map(makeReview),
+      items: data.slice(0, props.limit).map(makeReview),
     };
   }
 
@@ -176,6 +213,95 @@ export class ReviewRepository extends IReviewRepository {
     }
 
     return makeReview(rawData);
+  }
+
+  private applyFilters(
+    query: ReturnType<typeof this.getSelectQuery>,
+    filters?: ReviewFilters
+  ) {
+    if (filters?.type?.length) {
+      query = query.where("films.type", "in", filters.type);
+    }
+
+    if (filters?.tagsIds?.length) {
+      query = query.where(
+        "reviewTags.collectionTagId",
+        "in",
+        filters.tagsIds.map((t) => t.value)
+      );
+    }
+
+    if (filters?.genres?.length) {
+      query = query.where(
+        "films.genres",
+        "&&",
+        sql<string[]>`ARRAY[${sql.join(filters.genres)}] ::varchar[]`
+      );
+    }
+
+    if (filters?.year?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.year!.map((y) =>
+            eb("films.year", ">=", y.from).and("films.year", "<=", y.to)
+          )
+        )
+      );
+    }
+
+    if (filters?.score?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.score!.map((y) =>
+            eb("reviews.score", ">=", y.from).and("reviews.score", "<=", y.to)
+          )
+        )
+      );
+    }
+
+    if (filters?.filmLength?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.filmLength!.map((l) =>
+            eb("films.filmLength", ">=", l.from).and(
+              "films.filmLength",
+              "<=",
+              l.to
+            )
+          )
+        )
+      );
+    }
+
+    if (filters?.createdAt?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.createdAt!.map((c) =>
+            eb("reviews.createdAt", ">=", c.from).and(
+              "reviews.createdAt",
+              "<=",
+              c.to
+            )
+          )
+        )
+      );
+    }
+
+    if (filters?.updatedAt?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.updatedAt!.map((u) =>
+            eb("reviews.updatedAt", ">=", u.from).and(
+              "reviews.updatedAt",
+              "<=",
+              u.to
+            )
+          )
+        )
+      );
+    }
+
+    return query;
   }
 
   private getSelectQuery() {

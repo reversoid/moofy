@@ -8,6 +8,7 @@ import {
   Changelog,
   UserPreferences,
   RoadmapItem,
+  FilmType,
 } from "@repo/core/entities";
 import { ProviderFilmDto } from "@repo/core/film-providers";
 import { Id, PaginatedData } from "@repo/core/utils";
@@ -43,14 +44,18 @@ export const makeCollectionDto = (collection: Collection) => ({
   isPersonal: collection.isPersonal,
 });
 
+export const makeFilmTypeDto = (filmType: FilmType) =>
+  `${filmType}` as `${FilmType}`;
+
 export const makeFilmDto = (film: Film) => ({
   id: film.id.value,
   name: film.name,
   posterPreviewUrl: film.posterPreviewUrl,
   posterUrl: film.posterUrl,
-  type: film.type,
+  type: makeFilmTypeDto(film.type),
   year: film.year,
   kinopoiskId: film.kinopoiskId,
+  genres: film.genres,
 });
 
 export const makeProviderFilmDto = (film: ProviderFilmDto) => ({

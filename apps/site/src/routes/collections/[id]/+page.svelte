@@ -5,7 +5,8 @@
 	import { PrivateTooltip } from '$lib/entities/collection';
 	import Tag from '$lib/entities/Tag/tag.svelte';
 	import { BookmarkCollection, EditCollection, LikeCollection } from '$lib/features/collection';
-	import { ImportReviews, CreateReview } from '$lib/features/reivew';
+	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
+	import { CreateReview, ImportReviews } from '$lib/features/reivew';
 	import { globalState } from '$lib/shared/state';
 	import Heading from '$lib/shared/ui/heading.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
@@ -14,11 +15,10 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconArrowUp, IconMushroom } from '@tabler/icons-svelte';
+	import { IconMushroom } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
-	import { Button } from '$lib/components/ui/button';
-	import MoveUpCollection from '$lib/features/collection/move-up-collection.svelte';
+	import type { ReviewFilters } from '$lib/features/filter-reviews';
 
 	const { data }: PageProps = $props();
 
@@ -50,25 +50,6 @@
 		reviews.cursor = newReviews.cursor;
 	}
 
-	async function searchReviews(search: string) {
-		if (!search) {
-			await loadMoreReviews();
-		}
-
-		const api = makeClient(fetch);
-		const response = await api.collections[':collectionId'].reviews.$get({
-			param: { collectionId: String(data.collection.id) },
-			query: { search, limit: '20' }
-		});
-
-		if (!response.ok) {
-			return;
-		}
-
-		const { reviews: newReviews } = await response.json();
-		reviews = newReviews;
-	}
-
 	function handleReviewCreated(review: ReviewDto) {
 		reviews.items = [review, ...reviews.items];
 	}
@@ -79,6 +60,38 @@
 
 	function handleCollectionDeleted() {
 		goto('/welcome/collections');
+	}
+
+	async function filterReviews({
+		filters,
+		search
+	}: {
+		filters: ReviewFilters | null;
+		search: string;
+	}) {
+		const api = makeClient(fetch);
+
+		const response = await api.collections[':collectionId'].reviews.$get({
+			param: { collectionId: collection.id.toString() },
+			query: {
+				genre: filters?.genres,
+				createdAt: filters?.createdAt,
+				updatedAt: filters?.updatedAt,
+				tagId: filters?.tagIds?.map(String),
+				type: filters?.types,
+				year: filters?.years,
+				score: filters?.score,
+				search: search
+			}
+		});
+
+		if (!response.ok) {
+			return;
+		}
+
+		const { reviews: filteredReviews } = await response.json();
+
+		reviews = filteredReviews;
 	}
 
 	const currentUser = globalState.currentUser;
@@ -236,12 +249,13 @@
 
 	<div class="mt-4">
 		<ReviewsList
+			{collection}
 			{tags}
 			bind:reviews={reviews.items}
 			canEdit={isOwner}
 			cursor={reviews.cursor}
+			onFilters={filterReviews}
 			onLoadMore={loadMoreReviews}
-			onSearch={searchReviews}
 			defaultEmptyDescription={isOwner
 				? 'Вы можете добавить обзор в эту коллекцию'
 				: 'Эта коллекция пуста'}

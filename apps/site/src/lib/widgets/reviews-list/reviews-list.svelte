@@ -1,31 +1,35 @@
 <script lang="ts">
+	import * as Alert from '$lib/components/ui/alert';
 	import { ReviewCard } from '$lib/entities/review-card';
+	import { FilterReviews, type ReviewFilters } from '$lib/features/filter-reviews';
 	import { EditReview } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
 	import Search from '$lib/shared/ui/search.svelte';
-	import type { ReviewDto, TagDto } from '@repo/api/dtos';
-	import * as Alert from '$lib/components/ui/alert';
+	import type { CollectionDto, ReviewDto, TagDto } from '@repo/api/dtos';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
+	import { watch } from 'runed';
 
 	interface Props {
 		reviews: ReviewDto[];
 		tags: TagDto[];
 		cursor?: string | null;
-		onSearch?: (search: string) => Promise<void>;
+		onFilters?: (props: { filters: ReviewFilters | null; search: string }) => Promise<void>;
 		onLoadMore?: (cursor: string) => Promise<void>;
 		defaultEmptyDescription: string;
 		canEdit?: boolean;
+		collection: CollectionDto;
 	}
 
 	let {
 		reviews = $bindable(),
 		cursor,
 		onLoadMore,
-		onSearch,
+		onFilters,
 		defaultEmptyDescription,
 		canEdit,
-		tags
+		tags,
+		collection
 	}: Props = $props();
 
 	let isLoading = $state(false);
@@ -40,9 +44,33 @@
 	}
 
 	let isSearch = $state(false);
-	async function handleSearch(search: string) {
-		await onSearch?.(search);
-		isSearch = Boolean(search);
+	let areFiltersApplied = $state(false);
+	let filters = $state<ReviewFilters | null>(null);
+	let search = $state<string>('');
+
+	watch(
+		() => [search, filters],
+		() => {
+			void onFilters?.({ search, filters }).then(() => {
+				isSearch = Boolean(search);
+				areFiltersApplied = !Boolean(
+					Object.values(filters ?? {})
+						.filter(Boolean)
+						.every((v) => {
+							return v.length === 0;
+						})
+				);
+			});
+		},
+		{ lazy: true }
+	);
+
+	async function handleSearch(newSearch: string) {
+		search = newSearch;
+	}
+
+	async function handleFiltersApplied(newFilters: ReviewFilters | null) {
+		filters = newFilters;
 	}
 
 	let emptyDescription = $derived(
@@ -73,10 +101,22 @@
 
 		reviews.unshift(movedReview);
 	}
+
+	let emptyCollection = $derived(!isSearch && !areFiltersApplied && reviews.length === 0);
 </script>
 
 <div class="flex flex-col gap-4">
-	<Search onSearch={handleSearch} />
+	<div class="flex gap-2">
+		<Search onSearch={handleSearch} />
+		{#if !emptyCollection}
+			<FilterReviews
+				{tags}
+				{areFiltersApplied}
+				onFiltersApplied={handleFiltersApplied}
+				{collection}
+			/>
+		{/if}
+	</div>
 
 	{#if reviews.length === 0}
 		<div>

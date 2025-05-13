@@ -1,23 +1,48 @@
+import { Tag } from "../entities";
 import { Collection } from "../entities/collection";
-import { Film } from "../entities/film";
+import { Film, FilmType } from "../entities/film";
 import { Review } from "../entities/review";
 import { Creatable } from "../utils";
 import { PaginatedData } from "../utils/pagination";
 
-export abstract class IReviewRepository {
-  abstract searchReviews(
-    collectionId: Collection["id"],
-    search: string,
-    limit: number,
-    showHidden: boolean
-  ): Promise<Review[]>;
+export type Range<T> = { from: T; to: T };
 
-  abstract getCollectionReviews(
-    collectionId: Collection["id"],
-    limit: number,
-    cursor?: string,
-    showHidden?: boolean
-  ): Promise<PaginatedData<Review>>;
+export type ReviewFilters = {
+  type?: FilmType[];
+  genres?: string[];
+  tagsIds?: Tag["id"][];
+
+  filmLength?: Array<Range<number>>;
+  year?: Array<Range<number>>;
+  createdAt?: Array<Range<Date>>;
+  updatedAt?: Array<Range<Date>>;
+  score?: Array<Range<number>>;
+};
+
+export abstract class IReviewRepository {
+  abstract searchReviews(props: {
+    collectionId: Collection["id"];
+    search: string;
+    limit: number;
+    showHidden: boolean;
+    filters?: ReviewFilters;
+  }): Promise<Review[]>;
+
+  abstract getCollectionReviews(props: {
+    collectionId: Collection["id"];
+    limit: number;
+    cursor?: string;
+    showHidden?: boolean;
+    filters?: ReviewFilters;
+  }): Promise<PaginatedData<Review>>;
+
+  abstract getFilmTypes(props: {
+    collectionId: Collection["id"];
+  }): Promise<FilmType[]>;
+
+  abstract getFilmGenres(props: {
+    collectionId: Collection["id"];
+  }): Promise<string[]>;
 
   abstract getReviewOnFilmByKpId(
     collectionId: Collection["id"],

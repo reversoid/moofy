@@ -1,3 +1,4 @@
+import { FilmType } from "@repo/core/entities";
 import {
   AlreadyLikedCollectionError,
   CollectionNotFoundError,
@@ -14,19 +15,60 @@ import {
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
-import { z } from "zod";
+import { array, z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
-import { validator } from "../utils/validator";
 import {
   makeCollectionDto,
+  makeFilmTypeDto,
   makeReviewDto,
   makeTagDto,
   withPaginatedData,
 } from "../utils/make-dto";
+import { validator } from "../utils/validator";
+import { dayjs } from "@repo/core/sdk";
 
 const hexColorSchema = z
   .string()
   .regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Invalid hex color format.");
+
+type Value<T> = [T];
+type Range<T> = [T, T];
+type RangeOrValue<T> = Range<T> | Value<T>;
+
+const parseComarableFieldString = <T>(
+  raw: string,
+  convertFn: (value: string) => T
+): RangeOrValue<T> => {
+  // v has format value or value1-value2
+  const [v1, v2] = raw.split("-") as [string, string | undefined];
+
+  if (!v2) {
+    return [convertFn(v1)];
+  }
+
+  return [convertFn(v1), convertFn(v2)];
+};
+
+const parseComparableNumberField = (raw: string) => {
+  return parseComarableFieldString(raw, (v) =>
+    z.coerce.number().int().parse(v)
+  );
+};
+
+const parseComparableDateField = (raw: string) => {
+  return parseComarableFieldString(raw, (v) => {
+    // Sometimes it does not parse values fine, however format is correct.
+    // For example, it will not parse date in format 'DD.MM.YYYY'. Why? Idk...
+    // YYYY-MM-DD is most 'stable' format i guess....
+    const parsedDate = dayjs(v.split(".").toReversed().join("-"), "YYYY-MM-DD");
+
+    if (!parsedDate.isValid()) {
+      throw new Error();
+    }
+
+    return parsedDate.toDate();
+  });
+};
 
 export const collectionRoute = new Hono()
   .get(
@@ -245,6 +287,53 @@ export const collectionRoute = new Hono()
         limit: z.coerce.number().int().min(1).max(100).default(20),
         search: z.string().optional(),
         cursor: z.string().optional(),
+        type: z
+          .array(z.string())
+          .or(z.string())
+          .transform((v) => (Array.isArray(v) ? v : [v]))
+          .refine(
+            (types) =>
+              new Set(types).intersection(
+                new Set([
+                  "FILM",
+                  "TV_SERIES",
+                  "TV_SHOW",
+                  "MINI_SERIES",
+                  "VIDEO",
+                ])
+              ).size === types.length
+          )
+          .optional(),
+        genre: z
+          .array(z.string())
+          .or(z.string())
+          .transform((v) => (Array.isArray(v) ? v : [v]))
+          .optional(),
+        tagId: z
+          .array(z.coerce.number().int())
+          .or(z.coerce.number().int())
+          .transform((v) => (Array.isArray(v) ? v : [v]))
+          .optional(),
+        length: z
+          .array(z.string().transform(parseComparableNumberField))
+          .or(z.string().transform((v) => [parseComparableNumberField(v)]))
+          .optional(),
+        year: z
+          .array(z.string().transform(parseComparableNumberField))
+          .or(z.string().transform((v) => [parseComparableNumberField(v)]))
+          .optional(),
+        score: z
+          .array(z.string().transform(parseComparableNumberField))
+          .or(z.string().transform((v) => [parseComparableNumberField(v)]))
+          .optional(),
+        createdAt: z
+          .array(z.string().transform(parseComparableDateField))
+          .or(z.string().transform((v) => [parseComparableDateField(v)]))
+          .optional(),
+        updatedAt: z
+          .array(z.string().transform(parseComparableDateField))
+          .or(z.string().transform((v) => [parseComparableDateField(v)]))
+          .optional(),
       })
     ),
     validator(
@@ -255,7 +344,19 @@ export const collectionRoute = new Hono()
       const session = c.get("session");
 
       const { collectionId } = c.req.valid("param");
-      const { limit, cursor, search } = c.req.valid("query");
+      const {
+        limit,
+        cursor,
+        search,
+        tagId: tagIds,
+        type: types,
+        genre: genreRanges,
+        length: lengthRanges,
+        year: yearRanges,
+        createdAt: createdAtRanges,
+        updatedAt: updatedAtRanges,
+        score: scoreRanges,
+      } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
 
@@ -265,6 +366,34 @@ export const collectionRoute = new Hono()
         cursor,
         by: session?.user?.id,
         search,
+        filters: {
+          genres: genreRanges,
+          tagsIds: tagIds?.map((t) => new Id(Number(t))),
+          type: types?.map((t) => t as FilmType),
+
+          year: yearRanges?.map(([from, to]) => ({ from, to: to ?? from })),
+
+          score: scoreRanges?.map(([from, to]) => ({ from, to: to ?? from })),
+
+          filmLength: lengthRanges?.map(([from, to]) => ({
+            from,
+            to: to ?? from,
+          })),
+
+          createdAt: createdAtRanges?.map(([from, to]) => ({
+            from: dayjs(from).startOf("day").toDate(),
+            to: dayjs(to ?? from)
+              .endOf("day")
+              .toDate(),
+          })),
+
+          updatedAt: updatedAtRanges?.map(([from, to]) => ({
+            from: dayjs(from).startOf("day").toDate(),
+            to: dayjs(to ?? from)
+              .endOf("day")
+              .toDate(),
+          })),
+        },
       });
 
       if (result.isErr()) {
@@ -284,6 +413,65 @@ export const collectionRoute = new Hono()
       return c.json({ reviews: withPaginatedData(makeReviewDto)(reviews) });
     }
   )
+  .get(
+    "/:collectionId/filter-details",
+    validator(
+      "param",
+      z.object({ collectionId: z.coerce.number().int().positive() })
+    ),
+    async (c) => {
+      const session = c.get("session");
+
+      const { collectionId } = c.req.valid("param");
+      const reviewService = c.get("reviewService");
+
+      const [genresResult, typesResult] = await Promise.all([
+        reviewService.getFilmGenres({
+          collectionId: new Id(collectionId),
+          by: session?.user.id,
+        }),
+
+        reviewService.getFilmTypes({
+          collectionId: new Id(collectionId),
+          by: session?.user.id,
+        }),
+      ]);
+
+      if (genresResult.isErr()) {
+        const error = genresResult.error;
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
+        }
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        throw error;
+      }
+
+      if (typesResult.isErr()) {
+        const error = typesResult.error;
+
+        if (error instanceof NoAccessToPrivateCollectionError) {
+          return c.json({ error: "FORBIDDEN" }, 403);
+        }
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" }, 404);
+        }
+
+        throw error;
+      }
+
+      return c.json({
+        genres: genresResult.value,
+        types: typesResult.value.map(makeFilmTypeDto),
+      });
+    }
+  )
+
   .post(
     "/:collectionId/reviews",
     authMiddleware,
