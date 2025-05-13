@@ -318,6 +318,10 @@ export const collectionRoute = new Hono()
           .array(z.string().transform(parseComparableNumberField))
           .or(z.string().transform((v) => [parseComparableNumberField(v)]))
           .optional(),
+        score: z
+          .array(z.string().transform(parseComparableNumberField))
+          .or(z.string().transform((v) => [parseComparableNumberField(v)]))
+          .optional(),
         createdAt: z
           .array(z.string().transform(parseComparableDateField))
           .or(z.string().transform((v) => [parseComparableDateField(v)]))
@@ -347,6 +351,7 @@ export const collectionRoute = new Hono()
         year: yearRanges,
         createdAt: createdAtRanges,
         updatedAt: updatedAtRanges,
+        score: scoreRanges,
       } = c.req.valid("query");
 
       const reviewService = c.get("reviewService");
@@ -363,6 +368,8 @@ export const collectionRoute = new Hono()
           type: types?.map((t) => t as FilmType),
 
           year: yearRanges?.map(([from, to]) => ({ from, to: to ?? from })),
+
+          score: scoreRanges?.map(([from, to]) => ({ from, to: to ?? from })),
 
           filmLength: lengthRanges?.map(([from, to]) => ({
             from,

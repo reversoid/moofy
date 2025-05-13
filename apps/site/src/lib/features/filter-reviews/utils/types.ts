@@ -14,6 +14,7 @@ export type ReviewFilters = {
 	tagIds?: number[];
 	lengths?: (NumericValue | NumericRange)[];
 	years?: (NumericValue | NumericRange)[];
+	score?: (NumericValue | NumericRange)[];
 
 	/** Array of dates in format YYYY-MM-DD */
 	createdAt?: (DateValue | DateRange)[];

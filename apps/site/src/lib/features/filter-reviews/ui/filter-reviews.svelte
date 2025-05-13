@@ -22,11 +22,14 @@
 	const { onFiltersApplied, areFiltersApplied, tags }: Props = $props();
 
 	const schema = z.object({
+		// comparable fields
 		year: z.string().optional(),
 		duration: z.string().optional(),
 		createdAt: z.string().optional(),
 		updatedAt: z.string().optional(),
+		score: z.string().optional(),
 
+		// other fields
 		type: z.array(z.string()).optional(),
 		genres: z.array(z.string()).optional(),
 		tags: z.array(z.number()).optional()
@@ -34,7 +37,10 @@
 
 	type FieldNames = keyof z.infer<typeof schema>;
 
-	type FieldNamesWithError = Extract<FieldNames, 'year' | 'duration' | 'createdAt' | 'updatedAt'>;
+	type FieldNamesWithError = Extract<
+		FieldNames,
+		'year' | 'duration' | 'createdAt' | 'updatedAt' | 'score'
+	>;
 
 	class TrackFieldError extends Error {
 		fieldName: FieldNamesWithError;
@@ -83,6 +89,11 @@
 					years: trackErrorField(
 						() => (data.year ? parseNumericField(data.year) : undefined),
 						'year'
+					),
+
+					score: trackErrorField(
+						() => (data.score ? parseNumericField(data.score) : undefined),
+						'score'
 					)
 				});
 
@@ -127,7 +138,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<form id={$formId} use:enhance class="mt-2 flex flex-col gap-1">
+		<form id={$formId} use:enhance class="mt-2 flex flex-col gap-2">
 			<Form.Field {form} name="year">
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
@@ -144,6 +155,16 @@
 					{#snippet children({ attrs }: { attrs: any })}
 						<Form.Label>Длительность, мин.</Form.Label>
 						<Input bind:value={$formData.duration} placeholder="90" {...attrs} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+
+			<Form.Field {form} name="score">
+				<Form.Control>
+					{#snippet children({ attrs }: { attrs: any })}
+						<Form.Label>Оценка</Form.Label>
+						<Input bind:value={$formData.score} placeholder="5" {...attrs} />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />

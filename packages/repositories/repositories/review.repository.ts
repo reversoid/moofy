@@ -249,6 +249,16 @@ export class ReviewRepository extends IReviewRepository {
       );
     }
 
+    if (filters?.score?.length) {
+      query = query.where((eb) =>
+        eb.or(
+          filters.score!.map((y) =>
+            eb("reviews.score", ">=", y.from).and("reviews.score", "<=", y.to)
+          )
+        )
+      );
+    }
+
     if (filters?.filmLength?.length) {
       query = query.where((eb) =>
         eb.or(

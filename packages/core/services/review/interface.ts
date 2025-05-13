@@ -39,6 +39,7 @@ export type ReviewFilters = {
   tagsIds?: Tag["id"][];
 
   filmLength?: Array<Range<number>>;
+  score?: Array<Range<number>>;
   year?: Array<Range<number>>;
   createdAt?: Array<Range<Date>>;
   updatedAt?: Array<Range<Date>>;

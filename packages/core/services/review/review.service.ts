@@ -284,8 +284,6 @@ export class ReviewService implements IReviewService {
       CollectionNotFoundError | NoAccessToPrivateCollectionError
     >
   > {
-    console.log("filters", props.filters);
-
     const collectionResult = await this.collectionService.getCollection({
       id: props.collectionId,
       by: props.by,
@@ -321,6 +319,7 @@ export class ReviewService implements IReviewService {
           tagsIds: props.filters?.tagsIds,
           type: props.filters?.type,
           year: props.filters?.year,
+          score: props.filters?.score,
         },
       });
 
@@ -340,6 +339,7 @@ export class ReviewService implements IReviewService {
         year: props.filters?.year,
         createdAt: props.filters?.createdAt,
         updatedAt: props.filters?.updatedAt,
+        score: props.filters?.score,
       },
     });
 

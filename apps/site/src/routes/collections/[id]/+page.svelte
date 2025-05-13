@@ -92,7 +92,8 @@
 				updatedAt: filters?.updatedAt,
 				tagId: filters?.tagIds?.map(String),
 				type: filters?.types,
-				year: filters?.years
+				year: filters?.years,
+				score: filters?.score
 			}
 		});
 

@@ -16,6 +16,7 @@ export type ReviewFilters = {
   year?: Array<Range<number>>;
   createdAt?: Array<Range<Date>>;
   updatedAt?: Array<Range<Date>>;
+  score?: Array<Range<number>>;
 };
 
 export abstract class IReviewRepository {
