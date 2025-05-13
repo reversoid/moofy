@@ -8,13 +8,13 @@
 	import type { CollectionDto, ReviewDto, TagDto } from '@repo/api/dtos';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
+	import { watch } from 'runed';
 
 	interface Props {
 		reviews: ReviewDto[];
 		tags: TagDto[];
 		cursor?: string | null;
-		onSearch?: (search: string) => Promise<void>;
-		onFilters?: (filters: ReviewFilters | null) => Promise<void>;
+		onFilters?: (props: { filters: ReviewFilters | null; search: string }) => Promise<void>;
 		onLoadMore?: (cursor: string) => Promise<void>;
 		defaultEmptyDescription: string;
 		canEdit?: boolean;
@@ -25,7 +25,6 @@
 		reviews = $bindable(),
 		cursor,
 		onLoadMore,
-		onSearch,
 		onFilters,
 		defaultEmptyDescription,
 		canEdit,
@@ -46,21 +45,32 @@
 
 	let isSearch = $state(false);
 	let areFiltersApplied = $state(false);
+	let filters = $state<ReviewFilters | null>(null);
+	let search = $state<string>('');
 
-	async function handleSearch(search: string) {
-		await onSearch?.(search);
-		isSearch = Boolean(search);
+	watch(
+		() => [search, filters],
+		() => {
+			void onFilters?.({ search, filters }).then(() => {
+				isSearch = Boolean(search);
+				areFiltersApplied = !Boolean(
+					Object.values(filters ?? {})
+						.filter(Boolean)
+						.every((v) => {
+							return v.length === 0;
+						})
+				);
+			});
+		},
+		{ lazy: true }
+	);
+
+	async function handleSearch(newSearch: string) {
+		search = newSearch;
 	}
 
-	async function handleFiltersApplied(filters: ReviewFilters | null) {
-		await onFilters?.(filters);
-		areFiltersApplied = !Boolean(
-			Object.values(filters ?? {})
-				.filter(Boolean)
-				.every((v) => {
-					return v.length === 0;
-				})
-		);
+	async function handleFiltersApplied(newFilters: ReviewFilters | null) {
+		filters = newFilters;
 	}
 
 	let emptyDescription = $derived(

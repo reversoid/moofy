@@ -50,25 +50,6 @@
 		reviews.cursor = newReviews.cursor;
 	}
 
-	async function searchReviews(search: string) {
-		if (!search) {
-			await loadMoreReviews();
-		}
-
-		const api = makeClient(fetch);
-		const response = await api.collections[':collectionId'].reviews.$get({
-			param: { collectionId: String(data.collection.id) },
-			query: { search, limit: '20' }
-		});
-
-		if (!response.ok) {
-			return;
-		}
-
-		const { reviews: newReviews } = await response.json();
-		reviews = newReviews;
-	}
-
 	function handleReviewCreated(review: ReviewDto) {
 		reviews.items = [review, ...reviews.items];
 	}
@@ -81,7 +62,13 @@
 		goto('/welcome/collections');
 	}
 
-	async function loadFilteredReviews(filters: ReviewFilters | null) {
+	async function filterReviews({
+		filters,
+		search
+	}: {
+		filters: ReviewFilters | null;
+		search: string;
+	}) {
 		const api = makeClient(fetch);
 
 		const response = await api.collections[':collectionId'].reviews.$get({
@@ -93,7 +80,8 @@
 				tagId: filters?.tagIds?.map(String),
 				type: filters?.types,
 				year: filters?.years,
-				score: filters?.score
+				score: filters?.score,
+				search: search
 			}
 		});
 
@@ -266,9 +254,8 @@
 			bind:reviews={reviews.items}
 			canEdit={isOwner}
 			cursor={reviews.cursor}
-			onFilters={loadFilteredReviews}
+			onFilters={filterReviews}
 			onLoadMore={loadMoreReviews}
-			onSearch={searchReviews}
 			defaultEmptyDescription={isOwner
 				? 'Вы можете добавить обзор в эту коллекцию'
 				: 'Эта коллекция пуста'}
