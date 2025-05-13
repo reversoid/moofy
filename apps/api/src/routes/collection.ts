@@ -57,7 +57,10 @@ const parseComparableNumberField = (raw: string) => {
 
 const parseComparableDateField = (raw: string) => {
   return parseComarableFieldString(raw, (v) => {
-    const parsedDate = dayjs(v, "DD.MM.YYYY");
+    // Sometimes it does not parse values fine, however format is correct.
+    // For example, it will not parse date in format 'DD.MM.YYYY'. Why? Idk...
+    // YYYY-MM-DD is most 'stable' format i guess....
+    const parsedDate = dayjs(v.split(".").toReversed().join("-"), "YYYY-MM-DD");
 
     if (!parsedDate.isValid()) {
       throw new Error();

@@ -1,11 +1,14 @@
 import type { DateRange, DateValue, NumericRange, NumericValue } from './types';
 import { dayjs } from '@repo/core/sdk';
 
-const parseDateString = (v: string) => dayjs(v, 'DD.MM.YYYY', true);
+// idk why, but dayjs sometimes does not parse in other formats that YYYY-MM-DD...
+const parseDateString = (v: string) => dayjs(v, 'YYYY-MM-DD', true);
 
 const isIntString = (v: string): v is NumericValue => Number.isInteger(Number(v));
-const isDateString = (v: string): v is DateValue =>
-	v.split('.').length === 3 && parseDateString(v).isValid();
+const isDateString = (v: string): v is DateValue => {
+	const values = v.split('.');
+	return values.length === 3 && parseDateString(values.toReversed().join('-')).isValid();
+};
 
 const parseNumericToken = (token: string): NumericValue | NumericRange => {
 	const [from, to] = token.split('-') as [string, string | undefined];
