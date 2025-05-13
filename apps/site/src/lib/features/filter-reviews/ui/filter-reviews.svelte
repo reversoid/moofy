@@ -205,7 +205,11 @@
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
 						<Form.Label>Тип</Form.Label>
-						<Select.Root type="multiple" bind:value={$formData.type}>
+						<Select.Root
+							disabled={!Boolean(filmTypes?.length)}
+							type="multiple"
+							bind:value={$formData.type}
+						>
 							<Select.Trigger>
 								<span>
 									{$formData.type?.length ? `Выбрано: ${$formData.type?.length}` : 'Тип'}
@@ -226,7 +230,11 @@
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
 						<Form.Label>Жанры</Form.Label>
-						<Select.Root type="multiple" bind:value={$formData.genres}>
+						<Select.Root
+							disabled={!Boolean(genres?.length)}
+							type="multiple"
+							bind:value={$formData.genres}
+						>
 							<Select.Trigger>
 								<span>
 									{$formData.genres?.length ? `Выбрано: ${$formData.genres?.length}` : 'Жанры'}
