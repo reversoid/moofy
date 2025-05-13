@@ -107,7 +107,7 @@
 
 <Dialog.Root bind:open={isOpen}>
 	<Dialog.Trigger>
-		<Button size="icon" variant="outline">
+		<Button tag="div" size="icon" variant="outline">
 			{#if areFiltersApplied}
 				<IconFilterFilled />
 			{:else}
@@ -127,7 +127,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<form id={$formId} use:enhance class="mt-2 flex flex-col gap-2">
+		<form id={$formId} use:enhance class="mt-2 flex flex-col gap-1">
 			<Form.Field {form} name="year">
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
@@ -163,6 +163,7 @@
 						</Select.Root>
 					{/snippet}
 				</Form.Control>
+				<Form.FieldErrors />
 			</Form.Field>
 
 			<Form.Field {form} name="genres">
@@ -179,6 +180,7 @@
 						</Select.Root>
 					{/snippet}
 				</Form.Control>
+				<Form.FieldErrors />
 			</Form.Field>
 
 			{#if tags.length}
@@ -198,6 +200,7 @@
 							/>
 						{/snippet}
 					</Form.Control>
+					<Form.FieldErrors />
 				</Form.Field>
 			{/if}
 
