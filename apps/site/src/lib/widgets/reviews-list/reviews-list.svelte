@@ -101,17 +101,21 @@
 
 		reviews.unshift(movedReview);
 	}
+
+	let emptyCollection = $derived(!isSearch && !areFiltersApplied && reviews.length === 0);
 </script>
 
 <div class="flex flex-col gap-4">
 	<div class="flex gap-2">
 		<Search onSearch={handleSearch} />
-		<FilterReviews
-			{tags}
-			{areFiltersApplied}
-			onFiltersApplied={handleFiltersApplied}
-			{collection}
-		/>
+		{#if !emptyCollection}
+			<FilterReviews
+				{tags}
+				{areFiltersApplied}
+				onFiltersApplied={handleFiltersApplied}
+				{collection}
+			/>
+		{/if}
 	</div>
 
 	{#if reviews.length === 0}
