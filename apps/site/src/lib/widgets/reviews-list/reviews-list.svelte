@@ -54,7 +54,13 @@
 
 	async function handleFiltersApplied(filters: ReviewFilters | null) {
 		await onFilters?.(filters);
-		areFiltersApplied = Boolean(Object.values(filters ?? {}).filter(Boolean).length);
+		areFiltersApplied = !Boolean(
+			Object.values(filters ?? {})
+				.filter(Boolean)
+				.every((v) => {
+					return v.length === 0;
+				})
+		);
 	}
 
 	let emptyDescription = $derived(
