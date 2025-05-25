@@ -188,7 +188,13 @@ export class CollectionRepository extends ICollectionRepository {
         "personalCollections.collectionId",
         "collections.id"
       )
+      .leftJoin(
+        "toWatchCollections",
+        "toWatchCollections.collectionId",
+        "collections.id"
+      )
       .select("personalCollections.id as personalCollectionId")
+      .select("toWatchCollections.id as toWatchCollectionId")
       .select(CollectionSelects.collectionSelects)
       .select(UserSelects.userSelects);
   }

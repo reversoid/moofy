@@ -41,7 +41,7 @@ export const makeCollectionDto = (collection: Collection) => ({
   createdAt: makeDateDto(collection.createdAt),
   updatedAt: makeDateDto(collection.updatedAt),
   creator: makeUserDto(collection.creator),
-  isPersonal: collection.isPersonal,
+  type: collection.type,
 });
 
 export const makeFilmTypeDto = (filmType: FilmType) =>

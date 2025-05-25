@@ -34,7 +34,11 @@ export class ToWatchCollectionRepository extends IToWatchCollectionRepository {
       return null;
     }
 
-    return makeCollection({ ...rawData, personalCollectionId: null });
+    return makeCollection({
+      ...rawData,
+      personalCollectionId: null,
+      toWatchCollectionId: rawData["c-id"],
+    });
   }
 
   async deleteByUserId(userId: User["id"]): Promise<void> {

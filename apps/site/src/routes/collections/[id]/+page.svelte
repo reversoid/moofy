@@ -106,13 +106,14 @@
 
 <svelte:head>
 	<title
-		>{collection.isPersonal ? `Коллекция ${collection.creator.username}` : collection.name} | Moofy</title
+		>{collection.type === 'personal' ? `Коллекция ${collection.creator.username}` : collection.name}
+		| Moofy</title
 	>
 </svelte:head>
 
 <Wrapper>
 	<Heading>
-		{#if collection.isPersonal}
+		{#if collection.type === 'personal'}
 			Обзоры <Link href="/profiles/{collection.creator.username}"
 				>{collection.creator.username}</Link
 			>
@@ -199,7 +200,7 @@
 		</Card.Root>
 	</div>
 
-	{#if collection.isPersonal}
+	{#if collection.type === 'personal'}
 		<Alert.Root class="mt-2">
 			<IconMushroom size={20} />
 			<Alert.Title>О коллекции</Alert.Title>
@@ -230,7 +231,7 @@
 
 		{#if isOwner}
 			<div class="flex gap-2">
-				{#if collection.isPersonal}
+				{#if collection.type === 'personal'}
 					<ImportReviews
 						{tags}
 						onAddedReviews={(newReviews) =>
