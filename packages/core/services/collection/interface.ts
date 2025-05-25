@@ -137,6 +137,13 @@ export interface ICollectionService {
     Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
   >;
 
+  getOrCreateToWatchCollection(props: {
+    userId: Id;
+    by?: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
+  >;
+
   fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
@@ -150,11 +157,5 @@ export interface ICollectionService {
       | TagNotFoundError
       | NotOwnerOfCollectionError
     >
-  >;
-
-  deletePersonalCollection(props: {
-    userId: Id;
-  }): Promise<
-    Result<null, UserNotFoundError | PersonalCollectionNotFoundError>
   >;
 }

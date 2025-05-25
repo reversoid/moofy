@@ -36,10 +36,12 @@ export abstract class IReviewRepository {
     filters?: ReviewFilters;
   }): Promise<PaginatedData<Review>>;
 
+  // TODO should it be in collection repo?
   abstract getFilmTypes(props: {
     collectionId: Collection["id"];
   }): Promise<FilmType[]>;
 
+  // TODO should it be in collection repo?
   abstract getFilmGenres(props: {
     collectionId: Collection["id"];
   }): Promise<string[]>;

@@ -8,3 +8,4 @@ export * from "./tag";
 export * from "./changelog";
 export * from "./user-preferences";
 export * from "./roadmap-item";
+export * from "./watchable-review";

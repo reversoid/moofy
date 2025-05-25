@@ -1,5 +1,5 @@
 import { err, ok, Result } from "resulto";
-import { Review, Tag } from "../../entities";
+import { Review } from "../../entities";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
 import {
@@ -11,6 +11,7 @@ import {
   IPersonalCollectionRepository,
   IReviewRepository,
   IReviewTagRepository,
+  IToWatchCollectionRepository,
   IUserRepository,
 } from "../../repositories";
 import { Id } from "../../utils";
@@ -32,8 +33,9 @@ import {
   EditCollectionDto,
   ICollectionService,
 } from "./interface";
+import { checkCollectionAccess } from "../../utils/collection-access";
 
-// TODO split by CollectionService, PersonalCollectionService
+// TODO split by CollectionService, PersonalCollectionService, ToWatch collection service
 export class CollectionService implements ICollectionService {
   constructor(
     private readonly collectionRepository: ICollectionRepository,
@@ -44,8 +46,60 @@ export class CollectionService implements ICollectionService {
     private readonly personalCollectionRepository: IPersonalCollectionRepository,
     private readonly reviewRepository: IReviewRepository,
     private readonly reviewTagRepository: IReviewTagRepository,
-    private readonly collectionTagRepository: ICollectionTagRepository
+    private readonly collectionTagRepository: ICollectionTagRepository,
+    private readonly toWatchCollectionRepository: IToWatchCollectionRepository
   ) {}
+
+  async getOrCreateToWatchCollection(props: {
+    userId: Id;
+    by?: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
+  > {
+    const toWatchCollection =
+      await this.toWatchCollectionRepository.getByUserId(props.userId);
+
+    if (!toWatchCollection) {
+      const newCollectionResult = await this.createCollection({
+        userId: props.userId,
+        dto: { name: props.userId.value.toString() },
+      });
+
+      if (newCollectionResult.isErr()) {
+        const error = newCollectionResult.error;
+
+        if (error instanceof UserNotFoundError) {
+          return err(error);
+        }
+      }
+
+      const newCollection = newCollectionResult.unwrap();
+
+      await this.toWatchCollectionRepository.create({
+        userId: props.userId,
+        collectionId: newCollection.id,
+      });
+
+      return ok(newCollection);
+    }
+
+    const accessResult = checkCollectionAccess({
+      collection: toWatchCollection,
+      type: "R",
+      by: props.by,
+    });
+
+    if (accessResult.isErr()) {
+      const error = accessResult.error;
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(error);
+      }
+    }
+
+    const collection = accessResult.unwrap();
+
+    return ok(collection);
+  }
 
   async getOrCreatePersonalCollection(props: {
     userId: Id;
@@ -158,11 +212,11 @@ export class CollectionService implements ICollectionService {
 
       do {
         const { cursor, items } =
-          await this.reviewRepository.getCollectionReviews(
+          await this.reviewRepository.getCollectionReviews({
             collectionId,
-            100,
-            nextCursor ?? undefined
-          );
+            limit: 100,
+            cursor: nextCursor ?? undefined,
+          });
 
         nextCursor = cursor;
 
@@ -259,23 +313,6 @@ export class CollectionService implements ICollectionService {
       conflictReviews,
       addedReviews,
     });
-  }
-
-  async deletePersonalCollection(props: {
-    userId: Id;
-  }): Promise<
-    Result<null, UserNotFoundError | PersonalCollectionNotFoundError>
-  > {
-    const personalCollection =
-      await this.personalCollectionRepository.getByUserId(props.userId);
-
-    if (!personalCollection) {
-      return err(new PersonalCollectionNotFoundError());
-    }
-
-    await this.personalCollectionRepository.deleteByUserId(props.userId);
-
-    return ok(null);
   }
 
   async viewCollection(props: {

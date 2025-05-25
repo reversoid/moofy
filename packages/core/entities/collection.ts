@@ -14,6 +14,7 @@ export class Collection extends Entity {
   createdAt: Date;
   updatedAt: Date;
   creator: User;
+  // TODO make Personal collection Entity that extends Collection
   isPersonal: boolean;
 
   constructor(props: {

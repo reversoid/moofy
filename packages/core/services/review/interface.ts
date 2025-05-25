@@ -3,8 +3,9 @@ import { Collection } from "../../entities/collection";
 import { Film, FilmType } from "../../entities/film";
 import { Review } from "../../entities/review";
 import {
+  FilmAlreadyWatched,
+  FilmIsNotWatched,
   FilmNotFoundError,
-  NoAccessToCollectionError,
   NotOwnerOfReviewError,
   ReviewNotFoundError,
   ReviewOnFilmExistsError,
@@ -14,8 +15,9 @@ import { PaginatedData } from "../../utils/pagination";
 import {
   NoAccessToPrivateCollectionError,
   CollectionNotFoundError,
+  NotOwnerOfCollectionError,
 } from "../collection";
-import { Tag, User } from "../../entities";
+import { Tag, User, WatchableReview } from "../../entities";
 import { UserNotFoundError } from "../user";
 
 export type CreateReviewDto = {
@@ -45,6 +47,12 @@ export type ReviewFilters = {
   updatedAt?: Array<Range<Date>>;
 };
 
+export type ChangeWatchedStatusProps = {
+  id: Review["id"];
+  by: User["id"];
+  isWatched: boolean;
+};
+
 export interface IReviewService {
   getReview(props: {
     id: Id;
@@ -62,7 +70,7 @@ export interface IReviewService {
       | FilmNotFoundError
       | ReviewOnFilmExistsError
       | CollectionNotFoundError
-      | NoAccessToCollectionError
+      | NotOwnerOfCollectionError
     >
   >;
 
@@ -89,6 +97,21 @@ export interface IReviewService {
     Result<
       PaginatedData<Review>,
       CollectionNotFoundError | NoAccessToPrivateCollectionError
+    >
+  >;
+
+  getWatchableReviews(reviews: Review[]): Promise<WatchableReview[]>;
+
+  changeWatchedStatus(
+    props: ChangeWatchedStatusProps
+  ): Promise<
+    Result<
+      WatchableReview | null,
+      | ReviewNotFoundError
+      | UserNotFoundError
+      | NotOwnerOfReviewError
+      | FilmAlreadyWatched
+      | FilmIsNotWatched
     >
   >;
 

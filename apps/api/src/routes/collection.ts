@@ -4,7 +4,6 @@ import {
   CollectionNotFoundError,
   DeleteLinkedPersonalCollectionError,
   FilmNotFoundError,
-  NoAccessToCollectionError,
   NoAccessToPrivateCollectionError,
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
@@ -521,7 +520,7 @@ export const collectionRoute = new Hono()
           return c.json({ error: "REVIEW_ON_FILM_EXISTS" as const }, 409);
         }
 
-        if (error instanceof NoAccessToCollectionError) {
+        if (error instanceof NotOwnerOfCollectionError) {
           return c.json({ error: "FORBIDDEN" as const }, 403);
         }
 

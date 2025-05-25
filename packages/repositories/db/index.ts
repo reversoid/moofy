@@ -1,10 +1,5 @@
 import * as pg from "pg";
-import {
-  CamelCasePlugin,
-  DeduplicateJoinsPlugin,
-  Kysely,
-  PostgresDialect,
-} from "kysely";
+import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import config from "@repo/config";
 import {
   CollectionsTable,
@@ -13,7 +8,9 @@ import {
   ReviewsTable,
   RoadmapItemsTable,
   SubscriptionsTable,
+  ToWatchCollectionsTable,
   UsersTable,
+  WatchedReviewsTable,
 } from "./tables";
 import { SessionsTable } from "./tables/sessions";
 import { CollectionLikesTable } from "./tables/collection-likes";
@@ -46,6 +43,8 @@ export interface Database {
   userChangelogViews: UserChangelogViewsTable;
   personalCollections: PersonalCollectionsTable;
   roadmapItems: RoadmapItemsTable;
+  toWatchCollections: ToWatchCollectionsTable;
+  watchedReviews: WatchedReviewsTable;
 }
 
 const dialect = new PostgresDialect({
