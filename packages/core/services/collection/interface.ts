@@ -9,7 +9,6 @@ import {
   AlreadyLikedCollectionError,
   NotLikedCollectionError,
   PersonalCollectionExistsError,
-  PersonalCollectionNotFoundError,
   DeleteLinkedPersonalCollectionError,
 } from "./errors";
 import { PaginatedData } from "../../utils/pagination";

@@ -1,7 +1,6 @@
 import {
   CollectionNotFoundError,
   NotOwnerOfCollectionError,
-  PersonalCollectionNotFoundError,
   TagNotFoundError,
   UsernameExistsError,
   WrongPasswordError,

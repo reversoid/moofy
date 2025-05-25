@@ -27,7 +27,6 @@ import {
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
   PersonalCollectionExistsError,
-  PersonalCollectionNotFoundError,
 } from "./errors";
 import {
   CreateCollectionDto,
