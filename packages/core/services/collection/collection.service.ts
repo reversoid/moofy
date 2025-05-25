@@ -89,6 +89,7 @@ export class CollectionService implements ICollectionService {
       originCollectionId: toWatchCollection.id,
       targetCollectionId: props.collectionId,
       tagsIds: props.tagsIds,
+      copyCriteria: null,
     });
 
     if (fillResult.isErr()) {
@@ -285,6 +286,7 @@ export class CollectionService implements ICollectionService {
       originCollectionId: personalCollection.id,
       targetCollectionId: props.collectionId,
       tagsIds: props.tagsIds,
+      copyCriteria: "score_desc",
     });
 
     if (fillResult.isErr()) {
@@ -310,6 +312,7 @@ export class CollectionService implements ICollectionService {
     targetCollectionId: Collection["id"];
     tagsIds: Id[];
     by: User["id"];
+    copyCriteria: "score" | "desc" | "score_desc" | null;
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
@@ -365,9 +368,25 @@ export class CollectionService implements ICollectionService {
     ]);
 
     // TODO filter using where in db level
-    reviewsToAdd = reviewsToAdd.filter(
-      (r) => r.description && !r.isHidden && r.score
-    );
+    reviewsToAdd = reviewsToAdd.filter((r) => {
+      if (r.isHidden) {
+        return false;
+      }
+
+      if (props.copyCriteria === null) {
+        return true;
+      }
+
+      if (
+        (props.copyCriteria === "desc" && r.description) ||
+        (props.copyCriteria === "score" && r.score) ||
+        (props.copyCriteria === "score_desc" && r.score && r.description)
+      ) {
+        return true;
+      }
+
+      return false;
+    });
 
     const existingFilms = new Set(existingReviews.map((r) => r.film.id.value));
     const filmsToAdd = new Set(reviewsToAdd.map((r) => r.film.id.value));
@@ -377,7 +396,7 @@ export class CollectionService implements ICollectionService {
 
     const cloneReview = async (filmId: number) => {
       const review = await this.reviewRepository.getReviewOnFilm(
-        originCollection.id,
+        targetCollection.id,
         new Id(filmId)
       );
 

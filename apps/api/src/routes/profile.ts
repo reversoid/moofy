@@ -106,14 +106,14 @@ export const profileRoute = new Hono()
       "json",
       z.object({
         collectionId: z.number().int().positive(),
-        assignTagsIds: z.array(z.number().int().positive()),
+        assignTagsIds: z.array(z.number().int().positive()).optional(),
       })
     ),
     authMiddleware,
     async (c) => {
       const user = c.get("session")!.user;
       const collectionService = c.get("collectionService");
-      const { collectionId, assignTagsIds } = c.req.valid("json");
+      const { collectionId, assignTagsIds = [] } = c.req.valid("json");
 
       const fillResult =
         await collectionService.fillPersonalCollectionWithOtherCollection({
@@ -172,7 +172,7 @@ export const profileRoute = new Hono()
     const collectionService = c.get("collectionService");
 
     const collectionResult =
-      await collectionService.getOrCreatePersonalCollection({
+      await collectionService.getOrCreateToWatchCollection({
         userId: id,
         by: id,
       });
@@ -187,7 +187,7 @@ export const profileRoute = new Hono()
       "json",
       z.object({
         collectionId: z.number().int().positive(),
-        assignTagsIds: z.array(z.number().int().positive()),
+        assignTagsIds: z.array(z.number().int().positive()).optional(),
         isWatchedCriteria: z
           .array(z.enum(["score", "description"]))
           .min(1)
@@ -198,8 +198,11 @@ export const profileRoute = new Hono()
     async (c) => {
       const user = c.get("session")!.user;
       const collectionService = c.get("collectionService");
-      const { collectionId, assignTagsIds, isWatchedCriteria } =
-        c.req.valid("json");
+      const {
+        collectionId,
+        assignTagsIds = [],
+        isWatchedCriteria,
+      } = c.req.valid("json");
 
       const hasScoreCriteria = isWatchedCriteria.includes("score");
       const hasDescCriteria = isWatchedCriteria.includes("description");

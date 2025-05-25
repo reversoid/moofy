@@ -8,11 +8,14 @@ import {
   NotOwnerOfCollectionError,
   TagAlreadyLinkedToReviewError,
   TagNotLinkedToReviewError,
+  FilmAlreadyWatched,
+  FilmIsNotWatched,
 } from "@repo/core/services";
 import { validator } from "../utils/validator";
 import { Id } from "@repo/core/utils";
 import { authMiddleware } from "../utils/auth-middleware";
 import { makeReviewDto } from "../utils/make-dto";
+import { err } from "resulto";
 
 export const reviewRoute = new Hono()
   .get(
@@ -100,11 +103,12 @@ export const reviewRoute = new Hono()
         description: z.string().min(1).max(400).nullish(),
         isHidden: z.boolean().optional(),
         updatePosition: z.boolean().optional(),
+        isWatched: z.boolean().optional(),
       })
     ),
     async (c) => {
       const { reviewId } = c.req.valid("param");
-      const { score, description, isHidden, updatePosition } =
+      const { score, description, isHidden, updatePosition, isWatched } =
         c.req.valid("json");
       const reviewService = c.get("reviewService");
       const session = c.get("session")!;
@@ -129,6 +133,28 @@ export const reviewRoute = new Hono()
         if (error instanceof NotOwnerOfReviewError) {
           return c.json({ error: "FORBIDDEN" as const }, 403);
         }
+      }
+
+      if (isWatched) {
+        const isWatchedResult = await reviewService.changeWatchedStatus({
+          id: new Id(reviewId),
+          by: session.user.id,
+          isWatched,
+        });
+
+        if (isWatchedResult.isErr()) {
+          const error = isWatchedResult.error;
+
+          if (error instanceof FilmAlreadyWatched) {
+            return c.json({ error: "ALREADY_WATCHED" as const }, 409);
+          }
+
+          if (error instanceof FilmIsNotWatched) {
+            return c.json({ error: "NOT_WATCHED" as const }, 401);
+          }
+        }
+
+        isWatchedResult.unwrap();
       }
 
       const updatedReview = result.unwrap();

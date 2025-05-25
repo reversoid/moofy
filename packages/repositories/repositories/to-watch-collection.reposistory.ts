@@ -18,14 +18,14 @@ export class ToWatchCollectionRepository extends IToWatchCollectionRepository {
 
   async getByUserId(userId: User["id"]): Promise<Collection | null> {
     const rawData = await db
-      .selectFrom("personalCollections")
-      .where("personalCollections.userId", "=", userId.value)
+      .selectFrom("toWatchCollections")
+      .where("toWatchCollections.userId", "=", userId.value)
       .innerJoin(
         "collections",
         "collections.id",
-        "personalCollections.collectionId"
+        "toWatchCollections.collectionId"
       )
-      .innerJoin("users", "users.id", "personalCollections.userId")
+      .innerJoin("users", "users.id", "toWatchCollections.userId")
       .select(UserSelects.userSelects)
       .select(CollectionSelects.collectionSelects)
       .executeTakeFirst();
