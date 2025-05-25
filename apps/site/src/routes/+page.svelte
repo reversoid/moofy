@@ -30,7 +30,7 @@
 				<Heading class="text-center">Создавай коллекции фильмов</Heading>
 			</div>
 
-			<Button href="/welcome/collections" size="lg" class="w-64">
+			<Button href="/welcome/super" size="lg" class="w-64">
 				<span>Начать</span>
 			</Button>
 		</div>
