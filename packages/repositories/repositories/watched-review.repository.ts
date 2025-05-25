@@ -18,6 +18,10 @@ export class WatchedReviewRepository extends IWatchedReviewRepository {
   }
 
   async areWatched(reviews: Review[]): Promise<boolean[]> {
+    if (reviews.length === 0) {
+      return [];
+    }
+
     const watched = await db
       .selectFrom("watchedReviews")
       .where(
