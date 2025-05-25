@@ -239,12 +239,13 @@ export const profileRoute = new Hono()
         }
       }
 
-      const { addedReviews, conflictReviews } = fillResult.unwrap();
+      const { addedReviews, conflictReviews, watched } = fillResult.unwrap();
 
       return c.json(
         {
           addedReviews: addedReviews.map(makeReviewDto),
           conflictReviews: conflictReviews.map(makeReviewDto),
+          watched,
         },
         200
       );

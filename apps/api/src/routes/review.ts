@@ -135,7 +135,7 @@ export const reviewRoute = new Hono()
         }
       }
 
-      if (isWatched) {
+      if (isWatched !== undefined) {
         const isWatchedResult = await reviewService.changeWatchedStatus({
           id: new Id(reviewId),
           by: session.user.id,

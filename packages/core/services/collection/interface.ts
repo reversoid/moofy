@@ -164,7 +164,7 @@ export interface ICollectionService {
     isWatchedCriteria: "score" | "desc" | "score_desc";
   }): Promise<
     Result<
-      { conflictReviews: Review[]; addedReviews: Review[] },
+      { conflictReviews: Review[]; addedReviews: Review[]; watched: boolean[] },
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError

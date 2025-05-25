@@ -95,16 +95,18 @@ export interface IReviewService {
     filters?: ReviewFilters;
   }): Promise<
     Result<
-      PaginatedData<Review>,
+      { reviews: PaginatedData<Review>; collection: Collection },
       CollectionNotFoundError | NoAccessToPrivateCollectionError
     >
   >;
+
+  areWatched(reviews: Review[]): Promise<boolean[]>;
 
   changeWatchedStatus(
     props: ChangeWatchedStatusProps
   ): Promise<
     Result<
-      Review | null,
+      null,
       | ReviewNotFoundError
       | UserNotFoundError
       | NotOwnerOfReviewError

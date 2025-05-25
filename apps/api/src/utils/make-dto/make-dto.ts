@@ -84,7 +84,6 @@ export const makeReviewDto = (review: Review) => ({
   createdAt: makeDateDto(review.createdAt),
   updatedAt: makeDateDto(review.updatedAt),
   isHidden: review.isHidden,
-  isWatched: review.isWatched,
 });
 
 export const makeSessionDto = (session: Session) => ({

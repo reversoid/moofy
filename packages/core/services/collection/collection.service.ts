@@ -58,7 +58,7 @@ export class CollectionService implements ICollectionService {
     isWatchedCriteria: "score" | "desc" | "score_desc";
   }): Promise<
     Result<
-      { conflictReviews: Review[]; addedReviews: Review[] },
+      { conflictReviews: Review[]; addedReviews: Review[]; watched: boolean[] },
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError
@@ -122,14 +122,9 @@ export class CollectionService implements ICollectionService {
     }
 
     return ok({
-      addedReviews: addedReviews.map(
-        (r) =>
-          new Review({
-            ...r,
-            isWatched: watchedReviews.has(r.id.value),
-          })
-      ),
+      addedReviews,
       conflictReviews,
+      watched: addedReviews.map((r) => watchedReviews.has(r.id.value)),
     });
   }
 

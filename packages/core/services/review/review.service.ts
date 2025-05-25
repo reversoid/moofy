@@ -41,11 +41,15 @@ export class ReviewService implements IReviewService {
     private readonly watchedReviewRepository: IWatchedReviewRepository
   ) {}
 
+  areWatched(reviews: Review[]): Promise<boolean[]> {
+    return this.watchedReviewRepository.areWatched(reviews);
+  }
+
   async changeWatchedStatus(
     props: ChangeWatchedStatusProps
   ): Promise<
     Result<
-      Review | null,
+      null,
       | ReviewNotFoundError
       | UserNotFoundError
       | NotOwnerOfReviewError
@@ -92,7 +96,7 @@ export class ReviewService implements IReviewService {
       return err(new NotOwnerOfReviewError());
     }
 
-    const [isWatched] = await this.watchedReviewRepository.areWatched([review]);
+    const [isWatched] = await this.areWatched([review]);
 
     if (props.isWatched && isWatched) {
       return err(new FilmAlreadyWatched());
@@ -102,11 +106,11 @@ export class ReviewService implements IReviewService {
 
     if (props.isWatched) {
       await this.watchedReviewRepository.create(review.id);
-      return ok(new Review({ ...review, isWatched: true }));
     } else {
       await this.watchedReviewRepository.delete(review.id);
-      return ok(null);
     }
+
+    return ok(null);
   }
 
   async getFilmTypes(props: {
@@ -352,7 +356,7 @@ export class ReviewService implements IReviewService {
     filters?: ReviewFilters;
   }): Promise<
     Result<
-      PaginatedData<Review>,
+      { reviews: PaginatedData<Review>; collection: Collection },
       CollectionNotFoundError | NoAccessToPrivateCollectionError
     >
   > {
@@ -395,13 +399,9 @@ export class ReviewService implements IReviewService {
         },
       });
 
-      const watched = await this.watchedReviewRepository.areWatched(reviews);
-
       return ok({
-        items: reviews.map(
-          (r, i) => new Review({ ...r, isWatched: watched[i] })
-        ),
-        cursor: null,
+        reviews: { items: reviews, cursor: null },
+        collection,
       });
     }
 
@@ -422,16 +422,7 @@ export class ReviewService implements IReviewService {
       },
     });
 
-    const watched = await this.watchedReviewRepository.areWatched(
-      reviews.items
-    );
-
-    return ok({
-      cursor: reviews.cursor,
-      items: reviews.items.map(
-        (r, i) => new Review({ ...r, isWatched: watched[i] })
-      ),
-    });
+    return ok({ reviews, collection });
   }
 
   // TODO should it return "uncheckedAccess object? So we check if we really need"
