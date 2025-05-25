@@ -27,7 +27,7 @@ import {
   CollectionNotFoundError,
   NotOwnerOfCollectionError,
 } from "../collection";
-import { FilmType, User, WatchableReview } from "../../entities";
+import { FilmType, User } from "../../entities";
 import { UserNotFoundError } from "../user";
 import { IUserRepository, IWatchedReviewRepository } from "../../repositories";
 
@@ -45,7 +45,7 @@ export class ReviewService implements IReviewService {
     props: ChangeWatchedStatusProps
   ): Promise<
     Result<
-      WatchableReview | null,
+      Review | null,
       | ReviewNotFoundError
       | UserNotFoundError
       | NotOwnerOfReviewError
@@ -102,19 +102,11 @@ export class ReviewService implements IReviewService {
 
     if (props.isWatched) {
       await this.watchedReviewRepository.create(review.id);
-      return ok(new WatchableReview({ ...review, isWatched: true }));
+      return ok(new Review({ ...review, isWatched: true }));
     } else {
       await this.watchedReviewRepository.delete(review.id);
       return ok(null);
     }
-  }
-
-  async getWatchableReviews(reviews: Review[]): Promise<WatchableReview[]> {
-    const areWatched = await this.watchedReviewRepository.areWatched(reviews);
-
-    return reviews.map(
-      (r, index) => new WatchableReview({ ...r, isWatched: areWatched[index] })
-    );
   }
 
   async getFilmTypes(props: {
@@ -403,7 +395,14 @@ export class ReviewService implements IReviewService {
         },
       });
 
-      return ok({ items: reviews, cursor: null });
+      const watched = await this.watchedReviewRepository.areWatched(reviews);
+
+      return ok({
+        items: reviews.map(
+          (r, i) => new Review({ ...r, isWatched: watched[i] })
+        ),
+        cursor: null,
+      });
     }
 
     const reviews = await this.reviewRepository.getCollectionReviews({
@@ -423,7 +422,16 @@ export class ReviewService implements IReviewService {
       },
     });
 
-    return ok(reviews);
+    const watched = await this.watchedReviewRepository.areWatched(
+      reviews.items
+    );
+
+    return ok({
+      cursor: reviews.cursor,
+      items: reviews.items.map(
+        (r, i) => new Review({ ...r, isWatched: watched[i] })
+      ),
+    });
   }
 
   // TODO should it return "uncheckedAccess object? So we check if we really need"

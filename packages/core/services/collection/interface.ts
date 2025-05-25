@@ -13,7 +13,7 @@ import {
 } from "./errors";
 import { PaginatedData } from "../../utils/pagination";
 import { Id } from "../../utils";
-import { Review, WatchableReview } from "../../entities";
+import { Review } from "../../entities";
 import { TagNotFoundError } from "../tag";
 
 export type CreateCollectionDto = {
@@ -164,7 +164,7 @@ export interface ICollectionService {
     isWatchedCriteria: "score" | "desc" | "score_desc";
   }): Promise<
     Result<
-      { conflictReviews: Review[]; addedReviews: WatchableReview[] },
+      { conflictReviews: Review[]; addedReviews: Review[] },
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError

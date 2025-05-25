@@ -1,5 +1,5 @@
 import { err, ok, Result } from "resulto";
-import { Review, WatchableReview } from "../../entities";
+import { Review } from "../../entities";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
 import {
@@ -58,7 +58,7 @@ export class CollectionService implements ICollectionService {
     isWatchedCriteria: "score" | "desc" | "score_desc";
   }): Promise<
     Result<
-      { conflictReviews: Review[]; addedReviews: WatchableReview[] },
+      { conflictReviews: Review[]; addedReviews: Review[] },
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError
@@ -124,7 +124,7 @@ export class CollectionService implements ICollectionService {
     return ok({
       addedReviews: addedReviews.map(
         (r) =>
-          new WatchableReview({
+          new Review({
             ...r,
             isWatched: watchedReviews.has(r.id.value),
           })

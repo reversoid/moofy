@@ -13,7 +13,6 @@ import {
   makeCollectionDto,
   makeReviewDto,
   makeUserDto,
-  makeWatchableReviewDto,
   withPaginatedData,
 } from "../utils/make-dto";
 import { validator } from "../utils/validator";
@@ -244,7 +243,7 @@ export const profileRoute = new Hono()
 
       return c.json(
         {
-          addedReviews: addedReviews.map(makeWatchableReviewDto),
+          addedReviews: addedReviews.map(makeReviewDto),
           conflictReviews: conflictReviews.map(makeReviewDto),
         },
         200

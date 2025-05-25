@@ -17,7 +17,7 @@ import {
   CollectionNotFoundError,
   NotOwnerOfCollectionError,
 } from "../collection";
-import { Tag, User, WatchableReview } from "../../entities";
+import { Tag, User } from "../../entities";
 import { UserNotFoundError } from "../user";
 
 export type CreateReviewDto = {
@@ -100,13 +100,11 @@ export interface IReviewService {
     >
   >;
 
-  getWatchableReviews(reviews: Review[]): Promise<WatchableReview[]>;
-
   changeWatchedStatus(
     props: ChangeWatchedStatusProps
   ): Promise<
     Result<
-      WatchableReview | null,
+      Review | null,
       | ReviewNotFoundError
       | UserNotFoundError
       | NotOwnerOfReviewError

@@ -9,7 +9,6 @@ import {
   UserPreferences,
   RoadmapItem,
   FilmType,
-  WatchableReview,
 } from "@repo/core/entities";
 import { ProviderFilmDto } from "@repo/core/film-providers";
 import { Id, PaginatedData } from "@repo/core/utils";
@@ -85,10 +84,6 @@ export const makeReviewDto = (review: Review) => ({
   createdAt: makeDateDto(review.createdAt),
   updatedAt: makeDateDto(review.updatedAt),
   isHidden: review.isHidden,
-});
-
-export const makeWatchableReviewDto = (review: WatchableReview) => ({
-  ...makeReviewDto(review),
   isWatched: review.isWatched,
 });
 
