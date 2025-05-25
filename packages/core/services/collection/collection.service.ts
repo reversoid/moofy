@@ -1,5 +1,5 @@
 import { err, ok, Result } from "resulto";
-import { Review } from "../../entities";
+import { Review, WatchableReview } from "../../entities";
 import { Collection } from "../../entities/collection";
 import { User } from "../../entities/user";
 import {
@@ -13,6 +13,7 @@ import {
   IReviewTagRepository,
   IToWatchCollectionRepository,
   IUserRepository,
+  IWatchedReviewRepository,
 } from "../../repositories";
 import { Id } from "../../utils";
 import { PaginatedData } from "../../utils/pagination";
@@ -33,7 +34,7 @@ import {
   EditCollectionDto,
   ICollectionService,
 } from "./interface";
-import { checkCollectionAccess } from "../../utils/collection-access";
+import { checkCollectionAccess } from "../../utils/check-access";
 
 // TODO split by CollectionService, PersonalCollectionService, ToWatch collection service
 export class CollectionService implements ICollectionService {
@@ -47,8 +48,90 @@ export class CollectionService implements ICollectionService {
     private readonly reviewRepository: IReviewRepository,
     private readonly reviewTagRepository: IReviewTagRepository,
     private readonly collectionTagRepository: ICollectionTagRepository,
-    private readonly toWatchCollectionRepository: IToWatchCollectionRepository
+    private readonly toWatchCollectionRepository: IToWatchCollectionRepository,
+    private readonly watchedReviewRepository: IWatchedReviewRepository
   ) {}
+
+  async fillToWatchCollectionWithOtherCollection(props: {
+    userId: Id;
+    collectionId: Id;
+    tagsIds: Id[];
+    isWatchedCriteria: "score" | "desc" | "score_desc";
+  }): Promise<
+    Result<
+      { conflictReviews: Review[]; addedReviews: WatchableReview[] },
+      | CollectionNotFoundError
+      | UserNotFoundError
+      | TagNotFoundError
+      | NotOwnerOfCollectionError
+    >
+  > {
+    const toWatchCollectionResult = await this.getOrCreateToWatchCollection({
+      userId: props.userId,
+      by: props.userId,
+    });
+
+    if (toWatchCollectionResult.isErr()) {
+      const error = toWatchCollectionResult.error;
+
+      if (error instanceof UserNotFoundError) {
+        return err(error);
+      }
+
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(new NotOwnerOfCollectionError());
+      }
+    }
+
+    const toWatchCollection = toWatchCollectionResult.unwrap();
+
+    const fillResult = await this.fillCollectionWithOtherCollection({
+      by: props.userId,
+      originCollectionId: toWatchCollection.id,
+      targetCollectionId: props.collectionId,
+      tagsIds: props.tagsIds,
+    });
+
+    if (fillResult.isErr()) {
+      const error = fillResult.error;
+
+      if (error instanceof CollectionNotFoundError) {
+        return err(error);
+      }
+
+      if (error instanceof NotOwnerOfCollectionError) {
+        return err(error);
+      }
+    }
+
+    const { addedReviews, conflictReviews } = fillResult.unwrap();
+
+    const watchedReviews = new Set<number>();
+
+    for (const review of addedReviews) {
+      if (
+        (props.isWatchedCriteria === "desc" && review.description) ||
+        (props.isWatchedCriteria === "score" && review.score) ||
+        (props.isWatchedCriteria === "score_desc" &&
+          review.description &&
+          review.score)
+      ) {
+        await this.watchedReviewRepository.create(review.id);
+        watchedReviews.add(review.id.value);
+      }
+    }
+
+    return ok({
+      addedReviews: addedReviews.map(
+        (r) =>
+          new WatchableReview({
+            ...r,
+            isWatched: watchedReviews.has(r.id.value),
+          })
+      ),
+      conflictReviews,
+    });
+  }
 
   async getOrCreateToWatchCollection(props: {
     userId: Id;
@@ -169,7 +252,6 @@ export class CollectionService implements ICollectionService {
     return ok(newCollection);
   }
 
-  // TODO optimize
   async fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
@@ -177,31 +259,81 @@ export class CollectionService implements ICollectionService {
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
-      | PersonalCollectionNotFoundError
-      | CollectionNotFoundError
-      | UserNotFoundError
-      | NotOwnerOfCollectionError
+      CollectionNotFoundError | UserNotFoundError | NotOwnerOfCollectionError
     >
   > {
-    const [user, personalCollection, collection] = await Promise.all([
-      this.userRepository.get(props.userId),
-      this.personalCollectionRepository.getByUserId(props.userId),
-      this.collectionRepository.get(props.collectionId),
+    const personalCollectionResult = await this.getOrCreatePersonalCollection({
+      userId: props.userId,
+      by: props.userId,
+    });
+
+    if (personalCollectionResult.isErr()) {
+      const error = personalCollectionResult.error;
+
+      if (error instanceof UserNotFoundError) {
+        return err(error);
+      }
+
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(new NotOwnerOfCollectionError());
+      }
+    }
+
+    const personalCollection = personalCollectionResult.unwrap();
+
+    const fillResult = await this.fillCollectionWithOtherCollection({
+      by: props.userId,
+      originCollectionId: personalCollection.id,
+      targetCollectionId: props.collectionId,
+      tagsIds: props.tagsIds,
+    });
+
+    if (fillResult.isErr()) {
+      const error = fillResult.error;
+
+      if (error instanceof CollectionNotFoundError) {
+        return err(error);
+      }
+
+      if (error instanceof NotOwnerOfCollectionError) {
+        return err(error);
+      }
+    }
+
+    const { addedReviews, conflictReviews } = fillResult.unwrap();
+
+    return ok({ addedReviews, conflictReviews });
+  }
+
+  // TODO optimize
+  private async fillCollectionWithOtherCollection(props: {
+    originCollectionId: Collection["id"];
+    targetCollectionId: Collection["id"];
+    tagsIds: Id[];
+    by: User["id"];
+  }): Promise<
+    Result<
+      { conflictReviews: Review[]; addedReviews: Review[] },
+      CollectionNotFoundError | NotOwnerOfCollectionError
+    >
+  > {
+    const [originCollection, targetCollection] = await Promise.all([
+      this.collectionRepository.get(props.originCollectionId),
+      this.collectionRepository.get(props.targetCollectionId),
     ]);
 
-    if (!user) {
-      return err(new UserNotFoundError());
-    }
-
-    if (!personalCollection) {
-      return err(new PersonalCollectionNotFoundError());
-    }
-
-    if (!collection) {
+    if (!originCollection) {
       return err(new CollectionNotFoundError());
     }
 
-    if (collection.creator.id.value !== props.userId.value) {
+    if (!targetCollection) {
+      return err(new CollectionNotFoundError());
+    }
+
+    if (
+      originCollection.creator.id.value !== props.by.value ||
+      targetCollection.creator.id.value !== props.by.value
+    ) {
       return err(new NotOwnerOfCollectionError());
     }
 
@@ -229,11 +361,11 @@ export class CollectionService implements ICollectionService {
     };
 
     let [existingReviews, reviewsToAdd] = await Promise.all([
-      getAllReviews(personalCollection.id),
-      getAllReviews(collection.id),
+      getAllReviews(originCollection.id),
+      getAllReviews(targetCollection.id),
     ]);
 
-    // TODO filer using where in db level
+    // TODO filter using where in db level
     reviewsToAdd = reviewsToAdd.filter(
       (r) => r.description && !r.isHidden && r.score
     );
@@ -246,7 +378,7 @@ export class CollectionService implements ICollectionService {
 
     const cloneReview = async (filmId: number) => {
       const review = await this.reviewRepository.getReviewOnFilm(
-        collection.id,
+        originCollection.id,
         new Id(filmId)
       );
 
@@ -255,7 +387,7 @@ export class CollectionService implements ICollectionService {
       }
 
       return this.reviewRepository.create(
-        new Review({ ...review, collectionId: personalCollection.id })
+        new Review({ ...review, collectionId: originCollection.id })
       );
     };
 
@@ -276,7 +408,7 @@ export class CollectionService implements ICollectionService {
 
       if (
         tags.some(
-          (tag) => tag?.collectionId.value !== personalCollection.id.value
+          (tag) => tag?.collectionId.value !== originCollection.id.value
         )
       ) {
         return err(new TagNotFoundError());
@@ -298,7 +430,7 @@ export class CollectionService implements ICollectionService {
     const conflictReviews: Review[] = [];
     for (const filmId of conflictingFilmsIds) {
       const review = await this.reviewRepository.getReviewOnFilm(
-        collection.id,
+        originCollection.id,
         new Id(filmId)
       );
 

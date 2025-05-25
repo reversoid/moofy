@@ -14,7 +14,7 @@ import {
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
-import { array, z } from "zod";
+import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
 import {
   makeCollectionDto,

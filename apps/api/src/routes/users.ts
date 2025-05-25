@@ -331,29 +331,17 @@ export const userRoute = new Hono()
     }
   )
   .get(
-    "/:id/personal-collection/reviews",
+    "/:id/to-watch-collection",
     validator("param", z.object({ id: z.coerce.number().int().positive() })),
-    validator(
-      "query",
-      z.object({
-        cursor: z.string().optional(),
-        search: z.string().optional(),
-        limit: z.coerce.number().int().min(1).max(100).default(20),
-      })
-    ),
     async (c) => {
       const { id: userId } = c.req.valid("param");
-      const { limit, cursor, search } = c.req.valid("query");
-
       const collectionService = c.get("collectionService");
-      const reviewService = c.get("reviewService");
-
-      const user = c.get("session")?.user;
+      const currentUser = c.get("session")?.user;
 
       const collectionResult =
-        await collectionService.getOrCreatePersonalCollection({
+        await collectionService.getOrCreateToWatchCollection({
           userId: new Id(userId),
-          by: user?.id,
+          by: currentUser?.id,
         });
 
       if (collectionResult.isErr()) {
@@ -371,19 +359,6 @@ export const userRoute = new Hono()
 
       const collection = collectionResult.value;
 
-      const reviewsResult = await reviewService.getCollectionReviews({
-        collectionId: collection.id,
-        limit,
-        cursor,
-        by: user?.id,
-        search,
-      });
-
-      const reviews = reviewsResult.unwrap();
-
-      return c.json(
-        { reviews: withPaginatedData(makeReviewDto)(reviews) },
-        200
-      );
+      return c.json({ collection: makeCollectionDto(collection) }, 200);
     }
   );

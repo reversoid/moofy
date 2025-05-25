@@ -14,7 +14,7 @@ import {
 } from "./errors";
 import { PaginatedData } from "../../utils/pagination";
 import { Id } from "../../utils";
-import { Review } from "../../entities";
+import { Review, WatchableReview } from "../../entities";
 import { TagNotFoundError } from "../tag";
 
 export type CreateCollectionDto = {
@@ -151,7 +151,21 @@ export interface ICollectionService {
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
-      | PersonalCollectionNotFoundError
+      | CollectionNotFoundError
+      | UserNotFoundError
+      | TagNotFoundError
+      | NotOwnerOfCollectionError
+    >
+  >;
+
+  fillToWatchCollectionWithOtherCollection(props: {
+    userId: Id;
+    collectionId: Id;
+    tagsIds: Id[];
+    isWatchedCriteria: "score" | "desc" | "score_desc";
+  }): Promise<
+    Result<
+      { conflictReviews: Review[]; addedReviews: WatchableReview[] },
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError

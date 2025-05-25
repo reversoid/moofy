@@ -14,9 +14,11 @@ import {
   makeCollectionDto,
   makeReviewDto,
   makeUserDto,
+  makeWatchableReviewDto,
   withPaginatedData,
 } from "../utils/make-dto";
 import { validator } from "../utils/validator";
+import { raise } from "@repo/core/sdk";
 
 export const profileRoute = new Hono()
   .use(authMiddleware)
@@ -124,13 +126,6 @@ export const profileRoute = new Hono()
       if (fillResult.isErr()) {
         const error = fillResult.error;
 
-        if (error instanceof PersonalCollectionNotFoundError) {
-          return c.json(
-            { error: "PERSONAL_COLLECTION_NOT_FOUND" as const },
-            404
-          );
-        }
-
         if (error instanceof CollectionNotFoundError) {
           return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
         }
@@ -142,11 +137,9 @@ export const profileRoute = new Hono()
         if (error instanceof NotOwnerOfCollectionError) {
           return c.json({ error: "FORBIDDEN" as const }, 409);
         }
-
-        throw error;
       }
 
-      const { addedReviews, conflictReviews } = fillResult.value;
+      const { addedReviews, conflictReviews } = fillResult.unwrap();
 
       return c.json(
         {
@@ -172,4 +165,87 @@ export const profileRoute = new Hono()
     const collection = collectionResult.unwrap();
 
     return c.json({ collection: makeCollectionDto(collection) }, 200);
-  });
+  })
+  .get("/to-watch-collection", async (c) => {
+    const {
+      user: { id },
+    } = c.get("session")!;
+    const collectionService = c.get("collectionService");
+
+    const collectionResult =
+      await collectionService.getOrCreatePersonalCollection({
+        userId: id,
+        by: id,
+      });
+
+    const collection = collectionResult.unwrap();
+
+    return c.json({ collection: makeCollectionDto(collection) }, 200);
+  })
+  .post(
+    "/to-watch-collection/merge",
+    validator(
+      "json",
+      z.object({
+        collectionId: z.number().int().positive(),
+        assignTagsIds: z.array(z.number().int().positive()),
+        isWatchedCriteria: z
+          .array(z.enum(["score", "description"]))
+          .min(1)
+          .max(2),
+      })
+    ),
+    authMiddleware,
+    async (c) => {
+      const user = c.get("session")!.user;
+      const collectionService = c.get("collectionService");
+      const { collectionId, assignTagsIds, isWatchedCriteria } =
+        c.req.valid("json");
+
+      const hasScoreCriteria = isWatchedCriteria.includes("score");
+      const hasDescCriteria = isWatchedCriteria.includes("description");
+
+      const fillResult =
+        await collectionService.fillToWatchCollectionWithOtherCollection({
+          userId: user.id,
+          collectionId: new Id(collectionId),
+          tagsIds: assignTagsIds.map((tId) => new Id(tId)),
+          isWatchedCriteria:
+            hasScoreCriteria && hasDescCriteria
+              ? "score_desc"
+              : hasScoreCriteria
+                ? "score"
+                : hasDescCriteria
+                  ? "desc"
+                  : raise(
+                      "Have neither score and desc criteria? Something bad happenned"
+                    ),
+        });
+
+      if (fillResult.isErr()) {
+        const error = fillResult.error;
+
+        if (error instanceof CollectionNotFoundError) {
+          return c.json({ error: "COLLECTION_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof TagNotFoundError) {
+          return c.json({ error: "TAG_NOT_FOUND" as const }, 404);
+        }
+
+        if (error instanceof NotOwnerOfCollectionError) {
+          return c.json({ error: "FORBIDDEN" as const }, 409);
+        }
+      }
+
+      const { addedReviews, conflictReviews } = fillResult.unwrap();
+
+      return c.json(
+        {
+          addedReviews: addedReviews.map(makeWatchableReviewDto),
+          conflictReviews: conflictReviews.map(makeReviewDto),
+        },
+        200
+      );
+    }
+  );
