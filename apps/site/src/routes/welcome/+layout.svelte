@@ -15,9 +15,9 @@
 
 	<div class="mt-6">
 		<TabsLinkList>
+			<TabsLinkTrigger ariaLabel="Суперколлекции" href="super">Суперколлекции</TabsLinkTrigger>
 			<TabsLinkTrigger ariaLabel="Мои коллекции" href="collections">Мои коллекции</TabsLinkTrigger>
 			<TabsLinkTrigger ariaLabel="Избранное" href="favorites">Избранное</TabsLinkTrigger>
-			<TabsLinkTrigger ariaLabel="Суперколлекции" href="super">Суперколлекции</TabsLinkTrigger>
 		</TabsLinkList>
 	</div>
 

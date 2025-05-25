@@ -15,3 +15,5 @@ export * from "./changelog-view.repository";
 export * from "./user-preferences.repository";
 export * from "./personal-collection.repository";
 export * from "./roadmap.repository";
+export * from "./watched-review.repository";
+export * from "./to-watch-collection.repository";

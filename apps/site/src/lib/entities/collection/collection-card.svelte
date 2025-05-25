@@ -23,11 +23,13 @@
 			<div class="flex items-center justify-between gap-2">
 				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
 					<div class="flex w-full items-center gap-2">
-						{#if collection.isPersonal}
+						{#if collection.type === 'personal'}
 							<IconMushroom class="flex-shrink-0" size={20} />
 						{/if}
 
-						{collection.isPersonal ? `Обзоры ${collection.creator.username}` : collection.name}
+						{collection.type === 'personal'
+							? `Обзоры ${collection.creator.username}`
+							: collection.name}
 					</div>
 				</Card.Title>
 

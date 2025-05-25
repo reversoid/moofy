@@ -14,7 +14,7 @@ export class Collection extends Entity {
   createdAt: Date;
   updatedAt: Date;
   creator: User;
-  isPersonal: boolean;
+  type: "default" | "personal" | "watch";
 
   constructor(props: {
     id?: Id;
@@ -25,7 +25,7 @@ export class Collection extends Entity {
     createdAt?: Date;
     updatedAt?: Date;
     creator: User;
-    isPersonal?: boolean;
+    type?: "default" | "personal" | "watch";
   }) {
     super();
 
@@ -37,6 +37,6 @@ export class Collection extends Entity {
     this.createdAt = props.createdAt ?? new Date();
     this.updatedAt = props.updatedAt ?? new Date();
     this.creator = props.creator;
-    this.isPersonal = props.isPersonal ?? false;
+    this.type = props.type ?? "default";
   }
 }

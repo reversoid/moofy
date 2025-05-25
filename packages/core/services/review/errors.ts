@@ -24,8 +24,14 @@ export class NotOwnerOfReviewError extends CoreError {
   }
 }
 
-export class NoAccessToCollectionError extends CoreError {
+export class FilmAlreadyWatched extends CoreError {
   constructor() {
-    super("No Access To Collection");
+    super("Film Is Already Watched");
+  }
+}
+
+export class FilmIsNotWatched extends CoreError {
+  constructor() {
+    super("Film Is Not Watched");
   }
 }

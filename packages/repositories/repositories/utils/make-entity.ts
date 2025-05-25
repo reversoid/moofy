@@ -41,6 +41,7 @@ export const makeCollection = (
   rawData: CollectionSelects.CollectionSelectResult &
     UserSelects.UserSelectResult & {
       personalCollectionId: number | null;
+      toWatchCollectionId: number | null;
     }
 ): Collection => {
   return new Collection({
@@ -52,7 +53,11 @@ export const makeCollection = (
     imageUrl: rawData["c-imageUrl"],
     createdAt: rawData["c-createdAt"],
     updatedAt: rawData["c-updatedAt"],
-    isPersonal: Boolean(rawData.personalCollectionId),
+    type: rawData.personalCollectionId
+      ? "personal"
+      : rawData.toWatchCollectionId
+        ? "watch"
+        : "default",
   });
 };
 

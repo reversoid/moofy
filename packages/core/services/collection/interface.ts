@@ -9,7 +9,6 @@ import {
   AlreadyLikedCollectionError,
   NotLikedCollectionError,
   PersonalCollectionExistsError,
-  PersonalCollectionNotFoundError,
   DeleteLinkedPersonalCollectionError,
 } from "./errors";
 import { PaginatedData } from "../../utils/pagination";
@@ -137,6 +136,13 @@ export interface ICollectionService {
     Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
   >;
 
+  getOrCreateToWatchCollection(props: {
+    userId: Id;
+    by?: Id;
+  }): Promise<
+    Result<Collection, UserNotFoundError | NoAccessToPrivateCollectionError>
+  >;
+
   fillPersonalCollectionWithOtherCollection(props: {
     userId: Id;
     collectionId: Id;
@@ -144,7 +150,6 @@ export interface ICollectionService {
   }): Promise<
     Result<
       { conflictReviews: Review[]; addedReviews: Review[] },
-      | PersonalCollectionNotFoundError
       | CollectionNotFoundError
       | UserNotFoundError
       | TagNotFoundError
@@ -152,9 +157,18 @@ export interface ICollectionService {
     >
   >;
 
-  deletePersonalCollection(props: {
+  fillToWatchCollectionWithOtherCollection(props: {
     userId: Id;
+    collectionId: Id;
+    tagsIds: Id[];
+    isWatchedCriteria: "score" | "desc" | "score_desc";
   }): Promise<
-    Result<null, UserNotFoundError | PersonalCollectionNotFoundError>
+    Result<
+      { conflictReviews: Review[]; addedReviews: Review[]; watched: boolean[] },
+      | CollectionNotFoundError
+      | UserNotFoundError
+      | TagNotFoundError
+      | NotOwnerOfCollectionError
+    >
   >;
 }

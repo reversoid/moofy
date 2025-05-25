@@ -37,6 +37,7 @@ export class PersonalCollectionRepository extends IPersonalCollectionRepository 
     return makeCollection({
       ...collection,
       personalCollectionId: collection["c-id"],
+      toWatchCollectionId: null,
     });
   }
 

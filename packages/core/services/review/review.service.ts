@@ -8,9 +8,11 @@ import {
   ReviewOnFilmExistsError,
   ReviewNotFoundError,
   NotOwnerOfReviewError,
-  NoAccessToCollectionError,
+  FilmAlreadyWatched,
+  FilmIsNotWatched,
 } from "./errors";
 import {
+  ChangeWatchedStatusProps,
   CreateReviewDto,
   EditReviewDto,
   IReviewService,
@@ -23,10 +25,11 @@ import { ICollectionService } from "../collection/interface";
 import {
   NoAccessToPrivateCollectionError,
   CollectionNotFoundError,
+  NotOwnerOfCollectionError,
 } from "../collection";
 import { FilmType, User } from "../../entities";
 import { UserNotFoundError } from "../user";
-import { IUserRepository } from "../../repositories";
+import { IUserRepository, IWatchedReviewRepository } from "../../repositories";
 
 export class ReviewService implements IReviewService {
   constructor(
@@ -34,8 +37,81 @@ export class ReviewService implements IReviewService {
     private readonly filmService: IFilmService,
     private readonly filmProvider: IFilmProvider,
     private readonly collectionService: ICollectionService,
-    private readonly userRepository: IUserRepository
+    private readonly userRepository: IUserRepository,
+    private readonly watchedReviewRepository: IWatchedReviewRepository
   ) {}
+
+  areWatched(reviews: Review[]): Promise<boolean[]> {
+    return this.watchedReviewRepository.areWatched(reviews);
+  }
+
+  async changeWatchedStatus(
+    props: ChangeWatchedStatusProps
+  ): Promise<
+    Result<
+      null,
+      | ReviewNotFoundError
+      | UserNotFoundError
+      | NotOwnerOfReviewError
+      | FilmAlreadyWatched
+      | FilmIsNotWatched
+    >
+  > {
+    // TODO make better access checks
+
+    const reviewResult = await this.getReview({ id: props.id, by: props.by });
+    if (reviewResult.isErr()) {
+      const error = reviewResult.error;
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(error);
+      }
+    }
+
+    const review = reviewResult.unwrap();
+
+    if (!review) {
+      return err(new ReviewNotFoundError());
+    }
+
+    const toWatchCollectionResult =
+      await this.collectionService.getOrCreateToWatchCollection({
+        userId: review.userId,
+        by: props.by,
+      });
+
+    if (toWatchCollectionResult.isErr()) {
+      const error = toWatchCollectionResult.error;
+      if (error instanceof UserNotFoundError) {
+        return err(error);
+      }
+
+      if (error instanceof NoAccessToPrivateCollectionError) {
+        return err(error);
+      }
+    }
+
+    const toWatchCollection = toWatchCollectionResult.unwrap();
+
+    if (toWatchCollection.creator.id.value !== props.by.value) {
+      return err(new NotOwnerOfReviewError());
+    }
+
+    const [isWatched] = await this.areWatched([review]);
+
+    if (props.isWatched && isWatched) {
+      return err(new FilmAlreadyWatched());
+    } else if (!props.isWatched && !isWatched) {
+      return err(new FilmIsNotWatched());
+    }
+
+    if (props.isWatched) {
+      await this.watchedReviewRepository.create(review.id);
+    } else {
+      await this.watchedReviewRepository.delete(review.id);
+    }
+
+    return ok(null);
+  }
 
   async getFilmTypes(props: {
     collectionId: Collection["id"];
@@ -150,7 +226,7 @@ export class ReviewService implements IReviewService {
       | FilmNotFoundError
       | ReviewOnFilmExistsError
       | CollectionNotFoundError
-      | NoAccessToCollectionError
+      | NotOwnerOfCollectionError
     >
   > {
     const user = await this.userRepository.get(props.by);
@@ -168,7 +244,7 @@ export class ReviewService implements IReviewService {
       const error = collectionResult.unwrapErr();
 
       if (error instanceof NoAccessToPrivateCollectionError) {
-        return err(new NoAccessToCollectionError());
+        return err(new NotOwnerOfCollectionError());
       }
 
       throw error;
@@ -181,7 +257,7 @@ export class ReviewService implements IReviewService {
     }
 
     if (collection.creator.id.value !== props.by.value) {
-      return err(new NoAccessToCollectionError());
+      return err(new NotOwnerOfCollectionError());
     }
 
     const reviewOnFilm = await this.reviewRepository.getReviewOnFilmByKpId(
@@ -280,7 +356,7 @@ export class ReviewService implements IReviewService {
     filters?: ReviewFilters;
   }): Promise<
     Result<
-      PaginatedData<Review>,
+      { reviews: PaginatedData<Review>; collection: Collection },
       CollectionNotFoundError | NoAccessToPrivateCollectionError
     >
   > {
@@ -323,7 +399,10 @@ export class ReviewService implements IReviewService {
         },
       });
 
-      return ok({ items: reviews, cursor: null });
+      return ok({
+        reviews: { items: reviews, cursor: null },
+        collection,
+      });
     }
 
     const reviews = await this.reviewRepository.getCollectionReviews({
@@ -343,9 +422,10 @@ export class ReviewService implements IReviewService {
       },
     });
 
-    return ok(reviews);
+    return ok({ reviews, collection });
   }
 
+  // TODO should it return "uncheckedAccess object? So we check if we really need"
   async getReview(props: {
     id: Id;
     by?: User["id"];
