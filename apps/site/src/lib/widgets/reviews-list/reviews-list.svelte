@@ -19,6 +19,7 @@
 		defaultEmptyDescription: string;
 		canEdit?: boolean;
 		collection: CollectionDto;
+		watchedIds?: Set<ReviewDto['id']>;
 	}
 
 	let {
@@ -29,7 +30,8 @@
 		defaultEmptyDescription,
 		canEdit,
 		tags,
-		collection
+		collection,
+		watchedIds
 	}: Props = $props();
 
 	let isLoading = $state(false);

@@ -9,7 +9,16 @@
 	// TODO: this is just a copy from profile page, can we make it shared?
 	const specialCollections = $derived(
 		(data.personalCollection
-			? [{ ...data.personalCollection, name: `Обзоры ${data.personalCollection.creator.username}` }]
+			? [
+					{
+						...data.personalCollection,
+						name: `Все обзоры ${data.personalCollection.creator.username}`
+					},
+					{
+						...data.toWatchCollection,
+						name: `Посмотреть`
+					}
+				]
 			: []
 		)
 			.filter((v) => !!v)

@@ -6,6 +6,8 @@
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import { makeClient } from '$lib/shared/utils';
 	import MoveUpReview from './move-up-review.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import { IconCheck } from '@tabler/icons-svelte';
 
 	interface Props {
 		existingReview: ReviewDto;
@@ -74,6 +76,8 @@
 </script>
 
 <div class="flex gap-2">
+	<Button variant="outline" size="icon"><IconCheck /></Button>
+
 	<Dialog.Root bind:open={isOpen}>
 		<Dialog.Trigger class="grow">
 			<EditReviewButton />

@@ -20,12 +20,21 @@
 	import type { PageProps } from './$types';
 	import type { ReviewFilters } from '$lib/features/filter-reviews';
 
+	function getWatchedIds(flags: boolean[], reviews: ReviewDto[]): Set<ReviewDto['id']> {
+		if (flags.length !== reviews.length) {
+			return new Set<ReviewDto['id']>();
+		}
+
+		return new Set<ReviewDto['id']>(reviews.filter((_, index) => flags[index]).map((r) => r.id));
+	}
+
 	const { data }: PageProps = $props();
 
 	let collection = $state(data.collection);
 	let reviews = $state(data.reviews);
 	let socials = $state(data.socials);
 	let tags = $state(data.tags);
+	let watchedIds = $state(data.watched && getWatchedIds(data.watched, data.reviews.items));
 
 	const isOwner = $derived(collection.creator.id === data.user?.id);
 
@@ -106,7 +115,11 @@
 
 <svelte:head>
 	<title
-		>{collection.type === 'personal' ? `Коллекция ${collection.creator.username}` : collection.name}
+		>{collection.type === 'personal'
+			? `Все обзоры ${collection.creator.username}`
+			: collection.type === 'watch'
+				? 'Посмотреть'
+				: collection.name}
 		| Moofy</title
 	>
 </svelte:head>
@@ -117,6 +130,8 @@
 			Обзоры <Link href="/profiles/{collection.creator.username}"
 				>{collection.creator.username}</Link
 			>
+		{:else if collection.type === 'watch'}
+			Посмотреть
 		{:else}
 			{collection.name}
 		{/if}
@@ -260,6 +275,7 @@
 			defaultEmptyDescription={isOwner
 				? 'Вы можете добавить обзор в эту коллекцию'
 				: 'Эта коллекция пуста'}
+			{watchedIds}
 		/>
 	</div>
 </Wrapper>

@@ -4,15 +4,21 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ fetch }) => {
 	const api = makeClient(fetch);
 
-	const personalCollectionResponse = await api.profile['personal-collection'].$get();
+	const [personalCollectionResponse, toWatchCollectionResponse] = await Promise.all([
+		api.profile['personal-collection'].$get(),
+		api.profile['to-watch-collection'].$get()
+	]);
 
-	if (!personalCollectionResponse.ok) {
+	if (!personalCollectionResponse.ok || !toWatchCollectionResponse) {
 		throw new Error();
 	}
 
-	const { collection: personalCollection } = await personalCollectionResponse.json();
+	const [{ collection: personalCollection }, { collection: toWatchCollection }] = await Promise.all(
+		[personalCollectionResponse.json(), toWatchCollectionResponse.json()]
+	);
 
 	return {
-		personalCollection
+		personalCollection,
+		toWatchCollection
 	};
 };
