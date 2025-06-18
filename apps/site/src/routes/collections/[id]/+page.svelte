@@ -19,6 +19,8 @@
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import type { ReviewFilters } from '$lib/features/filter-reviews';
+	import { CollectionNameBuilder } from '$lib/shared/utils/collection-name-builder';
+	import CollectionName from '$lib/shared/utils/collection-name.svelte';
 
 	function getWatchedIds(flags: boolean[], reviews: ReviewDto[]): Set<ReviewDto['id']> {
 		if (flags.length !== reviews.length) {
@@ -114,27 +116,16 @@
 </script>
 
 <svelte:head>
-	<title
-		>{collection.type === 'personal'
-			? `Все обзоры ${collection.creator.username}`
-			: collection.type === 'watch'
-				? 'Посмотреть'
-				: collection.name}
-		| Moofy</title
-	>
+	<title>{new CollectionNameBuilder(collection).toString()} | Moofy</title>
 </svelte:head>
 
 <Wrapper>
 	<Heading>
-		{#if collection.type === 'personal'}
-			Обзоры <Link href="/profiles/{collection.creator.username}"
-				>{collection.creator.username}</Link
-			>
-		{:else if collection.type === 'watch'}
-			Посмотреть
-		{:else}
-			{collection.name}
-		{/if}
+		<CollectionName
+			{collection}
+			wrapperComponent={Link}
+			wrapperProps={{ href: `/profiles/${collection.creator.username}` }}
+		/>
 	</Heading>
 
 	<div
