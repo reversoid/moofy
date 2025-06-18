@@ -76,7 +76,7 @@
 </script>
 
 <div class="flex gap-2">
-	<Button variant="outline" size="icon"><IconCheck /></Button>
+	<Button variant="default" size="icon"><IconCheck /></Button>
 
 	<Dialog.Root bind:open={isOpen}>
 		<Dialog.Trigger class="grow">
