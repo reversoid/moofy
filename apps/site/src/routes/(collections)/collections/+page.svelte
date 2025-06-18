@@ -1,16 +1,19 @@
 <script lang="ts">
 	import { makeClient } from '$lib/shared/utils';
 	import { CollectionsGrid } from '$lib/widgets/collections-grid';
+	import type { CollectionDto } from '@repo/api/dtos';
 	import type { PageProps } from './$types';
+	import Heading from '$lib/shared/ui/heading.svelte';
+	import CreateCollection from '$lib/features/collection/create-collection.svelte';
 
-	const { data }: PageProps = $props();
+	let { data }: PageProps = $props();
 
-	const collections = $state(data.favorites);
+	const collections = $state(data.collections);
 
 	async function loadCollections(cursor?: string) {
 		const api = makeClient(fetch);
 
-		const response = await api.favorites.$get({ query: { cursor } });
+		const response = await api.profile.collections.$get({ query: { cursor } });
 
 		if (!response.ok) {
 			return;
@@ -18,10 +21,10 @@
 
 		const { collections: newCollections } = await response.json();
 
-		if (cursor) {
-			collections.items.unshift(...newCollections.items);
-		} else {
+		if (!cursor) {
 			collections.items = newCollections.items;
+		} else {
+			collections.items.push(...newCollections.items);
 		}
 
 		collections.cursor = newCollections.cursor;
@@ -35,7 +38,7 @@
 
 		const api = makeClient(fetch);
 
-		const response = await api.favorites.$get({ query: { search } });
+		const response = await api.profile.collections.$get({ query: { search } });
 
 		if (!response.ok) {
 			return;
@@ -46,12 +49,21 @@
 		collections.items = newCollections.items;
 		collections.cursor = null;
 	}
+
+	function addCollection(collection: CollectionDto) {
+		collections.items.unshift(collection);
+	}
 </script>
 
+<div class="flex justify-between">
+	<Heading class="mb-6">Мои коллекции</Heading>
+	<CreateCollection onCollectionCreated={addCollection} />
+</div>
+
 <CollectionsGrid
+	defaultEmptyDescription="У вас пока нет коллекций"
+	onSearch={searchCollections}
 	collections={collections.items}
 	cursor={collections.cursor}
 	onLoadMore={loadCollections}
-	onSearch={searchCollections}
-	defaultEmptyDescription="Вы можете добавить коллекции в избранное, чтобы они отображались здесь"
-/>
+></CollectionsGrid>

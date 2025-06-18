@@ -8,7 +8,6 @@
 	import type { PageProps } from './$types';
 	import { makeClient } from '$lib/shared/utils';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import CreateCollectionCard from '$lib/features/collection/create-collection-card.svelte';
 	import { FollowButton } from '$lib/features/profile';
 	import { Button } from '$lib/components/ui/button';
 	import Image from '$lib/shared/ui/image.svelte';
@@ -22,24 +21,6 @@
 	let collections = $state(data.collections);
 
 	let favoriteCollections = $state(data.favoriteCollections);
-
-	let specialCollectionsSearch = $state('');
-
-	// TODO can the name be better? Is it possible to make a shared name builder for personalCollection?
-	const specialCollections = $derived(
-		(data.personalCollection
-			? [{ ...data.personalCollection, name: `Обзоры ${data.personalCollection.creator.username}` }]
-			: []
-		)
-			.filter((v) => !!v)
-			.filter(
-				(c) =>
-					c.description
-						?.toLocaleLowerCase()
-						?.includes(specialCollectionsSearch.toLocaleLowerCase()) ||
-					c.name.toLocaleLowerCase().includes(specialCollectionsSearch.toLocaleLowerCase())
-			)
-	);
 
 	async function searchCollections(search: string) {
 		const api = makeClient(fetch);
@@ -71,10 +52,6 @@
 				cursor: newCollections.cursor
 			};
 		}
-	}
-
-	async function handleCollectionCreated(collection: CollectionDto) {
-		collections.items.unshift(collection);
 	}
 
 	async function searchFavoriteCollections(search: string) {
@@ -162,19 +139,6 @@
 		</div>
 
 		<div class="flex flex-col gap-8">
-			{#if data.personalCollection}
-				<div class="flex flex-col gap-4">
-					<Heading type="h2">Суперколлекции</Heading>
-					<CollectionsGrid
-						onSearch={async (v) => {
-							specialCollectionsSearch = v;
-						}}
-						collections={specialCollections}
-						defaultEmptyDescription=""
-					/>
-				</div>
-			{/if}
-
 			<div class="flex flex-col gap-4">
 				<Heading type="h2">Коллекции</Heading>
 				<CollectionsGrid
@@ -186,13 +150,7 @@
 					disableAutoLoad
 					onSearch={searchCollections}
 					onLoadMore={loadCollections}
-				>
-					{#snippet firstCard()}
-						{#if isOwner}
-							<CreateCollectionCard onCollectionCreated={handleCollectionCreated} />
-						{/if}
-					{/snippet}
-				</CollectionsGrid>
+				></CollectionsGrid>
 			</div>
 
 			{#if favoriteCollections}

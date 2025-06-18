@@ -21,7 +21,7 @@
 
 			if (form.valid && action.user) {
 				setCurrentUser(action.user);
-				return goto('/welcome/super', { replaceState: true });
+				return goto('/collections', { replaceState: true });
 			}
 
 			if (form.message) {

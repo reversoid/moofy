@@ -68,7 +68,7 @@
 	}
 
 	function handleCollectionDeleted() {
-		goto('/welcome/collections');
+		goto('/collections');
 	}
 
 	async function filterReviews({

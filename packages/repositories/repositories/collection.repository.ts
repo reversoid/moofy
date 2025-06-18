@@ -3,7 +3,6 @@ import { ICollectionRepository } from "@repo/core/repositories";
 import {
   Creatable,
   Id,
-  makeCursorFromDate,
   makeCursorFromNumber,
   makeNumberFromCursor,
   PaginatedData,
@@ -96,7 +95,6 @@ export class CollectionRepository extends ICollectionRepository {
 
     let query = this.getSelectQuery()
       .where("collections.userId", "=", userId.value)
-      .where("personalCollections.id", "is", null)
       .orderBy("collections.reversePosition", "desc")
       .limit(limit + 1);
 

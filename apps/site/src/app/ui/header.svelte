@@ -22,7 +22,8 @@
 		<div class="flex items-center gap-5">
 			{#if globalState.currentUser}
 				<div class="flex items-center gap-3 max-sm:hidden">
-					<Link href="/welcome/super">Мои коллекции</Link>
+					<Link href="/collections">Мои коллекции</Link>
+					<Link href="/favorites">Избранное</Link>
 					<Link href="/search/profiles">Поиск</Link>
 				</div>
 
