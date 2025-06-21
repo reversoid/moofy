@@ -10,6 +10,7 @@
 				if (!r.ok) {
 					return;
 				}
+
 				const { hasNewUpdates } = await r.json();
 
 				if (!hasNewUpdates) {

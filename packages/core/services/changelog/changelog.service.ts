@@ -52,7 +52,7 @@ export class ChangelogService implements IChangelogService {
       return false;
     }
 
-    const notifyFeature = notifyUpdateTypes.reduce(
+    const notifyMap = notifyUpdateTypes.reduce(
       (acc, v) => {
         const newBugfix = v === NotifyUpdateType.bugfix;
         const newFeature = v === NotifyUpdateType.feature;
@@ -77,14 +77,14 @@ export class ChangelogService implements IChangelogService {
         return true;
       }
 
-      cl.releaseDate > lastSeenAt;
+      return cl.releaseDate > lastSeenAt;
     });
 
     for (const changelog of unseenChangelogs) {
       if (
-        (changelog.hasBugfix && notifyFeature.bugfix) ||
-        (changelog.hasFeature && notifyFeature.feature) ||
-        (changelog.hasImprovement && notifyFeature.improvement)
+        (changelog.hasBugfix && notifyMap.bugfix) ||
+        (changelog.hasFeature && notifyMap.feature) ||
+        (changelog.hasImprovement && notifyMap.improvement)
       ) {
         return true;
       }
