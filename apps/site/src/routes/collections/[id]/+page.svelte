@@ -15,7 +15,7 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconDeviceTv, IconMushroom, IconUser } from '@tabler/icons-svelte';
+	import { IconDeviceTv, IconUser } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import type { ReviewFilters } from '$lib/features/filter-reviews';
@@ -60,9 +60,13 @@
 			return;
 		}
 
-		const { reviews: newReviews } = await response.json();
+		const { reviews: newReviews, watched } = await response.json();
 		reviews.items = [...reviews.items, ...newReviews.items];
 		reviews.cursor = newReviews.cursor;
+
+		for (const watchedId of getWatchedIds(watched!, newReviews.items)) {
+			watchedIds?.add(watchedId);
+		}
 	}
 
 	function handleReviewCreated(review: ReviewDto) {
