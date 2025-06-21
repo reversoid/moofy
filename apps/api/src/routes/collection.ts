@@ -4,7 +4,6 @@ import {
   CollectionNotFoundError,
   DeleteLinkedPersonalCollectionError,
   FilmNotFoundError,
-  NoAccessToCollectionError,
   NoAccessToPrivateCollectionError,
   NotLikedCollectionError,
   NotOwnerOfCollectionError,
@@ -15,7 +14,7 @@ import {
 } from "@repo/core/services";
 import { Id } from "@repo/core/utils";
 import { Hono } from "hono";
-import { array, z } from "zod";
+import { z } from "zod";
 import { authMiddleware } from "../utils/auth-middleware";
 import {
   makeCollectionDto,
@@ -409,8 +408,18 @@ export const collectionRoute = new Hono()
         throw error;
       }
 
-      const reviews = result.unwrap();
-      return c.json({ reviews: withPaginatedData(makeReviewDto)(reviews) });
+      const { reviews, collection } = result.unwrap();
+
+      let watched: boolean[] | undefined;
+
+      if (collection.type === "watch") {
+        watched = await reviewService.areWatched(reviews.items);
+      }
+
+      return c.json({
+        reviews: withPaginatedData(makeReviewDto)(reviews),
+        watched,
+      });
     }
   )
   .get(
@@ -521,7 +530,7 @@ export const collectionRoute = new Hono()
           return c.json({ error: "REVIEW_ON_FILM_EXISTS" as const }, 409);
         }
 
-        if (error instanceof NoAccessToCollectionError) {
+        if (error instanceof NotOwnerOfCollectionError) {
           return c.json({ error: "FORBIDDEN" as const }, 403);
         }
 

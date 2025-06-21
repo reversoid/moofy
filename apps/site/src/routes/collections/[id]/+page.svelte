@@ -15,10 +15,23 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconMushroom } from '@tabler/icons-svelte';
+	import { IconDeviceTv, IconMushroom, IconUser } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import type { ReviewFilters } from '$lib/features/filter-reviews';
+	import { CollectionNameBuilder } from '$lib/shared/utils/collection-name-builder';
+	import CollectionName from '$lib/shared/utils/collection-name.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
+
+	function getWatchedIds(flags: boolean[], reviews: ReviewDto[]): SvelteSet<ReviewDto['id']> {
+		if (flags.length !== reviews.length) {
+			return new SvelteSet<ReviewDto['id']>();
+		}
+
+		return new SvelteSet<ReviewDto['id']>(
+			reviews.filter((_, index) => flags[index]).map((r) => r.id)
+		);
+	}
 
 	const { data }: PageProps = $props();
 
@@ -26,6 +39,7 @@
 	let reviews = $state(data.reviews);
 	let socials = $state(data.socials);
 	let tags = $state(data.tags);
+	let watchedIds = $state(data.watched && getWatchedIds(data.watched, data.reviews.items));
 
 	const isOwner = $derived(collection.creator.id === data.user?.id);
 
@@ -59,7 +73,7 @@
 	}
 
 	function handleCollectionDeleted() {
-		goto('/welcome/collections');
+		goto('/collections');
 	}
 
 	async function filterReviews({
@@ -105,20 +119,16 @@
 </script>
 
 <svelte:head>
-	<title
-		>{collection.isPersonal ? `Коллекция ${collection.creator.username}` : collection.name} | Moofy</title
-	>
+	<title>{new CollectionNameBuilder(collection).toString()} | Moofy</title>
 </svelte:head>
 
 <Wrapper>
 	<Heading>
-		{#if collection.isPersonal}
-			Обзоры <Link href="/profiles/{collection.creator.username}"
-				>{collection.creator.username}</Link
-			>
-		{:else}
-			{collection.name}
-		{/if}
+		<CollectionName
+			{collection}
+			wrapperComponent={Link}
+			wrapperProps={{ href: `/profiles/${collection.creator.username}` }}
+		/>
 	</Heading>
 
 	<div
@@ -199,9 +209,9 @@
 		</Card.Root>
 	</div>
 
-	{#if collection.isPersonal}
+	{#if collection.type === 'personal'}
 		<Alert.Root class="mt-2">
-			<IconMushroom size={20} />
+			<IconUser size={20} />
 			<Alert.Title>О коллекции</Alert.Title>
 			<Alert.Description>
 				Это <b>персональная коллекция</b>.
@@ -225,12 +235,38 @@
 		</Alert.Root>
 	{/if}
 
+	{#if collection.type === 'watch'}
+		<Alert.Root class="mt-2">
+			<IconDeviceTv size={20} />
+			<Alert.Title>О коллекции</Alert.Title>
+			<Alert.Description>
+				Это <b>watch коллекция</b>.
+				{#if isOwner}
+					Здесь Вы можете отслеживать свои просмотренные фильмы и сериалы.
+
+					<br />
+
+					{#if collection.isPublic}
+						Данная коллекция отображается в профиле.
+					{:else}
+						Чтобы коллекция была видна в профиле, необходимо сделать ее публичной.
+					{/if}
+				{:else}
+					<!-- TODO maybe make link builder? -->
+					Здесь <Link href="/profiles/{collection.creator.username}"
+						>{collection.creator.username}</Link
+					> отслеживает просмотренные фильмы и сериалы.
+				{/if}
+			</Alert.Description>
+		</Alert.Root>
+	{/if}
+
 	<div class="mt-6 flex items-center justify-between gap-4">
 		<Heading type="h2">Обзоры</Heading>
 
 		{#if isOwner}
 			<div class="flex gap-2">
-				{#if collection.isPersonal}
+				{#if collection.type === 'personal'}
 					<ImportReviews
 						{tags}
 						onAddedReviews={(newReviews) =>
@@ -259,6 +295,7 @@
 			defaultEmptyDescription={isOwner
 				? 'Вы можете добавить обзор в эту коллекцию'
 				: 'Эта коллекция пуста'}
+			{watchedIds}
 		/>
 	</div>
 </Wrapper>

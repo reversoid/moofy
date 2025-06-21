@@ -38,7 +38,7 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Trigger class="w-full">
+	<Dialog.Trigger class="ring-0">
 		<CreateCollectionButton />
 	</Dialog.Trigger>
 	<Dialog.Content>

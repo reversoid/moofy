@@ -66,7 +66,13 @@ export class FavoriteCollectionRepository
         "personalCollections.collectionId",
         "collections.id"
       )
+      .leftJoin(
+        "toWatchCollections",
+        "toWatchCollections.collectionId",
+        "collections.id"
+      )
       .select("personalCollections.id as personalCollectionId")
+      .select("toWatchCollections.id as toWatchCollectionId")
       .where("favoriteCollections.userId", "=", userId.value)
       .where((eb) =>
         eb.or([

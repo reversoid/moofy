@@ -84,7 +84,7 @@
 
 <div class="mt-2">
 	<form id="collection-form" class="flex flex-col gap-2 pb-4" use:enhance>
-		{#if !collection?.isPersonal}
+		{#if collection?.type === 'default'}
 			<Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}
@@ -174,7 +174,7 @@
 </div>
 
 <Dialog.Footer class="flex flex-row items-center gap-3 max-sm:flex-col">
-	{#if type === 'edit' && !collection?.isPersonal}
+	{#if type === 'edit' && collection?.type === 'default'}
 		<DeleteButton
 			onDelete={onDeleteWithLoading}
 			isLoading={isDeleting}

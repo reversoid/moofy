@@ -6,6 +6,7 @@
 	import type { ReviewDto, TagDto } from '@repo/api/dtos';
 	import { makeClient } from '$lib/shared/utils';
 	import MoveUpReview from './move-up-review.svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		existingReview: ReviewDto;
@@ -13,6 +14,7 @@
 		onReviewUpdated: (review: ReviewDto) => void;
 		onReviewDeleted: (reviewId: ReviewDto['id']) => void;
 		onMoveTop: (id: ReviewDto['id']) => void;
+		children?: Snippet;
 	}
 
 	let {
@@ -20,7 +22,8 @@
 		onReviewUpdated,
 		onReviewDeleted,
 		tags,
-		onMoveTop
+		onMoveTop,
+		children
 	}: Props = $props();
 
 	let isOpen = $state(false);
@@ -74,6 +77,8 @@
 </script>
 
 <div class="flex gap-2">
+	{@render children?.()}
+
 	<Dialog.Root bind:open={isOpen}>
 		<Dialog.Trigger class="grow">
 			<EditReviewButton />

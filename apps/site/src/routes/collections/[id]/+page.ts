@@ -40,16 +40,18 @@ export const load: PageLoad = async ({ fetch, params: { id } }) => {
 		throw new Error('Reviews, socials or tags returned error');
 	}
 
-	const { collection } = await collectionResponse.json();
-
-	const { reviews } = await reviewsResponse.json();
-	const { socials } = await socialsResponse.json();
-	const { tags } = await tagsResponse.json();
+	const [{ collection }, { reviews, watched }, { socials }, { tags }] = await Promise.all([
+		collectionResponse.json(),
+		reviewsResponse.json(),
+		socialsResponse.json(),
+		tagsResponse.json()
+	]);
 
 	return {
 		collection,
 		reviews,
 		socials,
-		tags
+		tags,
+		watched
 	};
 };

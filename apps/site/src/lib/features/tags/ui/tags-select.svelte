@@ -13,7 +13,7 @@
 	let selectedTags = $derived(tags.filter((t) => selectedTagsIds.includes(String(t.id))));
 </script>
 
-<Select.Root bind:value={selectedTagsIds} type="multiple">
+<Select.Root bind:value={selectedTagsIds} type="multiple" disabled={!tags.length}>
 	<Select.Trigger class="gap-2">
 		<div class="flex grow flex-row items-center justify-between gap-2">
 			<span>Выберите теги</span>

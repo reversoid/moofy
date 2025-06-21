@@ -3,7 +3,11 @@
 	import { IconPlus } from '@tabler/icons-svelte';
 </script>
 
-<Button tag="div" class="w-full">
+<Button size="icon" tag="div" class="flex sm:hidden">
+	<IconPlus />
+</Button>
+
+<Button tag="div" class="hidden sm:flex">
 	<IconPlus />
 	<span>Создать</span>
 </Button>

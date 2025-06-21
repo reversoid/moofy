@@ -41,7 +41,7 @@ export const makeCollectionDto = (collection: Collection) => ({
   createdAt: makeDateDto(collection.createdAt),
   updatedAt: makeDateDto(collection.updatedAt),
   creator: makeUserDto(collection.creator),
-  isPersonal: collection.isPersonal,
+  type: collection.type,
 });
 
 export const makeFilmTypeDto = (filmType: FilmType) =>
@@ -65,6 +65,7 @@ export const makeProviderFilmDto = (film: ProviderFilmDto) => ({
   posterUrl: film.posterUrl,
   type: film.type,
   year: film.year,
+  genres: film.genres,
 });
 
 export const makeTagDto = (tag: Tag) => ({

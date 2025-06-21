@@ -4,7 +4,14 @@
 	import { AuthButton } from '$lib/entities/auth';
 	import { globalState, setCurrentUser } from '$lib/shared/state';
 	import { makeClient } from '$lib/shared/utils';
-	import { IconList, IconLogout2, IconSearch, IconSettings, IconUser } from '@tabler/icons-svelte';
+	import {
+		IconBookmark,
+		IconList,
+		IconLogout2,
+		IconSearch,
+		IconSettings,
+		IconUser
+	} from '@tabler/icons-svelte';
 
 	const sidebar = Sidebar.useSidebar();
 
@@ -18,8 +25,13 @@
 		},
 		{
 			title: 'Мои коллекции',
-			url: '/welcome/collections',
+			url: '/collections',
 			icon: IconList
+		},
+		{
+			title: 'Избранное',
+			url: '/favorites',
+			icon: IconBookmark
 		},
 		{
 			title: 'Поиск',

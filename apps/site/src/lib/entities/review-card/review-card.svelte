@@ -1,12 +1,12 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import Link from '$lib/shared/ui/link.svelte';
 	import { Badge } from '$lib/components/ui/badge';
+	import * as Card from '$lib/components/ui/card';
+	import Image from '$lib/shared/ui/image.svelte';
+	import Link from '$lib/shared/ui/link.svelte';
+	import { cn } from '$lib/shared/utils';
 	import type { ReviewDto } from '@repo/api/dtos';
 	import type { Snippet } from 'svelte';
-	import Image from '$lib/shared/ui/image.svelte';
 	import { Tag } from '../Tag';
-	import { cn } from '$lib/shared/utils';
 
 	interface Props {
 		review: ReviewDto;
@@ -22,7 +22,7 @@
 			<Image
 				src={review.film.posterPreviewUrl}
 				alt="Film '{review.film.name}' poster"
-				class="aspect-[2/3] h-40 rounded-sm object-cover max-sm:h-44"
+				class={cn('aspect-[2/3] h-40 rounded-sm object-cover max-sm:h-44')}
 			/>
 
 			{#if review.score}

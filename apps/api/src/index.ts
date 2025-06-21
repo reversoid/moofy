@@ -45,6 +45,8 @@ import {
   UserPreferencesRepository,
   PersonalCollectionRepository,
   RoadmapItemsRepository,
+  ToWatchCollectionRepository,
+  WatchedReviewRepository,
 } from "@repo/repositories";
 import { withEntityCheck } from "./utils/check-entity";
 import { ISessionService, IUserService } from "@repo/core/services";
@@ -96,6 +98,8 @@ const changelogViewRepository = new ChangelogViewRepository();
 const preferencesRepository = new UserPreferencesRepository();
 const personalCollectionRepository = new PersonalCollectionRepository();
 const roadmapItemsRepository = new RoadmapItemsRepository();
+const toWatchCollectionRepository = new ToWatchCollectionRepository();
+const watchedReviewRepository = new WatchedReviewRepository();
 
 // Services
 const userService = new UserService(userRepository);
@@ -109,7 +113,9 @@ const collectionService = new CollectionService(
   personalCollectionRepository,
   reviewRepository,
   reviewTagRepository,
-  collectionTagRepository
+  collectionTagRepository,
+  toWatchCollectionRepository,
+  watchedReviewRepository
 );
 
 const filmService = new FilmService(filmRepository);
@@ -128,7 +134,8 @@ const reviewService = new ReviewService(
   filmService,
   filmProvider,
   collectionService,
-  userRepository
+  userRepository,
+  watchedReviewRepository
 );
 const imageService = new ImageService();
 const tagService = new TagService(
@@ -154,6 +161,7 @@ const roadmapService = new RoadmapService(roadmapItemsRepository);
 
 const api = new Hono()
   .use(async (c, next) => {
+    // TODO maybe just use imports, not DI?
     c.set("userService", userService);
     c.set("sessionService", sessionService);
     c.set("collectionService", collectionService);

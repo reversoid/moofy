@@ -5,8 +5,6 @@
 	import * as Select from '$lib/components/ui/select';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import { TagsSelect } from '$lib/features/tags';
-	import * as Alert from '$lib/components/ui/alert';
-	import { IconPercentage0 } from '@tabler/icons-svelte';
 
 	type Props = {
 		selectedCollectionId: string | undefined;
@@ -51,7 +49,8 @@
 </script>
 
 <p class="text-muted-foreground text-sm">
-	Будут импортированы только видимые обзоры с оценкой описанием
+	Будут импортированы только видимые обзоры с оценкой и описанием. <br /> Новым обзорам будут присвоены
+	выбранные теги при наличии.
 </p>
 
 <div class="mt-3 flex flex-col gap-4">

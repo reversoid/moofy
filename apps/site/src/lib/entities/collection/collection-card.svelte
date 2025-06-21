@@ -2,11 +2,11 @@
 	import * as Card from '$lib/components/ui/card';
 	import Image from '$lib/shared/ui/image.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
+	import CollectionName from '$lib/shared/utils/collection-name.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconArrowUp, IconMushroom } from '@tabler/icons-svelte';
+	import { IconDeviceTv, IconUser } from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
 
 	interface Props {
 		collection: CollectionDto;
@@ -23,11 +23,15 @@
 			<div class="flex items-center justify-between gap-2">
 				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
 					<div class="flex w-full items-center gap-2">
-						{#if collection.isPersonal}
+						<!-- {#if collection.type === 'personal'}
 							<IconMushroom class="flex-shrink-0" size={20} />
 						{/if}
 
-						{collection.isPersonal ? `Обзоры ${collection.creator.username}` : collection.name}
+						{#if collection.type === 'watch'}
+							<IconCircleCheck class="flex-shrink-0" size={20} />
+						{/if} -->
+
+						<CollectionName {collection} />
 					</div>
 				</Card.Title>
 
@@ -44,7 +48,20 @@
 			</Card.Description>
 		</Card.Header>
 
-		<Card.Content>
+		<Card.Content class="relative">
+			{#if collection.type === 'watch'}
+				<IconDeviceTv
+					class="absolute left-[50%] top-[50%] w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
+					size={'100%'}
+				/>
+			{/if}
+
+			{#if collection.type === 'personal'}
+				<IconUser
+					class="absolute left-[50%] top-[50%] w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
+					size={'100%'}
+				/>
+			{/if}
 			{#if collection.imageUrl}
 				<Image
 					class="aspect-[4/3] w-full rounded-md object-cover"
