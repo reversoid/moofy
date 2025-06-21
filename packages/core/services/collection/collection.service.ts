@@ -738,6 +738,20 @@ export class CollectionService implements ICollectionService {
 
     const isOwnerRequest = props.userId.value === props.by?.value;
 
+    // TODO is there a better way to ensure supercollections are created?
+    if (isOwnerRequest) {
+      await Promise.all([
+        this.getOrCreatePersonalCollection({
+          userId: props.userId,
+          by: props.by,
+        }),
+        this.getOrCreateToWatchCollection({
+          userId: props.userId,
+          by: props.by,
+        }),
+      ]);
+    }
+
     if (props.search) {
       const collections = await this.collectionRepository.searchCollections(
         props.search,

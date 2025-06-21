@@ -51,14 +51,14 @@
 		<Card.Content class="relative">
 			{#if collection.type === 'watch'}
 				<IconDeviceTv
-					class="absolute left-[50%] top-[50%] w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
+					class="absolute left-[50%] top-[50%] z-10 w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
 					size={'100%'}
 				/>
 			{/if}
 
 			{#if collection.type === 'personal'}
 				<IconUser
-					class="absolute left-[50%] top-[50%] w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
+					class="absolute left-[50%] top-[50%] z-10 w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
 					size={'100%'}
 				/>
 			{/if}
