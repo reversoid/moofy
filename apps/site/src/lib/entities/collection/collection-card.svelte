@@ -4,7 +4,13 @@
 	import Link from '$lib/shared/ui/link.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import { IconCircleCheck, IconMushroom } from '@tabler/icons-svelte';
+	import {
+		IconCircleCheck,
+		IconDeviceTv,
+		IconMushroom,
+		IconSquareCheck,
+		IconUser
+	} from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
 	import { globalState } from '$lib/shared/state';
 	import CollectionName from '$lib/shared/utils/collection-name.svelte';
@@ -28,13 +34,13 @@
 			<div class="flex items-center justify-between gap-2">
 				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
 					<div class="flex w-full items-center gap-2">
-						{#if collection.type === 'personal'}
+						<!-- {#if collection.type === 'personal'}
 							<IconMushroom class="flex-shrink-0" size={20} />
 						{/if}
 
 						{#if collection.type === 'watch'}
 							<IconCircleCheck class="flex-shrink-0" size={20} />
-						{/if}
+						{/if} -->
 
 						<CollectionName {collection} />
 					</div>
@@ -53,7 +59,20 @@
 			</Card.Description>
 		</Card.Header>
 
-		<Card.Content>
+		<Card.Content class="relative">
+			{#if collection.type === 'watch'}
+				<IconDeviceTv
+					class="absolute left-[50%] top-[50%] w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
+					size={'100%'}
+				/>
+			{/if}
+
+			{#if collection.type === 'personal'}
+				<IconUser
+					class="absolute left-[50%] top-[50%] w-[30%] flex-shrink-0 translate-x-[-50%] translate-y-[-50%] opacity-90"
+					size={'100%'}
+				/>
+			{/if}
 			{#if collection.imageUrl}
 				<Image
 					class="aspect-[4/3] w-full rounded-md object-cover"
