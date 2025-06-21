@@ -2,18 +2,11 @@
 	import * as Card from '$lib/components/ui/card';
 	import Image from '$lib/shared/ui/image.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
+	import CollectionName from '$lib/shared/utils/collection-name.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
-	import {
-		IconCircleCheck,
-		IconDeviceTv,
-		IconMushroom,
-		IconSquareCheck,
-		IconUser
-	} from '@tabler/icons-svelte';
+	import { IconDeviceTv, IconUser } from '@tabler/icons-svelte';
 	import PrivateTooltip from './private-tooltip.svelte';
-	import { globalState } from '$lib/shared/state';
-	import CollectionName from '$lib/shared/utils/collection-name.svelte';
 
 	interface Props {
 		collection: CollectionDto;
@@ -22,10 +15,6 @@
 	const { collection }: Props = $props();
 
 	const href = $derived(`/collections/${collection.id}`);
-
-	const user = globalState.currentUser;
-
-	const isOwner = user?.id === collection.creator.id;
 </script>
 
 <Link {href} class="block h-full">
