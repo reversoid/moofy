@@ -81,9 +81,10 @@
 	type Props = {
 		tags: TagDto[];
 		onAddedReviews: (reviews: ReviewDto[]) => void;
+		type: 'personal' | 'watch';
 	};
 
-	const { tags, onAddedReviews }: Props = $props();
+	const { tags, onAddedReviews, type }: Props = $props();
 
 	async function handleSubmit() {
 		if (!selectedCollectionId) {
@@ -94,12 +95,23 @@
 
 		isLoading = true;
 
-		const result = await api.profile['personal-collection'].merge.$post({
-			json: {
-				collectionId: Number(selectedCollectionId),
-				assignTagsIds: selectedTagsIds.map(Number)
-			}
-		});
+		let result;
+		if (type === 'personal') {
+			result = await api.profile['personal-collection'].merge.$post({
+				json: {
+					collectionId: Number(selectedCollectionId),
+					assignTagsIds: selectedTagsIds.map(Number)
+				}
+			});
+		} else {
+			result = await api.profile['to-watch-collection'].merge.$post({
+				json: {
+					collectionId: Number(selectedCollectionId),
+					assignTagsIds: selectedTagsIds.map(Number),
+					isWatchedCriteria: ['score']
+				}
+			});
+		}
 
 		isLoading = false;
 
@@ -109,8 +121,6 @@
 		}
 
 		const { addedReviews, conflictReviews } = await result.json();
-
-		console.log({ addedReviews, conflictReviews });
 
 		onAddedReviews(addedReviews);
 
@@ -143,7 +153,7 @@
 		</Dialog.Header>
 
 		<div class="py-4">
-			<ImportReviewsModal {tags} bind:selectedCollectionId bind:selectedTagsIds />
+			<ImportReviewsModal {type} {tags} bind:selectedCollectionId bind:selectedTagsIds />
 		</div>
 
 		<Dialog.Footer>

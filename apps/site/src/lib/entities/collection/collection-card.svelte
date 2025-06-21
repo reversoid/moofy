@@ -62,6 +62,7 @@
 					size={'100%'}
 				/>
 			{/if}
+
 			{#if collection.imageUrl}
 				<Image
 					class="aspect-[4/3] w-full rounded-md object-cover"

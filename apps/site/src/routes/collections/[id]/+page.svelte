@@ -22,6 +22,7 @@
 	import { CollectionNameBuilder } from '$lib/shared/utils/collection-name-builder';
 	import CollectionName from '$lib/shared/utils/collection-name.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
+	import type { PaginatedData } from '$lib/shared/utils/types';
 
 	function getWatchedIds(flags: boolean[], reviews: ReviewDto[]): SvelteSet<ReviewDto['id']> {
 		if (flags.length !== reviews.length) {
@@ -116,6 +117,20 @@
 			param: { collectionId: String(collection.id) }
 		});
 	});
+
+	function handleImportedReviews(newReviews: ReviewDto[]) {
+		reviews.items.unshift(
+			...newReviews.toSorted(
+				(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+			)
+		);
+
+		if (collection.type === 'watch') {
+			for (const reviewWithScore of newReviews.filter((r) => r.score)) {
+				watchedIds?.add(reviewWithScore.id);
+			}
+		}
+	}
 </script>
 
 <svelte:head>
@@ -266,16 +281,8 @@
 
 		{#if isOwner}
 			<div class="flex gap-2">
-				{#if collection.type === 'personal'}
-					<ImportReviews
-						{tags}
-						onAddedReviews={(newReviews) =>
-							reviews.items.unshift(
-								...newReviews.toSorted(
-									(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-								)
-							)}
-					/>
+				{#if collection.type === 'personal' || collection.type === 'watch'}
+					<ImportReviews type={collection.type} {tags} onAddedReviews={handleImportedReviews} />
 				{/if}
 
 				<CreateReview collectionId={collection.id} onReviewCreated={handleReviewCreated} />

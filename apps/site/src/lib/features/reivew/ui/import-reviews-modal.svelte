@@ -5,14 +5,21 @@
 	import * as Select from '$lib/components/ui/select';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import { TagsSelect } from '$lib/features/tags';
+	import { onMount } from 'svelte';
 
 	type Props = {
 		selectedCollectionId: string | undefined;
 		selectedTagsIds: string[];
 		tags: TagDto[];
+		type: 'personal' | 'watch';
 	};
 
-	let { selectedCollectionId = $bindable(), selectedTagsIds = $bindable(), tags }: Props = $props();
+	let {
+		selectedCollectionId = $bindable(),
+		selectedTagsIds = $bindable(),
+		tags,
+		type
+	}: Props = $props();
 
 	let allCollections = $state<CollectionDto[]>([]);
 	let selectedCollection = $derived(
@@ -43,14 +50,19 @@
 		return collections;
 	}
 
-	$effect(() => {
+	onMount(() => {
 		getAllCollections().then((v) => (allCollections = v));
 	});
 </script>
 
 <p class="text-muted-foreground text-sm">
-	Будут импортированы только видимые обзоры с оценкой и описанием. <br /> Новым обзорам будут присвоены
-	выбранные теги при наличии.
+	{#if type === 'personal'}
+		Будут импортированы только видимые обзоры с оценкой и описанием. <br /> Новым обзорам будут присвоены
+		выбранные теги при наличии.
+	{:else}
+		Будут импортированы все обзоры, а обзоры с описанием будут помечены как просмотренные. <br /> Новым
+		обзорам будут присвоены выбранные теги при наличии.
+	{/if}
 </p>
 
 <div class="mt-3 flex flex-col gap-4">
