@@ -15,7 +15,7 @@
 	import { ReviewsList } from '$lib/widgets/reviews-list';
 	import type { CollectionDto, ReviewDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
-	import { IconMushroom } from '@tabler/icons-svelte';
+	import { IconDeviceTv, IconMushroom, IconUser } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import type { ReviewFilters } from '$lib/features/filter-reviews';
@@ -211,7 +211,7 @@
 
 	{#if collection.type === 'personal'}
 		<Alert.Root class="mt-2">
-			<IconMushroom size={20} />
+			<IconUser size={20} />
 			<Alert.Title>О коллекции</Alert.Title>
 			<Alert.Description>
 				Это <b>персональная коллекция</b>.
@@ -230,6 +230,32 @@
 					Здесь <Link href="/profiles/{collection.creator.username}"
 						>{collection.creator.username}</Link
 					> хранит свои обзоры
+				{/if}
+			</Alert.Description>
+		</Alert.Root>
+	{/if}
+
+	{#if collection.type === 'watch'}
+		<Alert.Root class="mt-2">
+			<IconDeviceTv size={20} />
+			<Alert.Title>О коллекции</Alert.Title>
+			<Alert.Description>
+				Это <b>watch коллекция</b>.
+				{#if isOwner}
+					Здесь Вы можете отслеживать свои просмотренные фильмы и сериалы.
+
+					<br />
+
+					{#if collection.isPublic}
+						Данная коллекция отображается в профиле.
+					{:else}
+						Чтобы коллекция была видна в профиле, необходимо сделать ее публичной.
+					{/if}
+				{:else}
+					<!-- TODO maybe make link builder? -->
+					Здесь <Link href="/profiles/{collection.creator.username}"
+						>{collection.creator.username}</Link
+					> отслеживает просмотренные фильмы и сериалы.
 				{/if}
 			</Alert.Description>
 		</Alert.Root>
