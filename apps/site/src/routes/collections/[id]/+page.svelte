@@ -21,13 +21,16 @@
 	import type { ReviewFilters } from '$lib/features/filter-reviews';
 	import { CollectionNameBuilder } from '$lib/shared/utils/collection-name-builder';
 	import CollectionName from '$lib/shared/utils/collection-name.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 
-	function getWatchedIds(flags: boolean[], reviews: ReviewDto[]): Set<ReviewDto['id']> {
+	function getWatchedIds(flags: boolean[], reviews: ReviewDto[]): SvelteSet<ReviewDto['id']> {
 		if (flags.length !== reviews.length) {
-			return new Set<ReviewDto['id']>();
+			return new SvelteSet<ReviewDto['id']>();
 		}
 
-		return new Set<ReviewDto['id']>(reviews.filter((_, index) => flags[index]).map((r) => r.id));
+		return new SvelteSet<ReviewDto['id']>(
+			reviews.filter((_, index) => flags[index]).map((r) => r.id)
+		);
 	}
 
 	const { data }: PageProps = $props();

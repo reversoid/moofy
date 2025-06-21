@@ -2,13 +2,14 @@
 	import * as Alert from '$lib/components/ui/alert';
 	import { ReviewCard } from '$lib/entities/review-card';
 	import { FilterReviews, type ReviewFilters } from '$lib/features/filter-reviews';
-	import { EditReview } from '$lib/features/reivew';
+	import { EditReview, IsWatchedButton } from '$lib/features/reivew';
 	import LoadMoreButton from '$lib/shared/ui/load-more-button.svelte';
 	import Search from '$lib/shared/ui/search.svelte';
 	import type { CollectionDto, ReviewDto, TagDto } from '@repo/api/dtos';
 	import { IconPercentage0 } from '@tabler/icons-svelte';
 	import { flip } from 'svelte/animate';
 	import { watch } from 'runed';
+	import type { SvelteSet } from 'svelte/reactivity';
 
 	interface Props {
 		reviews: ReviewDto[];
@@ -19,7 +20,7 @@
 		defaultEmptyDescription: string;
 		canEdit?: boolean;
 		collection: CollectionDto;
-		watchedIds?: Set<ReviewDto['id']>;
+		watchedIds?: SvelteSet<ReviewDto['id']>;
 	}
 
 	let {
@@ -142,7 +143,21 @@
 								onReviewUpdated={handleReviewUpdated}
 								onReviewDeleted={handleReviewDeleted}
 								onMoveTop={handleReviewMovedTop}
-							/>
+							>
+								{#if collection.type === 'watch'}
+									<IsWatchedButton
+										reviewId={review.id}
+										isWatched={watchedIds?.has(review.id) ?? false}
+										onIsWatchedChange={(newIsWatched) => {
+											if (newIsWatched) {
+												watchedIds?.add(review.id);
+											} else {
+												watchedIds?.delete(review.id);
+											}
+										}}
+									/>
+								{/if}
+							</EditReview>
 						{/if}
 					{/snippet}
 				</ReviewCard>

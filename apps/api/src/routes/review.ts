@@ -158,7 +158,7 @@ export const reviewRoute = new Hono()
       }
 
       const updatedReview = result.unwrap();
-      return c.json({ review: makeReviewDto(updatedReview) });
+      return c.json({ review: makeReviewDto(updatedReview) }, 200);
     }
   )
   .put(

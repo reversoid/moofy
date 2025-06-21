@@ -65,6 +65,7 @@ export const makeProviderFilmDto = (film: ProviderFilmDto) => ({
   posterUrl: film.posterUrl,
   type: film.type,
   year: film.year,
+  genres: film.genres,
 });
 
 export const makeTagDto = (tag: Tag) => ({
