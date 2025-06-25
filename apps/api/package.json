@@ -9,6 +9,7 @@
     "@repo/core": "workspace:*",
     "@repo/film-providers": "workspace:*",
     "@repo/repositories": "workspace:*",
+    "@simplewebauthn/server": "^13.1.1",
     "hono": "^4.7.2"
   },
   "devDependencies": {

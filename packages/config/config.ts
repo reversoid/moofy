@@ -13,6 +13,8 @@ if (!workspaceDir) {
 dotenv.config({ path: path.join(workspaceDir, ".env") });
 
 const schema = {
+  API_SIGNATURE_KEY: z.string(),
+
   ENV: z.enum(["development", "staging", "production"]),
 
   UNOFFICIAL_KP_API_KEYS: z.string().transform((v) => v.split(",")),
@@ -32,6 +34,9 @@ const schema = {
   S3_ACCESS_KEY_ID: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),
   S3_BUCKET_NAME: z.string(),
-};
+} as const;
 
-export default parseEnv(process.env, schema);
+const _ = z.object(schema);
+type Schema = z.infer<typeof _>;
+
+export default parseEnv(process.env, schema) as Schema;
