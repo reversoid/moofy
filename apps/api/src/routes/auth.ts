@@ -7,7 +7,9 @@ import { UsernameExistsError } from "@repo/core/services";
 import { makeUserDto } from "../utils/make-dto";
 import {
   AuthenticatorTransportFuture,
+  generateAuthenticationOptions,
   generateRegistrationOptions,
+  verifyAuthenticationResponse,
   verifyRegistrationResponse,
 } from "@simplewebauthn/server";
 import { authMiddleware } from "../utils/auth-middleware";
@@ -20,60 +22,84 @@ const rpID = "localhost";
 
 const origin = `http://localhost:3000`;
 
-// TODO: get registration + auth options
-// TODO verify reg and auth response
-
 const transportsSchema = z.array(
   z.enum(["ble", "cable", "hybrid", "internal", "nfc", "smart-card", "usb"])
 );
 
-const optionsSchema = z.object({
-  attestation: z.string().optional(),
-  authenticatorSelection: z
-    .object({
-      authenticatorAttachment: z
-        .enum(["cross-platform", "platform"])
-        .optional(),
-      requireResidentKey: z.boolean().optional(),
-      residentKey: z.enum(["discouraged", "preferred", "required"]).optional(),
-      userVerification: z
-        .enum(["discouraged", "preferred", "required"])
-        .optional(),
-    })
-    .optional(),
-  challenge: z.string(),
-  excludeCredentials: z
-    .array(
-      z.object({
-        id: z.string(),
-        transports: z.array(z.string()).optional(),
-        type: z.string(),
-      })
-    )
-    .optional(),
-  extensions: z.record(z.any()).optional(),
-  hints: z.array(z.string()).optional(),
-  pubKeyCredParams: z.array(
-    z.object({ alg: z.number(), type: z.literal("public-key") })
-  ),
-  rp: z.object({ id: z.string().optional(), name: z.string() }),
-  timeout: z.number().optional(),
-  user: z.object({
-    displayName: z.string(),
-    id: z.string(),
-    name: z.string(),
-  }),
-});
+const getUserPasskeys = async (userId: number) => {
+  const existingPasskeys = await db
+    .selectFrom("userPasskeys")
+    .selectAll()
+    .where("userId", "=", userId)
+    .execute();
+
+  return existingPasskeys.map((p) => ({
+    ...p,
+    transports: (p.transports ?? undefined) as
+      | AuthenticatorTransportFuture[]
+      | undefined,
+  }));
+};
+const getUserPasskey = async (passkeyId: string) => {
+  const existingPasskey = await db
+    .selectFrom("userPasskeys")
+    .selectAll()
+    .where("id", "=", passkeyId)
+    .executeTakeFirst();
+
+  return existingPasskey
+    ? {
+        ...existingPasskey,
+        transports: parseTransportsArray(existingPasskey.transports),
+      }
+    : null;
+};
+
+const createBase64UrlSignature = (data: unknown): string => {
+  return crypto
+    .createHmac("sha256", config.API_SIGNATURE_KEY)
+    .update(JSON.stringify(data))
+    .digest("base64url");
+};
+
+const verifyBase64UrlSignature = (
+  data: unknown,
+  dataSignature: string
+): boolean => {
+  const receivedDataSignatureBuffer = Uint8Array.from(
+    crypto
+      .createHmac("sha256", config.API_SIGNATURE_KEY)
+      .update(JSON.stringify(data))
+      .digest()
+  );
+
+  const expectedDataSignatureBuffer = Uint8Array.from(
+    Buffer.from(dataSignature, "base64url")
+  );
+
+  if (
+    receivedDataSignatureBuffer.length !== expectedDataSignatureBuffer.length
+  ) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(
+    receivedDataSignatureBuffer,
+    expectedDataSignatureBuffer
+  );
+};
+
+const parseTransportsArray = (
+  v: string[] | null
+): AuthenticatorTransportFuture[] | undefined => {
+  return v ? transportsSchema.parse(v) : undefined;
+};
 
 export const authRoute = new Hono()
   .get("/webauthn/registration/options", authMiddleware, async (c) => {
     const { user } = c.get("session")!;
 
-    const existingPasskeys = await db
-      .selectFrom("userPasskeys")
-      .selectAll()
-      .where("userId", "=", user.id.value)
-      .execute();
+    const existingPasskeys = await getUserPasskeys(user.id.value);
 
     const options: PublicKeyCredentialCreationOptionsJSON =
       await generateRegistrationOptions({
@@ -83,9 +109,7 @@ export const authRoute = new Hono()
         attestationType: "none",
         excludeCredentials: existingPasskeys.map((p) => ({
           id: p.id,
-          transports: (p.transports ?? undefined) as
-            | AuthenticatorTransportFuture[]
-            | undefined,
+          transports: p.transports ?? undefined,
         })),
         authenticatorSelection: {
           residentKey: "preferred",
@@ -96,10 +120,7 @@ export const authRoute = new Hono()
 
     // TODO when redis is ready, save options to redis, remove signing feature
 
-    const signature = crypto
-      .createHmac("sha256", config.API_SIGNATURE_KEY)
-      .update(JSON.stringify(options))
-      .digest("hex");
+    const signature = createBase64UrlSignature(options);
 
     return c.json({ options, signature }, 200);
   })
@@ -109,8 +130,48 @@ export const authRoute = new Hono()
     validator(
       "json",
       z.object({
-        originalOptions: optionsSchema,
-        signature: z.string(),
+        originalOptions: z.object({
+          data: z.object({
+            attestation: z.string().optional(),
+            authenticatorSelection: z
+              .object({
+                authenticatorAttachment: z
+                  .enum(["cross-platform", "platform"])
+                  .optional(),
+                requireResidentKey: z.boolean().optional(),
+                residentKey: z
+                  .enum(["discouraged", "preferred", "required"])
+                  .optional(),
+                userVerification: z
+                  .enum(["discouraged", "preferred", "required"])
+                  .optional(),
+              })
+              .optional(),
+            challenge: z.string(),
+            excludeCredentials: z
+              .array(
+                z.object({
+                  id: z.string(),
+                  transports: z.array(z.string()).optional(),
+                  type: z.string(),
+                })
+              )
+              .optional(),
+            extensions: z.record(z.any()).optional(),
+            hints: z.array(z.string()).optional(),
+            pubKeyCredParams: z.array(
+              z.object({ alg: z.number(), type: z.literal("public-key") })
+            ),
+            rp: z.object({ id: z.string().optional(), name: z.string() }),
+            timeout: z.number().optional(),
+            user: z.object({
+              displayName: z.string(),
+              id: z.string(),
+              name: z.string(),
+            }),
+          }),
+          signature: z.string(),
+        }),
         response: z.object({
           id: z.string(),
           rawId: z.string(),
@@ -133,35 +194,16 @@ export const authRoute = new Hono()
       })
     ),
     async (c) => {
-      const {
-        originalOptions,
-        signature: targetSignature,
-        response,
-      } = c.req.valid("json");
+      const { originalOptions, response } = c.req.valid("json");
 
       const { user } = c.get("session")!;
 
-      const receivedSignatureBuffer = Uint8Array.from(
-        crypto
-          .createHmac("sha256", config.API_SIGNATURE_KEY)
-          .update(JSON.stringify(originalOptions))
-          .digest()
-      );
-
-      const targetSignatureBuffer = Uint8Array.from(
-        Buffer.from(targetSignature, "hex")
-      );
-
-      if (receivedSignatureBuffer.length !== targetSignatureBuffer.length) {
-        return c.json({ error: "INVALID_SIGNATURE" }, 400);
-      }
-
-      const isValidOptions = crypto.timingSafeEqual(
-        receivedSignatureBuffer,
-        targetSignatureBuffer
-      );
-
-      if (!isValidOptions) {
+      if (
+        !verifyBase64UrlSignature(
+          originalOptions.data,
+          originalOptions.signature
+        )
+      ) {
         return c.json({ error: "INVALID_SIGNATURE" }, 400);
       }
 
@@ -171,7 +213,7 @@ export const authRoute = new Hono()
             response,
             expectedOrigin: origin,
             expectedRPID: rpID,
-            expectedChallenge: originalOptions.challenge,
+            expectedChallenge: originalOptions.data.challenge,
           }
         );
 
@@ -188,7 +230,7 @@ export const authRoute = new Hono()
               deviceType: credentialDeviceType,
               id: credential.id,
               userId: user.id.value,
-              webauthnUserId: originalOptions.user.id,
+              webauthnUserId: originalOptions.data.user.id,
               transports: credential.transports,
             })
             .execute();
@@ -204,8 +246,96 @@ export const authRoute = new Hono()
     }
   )
 
-  // .get("/webauthn/auth/options", authMiddleware, (c) => {})
-  // .post("/webauthn/auth/verify")
+  .get("/webauthn/auth/options", authMiddleware, async (c) => {
+    const { user } = c.get("session")!;
+    const userPasskeys = await getUserPasskeys(user.id.value);
+
+    const options: PublicKeyCredentialRequestOptionsJSON =
+      await generateAuthenticationOptions({
+        rpID,
+        allowCredentials: userPasskeys.map((passkey) => ({
+          id: passkey.id,
+          transports: passkey.transports,
+        })),
+      });
+
+    const signature = createBase64UrlSignature(options);
+
+    return c.json({ options, signature }, 200);
+  })
+  .post(
+    "/webauthn/auth/verify",
+    authMiddleware,
+    validator(
+      "json",
+      z.object({
+        originalOptions: z.object({
+          data: z.object({
+            challenge: z.string(),
+          }),
+          signature: z.string(),
+        }),
+        response: z.object({
+          id: z.string(),
+          rawId: z.string(),
+          response: z.object({
+            clientDataJSON: z.string(),
+            authenticatorData: z.string(),
+            signature: z.string(),
+            userHandle: z.string().optional(),
+          }),
+          authenticatorAttachment: z
+            .enum(["cross-platform", "platform"])
+            .optional(),
+          clientExtensionResults: z.object({
+            appid: z.boolean().optional(),
+            credProps: z
+              .object({
+                rk: z.boolean().optional(),
+              })
+              .optional(),
+            hmacCreateSecret: z.boolean().optional(),
+          }),
+          type: z.literal("public-key"),
+        }),
+      })
+    ),
+    async (c) => {
+      const { user } = c.get("session")!;
+      const { originalOptions, response } = c.req.valid("json");
+
+      const existingPasskey = await getUserPasskey(response.id);
+
+      if (!existingPasskey) {
+        return c.json({ error: "NO_PASSKEY" as const }, 401);
+      }
+
+      const verification = await verifyAuthenticationResponse({
+        response: response,
+        expectedChallenge: originalOptions.data.challenge,
+        expectedOrigin: origin,
+        expectedRPID: rpID,
+        credential: {
+          id: existingPasskey.id,
+          publicKey: existingPasskey.publicKey,
+          counter: existingPasskey.counter,
+          transports: existingPasskey.transports,
+        },
+      });
+
+      const { verified, authenticationInfo } = verification;
+
+      if (verified) {
+        await db
+          .updateTable("userPasskeys")
+          .set({ counter: authenticationInfo.newCounter })
+          .where("id", "=", existingPasskey.id)
+          .execute();
+      }
+
+      return c.json({ verified }, 200);
+    }
+  )
 
   .post(
     "/login",
