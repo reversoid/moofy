@@ -29,7 +29,7 @@
 
 	const { data }: PageProps = $props();
 
-	let passkeys = $derived(data.passkeys);
+	let passkeys = $state(data.passkeys);
 
 	const form = superForm(data.form, {
 		validators: zodClient(settingsSchema),

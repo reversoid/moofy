@@ -30,7 +30,7 @@
 
 		const { passkey: newPasskey } = await response.json();
 
-		passkey = newPasskey;
+		passkey.nickname = newPasskey.nickname;
 	}
 
 	async function remove() {
