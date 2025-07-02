@@ -12,6 +12,7 @@
 	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import {
 		IconFingerprint,
+		IconKey,
 		IconMushroom,
 		IconPencil,
 		IconPhoto,
@@ -32,6 +33,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Table from '$lib/components/ui/table';
+	import PasskeyItem from './passkey-item.svelte';
 
 	const { data }: PageProps = $props();
 
@@ -99,7 +101,7 @@
 
 					<Card.Content>
 						<div class="flex w-full flex-col items-center gap-5">
-							<div class="self-start">
+							<div class="self-center sm:self-start">
 								{#if $formData.imageUrl}
 									<Image
 										src={$formData.imageUrl}
@@ -206,34 +208,18 @@
 					<Card.Header>
 						<Card.Title>Вход по Passkey</Card.Title>
 						<Card.Description
-							>Вы можете входить в аккаунт без использования пароля
+							>С помощью Passkey вы можете входить в аккаунт без использования пароля
 						</Card.Description>
 					</Card.Header>
 
 					<Card.Content>
-						<Table.Root>
-							<Table.Header>
-								<Table.Row>
-									<Table.Head class="w-[150px]">Название</Table.Head>
-									<Table.Head class="w-[200px]">Дата создания</Table.Head>
-									<Table.Head class="w-[200px]">Дата использования</Table.Head>
-									<Table.Head></Table.Head>
-								</Table.Row>
-							</Table.Header>
-							<Table.Body>
-								<Table.Row>
-									<Table.Cell class="font-medium">zipzipzip</Table.Cell>
-									<Table.Cell>10.02.10</Table.Cell>
-									<Table.Cell>10.02.10</Table.Cell>
-									<Table.Cell>
-										<div class="flex justify-end gap-2">
-											<Button size="sm" variant="outline">Изменить</Button>
-											<Button size="sm" variant="destructive">Удалить</Button>
-										</div>
-									</Table.Cell>
-								</Table.Row>
-							</Table.Body>
-						</Table.Root>
+						<hr class="bg-muted" />
+
+						{#each Array.from({ length: 5 }) as p}
+							<PasskeyItem />
+
+							<hr class="bg-muted" />
+						{/each}
 					</Card.Content>
 
 					<Card.Footer>
