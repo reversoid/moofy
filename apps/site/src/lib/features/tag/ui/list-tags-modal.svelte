@@ -6,8 +6,8 @@
 	import type { CollectionDto, TagDto } from '@repo/api/dtos';
 	import { IconPencil, IconPlus } from '@tabler/icons-svelte';
 	import { toast } from 'svelte-sonner';
-	import DeleteWithConfirm from '../../collection/delete-with-confirm.svelte';
 	import EditTag from './edit-tag.svelte';
+	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
 
 	type Props = {
 		isOpen: boolean;
@@ -124,7 +124,7 @@
 									{/snippet}
 								</EditTag>
 
-								<DeleteWithConfirm onConfirmedDelete={() => deleteTag(tag.id)} />
+								<DeleteButton onDelete={() => deleteTag(tag.id)} />
 							</Table.Cell>
 						</Table.Row>
 					{/each}

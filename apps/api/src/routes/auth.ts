@@ -4,7 +4,7 @@ import z from "zod";
 import { deleteCookie, getCookie, setSignedCookie } from "hono/cookie";
 import config from "@repo/config";
 import { UsernameExistsError } from "@repo/core/services";
-import { makeUserDto } from "../utils/make-dto";
+import { makePasskeyDto, makeUserDto } from "../utils/make-dto";
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
@@ -19,6 +19,9 @@ import {
   rpName,
   getUserPasskey,
   transportsSchema,
+  parseTransportsArray,
+  updatePasskey,
+  deletePasskey,
 } from "../utils/passkeys";
 import {
   createBase64UrlSignature,
@@ -31,6 +34,10 @@ export const authRoute = new Hono()
 
     const existingPasskeys = await getUserPasskeys(user.id.value);
 
+    if (existingPasskeys.length >= 10) {
+      return c.json({ error: "TOO_MANY_PASSKEYS" }, 409);
+    }
+
     const options: PublicKeyCredentialCreationOptionsJSON =
       await generateRegistrationOptions({
         rpID,
@@ -39,7 +46,7 @@ export const authRoute = new Hono()
         attestationType: "none",
         excludeCredentials: existingPasskeys.map((p) => ({
           id: p.id,
-          transports: p.transports ?? undefined,
+          transports: parseTransportsArray(p.transports),
         })),
         authenticatorSelection: {
           residentKey: "preferred",
@@ -186,7 +193,7 @@ export const authRoute = new Hono()
         rpID,
         allowCredentials: userPasskeys.map((passkey) => ({
           id: passkey.id,
-          transports: passkey.transports,
+          transports: parseTransportsArray(passkey.transports),
         })),
       });
 
@@ -232,7 +239,6 @@ export const authRoute = new Hono()
       })
     ),
     async (c) => {
-      const { user } = c.get("session")!;
       const { originalOptions, response } = c.req.valid("json");
 
       const existingPasskey = await getUserPasskey(response.id);
@@ -250,21 +256,84 @@ export const authRoute = new Hono()
           id: existingPasskey.id,
           publicKey: existingPasskey.publicKey,
           counter: existingPasskey.counter,
-          transports: existingPasskey.transports,
+          transports: parseTransportsArray(existingPasskey.transports),
         },
       });
 
       const { verified, authenticationInfo } = verification;
 
       if (verified) {
-        await db
-          .updateTable("userPasskeys")
-          .set({ counter: authenticationInfo.newCounter })
-          .where("id", "=", existingPasskey.id)
-          .execute();
+        await updatePasskey(existingPasskey.id, {
+          counter: authenticationInfo.newCounter,
+        });
       }
 
       return c.json({ verified }, 200);
+    }
+  )
+
+  .get("/passkeys", authMiddleware, async (c) => {
+    const { user } = c.get("session")!;
+
+    const passkeys = await getUserPasskeys(user.id.value);
+
+    return c.json({ passkeys: passkeys.map(makePasskeyDto) }, 200);
+  })
+
+  .patch(
+    "/passkeys/:id",
+    validator(
+      "json",
+      z.object({
+        nickname: z.string().min(1).max(32),
+      })
+    ),
+    validator(
+      "param",
+      z.object({
+        id: z.string().min(1),
+      })
+    ),
+    authMiddleware,
+    async (c) => {
+      const { user } = c.get("session")!;
+      const { nickname } = c.req.valid("json");
+      const { id } = c.req.valid("param");
+
+      const passkey = await getUserPasskey(id);
+
+      if (passkey?.userId !== user.id.value) {
+        return c.json({ error: "PASSKEY_NOT_FOUND" }, 400);
+      }
+
+      await updatePasskey(passkey.id, { nickname });
+
+      return c.json({ passkey: makePasskeyDto({ ...passkey, nickname }) }, 200);
+    }
+  )
+
+  .delete(
+    "/passkeys/:id",
+    validator(
+      "param",
+      z.object({
+        id: z.string().min(1),
+      })
+    ),
+    authMiddleware,
+    async (c) => {
+      const { user } = c.get("session")!;
+      const { id } = c.req.valid("param");
+
+      const passkey = await getUserPasskey(id);
+
+      if (passkey?.userId !== user.id.value) {
+        return c.json({ error: "PASSKEY_NOT_FOUND" }, 400);
+      }
+
+      await deletePasskey(passkey.id);
+
+      return c.body(null, 204);
     }
   )
 

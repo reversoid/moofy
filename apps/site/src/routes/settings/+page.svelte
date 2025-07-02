@@ -2,40 +2,34 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { setCurrentUser } from '$lib/shared/state';
+	import Heading from '$lib/shared/ui/heading.svelte';
 	import Image from '$lib/shared/ui/image.svelte';
 	import UploadImage from '$lib/shared/ui/upload-image.svelte';
 	import Wrapper from '$lib/shared/ui/wrapper.svelte';
 	import {
-		IconFingerprint,
-		IconKey,
-		IconMushroom,
-		IconPencil,
-		IconPhoto,
 		IconShieldLock,
 		IconSnowman,
 		IconTrash,
 		IconUpload,
-		IconUser,
-		IconWriting,
-		IconX
+		IconUser
 	} from '@tabler/icons-svelte';
 	import { toast } from 'svelte-sonner';
 	import { superForm, type FormResult } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import type { ActionData, PageProps } from './$types';
-	import { settingsSchema } from './schema';
-	import Heading from '$lib/shared/ui/heading.svelte';
-	import * as Sidebar from '$lib/components/ui/sidebar';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Table from '$lib/components/ui/table';
 	import PasskeyItem from './passkey-item.svelte';
+	import { settingsSchema } from './schema';
+	import AddPasskeyButton from './add-passkey-button.svelte';
 
 	const { data }: PageProps = $props();
+
+	let passkeys = $derived(data.passkeys);
 
 	const form = superForm(data.form, {
 		validators: zodClient(settingsSchema),
@@ -65,8 +59,6 @@
 		const isEmpty = !$formData.username;
 		return hasErrors || isEmpty ? 'invalid' : 'valid';
 	});
-
-	const username = $derived(data.user.username);
 </script>
 
 <svelte:head>
@@ -203,7 +195,6 @@
 					<Card.Content></Card.Content>
 				</Card.Root> -->
 
-				<!-- TODO chatgpt texts -->
 				<Card.Root>
 					<Card.Header>
 						<Card.Title>Вход по Passkey</Card.Title>
@@ -215,15 +206,20 @@
 					<Card.Content>
 						<hr class="bg-muted" />
 
-						{#each Array.from({ length: 5 }) as p}
-							<PasskeyItem />
+						{#each passkeys as passkey (passkey.id)}
+							<PasskeyItem
+								{passkey}
+								onDeleted={() => {
+									passkeys = passkeys.filter((p) => p.id !== passkey.id);
+								}}
+							/>
 
 							<hr class="bg-muted" />
 						{/each}
 					</Card.Content>
 
 					<Card.Footer>
-						<Button variant="outline"><IconFingerprint /> Добавить Passkey</Button>
+						<AddPasskeyButton />
 					</Card.Footer>
 				</Card.Root>
 			</Tabs.Content>

@@ -44,7 +44,7 @@
 
 	const isOwner = $derived(collection.creator.id === data.user?.id);
 
-	const formattedUpdatedAt = $derived(dayjs(collection.updatedAt).format('DD.MM.YYYY'));
+	const formattedUpdatedAt = $derived(dayjs(collection.updatedAt).format('DD/MM/YYYY'));
 
 	// TODO maybe loadMoreLogic should be in the widget?
 	// loadMoreReview will just return promise with new data,

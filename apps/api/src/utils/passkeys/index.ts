@@ -12,6 +12,24 @@ export const transportsSchema = z.array(
   z.enum(["ble", "cable", "hybrid", "internal", "nfc", "smart-card", "usb"])
 );
 
+export const deletePasskey = async (passkeyId: string) => {
+  await db.deleteFrom("userPasskeys").where("id", "=", passkeyId).execute();
+};
+
+export const updatePasskey = async (
+  passkeyId: string,
+  values: { nickname?: string; counter?: number }
+) => {
+  const existingPasskeys = await db
+    .updateTable("userPasskeys")
+    .set({ nickname: values.nickname, counter: values.counter })
+    .where("id", "=", passkeyId)
+    .returningAll()
+    .execute();
+
+  return existingPasskeys;
+};
+
 export const getUserPasskeys = async (userId: number) => {
   const existingPasskeys = await db
     .selectFrom("userPasskeys")
@@ -19,12 +37,7 @@ export const getUserPasskeys = async (userId: number) => {
     .where("userId", "=", userId)
     .execute();
 
-  return existingPasskeys.map((p) => ({
-    ...p,
-    transports: (p.transports ?? undefined) as
-      | AuthenticatorTransportFuture[]
-      | undefined,
-  }));
+  return existingPasskeys;
 };
 
 export const getUserPasskey = async (passkeyId: string) => {
@@ -34,12 +47,7 @@ export const getUserPasskey = async (passkeyId: string) => {
     .where("id", "=", passkeyId)
     .executeTakeFirst();
 
-  return existingPasskey
-    ? {
-        ...existingPasskey,
-        transports: parseTransportsArray(existingPasskey.transports),
-      }
-    : null;
+  return existingPasskey;
 };
 
 export const parseTransportsArray = (

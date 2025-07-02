@@ -120,6 +120,7 @@ export const makeRoadmapItemDto = (roadmap: RoadmapItem) => ({
 export const makePasskeyDto = (
   passkey: kycely.Selectable<UserPasskeysTable>
 ) => ({
+  id: passkey.id,
   nickname: passkey.nickname,
   createdAt: makeDateDto(passkey.createdAt),
 });
