@@ -206,9 +206,9 @@
 					<Card.Content>
 						<hr class="bg-muted" />
 
-						{#each passkeys as passkey (passkey.id)}
+						{#each passkeys as passkey, index (passkey.id)}
 							<PasskeyItem
-								{passkey}
+								bind:passkey={passkeys[index]}
 								onDeleted={() => {
 									passkeys = passkeys.filter((p) => p.id !== passkey.id);
 								}}
