@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import DeleteButton from '$lib/shared/ui/delete-button.svelte';
+	import EditFieldDialog from '$lib/shared/ui/edit-field-dialog.svelte';
 	import { makeClient } from '$lib/shared/utils';
 	import type { PasskeyDto } from '@repo/api/dtos';
 	import { dayjs } from '@repo/core/sdk';
@@ -29,7 +30,7 @@
 
 		const { passkey: newPasskey } = await response.json();
 
-		passkey.nickname = newPasskey.nickname;
+		passkey = newPasskey;
 	}
 
 	async function remove() {
@@ -65,9 +66,17 @@
 	</div>
 
 	<div>
-		<Button type="button" size="icon" variant="outline">
-			<IconPencil />
-		</Button>
+		<EditFieldDialog
+			defaultValue={passkey.nickname}
+			description="Вы можете изменить название Вашего Passkey"
+			title="Изменить Passkey"
+			label="Название"
+			onSubmit={editName}
+		>
+			<Button tag="div" type="button" size="icon" variant="outline">
+				<IconPencil />
+			</Button>
+		</EditFieldDialog>
 
 		<DeleteButton isLoading={isDeleting} size="icon" onDelete={remove} />
 	</div>
