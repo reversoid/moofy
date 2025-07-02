@@ -1,9 +1,15 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
-	import { IconCheck, IconKey, IconPencil, IconTrash } from '@tabler/icons-svelte';
-	import { tick } from 'svelte';
+	import type { PasskeyDto } from '@repo/api/dtos';
+	import { dayjs } from '@repo/core/sdk';
+	import { IconKey, IconPencil, IconTrash } from '@tabler/icons-svelte';
 
-	type Props = {};
+	type Props = {
+		passkey?: PasskeyDto;
+	};
+
+	const { passkey = { nickname: 'New Passkey', createdAt: new Date().toISOString() } }: Props =
+		$props();
 </script>
 
 <!-- TODO open dialog -->
@@ -12,9 +18,12 @@
 		<div class="flex items-center gap-2">
 			<IconKey size={20} />
 
-			<span>Passkey 2</span>
+			<span>{passkey.nickname}</span>
 		</div>
-		<span class="text-muted-foreground text-sm">Создано 10.11.2025</span>
+
+		<span class="text-muted-foreground text-sm"
+			>Создано {dayjs(passkey.createdAt).format('DD/MM/YYYY')}</span
+		>
 	</div>
 
 	<div>
