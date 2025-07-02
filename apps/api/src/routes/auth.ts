@@ -154,6 +154,7 @@ export const authRoute = new Hono()
           await db
             .insertInto("userPasskeys")
             .values({
+              nickname: "New Passkey",
               backup: credentialBackedUp,
               counter: credential.counter,
               publicKey: credential.publicKey,

@@ -10,6 +10,7 @@ import {
   makeProviderFilmDto,
   makeRoadmapItemDto,
   makeFilmTypeDto,
+  makePasskeyDto,
 } from "./make-dto";
 
 export type TagDto = ReturnType<typeof makeTagDto>;
@@ -23,3 +24,4 @@ export type ChangelogDto = ReturnType<typeof makeChangelogDto>;
 export type PreferencesDto = ReturnType<typeof makePreferencesDto>;
 export type RoadmapItemDto = ReturnType<typeof makeRoadmapItemDto>;
 export type FilmTypeDto = ReturnType<typeof makeFilmTypeDto>;
+export type PasskeyDto = ReturnType<typeof makePasskeyDto>;

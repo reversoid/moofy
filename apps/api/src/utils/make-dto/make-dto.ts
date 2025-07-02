@@ -12,6 +12,7 @@ import {
 } from "@repo/core/entities";
 import { ProviderFilmDto } from "@repo/core/film-providers";
 import { Id, PaginatedData } from "@repo/core/utils";
+import { kycely, UserPasskeysTable } from "@repo/repositories/db";
 
 export const withPaginatedData =
   <I, O>(transformer: (entity: I) => O) =>
@@ -114,4 +115,11 @@ export const makeRoadmapItemDto = (roadmap: RoadmapItem) => ({
   orderNumber: roadmap.orderNumber,
   title: roadmap.title,
   description: roadmap.description,
+});
+
+export const makePasskeyDto = (
+  passkey: kycely.Selectable<UserPasskeysTable>
+) => ({
+  nickname: passkey.nickname,
+  createdAt: makeDateDto(passkey.createdAt),
 });

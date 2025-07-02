@@ -1,4 +1,7 @@
+import { Generated } from "kysely";
+
 export interface UserPasskeysTable {
+  nickname: string;
   id: string;
   publicKey: Uint8Array;
   userId: number;
@@ -7,4 +10,5 @@ export interface UserPasskeysTable {
   deviceType: "singleDevice" | "multiDevice";
   backup: boolean;
   transports: string[] | null;
+  createdAt: Generated<Date>;
 }
