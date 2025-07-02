@@ -6,7 +6,6 @@ import config from "@repo/config";
 import { UsernameExistsError } from "@repo/core/services";
 import { makeUserDto } from "../utils/make-dto";
 import {
-  AuthenticatorTransportFuture,
   generateAuthenticationOptions,
   generateRegistrationOptions,
   verifyAuthenticationResponse,
@@ -14,86 +13,17 @@ import {
 } from "@simplewebauthn/server";
 import { authMiddleware } from "../utils/auth-middleware";
 import { db } from "@repo/repositories/db";
-import crypto from "node:crypto";
-
-const rpName = "Moofy";
-
-const rpID = "localhost";
-
-const origin = `http://localhost:3000`;
-
-const transportsSchema = z.array(
-  z.enum(["ble", "cable", "hybrid", "internal", "nfc", "smart-card", "usb"])
-);
-
-const getUserPasskeys = async (userId: number) => {
-  const existingPasskeys = await db
-    .selectFrom("userPasskeys")
-    .selectAll()
-    .where("userId", "=", userId)
-    .execute();
-
-  return existingPasskeys.map((p) => ({
-    ...p,
-    transports: (p.transports ?? undefined) as
-      | AuthenticatorTransportFuture[]
-      | undefined,
-  }));
-};
-const getUserPasskey = async (passkeyId: string) => {
-  const existingPasskey = await db
-    .selectFrom("userPasskeys")
-    .selectAll()
-    .where("id", "=", passkeyId)
-    .executeTakeFirst();
-
-  return existingPasskey
-    ? {
-        ...existingPasskey,
-        transports: parseTransportsArray(existingPasskey.transports),
-      }
-    : null;
-};
-
-const createBase64UrlSignature = (data: unknown): string => {
-  return crypto
-    .createHmac("sha256", config.API_SIGNATURE_KEY)
-    .update(JSON.stringify(data))
-    .digest("base64url");
-};
-
-const verifyBase64UrlSignature = (
-  data: unknown,
-  dataSignature: string
-): boolean => {
-  const receivedDataSignatureBuffer = Uint8Array.from(
-    crypto
-      .createHmac("sha256", config.API_SIGNATURE_KEY)
-      .update(JSON.stringify(data))
-      .digest()
-  );
-
-  const expectedDataSignatureBuffer = Uint8Array.from(
-    Buffer.from(dataSignature, "base64url")
-  );
-
-  if (
-    receivedDataSignatureBuffer.length !== expectedDataSignatureBuffer.length
-  ) {
-    return false;
-  }
-
-  return crypto.timingSafeEqual(
-    receivedDataSignatureBuffer,
-    expectedDataSignatureBuffer
-  );
-};
-
-const parseTransportsArray = (
-  v: string[] | null
-): AuthenticatorTransportFuture[] | undefined => {
-  return v ? transportsSchema.parse(v) : undefined;
-};
+import {
+  getUserPasskeys,
+  rpID,
+  rpName,
+  getUserPasskey,
+  transportsSchema,
+} from "../utils/passkeys";
+import {
+  createBase64UrlSignature,
+  verifyBase64UrlSignature,
+} from "../utils/signature";
 
 export const authRoute = new Hono()
   .get("/webauthn/registration/options", authMiddleware, async (c) => {
