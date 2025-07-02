@@ -219,7 +219,7 @@
 					</Card.Content>
 
 					<Card.Footer>
-						<AddPasskeyButton />
+						<AddPasskeyButton onCreated={(p) => passkeys.push(p)} />
 					</Card.Footer>
 				</Card.Root>
 			</Tabs.Content>

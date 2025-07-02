@@ -11,7 +11,9 @@
 		onDeleted: () => void;
 	};
 
-	let { passkey = $bindable() }: Props = $props();
+	let { passkey = $bindable(), onDeleted }: Props = $props();
+
+	let isDeleting = $state(false);
 
 	async function editName(newNickname: string) {
 		const client = makeClient(fetch);
@@ -31,11 +33,14 @@
 	}
 
 	async function remove() {
+		isDeleting = true;
 		const client = makeClient(fetch);
 
 		const response = await client.auth.passkeys[':id'].$delete({
 			param: { id: passkey.id }
 		});
+
+		isDeleting = false;
 
 		if (!response.ok) {
 			return;
@@ -60,10 +65,10 @@
 	</div>
 
 	<div>
-		<Button size="icon" variant="outline">
+		<Button type="button" size="icon" variant="outline">
 			<IconPencil />
 		</Button>
 
-		<DeleteButton size="icon" />
+		<DeleteButton isLoading={isDeleting} size="icon" onDelete={remove} />
 	</div>
 </div>

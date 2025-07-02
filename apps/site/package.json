@@ -61,6 +61,7 @@
 	},
 	"dependencies": {
 		"@radix-ui/react-select": "^2.1.6",
+		"@simplewebauthn/browser": "^13.1.0",
 		"@tabler/icons-svelte": "^3.29.0",
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.16",

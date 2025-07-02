@@ -70,6 +70,9 @@ importers:
       '@radix-ui/react-select':
         specifier: ^2.1.6
         version: 2.1.6(react-dom@19.0.0)(react@18.3.1)
+      '@simplewebauthn/browser':
+        specifier: ^13.1.0
+        version: 13.1.0
       '@tabler/icons-svelte':
         specifier: ^3.29.0
         version: 3.29.0(svelte@5.25.3)
@@ -2681,6 +2684,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@simplewebauthn/browser@13.1.0:
+    resolution: {integrity: sha512-WuHZ/PYvyPJ9nxSzgHtOEjogBhwJfC8xzYkPC+rR/+8chl/ft4ngjiK8kSU5HtRJfczupyOh33b25TjYbvwAcg==}
+    dev: false
 
   /@simplewebauthn/server@13.1.1:
     resolution: {integrity: sha512-1hsLpRHfSuMB9ee2aAdh0Htza/X3f4djhYISrggqGe3xopNjOcePiSDkDDoPzDYaaMCrbqGP1H2TYU7bgL9PmA==}

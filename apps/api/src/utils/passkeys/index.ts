@@ -35,6 +35,7 @@ export const getUserPasskeys = async (userId: number) => {
     .selectFrom("userPasskeys")
     .selectAll()
     .where("userId", "=", userId)
+    .orderBy("createdAt asc")
     .execute();
 
   return existingPasskeys;

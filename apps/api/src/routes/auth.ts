@@ -22,11 +22,13 @@ import {
   parseTransportsArray,
   updatePasskey,
   deletePasskey,
+  origin,
 } from "../utils/passkeys";
 import {
   createBase64UrlSignature,
   verifyBase64UrlSignature,
 } from "../utils/signature";
+import { raise } from "@repo/core/sdk";
 
 export const authRoute = new Hono()
   .get("/webauthn/registration/options", authMiddleware, async (c) => {
@@ -34,8 +36,8 @@ export const authRoute = new Hono()
 
     const existingPasskeys = await getUserPasskeys(user.id.value);
 
-    if (existingPasskeys.length >= 10) {
-      return c.json({ error: "TOO_MANY_PASSKEYS" }, 409);
+    if (existingPasskeys.length >= 100) {
+      return c.json({ error: "TOO_MANY_PASSKEYS" as const }, 409);
     }
 
     const options: PublicKeyCredentialCreationOptionsJSON =
@@ -141,7 +143,7 @@ export const authRoute = new Hono()
           originalOptions.signature
         )
       ) {
-        return c.json({ error: "INVALID_SIGNATURE" }, 400);
+        return c.json({ error: "INVALID_SIGNATURE" as const }, 400);
       }
 
       try {
@@ -158,7 +160,7 @@ export const authRoute = new Hono()
           const { credential, credentialDeviceType, credentialBackedUp } =
             registrationInfo;
 
-          await db
+          const { id } = await db
             .insertInto("userPasskeys")
             .values({
               nickname: "New Passkey",
@@ -171,13 +173,22 @@ export const authRoute = new Hono()
               webauthnUserId: originalOptions.data.user.id,
               transports: credential.transports,
             })
-            .execute();
+            .returning("id")
+            .executeTakeFirstOrThrow();
+
+          const createdPasskey =
+            (await getUserPasskey(id)) ?? raise("Passkey must be created");
+
+          return c.json({ passkey: makePasskeyDto(createdPasskey) }, 200);
         }
 
-        return c.json({ verified }, 200);
+        throw new Error("Could not verify");
       } catch (e) {
         if (e instanceof Error) {
-          return c.json({ error: "BAD_VERIFY", details: e.message }, 400);
+          return c.json(
+            { error: "BAD_VERIFY" as const, details: e.message },
+            400
+          );
         }
         throw e;
       }
@@ -303,7 +314,7 @@ export const authRoute = new Hono()
       const passkey = await getUserPasskey(id);
 
       if (passkey?.userId !== user.id.value) {
-        return c.json({ error: "PASSKEY_NOT_FOUND" }, 400);
+        return c.json({ error: "PASSKEY_NOT_FOUND" as const }, 400);
       }
 
       await updatePasskey(passkey.id, { nickname });
@@ -328,7 +339,7 @@ export const authRoute = new Hono()
       const passkey = await getUserPasskey(id);
 
       if (passkey?.userId !== user.id.value) {
-        return c.json({ error: "PASSKEY_NOT_FOUND" }, 400);
+        return c.json({ error: "PASSKEY_NOT_FOUND" as const }, 400);
       }
 
       await deletePasskey(passkey.id);

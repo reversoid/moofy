@@ -7,7 +7,7 @@ CREATE TABLE user_passkeys (
     user_id INTEGER NOT NULL REFERENCES users(id),
     webauthn_user_id VARCHAR(255) NOT NULL,
     counter BIGINT NOT NULL,
-    deviceType VARCHAR(32) NOT NULL,
+    device_type VARCHAR(32) NOT NULL,
     backup BOOLEAN NOT NULL,
     transports VARCHAR(16)[],
     UNIQUE (webauthn_user_id, user_id),

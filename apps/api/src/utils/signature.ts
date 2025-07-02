@@ -1,10 +1,16 @@
 import config from "@repo/config";
 import crypto from "node:crypto";
+import { Buffer } from "node:buffer";
+
+const canonicalStringify = (v: object): string => {
+  const data = { ...v };
+  return JSON.stringify(data, Object.keys(data).sort());
+};
 
 export const createBase64UrlSignature = (data: unknown): string => {
   return crypto
     .createHmac("sha256", config.API_SIGNATURE_KEY)
-    .update(JSON.stringify(data))
+    .update(canonicalStringify(data as object))
     .digest("base64url");
 };
 
@@ -12,16 +18,12 @@ export const verifyBase64UrlSignature = (
   data: unknown,
   dataSignature: string
 ): boolean => {
-  const receivedDataSignatureBuffer = Uint8Array.from(
-    crypto
-      .createHmac("sha256", config.API_SIGNATURE_KEY)
-      .update(JSON.stringify(data))
-      .digest()
-  );
+  const receivedDataSignatureBuffer = crypto
+    .createHmac("sha256", config.API_SIGNATURE_KEY)
+    .update(canonicalStringify(data as object))
+    .digest();
 
-  const expectedDataSignatureBuffer = Uint8Array.from(
-    Buffer.from(dataSignature, "base64url")
-  );
+  const expectedDataSignatureBuffer = Buffer.from(dataSignature, "base64url");
 
   if (
     receivedDataSignatureBuffer.length !== expectedDataSignatureBuffer.length
@@ -30,7 +32,7 @@ export const verifyBase64UrlSignature = (
   }
 
   return crypto.timingSafeEqual(
-    receivedDataSignatureBuffer,
-    expectedDataSignatureBuffer
+    Uint8Array.from(receivedDataSignatureBuffer),
+    Uint8Array.from(expectedDataSignatureBuffer)
   );
 };
