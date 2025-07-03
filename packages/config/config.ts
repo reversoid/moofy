@@ -14,6 +14,9 @@ dotenv.config({ path: path.join(workspaceDir, ".env") });
 
 const schema = {
   API_SIGNATURE_KEY: z.string(),
+  API_RP_NAME: z.string().default("Moofy"),
+  API_RP_ID: z.string(),
+  API_ORIGIN: z.string(),
 
   ENV: z.enum(["development", "staging", "production"]),
 

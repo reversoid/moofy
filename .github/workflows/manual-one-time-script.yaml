@@ -25,9 +25,12 @@ jobs:
         run: |
           touch .env
 
-          echo ENV=staging >> .env
+          echo ENV=production >> .env
 
           echo COOKIE_SECRET=${{ secrets.COOKIE_SECRET }} >> .env
+          echo API_SIGNATURE_KEY=${{ secrets.API_SIGNATURE_KEY }} >> .env
+          echo API_RP_ID=moofy.ru >> .env
+          echo API_ORIGIN=https://moofy.ru >> .env
 
           echo UNOFFICIAL_KP_API_KEYS=${{ secrets.UNOFFICIAL_KP_API_KEYS }} >> .env
 

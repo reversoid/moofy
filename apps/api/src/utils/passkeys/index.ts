@@ -2,12 +2,6 @@ import { db } from "@repo/repositories/db";
 import { AuthenticatorTransportFuture } from "@simplewebauthn/server";
 import { z } from "zod";
 
-export const rpName = "Moofy";
-
-export const rpID = "localhost";
-
-export const origin = `http://localhost:3000`;
-
 export const transportsSchema = z.array(
   z.enum(["ble", "cable", "hybrid", "internal", "nfc", "smart-card", "usb"])
 );

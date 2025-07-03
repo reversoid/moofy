@@ -15,14 +15,11 @@ import { authMiddleware } from "../utils/auth-middleware";
 import { db } from "@repo/repositories/db";
 import {
   getUserPasskeys,
-  rpID,
-  rpName,
   getUserPasskey,
   transportsSchema,
   parseTransportsArray,
   updatePasskey,
   deletePasskey,
-  origin,
 } from "../utils/passkeys";
 import {
   createBase64UrlSignature,
@@ -44,8 +41,8 @@ export const authRoute = new Hono()
 
     const options: PublicKeyCredentialCreationOptionsJSON =
       await generateRegistrationOptions({
-        rpID,
-        rpName,
+        rpID: config.API_RP_ID,
+        rpName: config.API_RP_NAME,
         userName: user.username,
         attestationType: "none",
         excludeCredentials: existingPasskeys.map((p) => ({
@@ -153,7 +150,7 @@ export const authRoute = new Hono()
           {
             response,
             expectedOrigin: origin,
-            expectedRPID: rpID,
+            expectedRPID: config.API_RP_ID,
             expectedChallenge: originalOptions.data.challenge,
           }
         );
@@ -194,7 +191,7 @@ export const authRoute = new Hono()
   .get("/webauthn/auth/options", async (c) => {
     const options: PublicKeyCredentialRequestOptionsJSON =
       await generateAuthenticationOptions({
-        rpID,
+        rpID: config.API_RP_ID,
       });
 
     const signature = createBase64UrlSignature(options);
@@ -250,7 +247,7 @@ export const authRoute = new Hono()
         response: response,
         expectedChallenge: originalOptions.data.challenge,
         expectedOrigin: origin,
-        expectedRPID: rpID,
+        expectedRPID: config.API_RP_ID,
         credential: {
           id: existingPasskey.id,
           publicKey: existingPasskey.publicKey,
