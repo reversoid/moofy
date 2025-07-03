@@ -149,7 +149,7 @@ export const authRoute = new Hono()
         const { verified, registrationInfo } = await verifyRegistrationResponse(
           {
             response,
-            expectedOrigin: origin,
+            expectedOrigin: config.API_ORIGIN,
             expectedRPID: config.API_RP_ID,
             expectedChallenge: originalOptions.data.challenge,
           }
@@ -183,6 +183,10 @@ export const authRoute = new Hono()
 
         throw new Error("Could not verify");
       } catch (e) {
+        if (e instanceof Error) {
+          console.error(e.message);
+        }
+
         return c.json({ error: "BAD_VERIFY" as const }, 400);
       }
     }
@@ -246,7 +250,7 @@ export const authRoute = new Hono()
       const verification = await verifyAuthenticationResponse({
         response: response,
         expectedChallenge: originalOptions.data.challenge,
-        expectedOrigin: origin,
+        expectedOrigin: config.API_ORIGIN,
         expectedRPID: config.API_RP_ID,
         credential: {
           id: existingPasskey.id,
@@ -284,7 +288,7 @@ export const authRoute = new Hono()
         return c.json({ user: makeUserDto(user) }, 200);
       }
 
-      return c.json({ error: "BAD_VERIFY" }, 400);
+      return c.json({ error: "BAD_VERIFY" as const }, 400);
     }
   )
 
