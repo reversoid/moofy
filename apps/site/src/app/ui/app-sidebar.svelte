@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { AuthButton } from '$lib/entities/auth';
 	import { globalState, setCurrentUser } from '$lib/shared/state';
@@ -55,8 +54,8 @@
 		const response = await api.auth.logout.$post();
 
 		if (response.ok) {
-			goto('/');
 			setCurrentUser(null);
+			window.location.reload();
 		}
 	}
 </script>
@@ -88,7 +87,14 @@
 
 {#snippet LogoutButton()}
 	<Sidebar.MenuItem class="list-none">
-		<Sidebar.MenuButton onclick={logout} size="lg" class="text-lg font-medium">
+		<Sidebar.MenuButton
+			onclick={() => {
+				logout();
+				handleItemClick();
+			}}
+			size="lg"
+			class="text-lg font-medium"
+		>
 			<IconLogout2 /> <span>Выйти</span>
 		</Sidebar.MenuButton>
 	</Sidebar.MenuItem>

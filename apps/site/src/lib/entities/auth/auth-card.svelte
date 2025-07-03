@@ -66,7 +66,7 @@
 		const { user } = await verifyResponse.json();
 
 		setCurrentUser(user);
-		return goto('/collections', { replaceState: true });
+		await goto('/collections', { replaceState: true });
 	}
 </script>
 
