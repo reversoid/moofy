@@ -34,6 +34,7 @@
 
 	const isLoading = form.submitting;
 
+	let isWebauthnProcessing = $state(false);
 	async function loginWithPasskey() {
 		const client = makeClient(fetch);
 		const response = await client.auth.webauthn.auth.options.$get();
@@ -66,7 +67,7 @@
 		const { user } = await verifyResponse.json();
 
 		setCurrentUser(user);
-		await goto('/collections', { replaceState: true });
+		goto('/collections', { replaceState: true });
 	}
 </script>
 
@@ -96,9 +97,18 @@
 		</Button>
 
 		{#if type === 'login'}
-			<Button onclick={loginWithPasskey} class="w-full" type="button" variant="outline">
+			<Button
+				onclick={async () => {
+					isWebauthnProcessing = true;
+					await loginWithPasskey();
+					isWebauthnProcessing = false;
+				}}
+				class="w-full"
+				type="button"
+				variant="outline"
+			>
 				<IconFingerprint />
-				Passkey
+				Войти с помощью Passkey
 			</Button>
 		{/if}
 	</Card.Footer>
