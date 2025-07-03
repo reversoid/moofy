@@ -16,3 +16,4 @@ export * from "./sessions";
 export * from "./user-changelog-views";
 export * from "./user-preferences";
 export * from "./watched-reviews";
+export * from "./user-passkeys";

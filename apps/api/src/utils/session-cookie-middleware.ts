@@ -1,11 +1,6 @@
 import config from "@repo/config";
 import { MiddlewareHandler } from "hono";
-import {
-  getSignedCookie,
-  deleteCookie,
-  setCookie,
-  setSignedCookie,
-} from "hono/cookie";
+import { getSignedCookie, setSignedCookie } from "hono/cookie";
 
 /** Prolongs session cookie if needed */
 export const sessionCookieMiddleware: MiddlewareHandler = async (c, next) => {

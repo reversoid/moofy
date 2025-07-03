@@ -10,13 +10,21 @@ import { message } from 'sveltekit-superforms';
 export const load: PageServerLoad = async ({ parent, fetch }) => {
 	const { user } = await authGuard(parent);
 
-	const preferencesResponse = await makeClient(fetch).preferences.$get();
+	const client = makeClient(fetch);
 
-	if (!preferencesResponse.ok) {
-		throw new Error();
+	const [preferencesResponse, passkeysResponse] = await Promise.all([
+		client.preferences.$get(),
+		client.auth.passkeys.$get()
+	]);
+
+	if (!preferencesResponse.ok || !passkeysResponse.ok) {
+		throw new Error('Could not fetch preferences or passkeys');
 	}
 
-	const { preferences } = await preferencesResponse.json();
+	const [{ preferences }, { passkeys }] = await Promise.all([
+		preferencesResponse.json(),
+		passkeysResponse.json()
+	]);
 
 	const form = await superValidate(
 		{
@@ -28,7 +36,7 @@ export const load: PageServerLoad = async ({ parent, fetch }) => {
 		zod(settingsSchema)
 	);
 
-	return { user, form };
+	return { user, form, passkeys };
 };
 
 export const actions = {

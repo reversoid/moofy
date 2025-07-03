@@ -12,6 +12,7 @@
 		type?: 'submit' | 'button';
 		form?: string;
 		isLoading?: boolean;
+		size?: 'default' | 'icon';
 	};
 
 	const {
@@ -19,7 +20,8 @@
 		class: className,
 		type = 'button',
 		form,
-		isLoading
+		isLoading,
+		size
 	}: DeleteButtonProps = $props();
 
 	function handleDeleteClick() {
@@ -48,6 +50,7 @@
 </script>
 
 <Button
+	{size}
 	{isLoading}
 	class={className}
 	{type}
@@ -56,11 +59,13 @@
 	variant={confirmedDelete ? 'destructive' : 'outline'}
 	onclick={handleDeleteClick}
 >
-	{#if confirmedDelete}
+	{#if confirmedDelete || size === 'icon'}
 		<IconTrash />
 	{:else}
 		<IconLock />
 	{/if}
 
-	Удалить
+	{#if size !== 'icon'}
+		Удалить
+	{/if}
 </Button>
