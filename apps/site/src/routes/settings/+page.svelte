@@ -23,9 +23,9 @@
 	import { superForm, type FormResult } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import type { ActionData, PageProps } from './$types';
+	import AddPasskeyButton from './add-passkey-button.svelte';
 	import PasskeyItem from './passkey-item.svelte';
 	import { settingsSchema } from './schema';
-	import AddPasskeyButton from './add-passkey-button.svelte';
 
 	const { data }: PageProps = $props();
 

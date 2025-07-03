@@ -29,6 +29,8 @@ import {
   verifyBase64UrlSignature,
 } from "../utils/signature";
 import { raise } from "@repo/core/sdk";
+import { Id } from "@repo/core/utils";
+import { User } from "@repo/core/entities";
 
 export const authRoute = new Hono()
   .get("/webauthn/registration/options", authMiddleware, async (c) => {
@@ -184,28 +186,15 @@ export const authRoute = new Hono()
 
         throw new Error("Could not verify");
       } catch (e) {
-        if (e instanceof Error) {
-          return c.json(
-            { error: "BAD_VERIFY" as const, details: e.message },
-            400
-          );
-        }
-        throw e;
+        return c.json({ error: "BAD_VERIFY" as const }, 400);
       }
     }
   )
 
-  .get("/webauthn/auth/options", authMiddleware, async (c) => {
-    const { user } = c.get("session")!;
-    const userPasskeys = await getUserPasskeys(user.id.value);
-
+  .get("/webauthn/auth/options", async (c) => {
     const options: PublicKeyCredentialRequestOptionsJSON =
       await generateAuthenticationOptions({
         rpID,
-        allowCredentials: userPasskeys.map((passkey) => ({
-          id: passkey.id,
-          transports: parseTransportsArray(passkey.transports),
-        })),
       });
 
     const signature = createBase64UrlSignature(options);
@@ -214,7 +203,6 @@ export const authRoute = new Hono()
   })
   .post(
     "/webauthn/auth/verify",
-    authMiddleware,
     validator(
       "json",
       z.object({
@@ -277,9 +265,29 @@ export const authRoute = new Hono()
         await updatePasskey(existingPasskey.id, {
           counter: authenticationInfo.newCounter,
         });
+
+        const userService = c.get("userService");
+        const sessionService = c.get("sessionService");
+
+        const user = (await userService.getUser(
+          new Id(existingPasskey.userId)
+        )) as User;
+
+        const token = sessionService.generateSessionToken();
+        const session = await sessionService.createSession(token, user);
+
+        await setSignedCookie(c, "session", token, config.COOKIE_SECRET, {
+          httpOnly: true,
+          secure: config.ENV === "production" || config.ENV === "staging",
+          sameSite: "Lax",
+          path: "/",
+          expires: session.expiresAt,
+        });
+
+        return c.json({ user: makeUserDto(user) }, 200);
       }
 
-      return c.json({ verified }, 200);
+      return c.json({ error: "BAD_VERIFY" }, 400);
     }
   )
 

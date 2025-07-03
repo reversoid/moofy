@@ -15,6 +15,7 @@
 	const message = getContext('message') as { value: string };
 
 	const loginForm = superForm(form, {
+		resetForm: false,
 		validators: zodClient(loginSchema),
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;

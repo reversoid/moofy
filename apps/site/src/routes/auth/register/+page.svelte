@@ -14,6 +14,7 @@
 	const message = getContext('message') as { value: string };
 
 	const registerForm = superForm(form, {
+		resetForm: false,
 		validators: zodClient(registerSchema),
 		onUpdate({ form, result }) {
 			const action = result.data as FormResult<ActionData>;
