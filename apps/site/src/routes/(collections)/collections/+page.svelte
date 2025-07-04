@@ -55,8 +55,8 @@
 	}
 </script>
 
-<div class="flex justify-between">
-	<Heading class="mb-6">Мои коллекции</Heading>
+<div class="mb-6 flex items-center justify-between">
+	<Heading>Мои коллекции</Heading>
 	<CreateCollection onCollectionCreated={addCollection} />
 </div>
 

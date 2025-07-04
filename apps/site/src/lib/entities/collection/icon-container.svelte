@@ -7,7 +7,7 @@
 </script>
 
 <div
-	class="absolute left-[50%] top-[50%] z-10 w-[25%] translate-x-[-50%] translate-y-[-50%] rounded-full bg-gray-400 bg-opacity-50 p-4 backdrop-blur-sm"
+	class="text-primary absolute z-10 size-12 rounded-full bg-gray-400 bg-opacity-50 p-3 backdrop-blur-sm"
 >
 	{@render children()}
 </div>

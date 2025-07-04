@@ -84,7 +84,7 @@
 
 <div class="mt-2">
 	<form id="collection-form" class="flex flex-col gap-2 pb-4" use:enhance>
-		{#if collection?.type === 'default'}
+		{#if !collection || collection.type === 'default'}
 			<Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ attrs }: { attrs: any })}

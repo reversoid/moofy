@@ -1,13 +1,11 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import Image from '$lib/shared/ui/image.svelte';
 	import Link from '$lib/shared/ui/link.svelte';
 	import CollectionName from '$lib/shared/utils/collection-name.svelte';
 	import { colorHash } from '$lib/shared/utils/color-hash';
 	import type { CollectionDto } from '@repo/api/dtos';
 	import { IconDeviceTv, IconUser } from '@tabler/icons-svelte';
-	import PrivateTooltip from './private-tooltip.svelte';
 	import IconContainer from './icon-container.svelte';
+	import PrivateTooltip from './private-tooltip.svelte';
 
 	interface Props {
 		collection: CollectionDto;
@@ -19,61 +17,46 @@
 </script>
 
 <Link {href} class="block h-full">
-	<Card.Root class="flex h-full flex-col justify-between">
-		<Card.Header>
-			<div class="flex items-center justify-between gap-2">
-				<Card.Title class="overflow-hidden text-ellipsis whitespace-nowrap">
-					<div class="flex w-full items-center gap-2">
-						<!-- {#if collection.type === 'personal'}
-							<IconMushroom class="flex-shrink-0" size={20} />
-						{/if}
+	<div class="flex gap-4 rounded-lg border p-3">
+		<div class="relative flex shrink-0 items-center justify-center">
+			{#if collection.imageUrl}
+				<img
+					class="aspect-[4/3] h-24 rounded-md object-cover"
+					src={collection.imageUrl}
+					alt="collection"
+				/>
+			{:else}
+				<div
+					class="aspect-[4/3] h-24 rounded-md"
+					style="background-color: {colorHash.hex(String(collection.id))}"
+				></div>
+			{/if}
 
-						{#if collection.type === 'watch'}
-							<IconCircleCheck class="flex-shrink-0" size={20} />
-						{/if} -->
+			{#if collection.type === 'personal'}
+				<IconContainer>
+					<IconUser class="w-full" size="100%" />
+				</IconContainer>
+			{:else if collection.type === 'watch'}
+				<IconContainer>
+					<IconDeviceTv class="w-full" size="100%" />
+				</IconContainer>
+			{/if}
+		</div>
 
-						<CollectionName {collection} />
-					</div>
-				</Card.Title>
+		<div class="flex flex-col gap-1 overflow-hidden">
+			<div class="flex items-center justify-between gap-1">
+				<h6 class="text-primary overflow-hidden text-ellipsis whitespace-nowrap font-semibold">
+					<CollectionName {collection} />
+				</h6>
 
 				{#if !collection.isPublic}
 					<PrivateTooltip />
 				{/if}
 			</div>
-			<Card.Description class="line-clamp-1">
-				{#if collection.description}
-					<p>{collection.description.trim()}</p>
-				{:else}
-					<p class="text-muted-foreground">Описание отсутствует</p>
-				{/if}
-			</Card.Description>
-		</Card.Header>
 
-		<Card.Content class="relative">
-			{#if collection.type === 'watch'}
-				<IconContainer>
-					<IconDeviceTv class="w-full" size={'100%'} />
-				</IconContainer>
-			{/if}
-
-			{#if collection.type === 'personal'}
-				<IconContainer>
-					<IconUser class="w-full" size={'100%'} />
-				</IconContainer>
-			{/if}
-
-			{#if collection.imageUrl}
-				<Image
-					class="aspect-[4/3] w-full rounded-md object-cover"
-					src={collection.imageUrl}
-					alt="Collection"
-				/>
-			{:else}
-				<div
-					class="aspect-[4/3] w-full rounded-md"
-					style="background-color: {colorHash.hex(String(collection.id))}"
-				></div>
-			{/if}
-		</Card.Content>
-	</Card.Root>
+			<p class="text-muted-foreground line-clamp-3 text-sm">
+				{collection.description ?? 'Описание отсутствует'}
+			</p>
+		</div>
+	</div>
 </Link>
