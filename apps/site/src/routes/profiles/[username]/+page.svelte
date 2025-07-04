@@ -7,7 +7,6 @@
 	import { IconSettings, IconUser } from '@tabler/icons-svelte';
 	import type { PageProps } from './$types';
 	import { makeClient } from '$lib/shared/utils';
-	import type { CollectionDto } from '@repo/api/dtos';
 	import { FollowButton } from '$lib/features/profile';
 	import { Button } from '$lib/components/ui/button';
 	import Image from '$lib/shared/ui/image.svelte';

@@ -12,7 +12,7 @@
 		type PublicKeyCredentialRequestOptionsJSON
 	} from '@simplewebauthn/browser';
 	import { setCurrentUser } from '$lib/shared/state';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	interface Props {
 		type: 'login' | 'register';
@@ -51,6 +51,12 @@
 				optionsJSON: options as PublicKeyCredentialRequestOptionsJSON
 			});
 		} catch (error) {
+			if (error instanceof Error) {
+				if (error.name === 'NotAllowedError') {
+					return;
+				}
+			}
+
 			toast.error('Не удалось использовать Passkey');
 			return;
 		}
@@ -66,6 +72,7 @@
 
 		const { user } = await verifyResponse.json();
 
+		await invalidateAll();
 		setCurrentUser(user);
 		goto('/collections', { replaceState: true });
 	}

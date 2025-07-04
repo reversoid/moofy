@@ -44,10 +44,10 @@
 			</Card.Content>
 		</div>
 
-		{#if currentUser?.id !== userId}
-			<Card.Footer class="max-sm:px-4">
+		<Card.Footer class="max-sm:px-4">
+			{#if currentUser?.id !== userId}
 				<FollowButton {userId} {isFollowing} disabled={!currentUser} />
-			</Card.Footer>
-		{/if}
+			{/if}
+		</Card.Footer>
 	</Card.Root>
 </a>

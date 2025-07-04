@@ -12,7 +12,6 @@
 		disableAutoLoad?: boolean;
 		collections: CollectionDto[];
 		cursor?: string | null;
-		firstCard?: Snippet;
 		onLoadMore?: (cursor: string) => Promise<void>;
 		onSearch?: (search: string) => Promise<void>;
 		defaultEmptyDescription: string;
@@ -20,7 +19,6 @@
 
 	const {
 		collections,
-		firstCard,
 		disableAutoLoad = false,
 		onLoadMore,
 		onSearch,
@@ -63,11 +61,7 @@
 		</div>
 	{/if}
 
-	<div class="@5xl:grid-cols-4 @3xl:grid-cols-3 @xl:grid-cols-2 @xl:gap-4 grid grid-cols-1 gap-2">
-		{#if !isSearch}
-			{@render firstCard?.()}
-		{/if}
-
+	<div class="@5xl:grid-cols-4 @4xl:grid-cols-3 @xl:grid-cols-2 @xl:gap-4 grid grid-cols-1 gap-2">
 		{#each collections as collection (collection.id)}
 			<div animate:flip={{ duration: 350 }}>
 				<CollectionCard {collection} />
