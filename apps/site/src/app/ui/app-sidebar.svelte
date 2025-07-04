@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { AuthButton } from '$lib/entities/auth';
 	import { globalState, setCurrentUser } from '$lib/shared/state';
@@ -54,8 +55,8 @@
 		const response = await api.auth.logout.$post();
 
 		if (response.ok) {
+			await invalidateAll();
 			setCurrentUser(null);
-			window.location.reload();
 		}
 	}
 </script>

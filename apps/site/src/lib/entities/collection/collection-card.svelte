@@ -43,7 +43,7 @@
 			{/if}
 		</div>
 
-		<div class="flex flex-col gap-1 overflow-hidden">
+		<div class="flex grow flex-col gap-1 overflow-hidden">
 			<div class="flex items-center justify-between gap-1">
 				<h6 class="text-primary overflow-hidden text-ellipsis whitespace-nowrap font-semibold">
 					<CollectionName {collection} />

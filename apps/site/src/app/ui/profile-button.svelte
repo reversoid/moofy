@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { setCurrentUser } from '$lib/shared/state';
@@ -18,8 +19,8 @@
 		const response = await api.auth.logout.$post();
 
 		if (response.ok) {
+			await invalidateAll();
 			setCurrentUser(null);
-			window.location.reload();
 		}
 	}
 </script>
